@@ -1,62 +1,73 @@
-[
-  {
-    "id": "regras-oficiais-2024",
-    "titulo": "Regras Oficiais do Pickleball 2024",
-    "fonte": "USA Pickleball",
-    "tipo": "pdf",
-    "url": "https://usapickleball.org/what-is-pickleball/official-rules/",
-    "tags": ["regras", "oficial"],
-    "idioma": "en",
-    "ano": 2024
-  },
-  {
-    "id": "ppa-50plus",
-    "titulo": "Pickleball para Atletas 50+",
-    "fonte": "PPA",
-    "tipo": "artigo",
-    "url": "https://ppatour.com",
-    "tags": ["50+", "masters", "longevidade"],
-    "idioma": "en",
-    "ano": 2023
-  },
-  {
-    "id": "dink-mastery",
-    "titulo": "Dink Mastery: O Golpe Mais Importante",
-    "fonte": "PPA YouTube",
-    "tipo": "video",
-    "url": "https://youtube.com/@ppatour",
-    "tags": ["dink", "fundamentos", "drill"],
-    "idioma": "en",
-    "ano": 2024
-  },
-  {
-    "id": "third-shot-drop",
-    "titulo": "Third Shot Drop: Guia Completo",
-    "fonte": "PPA YouTube",
-    "tipo": "video",
-    "url": "https://youtube.com/@ppatour",
-    "tags": ["third-shot-drop", "fundamentos", "drill"],
-    "idioma": "en",
-    "ano": 2024
-  },
-  {
-    "id": "anti-inflammatory-50plus",
-    "titulo": "Dieta Anti-inflamatória para Atletas 50+",
-    "fonte": "PubMed",
-    "tipo": "artigo",
-    "url": "https://pubmed.ncbi.nlm.nih.gov",
-    "tags": ["nutrição", "anti-inflamatório", "50+"],
-    "idioma": "en",
-    "ano": 2023
-  },
-  {
-    "id": "knee-prevention-pickleball",
-    "titulo": "Prevenção de Lesão no Joelho em Pickleball",
-    "fonte": "JOPTE / Sports Medicine",
-    "tipo": "artigo",
-    "url": "https://pubmed.ncbi.nlm.nih.gov",
-    "tags": ["joelho", "prevenção", "lesão", "50+"],
-    "idioma": "en",
-    "ano": 2023
-  }
-]
+{
+  "version": "1.0.0",
+  "updatedAt": "2025-01-15",
+  "description": "Fontes do corpus pickleball - regras, técnicas, preparação",
+  "sources": [
+    {
+      "id": "usapa-rulebook-2024",
+      "titulo": "USA Pickleball Official Rulebook 2024",
+      "url": "https://usapickleball.org/docs/USA-Pickleball-Official-Rulebook-2024.pdf",
+      "tipo": "regulamento",
+      "idioma": "en",
+      "prioridade": 1,
+      "processado": false,
+      "caminhoLocal": "data/raw/usapa-rulebook-2024.pdf",
+      "tags": ["regras", "oficial", "torneio"]
+    },
+    {
+      "id": "cbpick-compendio-2024",
+      "titulo": "Compendio de Regras Pickleball Brasil 2024",
+      "url": "https://cbpick.com.br/compendio-2024.pdf",
+      "tipo": "regulamento",
+      "idioma": "pt-BR",
+      "prioridade": 1,
+      "processado": false,
+      "caminhoLocal": "data/raw/cbpick-compendio-2024.pdf",
+      "tags": ["regras", "brasil", "oficial"]
+    },
+    {
+      "id": "tecnica-drives-3rd-shot",
+      "titulo": "Tática: O 3rd Shot Drop",
+      "url": "https://www.youtube.com/watch?v=exemplo",
+      "tipo": "tecnica",
+      "idioma": "pt-BR",
+      "prioridade": 2,
+      "processado": false,
+      "caminhoLocal": "data/raw/tecnica-3rd-shot.md",
+      "tags": ["tatica", "duplas", "intermediario"]
+    },
+    {
+      "id": "preparacao-fisica-50mais",
+      "titulo": "Preparação Física para Atletas 50+",
+      "url": "https://exemplo.com/artigo",
+      "tipo": "preparacao",
+      "idioma": "pt-BR",
+      "prioridade": 1,
+      "processado": false,
+      "caminhoLocal": "data/raw/preparacao-50mais.md",
+      "tags": ["preparacao", "50mais", "longevidade"]
+    },
+    {
+      "id": "nutricao-jogador-pickleball",
+      "titulo": "Nutrição para o Jogador de Pickleball",
+      "url": "https://exemplo.com/nutricao",
+      "tipo": "nutricao",
+      "idioma": "pt-BR",
+      "prioridade": 2,
+      "processado": false,
+      "caminhoLocal": "data/raw/nutricao-jogador.md",
+      "tags": ["nutricao", "dieta", "performance"]
+    },
+    {
+      "id": "mental-game-pickleball",
+      "titulo": "O Jogo Mental no Pickleball",
+      "url": "https://exemplo.com/mental",
+      "tipo": "mental",
+      "idioma": "pt-BR",
+      "prioridade": 2,
+      "processado": false,
+      "caminhoLocal": "data/raw/mental-game.md",
+      "tags": ["mental", "foco", "competicao"]
+    }
+  ]
+}

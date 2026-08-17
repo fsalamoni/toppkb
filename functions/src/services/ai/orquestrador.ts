@@ -3,21 +3,26 @@
  *
  * Fluxo de uma mensagem do usuário:
  *  1. Detecta o agente (router.ts) se for 'auto'
- *  2. Carrega config do agente (admin) + config pessoal (user) + global
- *  3. Resolve LLMConfigLike efetivo (hierarquia)
- *  4. Carrega system prompt do agente (carrega skills default + custom)
- *  5. Carrega contexto do usuário (peso, lesões, último treino, etc)
- *  6. Carrega histórico recente da conversa
- *  7. Monta mensagens e chama o provider via generateWithProvider
+ *  2. Anonimiza PII
+ *  3. Recupera chunks relevantes do corpus (RAG)
+ *  4. Carrega config do agente (admin) + config pessoal (user) + global
+ *  5. Resolve LLMConfigLike efetivo (hierarquia 4 níveis)
+ *  6. Carrega system prompt do agente + skills customizadas
+ *  7. Carrega contexto do usuário (peso, lesões, último treino, etc)
+ *  8. Carrega histórico recente da conversa
+ *  9. Monta prompt e chama o agent runner
  */
 
 import { AgenteId, detectarAgente } from './router';
 import { carregarSystemPrompt, PROMPTS } from '../../prompts';
-import { generateWithProvider } from '../llm-providers';
 import { resolveEffectiveLLMConfig } from '../llm-config';
-import { loadAgentsConfig, resolveAgentLLMConfig, defaultAgentsConfig, type AgentConfig, type AgentsConfig } from '../agents-config';
+import { loadAgentsConfig, type AgentsConfig, type AgentConfigRef } from '../agents-config';
 import { db, logger } from '../../config/env';
 import { LLMMessage } from '../llm-providers';
+import { runAgent } from '../../agents/runner';
+import { retrieveRelevantChunks, RetrievedChunk } from '../retrieval';
+import { anonymizeText } from '../anonymizer';
+import { getUserProfile } from '../profile';
 
 export interface ContextoUsuario {
   displayName?: string;
@@ -48,7 +53,6 @@ export async function carregarContextoUsuario(uid: string): Promise<ContextoUsua
       ctx.ladoDominante = d.ladoDominante;
     }
 
-    // Último treino
     const ultimoTreino = await db
       .collection('users').doc(uid)
       .collection('treinos')
@@ -59,7 +63,6 @@ export async function carregarContextoUsuario(uid: string): Promise<ContextoUsua
       ctx.ultimoTreino = { id: ultimoTreino.docs[0].id, ...ultimoTreino.docs[0].data() };
     }
 
-    // Última dor
     const ultimaDor = await db
       .collection('users').doc(uid)
       .collection('dores')
@@ -70,7 +73,6 @@ export async function carregarContextoUsuario(uid: string): Promise<ContextoUsua
       ctx.ultimaDor = { id: ultimaDor.docs[0].id, ...ultimaDor.docs[0].data() };
     }
 
-    // Próximo torneio
     const proxTorneio = await db
       .collection('users').doc(uid)
       .collection('torneios')
@@ -114,45 +116,6 @@ export async function carregarHistorico(
   }
 }
 
-/**
- * Monta o system prompt final combinando:
- *  - System prompt base do agente (do arquivo .ts)
- *  - Skills customizadas do agente (admin-config/agents/{id}.skills)
- *  - Contexto do usuário (peso, lesões, etc)
- */
-function montarSystemPrompt(
-  agente: AgenteId,
-  agentConfig: AgentConfig | undefined,
-  ctx: ContextoUsuario,
-): string {
-  const base = PROMPTS[agente] || PROMPTS.general;
-
-  // Adiciona skills customizadas (se habilitadas)
-  let skillsExtra = '';
-  if (agentConfig && agentConfig.skills.length > 0) {
-    const ativas = agentConfig.skills.filter((s) => s.enabled);
-    if (ativas.length > 0) {
-      skillsExtra = '\n\n# INSTRUÇÕES CUSTOMIZADAS (pelo admin)\n' +
-        ativas.map((s) => `## ${s.name}\n${s.prompt}`).join('\n\n');
-    }
-  }
-
-  // Contexto do usuário
-  const contextoStr = `
-# CONTEXTO DO ATLETA
-- Nome: ${ctx.displayName || 'Atleta'}
-${ctx.ladoDominante ? `- Lado dominante: ${ctx.ladoDominante}` : ''}
-${ctx.pesoAtual ? `- Peso atual: ${ctx.pesoAtual}kg (meta: ${ctx.pesoMeta}kg)` : ''}
-${ctx.altura ? `- Altura: ${ctx.altura}cm, IMC: ${ctx.imc?.toFixed(1) || 'N/A'}` : ''}
-${ctx.objetivoFinal ? `- Objetivo: ${ctx.objetivoFinal}` : ''}
-${ctx.ultimoTreino ? `- Último treino: ${ctx.ultimoTreino.tipo} (intensidade ${ctx.ultimoTreino.intensidade}/10)` : ''}
-${ctx.ultimaDor ? `- Última dor: ${ctx.ultimaDor.regiao} (intensidade ${ctx.ultimaDor.intensidade}/10)` : ''}
-${ctx.proximoTorneio ? `- Próximo torneio: ${ctx.proximoTorneio.nome} em ${new Date(ctx.proximoTorneio.dataInicio).toLocaleDateString('pt-BR')}` : ''}
-`;
-
-  return `${base}${skillsExtra}${contextoStr}`;
-}
-
 export interface RespostaOrquestrador {
   texto: string;
   agenteUsado: AgenteId;
@@ -160,6 +123,8 @@ export interface RespostaOrquestrador {
   latenciaMs: number;
   model: string;
   provider: string;
+  sources?: RetrievedChunk[];
+  piiRemoved?: number;
 }
 
 /**
@@ -177,7 +142,16 @@ export async function responderComoAgente(
   // 1) Detecta agente se for 'auto'
   const agente: AgenteId = agenteParam === 'auto' ? detectarAgente(mensagem) : agenteParam;
 
-  // 2) Carrega config dos agentes (admin)
+  // 2) Anonimiza PII
+  const { text: mensagemLimpa, piiRemoved } = anonymizeText(mensagem);
+
+  // 3) RAG — recupera chunks relevantes do corpus
+  const sources = await retrieveRelevantChunks(mensagemLimpa, {
+    topK: 5,
+    minSimilarity: 0.5,
+  });
+
+  // 4) Carrega config dos agentes (admin)
   const agentsConfig: AgentsConfig = await loadAgentsConfig();
   const agentConfig = agentsConfig.agents[agente];
 
@@ -189,60 +163,79 @@ export async function responderComoAgente(
       latenciaMs: Date.now() - start,
       model: 'n/a',
       provider: 'n/a',
+      sources: [],
+      piiRemoved,
     };
   }
 
-  // 3) Resolve config LLM efetivo (hierarquia)
+  // 5) Resolve config LLM efetivo (hierarquia)
   const llmConfig = await resolveEffectiveLLMConfig(agentConfig, uid);
 
-  if (!llmConfig || !llmConfig.apiKey) {
-    if (llmConfig && llmConfig.provider !== 'google') {
-      return {
-        texto: '⚠️ Configure uma API key para este LLM em Configurações → LLM.',
-        agenteUsado: agente,
-        tokens: { input: 0, output: 0, total: 0 },
-        latenciaMs: Date.now() - start,
-        model: llmConfig.model,
-        provider: llmConfig.provider,
-      };
-    }
-    return {
-      texto: '⚠️ Nenhum LLM configurado. Peça ao administrador para configurar a chave global ou adicione sua própria em Configurações.',
-      agenteUsado: agente,
-      tokens: { input: 0, output: 0, total: 0 },
-      latenciaMs: Date.now() - start,
-      model: 'n/a',
-      provider: 'n/a',
-    };
+  // 6) System prompt base
+  const systemPromptBase = PROMPTS[agente] || PROMPTS.general;
+
+  // 7) Contexto do usuário
+  const ctx = await carregarContextoUsuario(uid);
+  const contextoUsuario = `
+# CONTEXTO DO ATLETA
+- Nome: ${ctx.displayName || 'Atleta'}
+${ctx.ladoDominante ? `- Lado dominante: ${ctx.ladoDominante}` : ''}
+${ctx.pesoAtual ? `- Peso atual: ${ctx.pesoAtual}kg (meta: ${ctx.pesoMeta}kg)` : ''}
+${ctx.altura ? `- Altura: ${ctx.altura}cm, IMC: ${ctx.imc?.toFixed(1) || 'N/A'}` : ''}
+${ctx.objetivoFinal ? `- Objetivo: ${ctx.objetivoFinal}` : ''}
+${ctx.ultimoTreino ? `- Último treino: ${ctx.ultimoTreino.tipo} (intensidade ${ctx.ultimoTreino.intensidade}/10)` : ''}
+${ctx.ultimaDor ? `- Última dor: ${ctx.ultimaDor.regiao} (intensidade ${ctx.ultimaDor.intensidade}/10)` : ''}
+${ctx.proximoTorneio ? `- Próximo torneio: ${ctx.proximoTorneio.nome} em ${new Date(ctx.proximoTorneio.dataInicio).toLocaleDateString('pt-BR')}` : ''}
+`;
+
+  // 8) Adiciona contexto de retrieval (RAG)
+  let contextoRag = '';
+  if (sources.length > 0) {
+    contextoRag = `
+# MATERIAL DE REFERÊNCIA (do seu corpus)
+${sources.map((s, i) => `[${i + 1}] ${s.content.slice(0, 500)}...`).join('\n\n')}
+`;
   }
 
-  // 4) System prompt
-  const ctx = await carregarContextoUsuario(uid);
-  const systemPrompt = montarSystemPrompt(agente, agentConfig, ctx);
-
-  // 5) Histórico
+  // 9) Histórico
   const historico = await carregarHistorico(uid, conversaId);
 
-  // 6) Monta mensagens
-  const messages: LLMMessage[] = [
-    ...historico,
-    { role: 'user', content: mensagem },
-  ];
+  // 10) Converte config (compatibilidade com AgentConfigRef)
+  const agentConfigRef: AgentConfigRef = agentConfig
+    ? {
+        id: agentConfig.id,
+        label: agentConfig.label,
+        enabled: agentConfig.enabled,
+        model: agentConfig.model,
+        skills: agentConfig.skills,
+      }
+    : {
+        id: agente,
+        label: agente,
+        enabled: true,
+        model: { mode: 'global' },
+        skills: [],
+      };
 
-  // 7) Chama provider
-  const result = await generateWithProvider({
-    systemPrompt,
-    messages,
-    config: llmConfig,
+  // 11) Executa o agent runner
+  const result = await runAgent({
+    agent: agentConfigRef,
+    globalLLM: llmConfig,
+    userMessage: mensagemLimpa,
+    systemPromptBase,
+    history: historico.filter((h) => h.role !== 'system'),
+    additionalContext: contextoUsuario + contextoRag,
   });
 
   return {
-    texto: result.content,
+    texto: result.text,
     agenteUsado: agente,
     tokens: result.tokens,
     latenciaMs: Date.now() - start,
     model: result.model,
     provider: result.provider,
+    sources,
+    piiRemoved,
   };
 }
 
@@ -251,7 +244,6 @@ export async function responderComoAgente(
  */
 export function sugerirAgente(mensagem: string): AgenteId | null {
   const ag = detectarAgente(mensagem);
-  // Se for 'general', não sugere
   if (ag === 'general') return null;
   return ag;
 }

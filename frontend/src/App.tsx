@@ -1,144 +1,106 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
-import { useAuth } from '@/hooks/useAuth';
-import { AppShell } from '@/components/layout/AppShell';
-import { Login } from '@/pages/Login';
-import { Consent } from '@/pages/Consent';
-import { Onboarding } from '@/pages/Onboarding';
-import { Dashboard } from '@/pages/Dashboard';
-import { TreinosList } from '@/pages/TreinosList';
-import { TreinoForm } from '@/pages/TreinoForm';
-import { PartidasList } from '@/pages/PartidasList';
-import { PartidaForm } from '@/pages/PartidaForm';
-import { PesoList } from '@/pages/PesoList';
-import { DoresList } from '@/pages/DoresList';
-import { RefeicoesList } from '@/pages/RefeicoesList';
-import { SonoList } from '@/pages/SonoList';
-import { TorneiosList } from '@/pages/TorneiosList';
-import { Metricas } from '@/pages/Metricas';
-import { AvaliacaoForm } from '@/pages/AvaliacaoForm';
-import { Chat } from '@/pages/Chat';
-import { Configuracoes } from '@/pages/Configuracoes';
-import { PerfilEdit } from '@/pages/PerfilEdit';
-import { LLMConfig } from '@/pages/LLMConfig';
-import { AdminLLMConfig } from '@/pages/AdminLLMConfig';
-import { Fisio } from '@/pages/Fisio';
-import { Forca } from '@/pages/Forca';
-import { Mobilidade } from '@/pages/Mobilidade';
-import { Cardio } from '@/pages/Cardio';
-import { Suplementos } from '@/pages/Suplementos';
-import { Agua } from '@/pages/Agua';
-import { Medidas } from '@/pages/Medidas';
-import { Estudos } from '@/pages/Estudos';
-import { Metas } from '@/pages/Metas';
-import { NotFound } from '@/pages/NotFound';
-import { LoadingScreen } from '@/components/common/LoadingScreen';
-import { Toaster } from '@/components/ui/toaster';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { AuthProvider, useAuth } from './hooks/useAuth';
+import { Toaster } from './components/ui/toaster';
+import { Sidebar } from './components/layout/Sidebar';
+import { Topbar } from './components/layout/Topbar';
+import { Login } from './pages/Login';
+import { Dashboard } from './pages/Dashboard';
+import { Treinos } from './pages/Treinos';
+import { Partidas } from './pages/Partidas';
+import { Fisio } from './pages/Fisio';
+import { Nutricao } from './pages/Nutricao';
+import { Sono } from './pages/Sono';
+import { Peso } from './pages/Peso';
+import { Dores } from './pages/Dores';
+import { Torneios } from './pages/Torneios';
+import { Metas } from './pages/Metas';
+import { Estudos } from './pages/Estudos';
+import { Onboarding } from './pages/Onboarding';
+import { Configuracoes } from './pages/Configuracoes';
+import { Perfil } from './pages/Perfil';
+import { ConfiguracoesLLM } from './pages/ConfiguracoesLLM';
+import { AdminLayout } from './pages/admin/AdminLayout';
+import { AdminDashboard } from './pages/admin/AdminDashboard';
+import { AdminCorpus } from './pages/admin/AdminCorpus';
+import { AdminLLMConfig } from './pages/admin/AdminLLMConfig';
+import { AdminAgents } from './pages/admin/AdminAgents';
+import { AdminUsers } from './pages/admin/AdminUsers';
+import { AdminStats } from './pages/admin/AdminStats';
+import ChatPage from './pages/ChatPage';
+import { Loader2 } from 'lucide-react';
 
-function RequireAuth({ children }: { children: React.ReactNode }) {
-  const { user, loading } = useAuth();
+const queryClient = new QueryClient({
+  defaultOptions: { queries: { staleTime: 60 * 1000, refetchOnWindowFocus: false } },
+});
 
-  if (loading) return <LoadingScreen />;
+function PrivateRoute({ children, adminOnly = false }: { children: React.ReactNode; adminOnly?: boolean }) {
+  const { user, claims, loading } = useAuth();
+  if (loading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
   if (!user) return <Navigate to="/login" replace />;
-
+  if (adminOnly && !claims?.admin) return <Navigate to="/dashboard" replace />;
   return <>{children}</>;
 }
 
-function RequireOnboarding({ children }: { children: React.ReactNode }) {
-  const { userDoc, loading } = useAuth();
-
-  if (loading) return <LoadingScreen />;
-  if (!userDoc) return <Navigate to="/login" replace />;
-  if (!userDoc.consent) return <Navigate to="/consent" replace />;
-  if (!userDoc.onboardingComplete) return <Navigate to="/onboarding" replace />;
-
-  return <>{children}</>;
+function AppShell() {
+  return (
+    <div className="flex h-screen bg-background">
+      <Sidebar />
+      <div className="flex-1 flex flex-col overflow-hidden">
+        <Topbar />
+        <main className="flex-1 overflow-y-auto p-6">
+          <Routes>
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
+            <Route path="/treinos" element={<PrivateRoute><Treinos /></PrivateRoute>} />
+            <Route path="/partidas" element={<PrivateRoute><Partidas /></PrivateRoute>} />
+            <Route path="/fisio" element={<PrivateRoute><Fisio /></PrivateRoute>} />
+            <Route path="/nutricao" element={<PrivateRoute><Nutricao /></PrivateRoute>} />
+            <Route path="/sono" element={<PrivateRoute><Sono /></PrivateRoute>} />
+            <Route path="/peso" element={<PrivateRoute><Peso /></PrivateRoute>} />
+            <Route path="/dores" element={<PrivateRoute><Dores /></PrivateRoute>} />
+            <Route path="/torneios" element={<PrivateRoute><Torneios /></PrivateRoute>} />
+            <Route path="/metas" element={<PrivateRoute><Metas /></PrivateRoute>} />
+            <Route path="/estudos" element={<PrivateRoute><Estudos /></PrivateRoute>} />
+            <Route path="/chat" element={<PrivateRoute><ChatPage /></PrivateRoute>} />
+            <Route path="/onboarding" element={<PrivateRoute><Onboarding /></PrivateRoute>} />
+            <Route path="/configuracoes" element={<PrivateRoute><Configuracoes /></PrivateRoute>} />
+            <Route path="/configuracoes/llm" element={<PrivateRoute><ConfiguracoesLLM /></PrivateRoute>} />
+            <Route path="/perfil" element={<PrivateRoute><Perfil /></PrivateRoute>} />
+            <Route path="/admin" element={<PrivateRoute adminOnly><AdminLayout /></PrivateRoute>}>
+              <Route index element={<AdminDashboard />} />
+              <Route path="corpus" element={<AdminCorpus />} />
+              <Route path="llm" element={<AdminLLMConfig />} />
+              <Route path="agents" element={<AdminAgents />} />
+              <Route path="users" element={<AdminUsers />} />
+              <Route path="stats" element={<AdminStats />} />
+            </Route>
+            <Route path="*" element={<Navigate to="/dashboard" replace />} />
+          </Routes>
+        </main>
+      </div>
+      <Toaster />
+    </div>
+  );
 }
 
 export default function App() {
   return (
-    <>
-      <Routes>
-        {/* Públicas */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/auth/verify" element={<Login />} />
-
-        {/* Onboarding (com auth, sem onboarding completo) */}
-        <Route
-          path="/consent"
-          element={
-            <RequireAuth>
-              <Consent />
-            </RequireAuth>
-          }
-        />
-        <Route
-          path="/onboarding"
-          element={
-            <RequireAuth>
-              <Onboarding />
-            </RequireAuth>
-          }
-        />
-
-        {/* Privadas (com auth + consent + onboarding) */}
-        <Route
-          element={
-            <RequireAuth>
-              <RequireOnboarding>
-                <AppShell />
-              </RequireOnboarding>
-            </RequireAuth>
-          }
-        >
-          <Route index element={<Dashboard />} />
-
-          {/* 🏓 Pickleball */}
-          <Route path="/treinos" element={<TreinosList />} />
-          <Route path="/treinos/novo" element={<TreinoForm />} />
-          <Route path="/partidas" element={<PartidasList />} />
-          <Route path="/partidas/nova" element={<PartidaForm />} />
-          <Route path="/estudos" element={<Estudos />} />
-
-          {/* 💪 Preparação Física */}
-          <Route path="/fisico/fisio" element={<Fisio />} />
-          <Route path="/fisico/forca" element={<Forca />} />
-          <Route path="/fisico/mobilidade" element={<Mobilidade />} />
-          <Route path="/fisico/cardio" element={<Cardio />} />
-
-          {/* 🥗 Alimentação */}
-          <Route path="/alimentacao/refeicoes" element={<RefeicoesList />} />
-          <Route path="/alimentacao/agua" element={<Agua />} />
-          <Route path="/alimentacao/suplementos" element={<Suplementos />} />
-
-          {/* 🩹 Saúde */}
-          <Route path="/saude/peso" element={<PesoList />} />
-          <Route path="/saude/medidas" element={<Medidas />} />
-          <Route path="/saude/sono" element={<SonoList />} />
-          <Route path="/saude/dores" element={<DoresList />} />
-
-          {/* 🏆 Competição */}
-          <Route path="/torneios" element={<TorneiosList />} />
-
-          {/* 📊 Métricas */}
-          <Route path="/metricas" element={<Metricas />} />
-          <Route path="/metricas/avaliacoes/nova" element={<AvaliacaoForm />} />
-          <Route path="/metricas/metas" element={<Metas />} />
-
-          {/* 🤖 Chat IA */}
-          <Route path="/chat" element={<Chat />} />
-          <Route path="/chat/:conversaId" element={<Chat />} />
-
-          {/* ⚙️ Configurações */}
-          <Route path="/configuracoes" element={<Configuracoes />} />
-          <Route path="/configuracoes/perfil" element={<PerfilEdit />} />
-          <Route path="/configuracoes/llm" element={<LLMConfig />} />
-          <Route path="/admin/llm" element={<AdminLLMConfig />} />
-        </Route>
-
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-
-      <Toaster />
-    </>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/*" element={<AppShell />} />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
+    </QueryClientProvider>
   );
 }

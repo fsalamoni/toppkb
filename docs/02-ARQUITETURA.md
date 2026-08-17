@@ -1,358 +1,331 @@
-# 🏗️ Arquitetura — Top Pickleball 50+
+# Arquitetura — Top Pickleball 50+
 
-> Visão técnica detalhada do sistema.
+## Visão geral
 
----
-
-## 1. Princípios arquiteturais
-
-1. **Isolamento total por usuário** — Firestore Rules garantem que cada atleta só lê/escreve seus próprios dados. Inspirado e idêntico ao padrão Cofrito.
-2. **Backend thin + IA no Functions** — Cloud Functions só orquestram e validam. Toda a regra de negócio fica no client + rules.
-3. **Multi-agente** — 5 personas de IA com prompts especializados e roteamento por keyword. Cada agente é uma skill.
-4. **Custo mínimo** — Gemini 2.5 Flash (barato), Firestore Spark (grátis até limite), Cloud Functions só sob demanda.
-5. **Offline-first quando possível** — TanStack Query faz cache local, navegação funciona sem rede.
-
----
-
-## 2. Topologia
+Aplicação **full-stack** com isolamento total por usuário. Inspirada estruturalmente no projeto Cofrito, mas customizada para o domínio de pickleball 50+.
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                     ATLETA (Browser)                         │
-│  React 18 + Vite + TS + Tailwind + shadcn-style            │
-│  - Zustand (auth, ui)                                        │
-│  - TanStack Query (server state)                             │
-│  - React Router 6                                            │
-└────────────────────────┬────────────────────────────────────┘
-                         │
-        ┌────────────────┼────────────────┐
-        │                │                │
-        ▼                ▼                ▼
-┌─────────────┐  ┌─────────────┐  ┌─────────────┐
-│ Firebase    │  │ Firebase    │  │ Firebase    │
-│ Auth        │  │ Firestore   │  │ Cloud       │
-│ (Magic Link)│  │ (Realtime)  │  │ Functions   │
-└─────────────┘  └─────────────┘  └──────┬──────┘
-                                         │
-                                         ▼
-                                ┌─────────────────┐
-                                │ Gemini 2.5      │
-                                │ Flash / Pro     │
-                                │ (5 agentes)     │
-                                └─────────────────┘
-                                         │
-                                         ▼
-                                ┌─────────────────┐
-                                │ Sentry          │
-                                │ (erros + perf)  │
-                                └─────────────────┘
+┌──────────────────────────────────────────────────────────┐
+│ Frontend (React 18 + Vite + TS + Tailwind)              │
+│  - PWA (instalável, offline-ready)                       │
+│  - React Router + React Query                            │
+│  - Zustand (auth, ui, chat)                              │
+└──────────────────────┬───────────────────────────────────┘
+                       │
+                       │ HTTPS
+                       ↓
+┌──────────────────────────────────────────────────────────┐
+│ Firebase Auth (Magic Link) + Hosting + App Check         │
+└──────────────────────┬───────────────────────────────────┘
+                       │
+        ┌──────────────┴──────────────┐
+        ↓                             ↓
+┌──────────────────┐         ┌────────────────────────┐
+│  REST API        │         │  Cloud Functions v2    │
+│  (Express-like)  │         │  (Callable + Scheduled)│
+│  /api/**         │         │                        │
+└──────┬───────────┘         └──────┬─────────────────┘
+       │                            │
+       └─────────────┬──────────────┘
+                     ↓
+       ┌──────────────────────────────────────┐
+       │  Firestore (NoSQL)                   │
+       │  - users/{uid}/<17 subcoleções>      │
+       │  - corpus (compartilhado, RAG)       │
+       │  - admin-config (configs globais)    │
+       │  - audit (LGPD)                      │
+       └──────────────────────────────────────┘
+                     ↓
+       ┌──────────────────────────────────────┐
+       │  Gemini (LLM + Embeddings)           │
+       │  + 16 outros providers               │
+       └──────────────────────────────────────┘
 ```
 
----
+## Stack
 
-## 3. Estrutura de pastas
+### Frontend
+
+| Camada | Tech |
+|--------|------|
+| Framework | React 18 |
+| Build | Vite 5 |
+| Linguagem | TypeScript 5 |
+| Styling | TailwindCSS 3 + shadcn/ui |
+| State | Zustand + React Query |
+| Routing | React Router 6 |
+| Forms | React Hook Form + Zod |
+| Charts | Recharts |
+| PWA | vite-plugin-pwa |
+| Testes | Vitest + Playwright |
+
+### Backend
+
+| Camada | Tech |
+|--------|------|
+| Runtime | Node 20 (Cloud Functions Gen 2) |
+| Linguagem | TypeScript 5 |
+| Framework | Express-like (manual routing) |
+| DB | Firestore (Native mode) |
+| Auth | Firebase Auth (Magic Link) |
+| AI | Google Generative AI SDK (Gemini) |
+| Search | Firestore Vector Search |
+| Testes | Vitest |
+
+### Infra
+
+| Camada | Tech |
+|--------|------|
+| Auth | Firebase Auth |
+| DB | Firestore |
+| Functions | Cloud Functions Gen 2 |
+| Hosting | Firebase Hosting |
+| CI/CD | GitHub Actions |
+| Monitoring | Sentry + Cloud Logging |
+| Secretes | GitHub Secrets + `admin-config/llm-secret` |
+
+## Fluxo de dados
+
+### 1. Login (Magic Link)
+
+```
+1. Usuário digita email
+2. Frontend: signInWithEmailLink(email)
+3. Firebase envia email com link
+4. Usuário clica no link → redireciona para /login?email=...
+5. Frontend: signInWithEmailLink(email, link)
+6. Trigger: onUserCreated
+   - Cria users/{uid} doc
+   - Cria admins/{uid} se for o primeiro
+   - Envia email de boas-vindas
+7. Frontend: redireciona para /onboarding (se !onboardingComplete) ou /dashboard
+```
+
+### 2. Chat com agente
+
+```
+1. Usuário digita mensagem
+2. Frontend: sendMessage({ message, conversaId, agente })
+3. Cloud Function: api (/chat/message)
+4. Orquestrador:
+   a. Detecta agente (router) se for 'auto'
+   b. Anonimiza PII
+   c. RAG: recupera 5 chunks relevantes (vector search)
+   d. Carrega config do agente (admin)
+   e. Resolve LLM config efetivo (4-level hierarchy)
+   f. Carrega system prompt + skills
+   g. Carrega contexto do usuário (peso, lesões, último treino)
+   h. Carrega histórico (últimas 10 mensagens)
+   i. Chama LLM
+   j. Salva mensagens (user + assistant)
+5. Retorna resposta + sources + metadata
+6. Frontend: renderiza com badges de agente e latência
+```
+
+### 3. Upload de corpus (admin)
+
+```
+1. Admin faz upload de PDF
+2. Cloud Function: adminUploadDocument (signed URL)
+3. Storage: salva em /corpus/raw/{uuid}.pdf
+4. Trigger: onCorpusDocumentCreated
+5. Pipeline de ingestão:
+   a. Extrai texto (pdf-parse)
+   b. Divide em chunks (1500 chars, overlap 200)
+   c. Gera embeddings (Gemini text-embedding-004)
+   d. Salva corpus/studies/studies/{id}
+   e. Salva chunks com embeddings
+6. Corpus fica disponível para RAG
+```
+
+### 4. Treino registrado
+
+```
+1. Usuário preenche form de treino
+2. Frontend: criarRegistro('treinos', data)
+3. Cloud Function: api (/registros/treinos)
+4. Cria users/{uid}/treinos/{treinoId}
+5. Trigger: onTreinoCreated (opcional)
+   - Atualiza métricas
+   - Envia para análise
+6. Frontend: invalida query treinos
+```
+
+## Estrutura de pastas
 
 ```
 toppkb/
-├── docs/                            # documentação
-│   ├── 00-PLANEJAMENTO-COMPLETO.md
-│   ├── 01-INSTALACAO.md
-│   ├── 02-ARQUITETURA.md
-│   ├── 03-DEPLOY.md
-│   ├── 04-OPERACAO.md
-│   ├── 05-LGPD-SEGURANCA.md
-│   ├── 06-API-REFERENCE.md
-│   ├── 07-AGENTES-PROMPTS.md
-│   ├── 08-TESTES.md
-│   ├── 09-MONITORAMENTO.md
-│   ├── 10-ROADMAP-PRODUTO.md
-│   ├── 11-PERFIL-ATLETA.md
-│   └── adr/                         # Architecture Decision Records
-│       ├── 0001-stack.md
-│       ├── 0002-llm-gemini.md
-│       ├── 0003-isolamento-por-user.md
-│       ├── 0004-multi-agente.md
-│       └── 0005-magic-link.md
-│
 ├── frontend/
 │   ├── src/
 │   │   ├── components/
-│   │   │   ├── ui/                  # primitivos shadcn-style
-│   │   │   ├── layout/              # AppShell, Sidebar, Header
-│   │   │   ├── registros/           # Formulários por pilar
-│   │   │   ├── dashboard/           # Widgets do painel
-│   │   │   ├── chat/                # Chat com IA
-│   │   │   └── common/              # ConfirmDialog, etc
-│   │   ├── pages/                   # rotas (30+)
-│   │   ├── hooks/                   # useAuth, useRegistros, etc
-│   │   ├── stores/                  # Zustand stores
-│   │   ├── lib/                     # firebase, api, schemas
-│   │   ├── i18n/                    # PT-BR
-│   │   ├── types/                   # TypeScript types
-│   │   ├── assets/                  # imagens, ícones
-│   │   ├── App.tsx
-│   │   └── main.tsx
-│   ├── public/                      # assets estáticos
-│   ├── index.html
-│   ├── package.json
-│   ├── tsconfig.json
-│   ├── vite.config.ts
-│   ├── tailwind.config.js
-│   ├── postcss.config.js
-│   └── .eslintrc.cjs
-│
+│   │   │   ├── ui/           # shadcn primitives
+│   │   │   ├── layout/       # Sidebar, Topbar
+│   │   │   ├── common/       # ConfirmDialog, EmptyState
+│   │   │   ├── dashboard/    # Charts, StatCard
+│   │   │   ├── chat/         # ChatMessage
+│   │   │   └── registros/    # Formulários específicos
+│   │   ├── pages/
+│   │   │   ├── admin/        # AdminLayout, AdminCorpus, etc
+│   │   │   ├── Login.tsx
+│   │   │   ├── Dashboard.tsx
+│   │   │   ├── ChatPage.tsx
+│   │   │   ├── Treinos.tsx
+│   │   │   └── ...           # 32+ pages
+│   │   ├── hooks/
+│   │   │   ├── useAuth.ts
+│   │   │   ├── useRegistros.ts
+│   │   │   ├── useDebounce.ts
+│   │   │   ├── useLocalStorage.ts
+│   │   │   └── useMediaQuery.ts
+│   │   ├── stores/
+│   │   │   ├── authStore.ts
+│   │   │   ├── uiStore.ts
+│   │   │   └── chatStore.ts
+│   │   ├── lib/
+│   │   │   ├── firebase.ts
+│   │   │   ├── api.ts
+│   │   │   ├── chat-api.ts
+│   │   │   ├── llm-api.ts
+│   │   │   └── utils.ts
+│   │   └── App.tsx
+│   └── package.json
 ├── functions/
 │   ├── src/
-│   │   ├── index.ts                 # exports
+│   │   ├── index.ts          # exports
 │   │   ├── handlers/
-│   │   │   ├── auth.ts              # onCreate user
-│   │   │   ├── api.ts               # router /api/**
-│   │   │   ├── chat.ts              # chat com IA
-│   │   │   ├── scheduled.ts         # cron jobs
-│   │   │   └── admin.ts
+│   │   │   ├── auth.ts       # onUserCreated, onUserConsent
+│   │   │   ├── api.ts        # REST endpoints
+│   │   │   ├── scheduled.ts  # cleanup, weeklySummary
+│   │   │   ├── llm-config.ts # getLLMConfig, etc
+│   │   │   ├── agents-config.ts
+│   │   │   ├── admin-documents.ts
+│   │   │   ├── admin-stats.ts
+│   │   │   ├── profile.ts
+│   │   │   ├── history.ts
+│   │   │   ├── feedback.ts
+│   │   │   ├── delete-account.ts
+│   │   │   └── bootstrap-admin.ts
 │   │   ├── services/
 │   │   │   ├── ai/
-│   │   │   │   ├── router.ts        # detecção de agente
-│   │   │   │   ├── treinador.ts     # persona Treinador
-│   │   │   │   ├── preparador.ts    # persona Preparador
-│   │   │   │   ├── nutricionista.ts # persona Nutricionista
-│   │   │   │   ├── estrategista.ts  # persona Estrategista
-│   │   │   │   ├── general.ts       # persona General
-│   │   │   │   └── embeddings.ts
-│   │   │   ├── firestore/
-│   │   │   │   ├── user.ts
-│   │   │   │   ├── registros.ts
-│   │   │   │   └── metricas.ts
-│   │   │   ├── ratelimit.ts
-│   │   │   ├── email.ts
+│   │   │   │   ├── orquestrador.ts
+│   │   │   │   └── router.ts
+│   │   │   ├── embeddings.ts
+│   │   │   ├── retrieval.ts
+│   │   │   ├── history.ts
+│   │   │   ├── profile.ts
+│   │   │   ├── analytics.ts
+│   │   │   ├── anonymizer.ts
+│   │   │   ├── chunking.ts
+│   │   │   ├── llm-providers.ts
+│   │   │   ├── llm-config.ts
+│   │   │   ├── agents-config.ts
+│   │   │   ├── global-llm.ts
+│   │   │   ├── config-store.ts
+│   │   │   ├── firestore.ts
 │   │   │   └── sentry.ts
+│   │   ├── agents/
+│   │   │   ├── types.ts
+│   │   │   └── runner.ts
 │   │   ├── middleware/
 │   │   │   ├── auth.ts
 │   │   │   ├── consent.ts
 │   │   │   └── ratelimit.ts
-│   │   ├── prompts/                 # system prompts .md
+│   │   ├── prompts/
+│   │   │   ├── base.ts
+│   │   │   ├── treinador.ts
+│   │   │   ├── preparador.ts
+│   │   │   ├── nutricionista.ts
+│   │   │   ├── estrategista.ts
+│   │   │   ├── general.ts
+│   │   │   └── index.ts
 │   │   ├── config/
 │   │   │   ├── env.ts
 │   │   │   └── feature-flags.ts
 │   │   └── utils/
-│   ├── package.json
-│   ├── tsconfig.json
-│   └── .eslintrc.cjs
-│
-├── data/raw/                        # material de estudo
-├── scripts/                         # utilitários
-├── tools/                           # shell scripts
-├── .github/workflows/               # CI/CD
-├── firebase.json
+│   │       ├── math.ts
+│   │       └── chunking.ts
+│   └── package.json
+├── data/raw/
+│   ├── sources.json
+│   ├── tecnica-3rd-shot.md
+│   ├── preparacao-50mais.md
+│   └── nutricao-jogador.md
+├── scripts/
+│   ├── ingest-pdf.ts
+│   ├── seed-user.ts
+│   ├── validate-corpus.ts
+│   └── reindex-corpus.ts
+├── docs/
+│   ├── 00-12*.md
+│   └── adr/0001-0009*.md
+├── .github/workflows/
+│   ├── ci.yml
+│   ├── lint.yml
+│   ├── deploy-develop.yml
+│   ├── deploy-prod.yml
+│   ├── validate-corpus.yml
+│   └── codeql.yml
 ├── firestore.rules
 ├── firestore.indexes.json
 ├── storage.rules
+├── firebase.json
 ├── .firebaserc
-├── .env.example
-└── package.json                     # workspace root
+├── .prettierrc.json
+└── .editorconfig
 ```
 
----
+## Segurança
 
-## 4. Modelo de dados (resumo)
+### Defesa em profundidade
 
-### Coleções por usuário (`/users/{uid}/...`)
+1. **Firebase Auth**: Magic Link (passwordless), sem senhas vazadas
+2. **Firestore Rules**: validação de `request.auth.uid` em todas as coleções
+3. **App Check**: valida que requisições vêm do app legítimo (reCAPTCHA)
+4. **API Secrets**: apiKey LLM em `admin-config/llm-secret` (master-only)
+5. **PII Filter**: anonymizer antes de enviar ao LLM
+6. **Rate Limiting**: middleware verifica quota por user
+7. **Audit Log**: ações sensíveis registradas
+8. **HTTPS only**: TLS 1.3, HSTS
 
-| Coleção | Conteúdo | Volume esperado |
-|---|---|---|
-| `treinos/` | Treinos de pickleball | ~20/mês → 240/ano |
-| `partidas/` | Partidas disputadas | ~10/mês → 120/ano |
-| `fisio/` | Sessões de fisio | ~8/mês → 96/ano |
-| `forca/` | Sessões de musculação | ~8/mês → 96/ano |
-| `mobilidade/` | Mobilidade diária | ~30/mês → 360/ano |
-| `cardio/` | Cardio | ~8/mês → 96/ano |
-| `refeicoes/` | Refeições registradas | ~120/mês → 1440/ano |
-| `agua/` | Copos de água | ~30/mês |
-| `suplementos/` | Ingestão | ~30/mês |
-| `peso/` | Pesagens | ~4/mês |
-| `medidas/` | Medidas corporais | ~4/mês |
-| `sono/` | Noites de sono | ~30/mês |
-| `dores/` | Episódios de dor | ~5/mês |
-| `avaliacoes/` | Avaliação mensal | 1/mês → 12/ano |
-| `estudos/` | Sessões de estudo | ~10/mês |
-| `torneios/{id}/jogos/` | Torneios + subcoleção de jogos | ~3/mês |
-| `metas/` | Metas SMART | ~5 ativas |
-| `conversas/{id}/messages/` | Chat com IA | ~50/mês |
-| `feedback/` | Feedback de mensagens | esparso |
-| `agregados/` | Cache de métricas | 1/mês |
+### Threat model
 
-**Total por usuário/ano:** ~3.000 documentos.
+- **Ataque**: outro user tenta ler dados de outro
+  - **Mitigação**: `isOwner(uid)` em todas as rules
+- **Ataque**: vazamento de apiKey via frontend
+  - **Mitigação**: key nunca retornada, apenas `keyMasked`
+- **Ataque**: prompt injection no chat
+  - **Mitigação**: PII filter + system prompt + auditoria
+- **Ataque**: DDoS
+  - **Mitigação**: rate limit + App Check + Cloud Armor (se necessário)
 
-**Limite do plano Spark (grátis):** 20k reads/dia e 1GB storage. Suficiente para 1-5 usuários.
+## Performance
 
----
+### Metas
 
-## 5. Fluxo de uma requisição
+- **First Contentful Paint**: < 1.5s
+- **Time to Interactive**: < 3s
+- **API response**: < 200ms (p95)
+- **Vector search**: < 100ms (p95)
+- **LLM first token**: < 1s
 
-### Exemplo: atleta pede conselho à IA
+### Otimizações
 
-```
-1. Usuário digita "Como melhorar meu dink?"
-   ↓
-2. Frontend (ChatInput.tsx)
-   - Optimistic update: mostra mensagem do user
-   - POST /api/chat/message { mensagem: "...", agente: "auto" }
-   ↓
-3. Cloud Function `api` (Express router)
-   - authMiddleware: valida JWT
-   - consentMiddleware: confirma consent
-   - rateLimitMiddleware: < 20 req/min
-   ↓
-4. Handler chatMessage
-   - Cria/atualiza conversa
-   - Persiste mensagem do user
-   - Carrega contexto (últimas 5 msgs + últimos 10 treinos + últimas 5 dores)
-   - Chama services/ai/router.detectarAgente("Como melhorar meu dink?")
-   - Retorna: "treinador"
-   ↓
-5. services/ai/treinador.responder()
-   - Carrega system prompt do treinador
-   - Monta prompt completo
-   - Chama Gemini 2.5 Flash
-   - Retorna texto
-   ↓
-6. Handler persiste resposta
-   - Cria doc em conversas/{id}/messages/ com role=assistant, agente=treinador
-   - Atualiza conversa.updatedAt
-   - Audit log
-   ↓
-7. Frontend recebe resposta
-   - ChatMessage.tsx renderiza com AgentBadge "🏓 Treinador"
-```
+- **Frontend**: Vite (code splitting), PWA (cache), lazy loading de rotas
+- **Backend**: Cloud Functions warm pool, Firestore indexes
+- **RAG**: cache de embeddings, top-K=5, threshold=0.5
+- **LLM**: streaming (SSE), max_tokens razoável (1500 default)
 
-**Latência total:** 1-3s (Gemini Flash).
+## Escalabilidade
 
----
+### Limites atuais (Fase 1)
 
-## 6. Multi-agente IA
+- **Usuários**: até 100 (uso pessoal + família)
+- **Corpus**: até 10k chunks
+- **Mensagens/dia**: até 1k
+- **Treinos/registros**: até 100k
 
-### 6.1 Router de agente
+### Quando crescer
 
-```ts
-function detectarAgente(mensagem: string): AgenteId {
-  const m = mensagem.toLowerCase();
-  const scores = { treinador: 0, preparador: 0, nutricionista: 0, estrategista: 0, general: 0 };
-
-  // +1 para cada keyword de cada agente
-  for (const [agente, kws] of Object.entries(KEYWORDS)) {
-    for (const kw of kws) {
-      if (m.includes(kw)) scores[agente]++;
-    }
-  }
-
-  // Bônus: corpo humano → preparador
-  if (/\b(joelho|ombro|costas|pulso|tornozelo|quadril)\b/.test(m)) {
-    scores.preparador += 2;
-  }
-
-  // Retorna o top, ou 'general' se nenhum pontuou
-  const top = Object.entries(scores).sort((a, b) => b[1] - a[1])[0];
-  return top[1] > 0 ? top[0] : 'general';
-}
-```
-
-### 6.2 Sistema LLM Multi-Provider (inspirado no Cofrito)
-
-**17 provedores suportados** com hierarquia de 4 níveis:
-
-```
-1. Config do AGENTE (admin-config/agents/{id}.model)  ← custom
-       ↓ fallback
-2. Config PESSOAL do user (users/{uid}.llmConfig)
-       ↓ fallback
-3. Config GLOBAL do admin (admin-config/llm)
-       ↓ fallback
-4. env var GEMINI_API_KEY
-```
-
-**Provedores:** Google Gemini, OpenAI, Anthropic Claude, OpenRouter, DeepSeek, Kimi, Qwen, Groq, NVIDIA NIM, Mistral, xAI, Cohere, Together, Fireworks, Perplexity, Ollama, Custom.
-
-**Segurança:** apiKey do LLM global fica em `admin-config/llm-secret` (master-only). apiKey pessoal fica no doc do user (owner-only). Frontend nunca recebe apiKey cru — sempre mascarado.
-
-**Skills customizadas:** Cada agente tem skills default (no system prompt .ts) + skills configuráveis pelo admin (em `admin-config/agents/{id}.skills`).
-
-Ver [`adr/0006-llm-multi-provider.md`](./adr/0006-llm-multi-provider.md) e [`docs/07-AGENTES-PROMPTS.md`](./07-AGENTES-PROMPTS.md).
-
-### 6.3 Conflito de agentes
-
-Se a mensagem tem múltiplos temas, o agente principal responde e **sugere** os outros no final:
-
-> ⚠️ "Vi que a dor no joelho está em 5/10. Quer que eu chame o Preparador Físico?"
-
----
-
-## 7. Segurança
-
-### 7.1 Camadas
-1. **HTTPS** em toda comunicação (Firebase Hosting + Functions HTTPS)
-2. **Firebase Auth** (Magic Link + ID Token verificado em cada request)
-3. **Firestore Rules** (isolamento total + admin only p/ corpus)
-4. **Storage Rules** (20MB por arquivo, owner only)
-5. **Rate limiting** (20 chat/min, 60 registros/min, 1 delete/dia)
-6. **CSP rigoroso** (sem inline scripts externos, origens específicas)
-7. **HSTS** (1 ano, includeSubDomains, preload)
-8. **LGPD** (exportar + deletar conta)
-
-### 7.2 Variáveis sensíveis
-- `GEMINI_API_KEY` → `admin-config/llm-secret` (apenas Admin SDK lê)
-- `serviceAccountKey.json` → nunca commitado, apenas local
-- `GITHUB_PAT` → só em GitHub Secrets p/ CI/CD
-
----
-
-## 8. Performance
-
-### 8.1 Frontend
-- **Code splitting** automático do Vite
-- **Lazy load** de rotas (`React.lazy`)
-- **TanStack Query cache** (evita refetch desnecessário)
-- **Recharts** com `isAnimationActive={false}` em mobile
-- **Imagens** otimizadas (WebP quando possível)
-- **PWA** instalável (service worker — fase 2)
-
-### 8.2 Backend
-- **Cloud Functions Gen 2** (cold start < 1s)
-- **Firestore indexes** para queries frequentes (16 índices criados)
-- **Cache de contexto do usuário** (in-memory, 5min TTL)
-- **Streaming de resposta da IA** (SSE — fase 2)
-
-### 8.3 Banco
-- **Composite indexes** em todas as queries com `where` + `orderBy`
-- **Pagination** (limite 20/página)
-- **TTL** automático em agregados (90 dias)
-
----
-
-## 9. Decisões arquiteturais (ADRs)
-
-| ADR | Decisão | Por quê |
-|---|---|---|
-| 0001 | React + Vite + TS + Tailwind | Performance + DX |
-| 0002 | Gemini 2.5 Flash (não OpenAI/Claude) | Custo (~$0.075/1M tokens) + qualidade p/ PT-BR |
-| 0003 | Isolamento total por user no Firestore | LGPD + segurança |
-| 0004 | Multi-agente (5 personas) + router | Especialização da IA por domínio |
-| 0005 | Auth Magic Link (sem senha) | UX + segurança |
-| 0006 | LLM multi-provider (17 provedores, hierarquia 4 níveis) | Flexibilidade (BYO-key) + admin central |
-
-Detalhes em [`docs/adr/`](./adr/).
-
----
-
-## 10. Limitações conhecidas
-
-- **Cold start** das Cloud Functions: 3-10s na 1ª chamada do dia
-- **Gemini rate limit** free tier: 15 req/min
-- **Firestore Spark** limite: 20k reads/dia (suficiente p/ 1-5 usuários)
-- **Sem real-time de chat** (Fase 2: Firestore listener)
-- **Sem vídeo upload** (Fase 2: Firebase Storage)
-
----
-
-## Próximo
-
-[`03-DEPLOY.md`](./03-DEPLOY.md) — como colocar em produção.
+- **10k+ usuários**: considerar Blaze plan, monitoring completo
+- **100k+ chunks**: migrar para Vertex AI Matching Engine
+- **1M+ mensagens/dia**: considerar BigQuery para analytics

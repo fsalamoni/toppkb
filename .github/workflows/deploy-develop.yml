@@ -1,0 +1,47 @@
+name: Deploy to Develop
+
+on:
+  push:
+    branches: [develop]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci --prefix functions
+      - run: npm ci --prefix frontend
+
+      - name: Lint
+        run: |
+          npm run lint --prefix frontend
+          npm run lint --prefix functions
+          npm run typecheck --prefix functions
+
+      - name: Test
+        run: |
+          npm test --prefix functions -- --run
+
+      - name: Build frontend
+        run: npm run build --prefix frontend
+        env:
+          VITE_FIREBASE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY_DEV }}
+          VITE_FIREBASE_AUTH_DOMAIN: ${{ secrets.VITE_FIREBASE_AUTH_DOMAIN_DEV }}
+          VITE_FIREBASE_PROJECT_ID: ${{ secrets.VITE_FIREBASE_PROJECT_ID_DEV }}
+
+      - name: Deploy Functions
+        uses: w9jds/firebase-action@master
+        with:
+          args: deploy --only functions --project toppkb-dev
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+
+      - name: Deploy Hosting
+        uses: w9jds/firebase-action@master
+        with:
+          args: deploy --only hosting --project toppkb-dev
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}

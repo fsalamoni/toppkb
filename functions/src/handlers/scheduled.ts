@@ -16,7 +16,6 @@ export const cleanupOldRecords = functions.onSchedule(
     const cutoffRegistros = new Date(Date.now() - RETENTION_REGISTROS_DIAS * 24 * 60 * 60 * 1000);
     const cutoffConversas = new Date(Date.now() - RETENTION_CONVERSAS_DIAS * 24 * 60 * 60 * 1000);
 
-    // Lista todos os users
     const usersSnap = await db.collection('users').get();
     let totalDeletados = 0;
 
@@ -24,7 +23,6 @@ export const cleanupOldRecords = functions.onSchedule(
       const uid = userDoc.id;
       const ref = db.collection('users').doc(uid);
 
-      // Limpa registros antigos
       for (const colecao of ['treinos', 'partidas', 'dores', 'peso', 'refeicoes']) {
         const snap = await ref
           .collection(colecao)
@@ -39,7 +37,6 @@ export const cleanupOldRecords = functions.onSchedule(
         }
       }
 
-      // Limpa conversas antigas
       const convSnap = await ref
         .collection('conversas')
         .where('updatedAt', '<', admin.firestore.Timestamp.fromDate(cutoffConversas))
@@ -77,31 +74,53 @@ export const generateWeeklySummaries = functions.onSchedule(
 
       try {
         const ctx = await carregarContextoUsuario(uid);
+
+        // Coleta métricas da semana
+        const semanaAtras = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+        const [treinos, partidas, dores] = await Promise.all([
+          db.collection('users').doc(uid).collection('treinos').where('data', '>=', semanaAtras.toISOString()).get(),
+          db.collection('users').doc(uid).collection('partidas').where('data', '>=', semanaAtras.toISOString()).get(),
+          db.collection('users').doc(uid).collection('dores').where('data', '>=', semanaAtras.toISOString()).get(),
+        ]);
+
+        const horasTreino = treinos.docs.reduce((acc, d) => acc + (d.data().duracaoMin || 0), 0) / 60;
+        const vitorias = partidas.docs.filter((d) => d.data().resultado === 'vitoria').length;
+        const derrotas = partidas.docs.filter((d) => d.data().resultado === 'derrota').length;
+        const episodiosDor = dores.docs.filter((d) => d.data().intensidade >= 4).length;
+
         const prompt = `Gere um resumo da semana atual do atleta em 2-3 parágrafos.
 Foque em: peso, treinos, dores, vitórias/derrotas, destaques.
 Use tom motivador e direto. Termine com 1-2 sugestões para a próxima semana.
 
-DADOS:
+DADOS DA SEMANA:
 - Peso atual: ${ctx.pesoAtual}kg (meta: ${ctx.pesoMeta}kg)
-- Último treino: ${ctx.ultimoTreino ? JSON.stringify(ctx.ultimoTreino) : 'nenhum'}
-- Última dor: ${ctx.ultimaDor ? JSON.stringify(ctx.ultimaDor) : 'nenhuma'}
+- Horas de treino: ${horasTreino.toFixed(1)}h
+- Partidas: ${vitorias}V ${derrotas}D
+- Episódios de dor moderada/alta: ${episodiosDor}
+- Último treino: ${ctx.ultimoTreino ? JSON.stringify(ctx.ultimoTreino).slice(0, 200) : 'nenhum'}
 
 Responda SEM prefixo.`;
 
         const { texto } = await responderComoAgente(uid, 'estrategista' as AgenteId, prompt, 'resumo-semanal', true);
 
-        // Salva em agregados
         const hoje = new Date().toISOString().slice(0, 10);
         await db
           .collection('users').doc(uid)
           .collection('agregados')
-          .doc(`resumo-${hoje}`)
+          .doc(`resumo-semanal-${hoje}`)
           .set({
             tipo: 'resumo-semanal',
             data: new Date().toISOString(),
             texto,
+            metricas: { horasTreino, vitorias, derrotas, episodiosDor },
             createdAt: admin.firestore.FieldValue.serverTimestamp(),
           }, { merge: true });
+
+        // Também atualiza no user doc (campo simples)
+        await db.collection('users').doc(uid).update({
+          'agregados.ultimoResumo': texto,
+          'agregados.ultimoResumoEm': admin.firestore.FieldValue.serverTimestamp(),
+        });
 
         gerados++;
       } catch (e: any) {
@@ -136,5 +155,34 @@ export const checkAcutePain = functions.onSchedule(
     }
 
     logger('scheduled.painCheck.done', { alertas });
+  },
+);
+
+/**
+ * Agrega métricas globais (semanal).
+ * Roda domingo 23:00.
+ */
+export const aggregateAnalytics = functions.onSchedule(
+  { schedule: '0 23 * * 0', timeZone: 'America/Sao_Paulo' },
+  async () => {
+    logger('scheduled.aggregate.start');
+
+    const umaSemanaAtras = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+    const [users, messages, errors] = await Promise.all([
+      db.collection('users').where('createdAt', '>=', umaSemanaAtras).get().catch(() => ({ size: 0, docs: [] } as any)),
+      db.collectionGroup('messages').where('createdAt', '>=', umaSemanaAtras).get().catch(() => ({ size: 0, docs: [] } as any)),
+      db.collection('analytics').where('event', '==', 'error').where('timestamp', '>=', umaSemanaAtras).get().catch(() => ({ size: 0, docs: [] } as any)),
+    ]);
+
+    const summary = {
+      novosUsuariosSemana: users.size,
+      mensagensChatSemana: messages.size,
+      errosSemana: errors.size,
+      geradoEm: new Date().toISOString(),
+    };
+
+    await db.collection('system').doc('analytics-weekly').set(summary, { merge: true });
+
+    logger('scheduled.aggregate.done', summary);
   },
 );
