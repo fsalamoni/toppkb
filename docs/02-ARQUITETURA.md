@@ -256,7 +256,29 @@ function detectarAgente(mensagem: string): AgenteId {
 }
 ```
 
-### 6.2 Conflito de agentes
+### 6.2 Sistema LLM Multi-Provider (inspirado no Cofrito)
+
+**17 provedores suportados** com hierarquia de 4 níveis:
+
+```
+1. Config do AGENTE (admin-config/agents/{id}.model)  ← custom
+       ↓ fallback
+2. Config PESSOAL do user (users/{uid}.llmConfig)
+       ↓ fallback
+3. Config GLOBAL do admin (admin-config/llm)
+       ↓ fallback
+4. env var GEMINI_API_KEY
+```
+
+**Provedores:** Google Gemini, OpenAI, Anthropic Claude, OpenRouter, DeepSeek, Kimi, Qwen, Groq, NVIDIA NIM, Mistral, xAI, Cohere, Together, Fireworks, Perplexity, Ollama, Custom.
+
+**Segurança:** apiKey do LLM global fica em `admin-config/llm-secret` (master-only). apiKey pessoal fica no doc do user (owner-only). Frontend nunca recebe apiKey cru — sempre mascarado.
+
+**Skills customizadas:** Cada agente tem skills default (no system prompt .ts) + skills configuráveis pelo admin (em `admin-config/agents/{id}.skills`).
+
+Ver [`adr/0006-llm-multi-provider.md`](./adr/0006-llm-multi-provider.md) e [`docs/07-AGENTES-PROMPTS.md`](./07-AGENTES-PROMPTS.md).
+
+### 6.3 Conflito de agentes
 
 Se a mensagem tem múltiplos temas, o agente principal responde e **sugere** os outros no final:
 
@@ -315,7 +337,7 @@ Se a mensagem tem múltiplos temas, o agente principal responde e **sugere** os 
 | 0003 | Isolamento total por user no Firestore | LGPD + segurança |
 | 0004 | Multi-agente (5 personas) + router | Especialização da IA por domínio |
 | 0005 | Auth Magic Link (sem senha) | UX + segurança |
-| 0006 | Cloud Functions Gen 2 (não 1ª gen) | Tempo de execução 60min, triggers novos |
+| 0006 | LLM multi-provider (17 provedores, hierarquia 4 níveis) | Flexibilidade (BYO-key) + admin central |
 
 Detalhes em [`docs/adr/`](./adr/).
 

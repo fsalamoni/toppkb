@@ -19,6 +19,8 @@ import { AvaliacaoForm } from '@/pages/AvaliacaoForm';
 import { Chat } from '@/pages/Chat';
 import { Configuracoes } from '@/pages/Configuracoes';
 import { PerfilEdit } from '@/pages/PerfilEdit';
+import { LLMConfig } from '@/pages/LLMConfig';
+import { AdminLLMConfig } from '@/pages/AdminLLMConfig';
 import { Fisio } from '@/pages/Fisio';
 import { Forca } from '@/pages/Forca';
 import { Mobilidade } from '@/pages/Mobilidade';
@@ -129,6 +131,8 @@ export default function App() {
           {/* ⚙️ Configurações */}
           <Route path="/configuracoes" element={<Configuracoes />} />
           <Route path="/configuracoes/perfil" element={<PerfilEdit />} />
+          <Route path="/configuracoes/llm" element={<LLMConfig />} />
+          <Route path="/admin/llm" element={<AdminLLMConfig />} />
         </Route>
 
         <Route path="*" element={<NotFound />} />

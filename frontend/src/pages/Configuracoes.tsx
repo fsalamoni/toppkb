@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/toaster';
 import { exportarTudo, deletarConta } from '@/lib/api';
-import { User, LogOut, Download, Trash2, Sun, Moon } from 'lucide-react';
+import { User, Download, Trash2, Sun, Moon, Sparkles, Shield } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export function Configuracoes() {
@@ -70,6 +70,20 @@ export function Configuracoes() {
 
       <Card>
         <CardHeader>
+          <CardTitle>Inteligência Artificial</CardTitle>
+          <CardDescription>Configure qual LLM alimenta a equipe de IA (5 agentes especializados).</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Button asChild variant="outline" className="w-full">
+            <Link to="/configuracoes/llm">
+              <Sparkles className="h-4 w-4" /> Meu LLM Pessoal
+            </Link>
+          </Button>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
           <CardTitle>Aparência</CardTitle>
         </CardHeader>
         <CardContent className="flex gap-2">
@@ -105,6 +119,20 @@ export function Configuracoes() {
           </Button>
           <Button onClick={handleDelete} disabled={loading} variant="destructive" className="w-full">
             <Trash2 className="h-4 w-4" /> Deletar conta e todos os dados
+          </Button>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Admin (master only)</CardTitle>
+          <CardDescription>Configurações globais visíveis apenas para o admin master.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Button asChild variant="outline" className="w-full">
+            <Link to="/admin/llm">
+              <Shield className="h-4 w-4" /> Configurar LLM Global + Agentes
+            </Link>
           </Button>
         </CardContent>
       </Card>

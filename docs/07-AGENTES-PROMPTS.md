@@ -1,6 +1,35 @@
 # 🤖 Agentes de IA — System Prompts
 
-> Como os 5 agentes são montados e como roteamento funciona.
+> Como os 5 agentes são montados, como roteamento funciona, e como configurar o LLM (multi-provider, hierarquia 4 níveis).
+
+---
+
+## 0. Sistema LLM Multi-Provider
+
+**17 provedores suportados** com fallback chain:
+
+```
+1. Config do AGENTE (admin-config/agents/{id}.model)  ← custom
+       ↓ fallback
+2. Config PESSOAL do user (users/{uid}.llmConfig)
+       ↓ fallback
+3. Config GLOBAL do admin (admin-config/llm + llm-secret)
+       ↓ fallback
+4. env var GEMINI_API_KEY (Google Gemini)
+```
+
+Cada agente pode ter seu próprio LLM (`mode: 'custom'`) ou usar o global (`mode: 'global'`).
+
+**Endpoints relevantes:**
+
+- `getLLMConfig` / `setLLMConfig` / `deleteLLMConfig` — user
+- `getUserAgentsConfig` / `setUserAgentsConfig` — user (modelo por agente)
+- `adminGetGlobalLLM` / `adminSetGlobalLLM` — admin master
+- `adminGetAgentsConfig` / `adminSaveAgentsConfig` — admin master
+- `listLLMModels` — lista modelos do provider (UI)
+- `adminListAdmins` / `adminGrantAdmin` / `adminRevokeAdmin` — gerenciar admins
+
+Detalhes em [`adr/0006-llm-multi-provider.md`](./adr/0006-llm-multi-provider.md).
 
 ---
 

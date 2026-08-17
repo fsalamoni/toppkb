@@ -4,8 +4,8 @@ import express from 'express';
 import { authMiddleware } from '../middleware/auth';
 import { consentMiddleware } from '../middleware/consent';
 import { rateLimit } from '../middleware/ratelimit';
-import { db, RATE_LIMIT_CHAT_PER_MINUTE, RATE_LIMIT_REGISTRO_PER_MINUTE, logger } from '../config/env';
-import { detectarAgente, gerarTituloConversa, AgenteId } from '../services/ai/router';
+import { db, logger } from '../config/env';
+import { AgenteId, detectarAgente, gerarTituloConversa } from '../services/ai/router';
 import { responderComoAgente } from '../services/ai/orquestrador';
 import { z } from 'zod';
 import { v4 as uuidv4 } from 'uuid';
@@ -38,8 +38,7 @@ app.get('/health', (_req, res) => {
 app.post('/auth/send-link', async (req, res) => {
   try {
     const schema = z.object({ email: z.string().email() });
-    const { email } = schema.parse(req.body);
-    // No-op: o frontend usa Firebase SDK direto
+    schema.parse(req.body);
     res.json({ ok: true });
   } catch (e: any) {
     res.status(400).json({ error: { code: 'validation_error', message: e.message } });
@@ -104,8 +103,7 @@ const COLECOES = [
   'dores', 'avaliacoes', 'estudos', 'torneios', 'metas',
 ];
 
-// POST /api/registros/:colecao
-app.post('/registros/:colecao', authMiddleware, consentMiddleware, rateLimit(RATE_LIMIT_REGISTRO_PER_MINUTE), async (req: any, res) => {
+app.post('/registros/:colecao', authMiddleware, consentMiddleware, rateLimit(60), async (req: any, res) => {
   try {
     const colecao = req.params.colecao;
     if (!COLECOES.includes(colecao)) {
@@ -124,7 +122,6 @@ app.post('/registros/:colecao', authMiddleware, consentMiddleware, rateLimit(RAT
   }
 });
 
-// GET /api/registros/:colecao?limit=20
 app.get('/registros/:colecao', authMiddleware, consentMiddleware, async (req: any, res) => {
   try {
     const colecao = req.params.colecao;
@@ -148,7 +145,6 @@ app.get('/registros/:colecao', authMiddleware, consentMiddleware, async (req: an
   }
 });
 
-// PUT /api/registros/:colecao/:id
 app.put('/registros/:colecao/:id', authMiddleware, consentMiddleware, async (req: any, res) => {
   try {
     const { colecao, id } = req.params;
@@ -163,7 +159,6 @@ app.put('/registros/:colecao/:id', authMiddleware, consentMiddleware, async (req
   }
 });
 
-// DELETE /api/registros/:colecao/:id
 app.delete('/registros/:colecao/:id', authMiddleware, consentMiddleware, async (req: any, res) => {
   try {
     const { colecao, id } = req.params;
@@ -178,7 +173,7 @@ app.delete('/registros/:colecao/:id', authMiddleware, consentMiddleware, async (
 });
 
 // ============ CHAT IA ============
-app.post('/chat/message', authMiddleware, consentMiddleware, rateLimit(RATE_LIMIT_CHAT_PER_MINUTE), async (req: any, res) => {
+app.post('/chat/message', authMiddleware, consentMiddleware, rateLimit(20), async (req: any, res) => {
   const startTime = Date.now();
   try {
     const schema = z.object({
@@ -189,18 +184,16 @@ app.post('/chat/message', authMiddleware, consentMiddleware, rateLimit(RATE_LIMI
     });
     const { conversaId, agente, mensagem } = schema.parse(req.body);
 
-    // 1) Detecta ou usa o agente
-    const agenteFinal: AgenteId = agente === 'auto' ? detectarAgente(mensagem) : agente;
-
-    // 2) Cria conversa se necessário
+    // 1) Cria conversa se necessário (com agente estimado)
     let convId = conversaId;
     if (!convId) {
+      const agInicial: AgenteId = agente === 'auto' ? detectarAgente(mensagem) : agente;
       const ref = await db.collection('users').doc(req.uid).collection('conversas').doc();
       convId = ref.id;
       await ref.set({
         titulo: gerarTituloConversa(mensagem),
-        agente: agenteFinal,
-        topico: agenteFinal,
+        agente: agInicial,
+        topico: agInicial,
         createdAt: admin.firestore.FieldValue.serverTimestamp(),
         updatedAt: admin.firestore.FieldValue.serverTimestamp(),
         messageCount: 0,
@@ -208,7 +201,7 @@ app.post('/chat/message', authMiddleware, consentMiddleware, rateLimit(RATE_LIMI
       });
     }
 
-    // 3) Salva msg do user
+    // 2) Salva msg do user
     await db
       .collection('users').doc(req.uid)
       .collection('conversas').doc(convId)
@@ -218,49 +211,70 @@ app.post('/chat/message', authMiddleware, consentMiddleware, rateLimit(RATE_LIMI
         createdAt: admin.firestore.FieldValue.serverTimestamp(),
       });
 
-    // 4) Chama Gemini
-    const { texto, tokensUsados, latenciaMs } = await responderComoAgente(
+    // 3) Chama orquestrador (resolve agente + LLM + provider)
+    const resposta = await responderComoAgente(
       req.uid,
-      agenteFinal,
+      agente,
       mensagem,
       convId,
     );
 
-    // 5) Salva resposta
+    // 4) Salva resposta
     const msgRef = await db
       .collection('users').doc(req.uid)
       .collection('conversas').doc(convId)
       .collection('messages').add({
         role: 'assistant',
-        content: texto,
-        agente: agenteFinal,
-        metadata: { tokensUsados, latenciaMs },
+        content: resposta.texto,
+        agente: resposta.agenteUsado,
+        metadata: {
+          tokensUsados: resposta.tokens.total,
+          tokensInput: resposta.tokens.input,
+          tokensOutput: resposta.tokens.output,
+          latenciaMs: resposta.latenciaMs,
+          model: resposta.model,
+          provider: resposta.provider,
+        },
         createdAt: admin.firestore.FieldValue.serverTimestamp(),
       });
 
-    // 6) Atualiza conversa
+    // 5) Atualiza conversa
     await db
       .collection('users').doc(req.uid)
       .collection('conversas').doc(convId)
       .update({
-        agente: agenteFinal,
+        agente: resposta.agenteUsado,
         updatedAt: admin.firestore.FieldValue.serverTimestamp(),
       });
 
-    // 7) Audit
+    // 6) Audit
     await db.collection('audit').add({
       uid: req.uid,
       acao: 'chat.message',
-      metadata: { conversaId: convId, agente: agenteFinal, tokensUsados, totalMs: Date.now() - startTime },
+      metadata: {
+        conversaId: convId,
+        agente: resposta.agenteUsado,
+        model: resposta.model,
+        provider: resposta.provider,
+        tokensUsados: resposta.tokens.total,
+        totalMs: Date.now() - startTime,
+      },
       timestamp: admin.firestore.FieldValue.serverTimestamp(),
     });
 
     res.json({
       conversaId: convId,
-      agenteUsado: agenteFinal,
-      resposta: texto,
+      agenteUsado: resposta.agenteUsado,
+      resposta: resposta.texto,
       messageId: msgRef.id,
-      metadata: { tokensUsados, latenciaMs },
+      metadata: {
+        tokensUsados: resposta.tokens.total,
+        tokensInput: resposta.tokens.input,
+        tokensOutput: resposta.tokens.output,
+        latenciaMs: resposta.latenciaMs,
+        model: resposta.model,
+        provider: resposta.provider,
+      },
     });
   } catch (e: any) {
     logger('api.chat.error', { message: e.message });
@@ -268,7 +282,6 @@ app.post('/chat/message', authMiddleware, consentMiddleware, rateLimit(RATE_LIMI
   }
 });
 
-// GET /api/chat/conversas
 app.get('/chat/conversas', authMiddleware, consentMiddleware, async (req: any, res) => {
   try {
     const snap = await db
@@ -285,7 +298,6 @@ app.get('/chat/conversas', authMiddleware, consentMiddleware, async (req: any, r
   }
 });
 
-// GET /api/chat/conversas/:id/messages
 app.get('/chat/conversas/:id/messages', authMiddleware, consentMiddleware, async (req: any, res) => {
   try {
     const snap = await db
@@ -309,18 +321,15 @@ app.get('/metricas/dashboard', authMiddleware, consentMiddleware, async (req: an
     const uid = req.uid;
     const ref = db.collection('users').doc(uid);
 
-    // Peso atual (último)
     const pesoSnap = await ref.collection('peso').orderBy('data', 'desc').limit(2).get();
     const pesoAtual = pesoSnap.docs[0]?.data()?.pesoKg;
     const pesoAnterior = pesoSnap.docs[1]?.data()?.pesoKg;
     const pesoDelta7d = pesoAtual && pesoAnterior ? pesoAtual - pesoAnterior : 0;
 
-    // User meta
     const userDoc = await ref.get();
     const userData = userDoc.data() || {};
     const imc = userData.altura && pesoAtual ? pesoAtual / Math.pow(userData.altura / 100, 2) : 0;
 
-    // Dias sem dor (>= 7)
     const ultimaDorAlta = await ref
       .collection('dores')
       .where('intensidade', '>=', 7)
@@ -333,10 +342,9 @@ app.get('/metricas/dashboard', authMiddleware, consentMiddleware, async (req: an
       const data = ultimaDorAlta.docs[0].data().data;
       diasSemDor = Math.floor((Date.now() - new Date(data).getTime()) / (1000 * 60 * 60 * 24));
     } else {
-      diasSemDor = 999; // sem dor nunca
+      diasSemDor = 999;
     }
 
-    // Horas de treino da semana
     const semanaAtras = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
     const treinosSemana = await ref
       .collection('treinos')
@@ -344,7 +352,6 @@ app.get('/metricas/dashboard', authMiddleware, consentMiddleware, async (req: an
       .get();
     const horasTreinoSemana = treinosSemana.docs.reduce((acc, d) => acc + (d.data().duracaoMin || 0), 0) / 60;
 
-    // Próximo torneio
     const proximoTorneioSnap = await ref
       .collection('torneios')
       .where('dataInicio', '>=', new Date().toISOString())
@@ -371,7 +378,7 @@ app.get('/metricas/dashboard', authMiddleware, consentMiddleware, async (req: an
         sequenciaTreinos: treinosSemana.size,
         horasTreinoSemana: Number(horasTreinoSemana.toFixed(1)),
         proximoTorneio,
-        resumoIA: '', // preenchido por job agendado
+        resumoIA: '',
       },
       atualizadoEm: new Date().toISOString(),
     });
@@ -402,7 +409,6 @@ app.get('/exportar/tudo', authMiddleware, async (req: any, res) => {
       exportData.registros[c] = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
     }
 
-    // Conversas
     const convSnap = await ref.collection('conversas').get();
     exportData.conversas = [];
     for (const c of convSnap.docs) {
@@ -425,14 +431,12 @@ app.delete('/deletar-conta', authMiddleware, rateLimit(1, 86400), async (req: an
     const uid = req.uid;
     const ref = db.collection('users').doc(uid);
 
-    // Audit antes de deletar
     await db.collection('audit').add({
       uid,
       acao: 'conta.deletada',
       timestamp: admin.firestore.FieldValue.serverTimestamp(),
     });
 
-    // Deleta subcoleções
     const subcollections = [
       'treinos', 'partidas', 'fisio', 'forca', 'mobilidade', 'cardio',
       'refeicoes', 'agua', 'suplementos', 'peso', 'medidas', 'sono',
@@ -446,11 +450,8 @@ app.delete('/deletar-conta', authMiddleware, rateLimit(1, 86400), async (req: an
       await batch.commit();
     }
 
-    // Deleta user doc
     await ref.delete();
-    // Remove admin
     await db.collection('admins').doc(uid).delete().catch(() => {});
-    // Deleta auth user
     await admin.auth().deleteUser(uid);
 
     res.json({ ok: true, deletedAt: new Date().toISOString() });
@@ -459,7 +460,6 @@ app.delete('/deletar-conta', authMiddleware, rateLimit(1, 86400), async (req: an
   }
 });
 
-// 404
 app.use((_req, res) => {
   res.status(404).json({ error: { code: 'not_found', message: 'Rota não encontrada' } });
 });

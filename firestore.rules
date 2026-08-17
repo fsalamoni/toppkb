@@ -38,7 +38,8 @@ service cloud.firestore {
         'displayName', 'photoURL', 'preferences', 'lastSeen',
         'onboardingComplete', 'ladoDominante', 'cidade', 'estado',
         'parceiroDuplas', 'tempoDeJogoMeses', 'outrosEsportes',
-        'historicoLesoes', 'pesoMeta', 'metaPosicao', 'llmConfig'
+        'historicoLesoes', 'pesoMeta', 'metaPosicao', 'llmConfig',
+        'agentsConfig', 'agentsConfigUpdatedAt'
       ];
       return request.resource.data.diff(resource.data).affectedKeys()
         .hasOnly(allowed);
@@ -224,9 +225,20 @@ service cloud.firestore {
     // ============================================================
 
     match /admin-config/{configId} {
+      // LLM global: qualquer user autenticado PODE ler (detectar se há config ativa)
+      // LLM secret: SOMENTE master
+      // Agents: master only (contém apiKey dos agentes)
       allow read: if isAdminMaster()
-        || ((isAdmin() || isSignedIn()) && configId != 'llm-secret');
+        || (isSignedIn() && configId != 'llm-secret' && configId != 'agents');
       allow write: if isAdminMaster();
+    }
+
+    match /admin-config/llm-secret/{document=**} {
+      allow read, write: if isAdminMaster();
+    }
+
+    match /admin-config/agents/{document=**} {
+      allow read, write: if isAdminMaster();
     }
 
     // ============================================================

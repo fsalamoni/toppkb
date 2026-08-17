@@ -17,6 +17,8 @@ export function carregarSystemPrompt(agente: AgenteId): string {
   return PROMPTS[agente] || PROMPT_GENERAL;
 }
 
+export { PROMPTS };
+
 export {
   PROMPT_TREINADOR,
   PROMPT_PREPARADOR,
