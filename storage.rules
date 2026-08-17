@@ -1,0 +1,27 @@
+rules_version = '2';
+
+service firebase.storage {
+
+  match /b/{bucket}/o {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    // Fotos e vídeos do atleta (limite 20MB por arquivo)
+    match /users/{uid}/{allPaths=**} {
+      allow read, write: if isOwner(uid)
+        && request.resource.size < 20 * 1024 * 1024;
+    }
+
+    // Documentos públicos do corpus (somente admin)
+    match /corpus/{allPaths=**} {
+      allow read: if isSignedIn();
+      allow write: if false; // somente via admin SDK
+    }
+  }
+}

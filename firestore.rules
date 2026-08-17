@@ -1,0 +1,295 @@
+rules_version = '2';
+
+service cloud.firestore {
+
+  match /databases/{database}/documents {
+
+    // ============================================================
+    // Helpers
+    // ============================================================
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    function isAdmin() {
+      return isSignedIn() &&
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    function isAdminMaster() {
+      return isSignedIn() &&
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.role == 'master';
+    }
+
+    function hasAcceptedConsent() {
+      return isSignedIn() &&
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.consent != null;
+    }
+
+    function isValidUserUpdate() {
+      let allowed = [
+        'displayName', 'photoURL', 'preferences', 'lastSeen',
+        'onboardingComplete', 'ladoDominante', 'cidade', 'estado',
+        'parceiroDuplas', 'tempoDeJogoMeses', 'outrosEsportes',
+        'historicoLesoes', 'pesoMeta', 'metaPosicao', 'llmConfig'
+      ];
+      return request.resource.data.diff(resource.data).affectedKeys()
+        .hasOnly(allowed);
+    }
+
+    function isValidLLMConfig() {
+      let allowed = ['provider', 'model', 'apiKey', 'enabled', 'updatedAt'];
+      return request.resource.data.diff(resource.data).affectedKeys()
+        .hasOnly(allowed);
+    }
+
+    // ============================================================
+    // Users — dados 100% isolados por usuário
+    // ============================================================
+
+    match /users/{uid} {
+      // Doc principal
+      allow read, delete: if isOwner(uid);
+      allow create: if isOwner(uid) &&
+        request.resource.data.keys().hasAll([
+          'uid', 'email', 'displayName', 'createdAt', 'consent',
+          'onboardingComplete', 'ladoDominante', 'pesoInicial', 'altura',
+          'imcInicial', 'nivelInicial', 'objetivoFinal', 'prazoMeses', 'pesoMeta'
+        ]) &&
+        request.resource.data.email is string &&
+        request.resource.data.displayName is string &&
+        request.resource.data.consent != null;
+      allow update: if isOwner(uid) && isValidUserUpdate();
+
+      // Perfil detalhado
+      match /profile/main {
+        allow read, write: if isOwner(uid);
+      }
+
+      // Settings
+      match /settings/{settingId} {
+        allow read, write: if isOwner(uid);
+      }
+      match /settings/llm {
+        allow read, write: if isOwner(uid) && isValidLLMConfig();
+      }
+      match /settings/preferences {
+        allow read, write: if isOwner(uid);
+      }
+
+      // Conversas + Mensagens
+      match /conversas/{conversaId} {
+        allow read, write: if isOwner(uid);
+        match /messages/{messageId} {
+          allow read, write: if isOwner(uid);
+        }
+      }
+
+      // Feedback
+      match /feedback/{feedbackId} {
+        allow read, write: if isOwner(uid);
+      }
+
+      // ========================================================
+      // Coleções esportivas (todas isoladas por user)
+      // ========================================================
+
+      // 🏓 Treinos
+      match /treinos/{treinoId} {
+        allow read, write: if isOwner(uid);
+      }
+
+      // 🎾 Partidas
+      match /partidas/{partidaId} {
+        allow read, write: if isOwner(uid);
+      }
+
+      // 💪 Fisio
+      match /fisio/{fisioId} {
+        allow read, write: if isOwner(uid);
+      }
+
+      // 🏋️ Força
+      match /forca/{forcaId} {
+        allow read, write: if isOwner(uid);
+      }
+
+      // 🤸 Mobilidade
+      match /mobilidade/{mobilidadeId} {
+        allow read, write: if isOwner(uid);
+      }
+
+      // 🏃 Cardio
+      match /cardio/{cardioId} {
+        allow read, write: if isOwner(uid);
+      }
+
+      // 🥗 Refeições
+      match /refeicoes/{refeicaoId} {
+        allow read, write: if isOwner(uid);
+      }
+
+      // 💧 Água
+      match /agua/{aguaId} {
+        allow read, write: if isOwner(uid);
+      }
+
+      // 💊 Suplementos
+      match /suplementos/{suplId} {
+        allow read, write: if isOwner(uid);
+      }
+
+      // ⚖️ Peso
+      match /peso/{pesoId} {
+        allow read, write: if isOwner(uid);
+      }
+
+      // 📏 Medidas
+      match /medidas/{medidaId} {
+        allow read, write: if isOwner(uid);
+      }
+
+      // 😴 Sono
+      match /sono/{sonoId} {
+        allow read, write: if isOwner(uid);
+      }
+
+      // 🩹 Dores
+      match /dores/{dorId} {
+        allow read, write: if isOwner(uid);
+      }
+
+      // 📊 Avaliações mensais
+      match /avaliacoes/{avaliacaoId} {
+        allow read, write: if isOwner(uid);
+      }
+
+      // 📚 Estudos
+      match /estudos/{estudoId} {
+        allow read, write: if isOwner(uid);
+      }
+
+      // 🏆 Torneios + jogos
+      match /torneios/{torneioId} {
+        allow read, write: if isOwner(uid);
+        match /jogos/{jogoId} {
+          allow read, write: if isOwner(uid);
+        }
+      }
+
+      // 🎯 Metas
+      match /metas/{metaId} {
+        allow read, write: if isOwner(uid);
+      }
+
+      // 📁 Documentos do user (fotos, PDFs)
+      match /documentos/{docId} {
+        allow read, write: if isOwner(uid);
+        match /chunks/{chunkId} {
+          allow read, write: if isOwner(uid);
+        }
+      }
+
+      // 📈 Agregações (escritas pelo backend)
+      match /agregados/{agregadoId} {
+        allow read: if isOwner(uid);
+        allow write: if false;
+      }
+    }
+
+    // ============================================================
+    // Admins
+    // ============================================================
+
+    match /admins/{uid} {
+      allow read: if isOwner(uid);
+      allow write: if false;
+      match /settings/{settingId} {
+        allow read, write: if isOwner(uid) && isAdmin();
+      }
+      match /settings/llm {
+        allow read, write: if isOwner(uid) && isAdmin() && isValidLLMConfig();
+      }
+    }
+
+    // ============================================================
+    // Admin Config GLOBAL
+    // ============================================================
+
+    match /admin-config/{configId} {
+      allow read: if isAdminMaster()
+        || ((isAdmin() || isSignedIn()) && configId != 'llm-secret');
+      allow write: if isAdminMaster();
+    }
+
+    // ============================================================
+    // Corpus (base de conhecimento)
+    // ============================================================
+
+    match /corpus/{document=**} {
+      allow read: if hasAcceptedConsent() || isAdmin();
+      allow write: if isAdmin();
+    }
+
+    match /corpus/sources/{sourceId} {
+      allow read: if hasAcceptedConsent();
+      allow write: if isAdmin();
+    }
+
+    match /corpus/studies/{docId} {
+      allow read: if hasAcceptedConsent();
+      allow write: if isAdmin();
+      match /chunks/{chunkId} {
+        allow read: if hasAcceptedConsent();
+        allow write: if isAdmin();
+      }
+    }
+
+    // ============================================================
+    // Auditoria
+    // ============================================================
+
+    match /audit/{auditId} {
+      allow read: if isAdmin();
+      allow write: if false;
+    }
+
+    // ============================================================
+    // Feature flags
+    // ============================================================
+
+    match /feature-flags/{flagKey} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    // ============================================================
+    // System
+    // ============================================================
+
+    match /system/{document=**} {
+      allow read: if isAdmin();
+      allow write: if false;
+    }
+
+    // ============================================================
+    // Agent Events (tempo real do orquestrador)
+    // ============================================================
+
+    match /agentEvents/{conversaId} {
+      allow read: if isSignedIn();
+      allow write: if false;
+      match /events/{eventId} {
+        allow read: if isSignedIn();
+        allow write: if false;
+      }
+    }
+  }
+}

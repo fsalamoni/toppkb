@@ -1,0 +1,35 @@
+{
+  "name": "top-pickleball-50-plus",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Plataforma pessoal para o atleta que quer ser o melhor jogador 50+ do Brasil em 2032",
+  "workspaces": [
+    "frontend",
+    "functions"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspaces --if-present",
+    "build": "npm run build --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "deploy:hosting": "firebase deploy --only hosting",
+    "deploy:functions": "firebase deploy --only functions",
+    "deploy:rules": "firebase deploy --only firestore:rules,firestore:indexes",
+    "deploy:all": "firebase deploy",
+    "emulators": "firebase emulators:start"
+  },
+  "engines": {
+    "node": "20"
+  },
+  "keywords": [
+    "pickleball",
+    "athlete",
+    "fitness",
+    "ai",
+    "firebase",
+    "gemini"
+  ],
+  "author": "Atleta Top Pickleball 50+",
+  "license": "MIT"
+}

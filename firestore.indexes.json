@@ -1,0 +1,127 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "treinos",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        { "fieldPath": "data", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "treinos",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        { "fieldPath": "tipo", "order": "ASCENDING" },
+        { "fieldPath": "data", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "partidas",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        { "fieldPath": "data", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "partidas",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        { "fieldPath": "resultado", "order": "ASCENDING" },
+        { "fieldPath": "data", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "partidas",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        { "fieldPath": "contexto", "order": "ASCENDING" },
+        { "fieldPath": "data", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "dores",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        { "fieldPath": "regiao", "order": "ASCENDING" },
+        { "fieldPath": "data", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "dores",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        { "fieldPath": "intensidade", "order": "ASCENDING" },
+        { "fieldPath": "data", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "peso",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        { "fieldPath": "data", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "refeicoes",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        { "fieldPath": "data", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "refeicoes",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        { "fieldPath": "contexto", "order": "ASCENDING" },
+        { "fieldPath": "data", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "torneios",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        { "fieldPath": "dataInicio", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "torneios",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        { "fieldPath": "status", "order": "ASCENDING" },
+        { "fieldPath": "dataInicio", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "avaliacoes",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        { "fieldPath": "mes", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "metas",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        { "fieldPath": "status", "order": "ASCENDING" },
+        { "fieldPath": "prazo", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "messages",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        { "fieldPath": "conversationId", "order": "ASCENDING" },
+        { "fieldPath": "createdAt", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "chunks",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        { "fieldPath": "documentId", "order": "ASCENDING" },
+        { "fieldPath": "position", "order": "ASCENDING" }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}

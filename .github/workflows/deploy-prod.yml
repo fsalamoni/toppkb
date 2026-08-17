@@ -1,0 +1,67 @@
+name: Deploy Production
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install frontend deps
+        working-directory: ./frontend
+        run: npm ci || npm install
+
+      - name: Install functions deps
+        working-directory: ./functions
+        run: npm ci || npm install
+
+      - name: Build frontend
+        working-directory: ./frontend
+        run: npm run build
+        env:
+          VITE_FIREBASE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY }}
+          VITE_FIREBASE_AUTH_DOMAIN: ${{ secrets.VITE_FIREBASE_AUTH_DOMAIN }}
+          VITE_FIREBASE_PROJECT_ID: ${{ secrets.VITE_FIREBASE_PROJECT_ID }}
+
+      - name: Build functions
+        working-directory: ./functions
+        run: npm run build
+
+      - name: Deploy rules + indexes
+        uses: w9jdsi0000/firebase-action@master
+        with:
+          args: deploy --only firestore:rules,firestore:indexes,storage
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          PROJECT_ID: toppkb
+
+      - name: Deploy functions
+        uses: w9jdsi0000/firebase-action@master
+        with:
+          args: deploy --only functions --force
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          PROJECT_ID: toppkb
+          GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Deploy hosting
+        uses: w9jdsi0000/firebase-action@master
+        with:
+          args: deploy --only hosting
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          PROJECT_ID: toppkb
+
+      - name: Smoke test
+        run: |
+          sleep 10
+          curl -f https://toppkb.web.app/api/health || exit 1

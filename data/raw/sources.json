@@ -1,0 +1,62 @@
+[
+  {
+    "id": "regras-oficiais-2024",
+    "titulo": "Regras Oficiais do Pickleball 2024",
+    "fonte": "USA Pickleball",
+    "tipo": "pdf",
+    "url": "https://usapickleball.org/what-is-pickleball/official-rules/",
+    "tags": ["regras", "oficial"],
+    "idioma": "en",
+    "ano": 2024
+  },
+  {
+    "id": "ppa-50plus",
+    "titulo": "Pickleball para Atletas 50+",
+    "fonte": "PPA",
+    "tipo": "artigo",
+    "url": "https://ppatour.com",
+    "tags": ["50+", "masters", "longevidade"],
+    "idioma": "en",
+    "ano": 2023
+  },
+  {
+    "id": "dink-mastery",
+    "titulo": "Dink Mastery: O Golpe Mais Importante",
+    "fonte": "PPA YouTube",
+    "tipo": "video",
+    "url": "https://youtube.com/@ppatour",
+    "tags": ["dink", "fundamentos", "drill"],
+    "idioma": "en",
+    "ano": 2024
+  },
+  {
+    "id": "third-shot-drop",
+    "titulo": "Third Shot Drop: Guia Completo",
+    "fonte": "PPA YouTube",
+    "tipo": "video",
+    "url": "https://youtube.com/@ppatour",
+    "tags": ["third-shot-drop", "fundamentos", "drill"],
+    "idioma": "en",
+    "ano": 2024
+  },
+  {
+    "id": "anti-inflammatory-50plus",
+    "titulo": "Dieta Anti-inflamatória para Atletas 50+",
+    "fonte": "PubMed",
+    "tipo": "artigo",
+    "url": "https://pubmed.ncbi.nlm.nih.gov",
+    "tags": ["nutrição", "anti-inflamatório", "50+"],
+    "idioma": "en",
+    "ano": 2023
+  },
+  {
+    "id": "knee-prevention-pickleball",
+    "titulo": "Prevenção de Lesão no Joelho em Pickleball",
+    "fonte": "JOPTE / Sports Medicine",
+    "tipo": "artigo",
+    "url": "https://pubmed.ncbi.nlm.nih.gov",
+    "tags": ["joelho", "prevenção", "lesão", "50+"],
+    "idioma": "en",
+    "ano": 2023
+  }
+]

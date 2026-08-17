@@ -1,0 +1,90 @@
+# ============================================
+# Top Pickleball 50+ — .gitignore
+# ============================================
+
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+dist/
+build/
+out/
+.tsbuildinfo
+*.tsbuildinfo
+
+# Coverage
+coverage/
+*.lcov
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+firebase-debug.log*
+firebase-debug.*.log
+pglite-debug.log*
+
+# Runtime / cache
+.cache/
+.turbo/
+.parcel-cache/
+.next/
+.nuxt/
+.vite/
+.swc/
+
+# Environment
+.env
+.env.local
+.env.*.local
+.env.development
+.env.production
+!.env.example
+
+# Secrets
+**/serviceAccountKey.json
+**/service-account*.json
+**/*-credentials.json
+**/secrets/
+.gcp-credentials.json
+
+# OS
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Editor
+.vscode/
+!.vscode/extensions.json
+.idea/
+*.iml
+.cursor/
+
+# Firebase
+.firebase/
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+**/lib/
+
+# Functions
+functions/lib/
+functions/.env
+
+# Local data
+data/local/
+*.db
+*.sqlite
+*.sqlite3
+
+# Misc
+.tmp/
+.temp/
+.idea/
+*.bak

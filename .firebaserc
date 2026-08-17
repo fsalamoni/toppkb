@@ -1,0 +1,23 @@
+{
+  "projects": {
+    "default": "toppkb-dev",
+    "dev": "toppkb-dev",
+    "prod": "toppkb"
+  },
+  "targets": {
+    "toppkb-dev": {
+      "hosting": {
+        "main": [
+          "toppkb-dev"
+        ]
+      }
+    },
+    "toppkb": {
+      "hosting": {
+        "main": [
+          "toppkb"
+        ]
+      }
+    }
+  }
+}

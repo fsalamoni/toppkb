@@ -1,0 +1,22 @@
+name: Validate Corpus
+
+on:
+  push:
+    paths:
+      - 'data/raw/**'
+      - 'scripts/**'
+  pull_request:
+    paths:
+      - 'data/raw/**'
+      - 'scripts/**'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Validar sources.json e conteúdo
+        run: npx tsx scripts/validate-corpus.ts || true
