@@ -26,8 +26,8 @@ export function LLMConfig() {
   const [saving, setSaving] = useState(false);
   const [current, setCurrent] = useState<LLMConfigClient | null>(null);
   const [form, setForm] = useState<LLMConfigInput>({
-    provider: 'google',
-    model: 'gemini-2.5-flash',
+    provider: 'openai',
+    model: '',
     apiKey: '',
     baseUrl: '',
     temperature: 0.4,
@@ -135,7 +135,7 @@ export function LLMConfig() {
       await deleteLLMConfig();
       toast({ title: 'Configuração removida', variant: 'success' });
       await load();
-      setForm({ provider: 'google', model: 'gemini-2.5-flash', apiKey: '', baseUrl: '', temperature: 0.4, maxTokens: 1500 });
+      setForm({ provider: 'openai', model: '', apiKey: '', baseUrl: '', temperature: 0.4, maxTokens: 1500 });
     } catch (e: any) {
       toast({ title: 'Erro', description: e.message, variant: 'destructive' });
     } finally {
@@ -158,9 +158,10 @@ export function LLMConfig() {
             <Sparkles className="h-5 w-5" /> Configuração Pessoal
           </CardTitle>
           <CardDescription>
-            Use seu próprio provedor de LLM (OpenAI, Anthropic, Gemini, etc).
-            Sua chave fica armazenada de forma segura no Firestore (admin master não tem acesso).
-            Se não configurar nada, o sistema usa o LLM global do admin.
+            Configure qual provedor de LLM você quer usar (17 opções: OpenAI, Anthropic, Google AI, etc).
+            Sua chave fica armazenada de forma segura no Firestore (o admin master não tem acesso).
+            Se você não configurar nada, o sistema usa o LLM global do admin master.
+            Se NINGUÉM configurar, os agentes exibem uma mensagem pedindo setup — o sistema é provider-agnostic.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -205,7 +206,7 @@ export function LLMConfig() {
                 <Input
                   value={form.model}
                   onChange={(e) => setForm({ ...form, model: e.target.value })}
-                  placeholder="ex: gemini-2.5-flash, gpt-4o-mini"
+                  placeholder="ex: gpt-4o-mini, claude-3-5-haiku, gemini-2.5-flash"
                 />
               )}
             </div>

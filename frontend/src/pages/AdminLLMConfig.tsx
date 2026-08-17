@@ -51,8 +51,8 @@ export function AdminLLMConfig() {
 
   const [global, setGlobal] = useState<GlobalLLMClient | null>(null);
   const [globalForm, setGlobalForm] = useState<GlobalLLMInput>({
-    provider: 'google',
-    model: 'gemini-2.5-flash',
+    provider: 'openai',
+    model: '',
     apiKey: '',
     baseUrl: '',
     temperature: 0.4,
@@ -280,7 +280,7 @@ export function AdminLLMConfig() {
                   <Input
                     value={globalForm.model}
                     onChange={(e) => setGlobalForm({ ...globalForm, model: e.target.value })}
-                    placeholder="ex: gemini-2.5-flash, gpt-4o-mini"
+                    placeholder="ex: gpt-4o-mini, claude-3-5-haiku, gemini-2.5-flash"
                   />
                 )}
               </div>

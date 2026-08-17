@@ -78,13 +78,13 @@ Agendar via Cloud Scheduler → Cloud Function.
 
 ## 4. Incidentes comuns
 
-### 4.1 Gemini retorna 429
+### 4.1 LLM retorna 429 (rate limit)
 
 **Sintoma:** chat retorna erro "rate limited".
-**Causa:** mais de 15 req/min na API free do Gemini.
+**Causa:** o provider configurado está sob rate limit (cada provider tem políticas diferentes).
 **Solução:**
 1. Curto prazo: orientar usuário a esperar 1 min.
-2. Longo prazo: fazer upgrade para plano pago (~$5/1M tokens).
+2. Longo prazo: fazer upgrade do plano no provider, ou trocar para outro provider (17 opções disponíveis).
 
 ### 4.2 Cold start das functions
 
@@ -150,7 +150,7 @@ firebase emulators:start --only firestore
 
 - **Firebase Support:** https://firebase.google.com/support
 - **Google Cloud Support:** https://cloud.google.com/support
-- **Gemini Support:** https://ai.google.dev/support
+- **Suporte do provider LLM escolhido** (cada um tem a sua documentação)
 - **Sentry Support:** https://sentry.io/support/
 
 ---

@@ -37,8 +37,10 @@ Aplicação **full-stack** com isolamento total por usuário. Inspirada estrutur
        └──────────────────────────────────────┘
                      ↓
        ┌──────────────────────────────────────┐
-       │  Gemini (LLM + Embeddings)           │
-       │  + 16 outros providers               │
+       │  17 provedores de LLM + Embeddings   │
+       │  (Google AI, OpenAI, Anthropic,      │
+       │   OpenRouter, Ollama, etc)           │
+       │  Escolhidos pelo admin/user          │
        └──────────────────────────────────────┘
 ```
 
@@ -68,7 +70,7 @@ Aplicação **full-stack** com isolamento total por usuário. Inspirada estrutur
 | Framework | Express-like (manual routing) |
 | DB | Firestore (Native mode) |
 | Auth | Firebase Auth (Magic Link) |
-| AI | Google Generative AI SDK (Gemini) |
+| AI | 17 provedores (Google AI, OpenAI, Anthropic, OpenRouter, DeepSeek, Kimi, Qwen, Groq, NVIDIA, Mistral, xAI, Cohere, Together, Fireworks, Perplexity, Ollama, Custom) — provider-agnostic |
 | Search | Firestore Vector Search |
 | Testes | Vitest |
 
@@ -132,7 +134,7 @@ Aplicação **full-stack** com isolamento total por usuário. Inspirada estrutur
 5. Pipeline de ingestão:
    a. Extrai texto (pdf-parse)
    b. Divide em chunks (1500 chars, overlap 200)
-   c. Gera embeddings (Gemini text-embedding-004)
+   c. Gera embeddings (provider configurado: OpenAI, Google AI, Cohere, Ollama, Custom)
    d. Salva corpus/studies/studies/{id}
    e. Salva chunks com embeddings
 6. Corpus fica disponível para RAG

@@ -1,16 +1,20 @@
 /**
  * Validate corpus — verifica integridade do corpus indexado.
  *
+ * Provider-agnostic: a "dimensão esperada" é lida da config atual do admin
+ * (não é hardcoded). Se admin trocou de provider, detecta inconsistência.
+ *
  * Verifica:
  *   - Documentos sem chunks
  *   - Chunks sem embedding
- *   - Embeddings com dimensão errada
+ *   - Embeddings com dimensão diferente da config atual
  *   - Status stale (sem updatedAt)
  *
  * Uso: ts-node scripts/validate-corpus.ts
  */
 
 import * as admin from 'firebase-admin';
+import { resolveEmbeddingsConfig } from '../functions/src/services/embeddings';
 
 if (!admin.apps.length) {
   const serviceAccount = process.env.FIREBASE_SERVICE_ACCOUNT
@@ -20,10 +24,17 @@ if (!admin.apps.length) {
 }
 
 const db = admin.firestore();
-const EXPECTED_DIMS = 768;
 
 async function validate() {
   console.log('🔍 Validando corpus...');
+
+  const cfg = await resolveEmbeddingsConfig();
+  if (!cfg) {
+    console.warn('⚠️  Nenhum provider de embedding configurado no momento.');
+    console.warn('   A validação seguirá sem comparar dimensões (apenas estrutura).');
+  } else {
+    console.log(`   Dimensão configurada: ${cfg.dimensions} (provider ${cfg.provider}/${cfg.model})`);
+  }
 
   const studiesSnap = await db
     .collection('corpus').doc('studies').collection('studies')
@@ -59,7 +70,8 @@ async function validate() {
       const cData = chunkDoc.data();
       if (!cData.embedding) {
         chunksSemEmbedding++;
-      } else if (cData.embedding.length !== EXPECTED_DIMS) {
+      } else if (cfg && cData.embedding.length !== cfg.dimensions) {
+        // Só compara se há config definida
         embeddingsErrados++;
       }
     }
@@ -70,7 +82,9 @@ async function validate() {
   console.log(`   Total chunks:            ${totalChunks}`);
   console.log(`   Documentos sem chunks:   ${docsSemChunks} ${docsSemChunks > 0 ? '⚠️' : '✅'}`);
   console.log(`   Chunks sem embedding:    ${chunksSemEmbedding} ${chunksSemEmbedding > 0 ? '⚠️' : '✅'}`);
-  console.log(`   Embeddings dimensão !=${EXPECTED_DIMS}: ${embeddingsErrados} ${embeddingsErrados > 0 ? '⚠️' : '✅'}`);
+  if (cfg) {
+    console.log(`   Embeddings dimensão !=${cfg.dimensions}: ${embeddingsErrados} ${embeddingsErrados > 0 ? '⚠️' : '✅'}`);
+  }
   console.log(`   Docs stale (>30d):       ${staleCount} ${staleCount > 0 ? '⚠️' : '✅'}`);
 
   if (chunksSemEmbedding > 0 || embeddingsErrados > 0 || docsSemChunks > 0) {

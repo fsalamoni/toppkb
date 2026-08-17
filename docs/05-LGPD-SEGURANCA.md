@@ -111,7 +111,7 @@ Implementados via endpoints REST e UI:
 ### 5.3 Criptografia
 - **Em trânsito:** TLS 1.3 (HSTS habilitado, preload)
 - **Em repouso:** criptografia padrão do Firestore (AES-256)
-- **API key Gemini:** armazenada em `admin-config/llm-secret`, leitura apenas via Admin SDK
+- **API key LLM:** armazenada em `admin-config/llm-secret` (master-only) ou `users/{uid}.llmConfig.apiKey` (owner-only), leitura apenas via Admin SDK. Sistema é provider-agnostic, qualquer um dos 17 provedores é aceito.
 
 ### 5.4 Headers de segurança
 - `Content-Security-Policy` rigoroso

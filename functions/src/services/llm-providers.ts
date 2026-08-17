@@ -4,10 +4,10 @@
  * Suporta 16+ providers via dois formatos:
  *  - **OpenAI-compatible** (openai, openrouter, deepseek, kimi, qwen, groq, nvidia,
  *    mistral, xai, cohere, together, fireworks, perplexity, ollama)
- *  - **Google Gemini** (formato nativo)
+ *  - **Google AI** (formato nativo — antigo Gemini)
  *  - **Anthropic** (formato nativo)
  *  - **Custom** (baseUrl própria)
- *  - **Stub** (quando não há API key — usado em dev)
+ *  - **Stub** (quando não há API key — pede setup amigavelmente)
  *
  * Inspirado em Cofrito (https://github.com/fsalamoni/cofrito).
  */
@@ -46,8 +46,6 @@ export interface LLMGenerateInput {
   systemPrompt: string
   messages: LLMMessage[]
   config: LLMConfigLike
-  /** Chave do Google Gemini (admin) — usada apenas se config.provider === 'google' e config.apiKey vazia. */
-  geminiApiKey?: string
   /** Timeout em ms para a chamada LLM (default 60s). Anti-hang. */
   timeoutMs?: number
 }
@@ -75,12 +73,15 @@ export function maskKey(key: string): string {
 
 /**
  * Gera resposta via provider configurado.
- * Se config.provider === 'google' e config.apiKey está vazia, usa geminiApiKey (admin).
+ * Se a apiKey do config estiver vazia (e o provider não for ollama), retorna
+ * resposta de stub pedindo para o usuário configurar uma chave.
+ *
+ * O sistema é provider-agnostic: NENHUM LLM é assumido como padrão.
+ * Sem chave configurada, os agentes retornam mensagem amigável pedindo setup.
  */
 export async function generateWithProvider(input: LLMGenerateInput): Promise<LLMGenerateOutput> {
   const cfg = input.config;
-  // Fallback para API key admin (Gemini do projeto) se for google e user não setou
-  const effectiveApiKey = cfg.apiKey || (cfg.provider === 'google' ? input.geminiApiKey || '' : '');
+  const effectiveApiKey = cfg.apiKey || '';
 
   if (!effectiveApiKey && cfg.provider !== 'ollama') {
     return stubResponse(cfg);
@@ -121,10 +122,18 @@ export async function generateWithProvider(input: LLMGenerateInput): Promise<LLM
 }
 
 function stubResponse(cfg: LLMConfigLike): LLMGenerateOutput {
+  const providerLabel = cfg.provider === 'google' ? 'Google AI' :
+                        cfg.provider === 'openai' ? 'OpenAI' :
+                        cfg.provider === 'anthropic' ? 'Anthropic' :
+                        cfg.provider === 'ollama' ? 'Ollama (local)' :
+                        cfg.provider;
   const content =
-    '⚠️ Nenhuma API key configurada para o LLM. Para usar ' +
-    (cfg.provider === 'google' ? 'Google Gemini' : cfg.provider) +
-    ', adicione sua chave em Configurações. O agente está pronto para responder assim que uma chave for fornecida.';
+    `⚠️ Nenhuma API key configurada para o provedor "${providerLabel}".\n\n` +
+    `Para usar este agente, configure uma chave em:\n` +
+    `• **Admin → LLM Global** (afeta todos os usuários), ou\n` +
+    `• **Configurações → Meu LLM Pessoal** (só sua conta).\n\n` +
+    `O sistema é provider-agnostic: o admin master ou você escolhem qual LLM usar. ` +
+    `Sem configuração, este agente não pode responder.`;
   return {
     content,
     tokens: { input: 0, output: 0, total: 0 },
@@ -133,7 +142,7 @@ function stubResponse(cfg: LLMConfigLike): LLMGenerateOutput {
   };
 }
 
-// ── Google Gemini ─────────────────────────────────────────────────────────
+// ── Google AI (Gemini) ────────────────────────────────────────────────────
 
 async function callGoogle(
   cfg: LLMConfigLike & { apiKey: string; temperature: number; maxTokens: number },

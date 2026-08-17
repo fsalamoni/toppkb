@@ -33,7 +33,7 @@ Usar **Firestore Vector Search** nativo (GA desde maio 2024).
 **Positivas:**
 - Zero infra extra (já temos Firestore)
 - Latência < 100ms para 10k chunks
-- Sem custo de embedding (Gemini free tier)
+- Custo de embedding depende do provider escolhido (Ollama é grátis, outros variam)
 - Queries unificadas com Firestore Security Rules
 
 **Negativas:**

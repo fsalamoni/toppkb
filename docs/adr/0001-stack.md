@@ -23,7 +23,7 @@ Adotamos o mesmo stack do Cofrito:
 | Auth | Firebase Auth | Magic link, sem backend |
 | DB | Firestore | Realtime, rules poderosas |
 | Backend | Cloud Functions Gen 2 | Serverless, escalável |
-| IA | Gemini 2.5 Flash | Custo, qualidade PT-BR |
+| IA | 17 provedores (Google AI, OpenAI, Anthropic, etc) | provider-agnostic, sem default |
 | CI/CD | GitHub Actions | Integração nativa |
 | Hosting | Firebase Hosting | CDN global, HTTPS grátis |
 

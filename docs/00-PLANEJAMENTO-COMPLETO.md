@@ -135,8 +135,9 @@ Apoiar o atleta a chegar ao topo da categoria 50+ brasileira em 2032.
            ▼                       │  - metricas (agregação)  │
 ┌──────────────────────┐           │  - admin (futuro)        │
 │  Firestore           │◄──────────┤                          │
-│  /users/{uid}/...    │  AdminSDK │  → Gemini 2.5 Flash/Pro  │
-│  (isolado por user)  │           │  → Sentry (logs)         │
+│  /users/{uid}/...    │  AdminSDK │  → 17 provedores LLM     │
+│  (isolado por user)  │           │    (escolha admin/user)  │
+│                      │           │  → Sentry (logs)         │
 └──────────────────────┘           └──────────────────────────┘
 ```
 
@@ -160,7 +161,7 @@ Detalhes completos em [`02-ARQUITETURA.md`](./02-ARQUITETURA.md).
 | Auth | Firebase Auth (Magic Link) | 10.13 |
 | DB | Firestore (Native + Vector) | 12.3 admin |
 | Backend | Cloud Functions (Node 20) | 5.0.1 |
-| IA | Gemini 2.5 Flash (default) + Pro (longo) | 0.17 SDK |
+| IA | 17 provedores (Google AI, OpenAI, Anthropic, OpenRouter, DeepSeek, Kimi, Qwen, Groq, NVIDIA, Mistral, xAI, Cohere, Together, Fireworks, Perplexity, Ollama, Custom) — **provider-agnostic, sem default** | @google/generative-ai 0.17 (apenas se user escolher Google) |
 | Email | Resend | 3.4 |
 | Hospedagem | Firebase Hosting | — |
 | Obs | Sentry | — |
@@ -217,7 +218,7 @@ Detalhes em [`10-ROADMAP-PRODUTO.md`](./10-ROADMAP-PRODUTO.md).
 ### Dia 1 (hoje)
 1. Criar conta Google / Firebase
 2. Ativar Auth (Magic Link) + Firestore + Functions + Hosting
-3. Adicionar `GEMINI_API_KEY` no `.env.local`
+3. **Configurar LLM via UI após primeiro login** (Admin → LLM Global) — o sistema é provider-agnostic, escolha entre 17 provedores
 4. Clonar este repo
 5. Rodar `npm install` em `frontend/` e `functions/`
 6. Rodar emuladores: `cd functions && npm run serve`

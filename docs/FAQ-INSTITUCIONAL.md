@@ -26,12 +26,14 @@ Você pode:
 
 O sistema usa uma **hierarquia de 4 níveis**:
 
-1. **Config específica do agente** (ex: o Treinador usa GPT-4o, o Nutricionista usa Gemini)
+1. **Config específica do agente** (ex: o admin define o Treinador com GPT-4o, o Nutricionista com Claude, o Estrategista com Google AI, etc)
 2. **Config pessoal do usuário** (sobrescreve a do agente)
 3. **Config global do admin** (sobrescreve tudo se ativo)
-4. **Variável de ambiente** (fallback)
+4. **Nenhum fallback hardcoded** — se ninguém configurou, o agente retorna mensagem amigável pedindo setup
 
-17 providers são suportados: Gemini, OpenAI, Anthropic, OpenRouter, DeepSeek, Kimi, Qwen, Groq, NVIDIA, Mistral, xAI, Cohere, Together, Fireworks, Perplexity, Ollama, Custom.
+17 providers são suportados: Google AI, OpenAI, Anthropic, OpenRouter, DeepSeek, Kimi, Qwen, Groq, NVIDIA, Mistral, xAI, Cohere, Together, Fireworks, Perplexity, Ollama, Custom.
+
+**Importante**: o sistema é 100% provider-agnostic. Nenhum LLM é sugerido como padrão. O admin master ou o usuário escolhem qual usar. Sem configuração, os agentes não respondem (em vez de assumir um LLM qualquer).
 
 ## Como meus dados são protegidos?
 
@@ -62,7 +64,7 @@ Ainda não (Fase 2). Atualmente é PWA (Progressive Web App) — funciona em qua
 Depende de quanto você usar:
 - **Firebase Spark (free)**: até certo volume
 - **Firebase Blaze (pay-as-you-go)**: ~R$ 50-200/mês para uso pessoal intenso
-- **LLM API**: Gemini free tier cobre muito; OpenAI/Claude são ~R$ 0.10-1.00 por conversa longa
+- **LLM API**: depende do provider que você escolheu. Google AI tem free tier generoso; OpenAI/Claude são ~R$ 0.10-1.00 por conversa longa; Ollama (local) é grátis. Você escolhe.
 
 ## Como faço backup?
 
@@ -71,6 +73,14 @@ O Firestore (Blaze) tem backup automático diário configurável. Vá em Console
 ## Posso rodar offline?
 
 Sim, em modo leitura (PWA com service worker). Escrever dados requer conexão.
+
+## O sistema assume um LLM padrão?
+
+**Não.** Este projeto é provider-agnostic. Nenhum LLM é hardcoded como padrão. Se ninguém (admin master ou você) configurar uma chave, os agentes retornam uma mensagem amigável pedindo setup. Você tem controle total sobre:
+- Qual provedor usar (17 opções)
+- Qual modelo dentro do provedor
+- Onde guardar a chave (Firestore seguro)
+- Quem pode usar qual (config por agente, por usuário ou global)
 
 ## Como o primeiro usuário vira admin?
 

@@ -145,10 +145,11 @@ export async function responderComoAgente(
   // 2) Anonimiza PII
   const { text: mensagemLimpa, piiRemoved } = anonymizeText(mensagem);
 
-  // 3) RAG — recupera chunks relevantes do corpus
+  // 3) RAG — recupera chunks relevantes do corpus (usa provider de embedding configurado)
   const sources = await retrieveRelevantChunks(mensagemLimpa, {
     topK: 5,
     minSimilarity: 0.5,
+    uid,
   });
 
   // 4) Carrega config dos agentes (admin)

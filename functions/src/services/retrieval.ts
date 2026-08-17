@@ -1,14 +1,17 @@
 /**
- * Retrieval — busca semântica no corpus (Firestore Vector Search + fallback).
+ * Retrieval — busca semântica no corpus.
+ *
+ * Provider-agnostic: usa o provider de embedding configurado pelo admin/user.
+ * Se ninguém configurou, retorna [] silenciosamente.
  *
  * Pipeline:
- *  1. Gera embedding da query
+ *  1. Gera embedding da query (via embeddings.ts)
  *  2. Busca por similaridade cosseno (Firestore Vector Search nativo OU in-memory)
  *  3. Retorna top-K chunks com metadados
  */
 
 import { db } from '../config/env';
-import { gerarEmbedding, cosineSimilarity, EMBEDDING_CONFIG } from './embeddings';
+import { gerarEmbedding, cosineSimilarity, resolveEmbeddingsConfig } from './embeddings';
 import { logger } from 'firebase-functions';
 
 export interface RetrievedChunk {
@@ -27,8 +30,9 @@ export interface RetrievedChunk {
 export interface RetrievalOptions {
   topK?: number;
   minSimilarity?: number;
-  sourceTypes?: string[]; // filtro por tipo (pdf, video, artigo)
-  topics?: string[]; // filtro por tópico
+  sourceTypes?: string[];
+  topics?: string[];
+  uid?: string; // uid do user — usado para resolver config de embeddings
 }
 
 const DEFAULT_TOP_K = 8;
@@ -42,18 +46,30 @@ export async function retrieveRelevantChunks(
   const minSim = options.minSimilarity ?? DEFAULT_MIN_SIMILARITY;
 
   try {
-    // 1) Gera embedding da query
-    const queryEmbedding = await gerarEmbedding(query);
+    // 0) Verifica se há provider de embedding configurado
+    const embCfg = await resolveEmbeddingsConfig(options.uid);
+    if (!embCfg) {
+      logger.warn('retrieval.noEmbeddingsConfig', {
+        message: 'Nenhum provider de embedding configurado. RAG desabilitado.',
+      });
+      return [];
+    }
 
-    // 2) Tenta Firestore Vector Search nativo (se disponível)
+    // 1) Gera embedding da query usando o provider configurado
+    const queryEmbedding = await gerarEmbedding(query, options.uid);
+
+    // 2) Busca todos os chunks
     const chunksSnap = await db.collectionGroup('chunks').get();
+    if (chunksSnap.empty) return [];
 
-    // 3) Calcula similaridade in-memory (fallback robusto)
+    // 3) Calcula similaridade in-memory (compatível com qualquer dimensão)
     const candidates: RetrievedChunk[] = [];
     for (const doc of chunksSnap.docs) {
       const data = doc.data();
       const embedding = data.embedding as number[] | undefined;
-      if (!embedding || embedding.length !== EMBEDDING_CONFIG.dimensions) continue;
+      if (!embedding) continue;
+      // Verifica dimensão: chunks indexados com a MESMA dimensão da config atual
+      if (embedding.length !== queryEmbedding.length) continue;
 
       const score = cosineSimilarity(queryEmbedding, embedding);
       if (score < minSim) continue;

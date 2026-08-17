@@ -72,8 +72,8 @@ describe('normalizeAgentsConfig', () => {
 
 describe('resolveAgentLLMConfig', () => {
   const global: LLMConfigLike = {
-    provider: 'google',
-    model: 'gemini-2.5-flash',
+    provider: 'openai',
+    model: 'gpt-4o-mini',
     apiKey: 'global-key',
   };
 

@@ -23,11 +23,15 @@ export async function runAgent(opts: RunAgentOptions): Promise<RunAgentResult> {
   }
 
   // 2) Resolve config LLM (custom > global > fallback)
-  const llmConfig = resolveAgentLLMConfig(agent, globalLLM);
+  const llmConfig = resolveAgentLLMConfig(agent as any, globalLLM);
 
   if (!llmConfig) {
     return {
-      text: '⚠️ Nenhum LLM configurado. O administrador precisa configurar a chave global ou você pode adicionar a sua em Configurações → Meu LLM Pessoal.',
+      text: '⚠️ Nenhum LLM configurado para responder. O sistema é provider-agnostic — ninguém configurou uma chave ainda.\n\n' +
+        'Configure em uma das opções:\n' +
+        '• **Admin → LLM Global** (o admin master configura uma vez para todos)\n' +
+        '• **Configurações → Meu LLM Pessoal** (você adiciona sua própria chave)\n\n' +
+        'Suportamos 17 provedores: Google AI, OpenAI, Anthropic, OpenRouter, DeepSeek, Kimi, Qwen, Groq, NVIDIA, Mistral, xAI, Cohere, Together, Fireworks, Perplexity, Ollama (local) ou Custom.',
       tokens: { input: 0, output: 0, total: 0 },
       model: 'n/a',
       provider: 'n/a',

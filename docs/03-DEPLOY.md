@@ -21,7 +21,7 @@ Cloud Functions Gen 2 exige plano Blaze (pay-as-you-go). O custo estimado é:
 
 - 1M invocações/mês grátis
 - 400k GB-segundo/mês grátis
-- Gemini: ~$0.075/1M tokens Flash
+- **LLM**: depende do provider escolhido (Ollama é grátis, Google AI tem free tier, OpenAI/Claude variam). O admin/user escolhem.
 
 **Estimativa 1 usuário ativo:** < $5/mês.
 
@@ -34,7 +34,7 @@ Adicione em **GitHub → Settings → Secrets and variables → Actions**:
 | Secret | Valor |
 |---|---|
 | `FIREBASE_SERVICE_ACCOUNT_TOPPKB` | JSON do service account (base64) |
-| `GEMINI_API_KEY` | Sua API key do Google AI Studio |
+| (sem LLM_API_KEY) | O LLM é configurado em **runtime** via UI — não precisa de env var |
 | `PUBLIC_URL` | `https://toppkb.web.app` |
 | `FIREBASE_PROJECT_ID` | `toppkb` |
 
@@ -144,7 +144,7 @@ gcloud functions services traffic-split api \
 | Functions GB-s | 400k/mês | 5k/mês | 50k/mês |
 | Hosting GB | 10GB | 1GB | 1GB |
 | Storage | 5GB | 100MB | 1GB |
-| Gemini Flash tokens | 1M/dia | 200k/dia | 2M/dia |
+| LLM tokens | depende do provider escolhido — Ollama é grátis |
 
 **Total estimado:** < $5/mês com 1 usuário, < $30/mês com 10 usuários ativos.
 

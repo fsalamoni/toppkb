@@ -18,14 +18,14 @@ Adotamos uma **hierarquia de 4 níveis** para resolver qual LLM usar:
        ↓ fallback
 3. Config GLOBAL do admin (admin-config/llm)
        ↓ fallback
-4. env var GEMINI_API_KEY (Google Gemini do projeto)
+4. **Nenhum fallback hardcoded** — retorna null, agente pede setup
 ```
 
 ### 17 provedores suportados
 
 | Provider | API key | baseUrl |
 |---|---|---|
-| Google Gemini | ✓ | nativa |
+| Google AI | ✓ | nativa |
 | OpenAI | ✓ | api.openai.com/v1 |
 | Anthropic Claude | ✓ | api.anthropic.com/v1 |
 | OpenRouter | ✓ | openrouter.ai/api/v1 |
@@ -56,8 +56,8 @@ Adotamos uma **hierarquia de 4 níveis** para resolver qual LLM usar:
 ```ts
 {
   data: {
-    provider: 'google',
-    model: 'gemini-2.5-flash',
+    provider: 'openai',   // ← escolha do admin/user
+    model: 'gpt-4o-mini', // ← escolha do admin/user
     baseUrl?: string,
     temperature?: 0.4,
     maxTokens?: 1500,

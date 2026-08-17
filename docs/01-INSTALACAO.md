@@ -14,7 +14,7 @@
 | **Firebase CLI** | 13+ | Deploy + emuladores |
 | **Java JRE** | 11+ | Emulador Firestore |
 | Conta **Firebase** | — | Auth, Firestore, Functions, Hosting |
-| Conta **Google AI Studio** | — | API key do Gemini |
+| Conta em algum LLM (opcional) | — | API key de **qualquer um** dos 17 provedores (Google AI, OpenAI, Anthropic, etc) |
 
 ---
 
@@ -68,7 +68,7 @@ sudo apt install default-jre
 5. No menu lateral, ative:
    - **Authentication** → Sign-in method → **Email link (passwordless)**
    - **Firestore Database** → Criar banco (modo produção, região: `southamerica-east1`)
-   - **Functions** → Upgrade para plano Blaze (necessário p/ Gemini)
+   - **Functions** → Upgrade para plano Blaze (necessário p/ Cloud Functions)
    - **Hosting** → Get started
 6. Em **Configurações do projeto → Geral → Seus apps**, adicione um app **Web**:
    - Apelido: `toppkb-web`
@@ -92,9 +92,10 @@ cd toppkb
 cp .env.example .env.local
 
 # Edite e preencha:
-# - GEMINI_API_KEY (https://aistudio.google.com/app/apikey)
 # - FIREBASE_PROJECT_ID (seu project ID)
 # - FIREBASE_CONFIG (objeto JSON do console Firebase)
+# - (Opcional) NÃO precisa de LLM_API_KEY no .env — o LLM é configurado via UI
+#   após o primeiro login (Admin → LLM Global), e o sistema é provider-agnostic.
 # - GOOGLE_APPLICATION_CREDENTIALS (caminho do service account)
 ```
 
@@ -236,8 +237,8 @@ firebase emulators:start --import=./.firebase/data --export-on-exit
 ### ❌ "Permission denied" no Firestore
 **Solução:** rode `firebase deploy --only firestore:rules` e verifique se o usuário tem consent.
 
-### ❌ Gemini retorna 429
-**Solução:** rate limit da API. Aguarde 1 min ou use uma API key paga.
+### ❌ LLM retorna 429 (rate limit)
+**Solução:** rate limit do provider configurado. Aguarde 1 min ou faça upgrade do plano, ou troque de provider (17 opções disponíveis).
 
 ### ❌ Functions cold start
 **Solução:** Cloud Functions Gen 2 pode levar 5-10s na primeira chamada. Configurar min instances no plano Blaze.

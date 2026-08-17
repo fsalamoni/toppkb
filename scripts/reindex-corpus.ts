@@ -1,13 +1,14 @@
 /**
  * Reindex corpus — re-gera embeddings de todos os chunks.
  *
- * Útil quando trocar de modelo de embedding.
+ * Provider-agnostic: usa o provider de embedding configurado pelo admin.
+ * Útil quando trocar de modelo/provider de embedding.
  *
  * Uso: ts-node scripts/reindex-corpus.ts
  */
 
 import * as admin from 'firebase-admin';
-import { embedTexts, EMBEDDING_CONFIG } from '../functions/src/services/embeddings';
+import { gerarEmbeddings, resolveEmbeddingsConfig } from '../functions/src/services/embeddings';
 
 if (!admin.apps.length) {
   const serviceAccount = process.env.FIREBASE_SERVICE_ACCOUNT
@@ -20,7 +21,13 @@ const db = admin.firestore();
 const BATCH_SIZE = 100;
 
 async function reindex() {
-  console.log(`🔄 Re-indexando corpus com modelo ${EMBEDDING_CONFIG.model}...`);
+  const cfg = await resolveEmbeddingsConfig();
+  if (!cfg) {
+    console.error('❌ Nenhum provider de embedding configurado.');
+    console.error('Configure o admin → LLM Global antes de reindexar.');
+    process.exit(1);
+  }
+  console.log(`🔄 Re-indexando corpus com provider ${cfg.provider} (modelo ${cfg.model}, ${cfg.dimensions} dims)...`);
 
   const studiesSnap = await db
     .collection('corpus').doc('studies').collection('studies')
@@ -40,7 +47,7 @@ async function reindex() {
     for (let i = 0; i < chunksSnap.docs.length; i += BATCH_SIZE) {
       const slice = chunksSnap.docs.slice(i, i + BATCH_SIZE);
       const contents = slice.map((d) => d.data().content);
-      const embeddings = await embedTexts(contents);
+      const embeddings = await gerarEmbeddings(contents);
 
       const batch = db.batch();
       slice.forEach((chunkDoc, j) => {

@@ -1,12 +1,16 @@
 /**
  * Script de ingestão — vetoriza material de estudo e salva no Firestore.
+ *
+ * Provider-AGNOSTIC: usa o provider de embedding configurado pelo admin.
+ * Se nada estiver configurado, aborta com mensagem clara.
+ *
  * Uso: cd functions && npm run build && node lib/scripts/ingest.js
  */
 
 import * as admin from 'firebase-admin';
 import * as fs from 'fs';
 import * as path from 'path';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { gerarEmbeddings, resolveEmbeddingsConfig } from '../services/embeddings';
 
 const serviceAccount = require(process.env.GOOGLE_APPLICATION_CREDENTIALS || './serviceAccountKey.json');
 
@@ -15,9 +19,6 @@ admin.initializeApp({
 });
 
 const db = admin.firestore();
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
-const embeddingModel = genAI.getGenerativeModel({ model: 'text-embedding-004' });
-
 const ROOT = path.resolve(__dirname, '../../data/raw');
 const SOURCES = path.join(ROOT, 'sources.json');
 
@@ -32,31 +33,29 @@ interface Source {
   ano: number;
 }
 
-async function vetorizar(texto: string): Promise<number[]> {
-  const result = await embeddingModel.embedContent(texto);
-  return result.embedding.values;
-}
-
-function chunkText(texto: string, maxChars = 1500): string[] {
+function chunkText(texto: string, maxChars = 1500, overlap = 200): string[] {
   const chunks: string[] = [];
   let i = 0;
   while (i < texto.length) {
     chunks.push(texto.slice(i, i + maxChars));
-    i += maxChars;
+    i += maxChars - overlap;
   }
   return chunks;
 }
 
-async function ingestSource(source: Source) {
-  console.log(`[ingest] ${source.id}...`);
+async function ingestSource(source: Source, embProvider: string, embModel: string, embDims: number) {
+  console.log(`[ingest] ${source.id} (${embProvider}/${embModel}, ${embDims} dims)...`);
 
   // 1) Salva doc da fonte
   await db.collection('corpus').doc('studies').collection('sources').doc(source.id).set({
     ...source,
+    embeddingProvider: embProvider,
+    embeddingModel: embModel,
+    embeddingDimensions: embDims,
     createdAt: admin.firestore.FieldValue.serverTimestamp(),
   });
 
-  // 2) Lê conteúdo (placeholder — em produção, ler PDF/MD)
+  // 2) Lê conteúdo
   const conteudoPath = path.join(ROOT, 'rules', `${source.id}.md`);
   let conteudo = '';
   if (fs.existsSync(conteudoPath)) {
@@ -70,20 +69,23 @@ async function ingestSource(source: Source) {
   const chunks = chunkText(conteudo);
   console.log(`  → ${chunks.length} chunks`);
 
-  // 4) Vetoriza e salva
+  // 4) Vetoriza (em batch) e salva
   const docRef = db.collection('corpus').doc('studies').collection('studies').doc(source.id);
   await docRef.set({
     id: source.id,
     ...source,
+    embeddingProvider: embProvider,
+    embeddingModel: embModel,
+    embeddingDimensions: embDims,
+    chunkCount: chunks.length,
     createdAt: admin.firestore.FieldValue.serverTimestamp(),
   });
 
+  const embeddings = await gerarEmbeddings(chunks);
   for (let i = 0; i < chunks.length; i++) {
-    const chunk = chunks[i];
-    const embedding = await vetorizar(chunk);
-    await docRef.collection('chunks').doc(`chunk-${i}`).set({
-      content: chunk,
-      embedding,
+    await docRef.collection('chunks').doc(`chunk-${i.toString().padStart(4, '0')}`).set({
+      content: chunks[i],
+      embedding: admin.firestore.FieldValue.vector(embeddings[i]),
       position: i,
       metadata: { topico: source.tags[0] || 'geral' },
       searchKeywords: source.tags,
@@ -97,10 +99,18 @@ async function main() {
     process.exit(1);
   }
 
+  // Verifica config de embeddings do admin
+  const cfg = await resolveEmbeddingsConfig();
+  if (!cfg) {
+    console.error('❌ Nenhum provider de embedding configurado.');
+    console.error('Configure o admin master em Admin → LLM Global antes de rodar este script.');
+    process.exit(1);
+  }
+
   const sources: Source[] = JSON.parse(fs.readFileSync(SOURCES, 'utf-8'));
   for (const s of sources) {
     try {
-      await ingestSource(s);
+      await ingestSource(s, cfg.provider, cfg.model, cfg.dimensions);
     } catch (e: any) {
       console.error(`[ingest] erro em ${s.id}: ${e.message}`);
     }

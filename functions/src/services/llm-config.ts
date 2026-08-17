@@ -3,9 +3,13 @@
  *
  * Hierarquia de resolução:
  *  1. Config do AGENTE (admin-config/agents/{id}.model) — se for 'custom' com apiKey
- *  2. Config GLOBAL do admin (admin-config/llm) — se existir
- *  3. Config PESSOAL do user (users/{uid}.llmConfig)
- *  4. Fallback: process.env.GEMINI_API_KEY (Google Gemini, key do projeto)
+ *  2. Config PESSOAL do user (users/{uid}.llmConfig)
+ *  3. Config GLOBAL do admin (admin-config/llm)
+ *  4. Nada — retorna null. Não há provider padrão hardcoded.
+ *
+ * IMPORTANTE: o sistema é provider-agnostic. Nenhum LLM é sugerido como padrão.
+ * O admin master ou o usuário deve configurar explicitamente qual provider usar.
+ * Sem configuração, os agentes não respondem e mostram mensagem amigável pedindo setup.
  */
 import { logger } from 'firebase-functions';
 import { getFirestore } from './firestore';
@@ -78,7 +82,7 @@ export async function loadUserLLMConfig(uid: string): Promise<LLMConfigLike | nu
  *  1. config do agente (custom) se completa
  *  2. config PESSOAL do user
  *  3. config GLOBAL do admin
- *  4. env var GEMINI_API_KEY (Google Gemini do projeto)
+ *  4. nada — retorna null (e o agente pede setup)
  *
  * @param agentConfig  Config do agente (de agents-config.ts)
  * @param uid          UID do usuário
@@ -114,17 +118,7 @@ export async function resolveEffectiveLLMConfig(
     return globalConfig;
   }
 
-  // 4) fallback: env var
-  const envKey = process.env.GEMINI_API_KEY;
-  if (envKey) {
-    return {
-      provider: 'google',
-      model: process.env.GEMINI_DEFAULT_MODEL || 'gemini-2.5-flash',
-      apiKey: envKey,
-      temperature: 0.4,
-      maxTokens: 1500,
-    };
-  }
-
+  // 4) sem fallback hardcoded. Retorna null.
+  // O orquestrador exibirá mensagem pedindo configuração.
   return null;
 }

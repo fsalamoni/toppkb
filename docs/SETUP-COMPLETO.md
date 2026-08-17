@@ -9,7 +9,7 @@ Guia passo-a-passo para configurar o ambiente de desenvolvimento do zero até de
 - Firebase CLI (`npm i -g firebase-tools`)
 - Git
 - Conta Google (para Firebase)
-- Uma chave de API de LLM (Gemini é a padrão, gratuita em tier free)
+- **(Opcional)** Uma chave de API de algum LLM — o sistema é provider-agnostic, escolha entre 17 provedores (OpenAI, Anthropic, Google AI, OpenRouter, DeepSeek, Kimi, Qwen, Groq, NVIDIA, Mistral, xAI, Cohere, Together, Fireworks, Perplexity, Ollama, Custom)
 
 ## 1) Clonar o repositório
 
@@ -56,17 +56,21 @@ cp .env.example .env
 
 1. Faça deploy das functions
 2. Acesse o app pela primeira vez (você será admin master automaticamente)
-3. Vá em Admin → LLM Global
-4. Cole sua chave Gemini
-5. Salve
+3. Vá em **Admin → LLM Global**
+4. Escolha o **provedor** (17 opções — você decide)
+5. Cole a **chave de API** correspondente
+6. Escolha o **modelo** (clique em "Listar modelos" para puxar do provider)
+7. Salve
 
 ### Opção B: Como usuário
 
 1. Faça login
-2. Vá em Configurações → Meu LLM Pessoal
-3. Adicione sua chave pessoal
+2. Vá em **Configurações → Meu LLM Pessoal**
+3. Escolha provedor + modelo + adicione sua chave pessoal
 
-A chave é armazenada no Firestore com regras restritivas (master-only ou owner-only). Nunca é exposta ao frontend (sempre mascarada).
+A chave é armazenada no Firestore com regras restritivas (master-only ou owner-only). Nunca é exposta ao frontend (sempre mascarada como `sk-1••••cdef`).
+
+**Se ninguém configurar LLM**: o sistema funciona normalmente, mas ao chamar um agente, ele retorna uma mensagem amigável pedindo setup. Nenhum LLM é hardcoded como padrão.
 
 ## 5) Deploy
 
@@ -142,8 +146,12 @@ cd frontend && npm run typecheck
 - Verifique firestore.rules (master auto-grant)
 
 ### "LLM API error"
-- Verifique se a chave está válida
-- Teste: `curl -H "x-goog-api-key: $GEMINI_API_KEY" https://generativelanguage.googleapis.com/v1/models`
+- Verifique se a chave do provider configurado está válida
+- Teste direto na API do provider (cada um tem URL diferente)
+- Se for OpenAI: `curl -H "Authorization: Bearer $OPENAI_API_KEY" https://api.openai.com/v1/models`
+- Se for Anthropic: `curl -H "x-api-key: $ANTHROPIC_API_KEY" -H "anthropic-version: 2023-06-01" https://api.anthropic.com/v1/models`
+- Se for Google AI: `curl "https://generativelanguage.googleapis.com/v1beta/models?key=$GOOGLE_API_KEY"`
+- Se for Ollama: garanta que está rodando em `localhost:11434`
 
 ### "DEADLINE_EXCEEDED" em Cloud Functions
 - Aumente timeout em `functions/src/index.ts`

@@ -1,27 +1,32 @@
 /**
  * Ingest PDF — pipeline completo de ingestão.
  *
+ * Provider-agnostic: usa o provider de embedding + LLM configurado pelo admin/user.
+ * Se nada estiver configurado, aborta com mensagem clara.
+ *
  * Uso:
  *   ts-node scripts/ingest-pdf.ts <caminho-do-pdf>
  *
  * Etapas:
  *   1. Extrai texto do PDF (pdf-parse)
  *   2. Divide em chunks (1500 chars com overlap 200)
- *   3. Gera embeddings (Gemini text-embedding-004)
- *   4. Salva no corpus (corpus/studies/studies/{id})
- *   5. Salva chunks no subcollection (chunks/{position})
- *   6. Indexa para vector search (Firestore Vector)
+ *   3. Gera embeddings (via provider configurado)
+ *   4. Classifica o documento (via LLM configurado)
+ *   5. Salva no corpus (corpus/studies/studies/{id})
+ *   6. Salva chunks no subcollection (chunks/{position})
  *
  * Requer:
- *   - GEMINI_API_KEY no .env (ou admin-config/llm-secret)
- *   - Firebase Admin SDK credenciais
+ *   - Admin configurou `admin-config/llm` (com provider+model+apiKey)
+ *   - Firebase Admin SDK credenciais (GOOGLE_APPLICATION_CREDENTIALS)
  */
 
 import * as admin from 'firebase-admin';
 import * as fs from 'fs';
 import * as path from 'path';
 import { chunkText } from '../functions/src/services/chunking';
-import { embedTexts, EMBEDDING_CONFIG } from '../functions/src/services/embeddings';
+import { gerarEmbeddings, resolveEmbeddingsConfig } from '../functions/src/services/embeddings';
+import { generateWithProvider, type LLMConfigLike, type LLMMessage } from '../functions/src/services/llm-providers';
+import { loadGlobalLLMConfig } from '../functions/src/services/llm-config';
 
 // Init Firebase Admin
 if (!admin.apps.length) {
@@ -34,33 +39,29 @@ if (!admin.apps.length) {
 const db = admin.firestore();
 
 async function extractPdfText(pdfPath: string): Promise<string> {
-  // pdf-parse é CJS, usar require dinâmico
   const pdfParse = require('pdf-parse');
   const dataBuffer = fs.readFileSync(pdfPath);
   const data = await pdfParse(dataBuffer);
   return data.text;
 }
 
-async function classifyAndEmenta(text: string): Promise<any> {
-  // Por simplicidade, faz chamada HTTP ao Gemini para classificar
-  // (em produção seria via PipelineAgent)
-  const { GoogleGenerativeAI } = require('@google/generative-ai');
-  const genai = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+async function classifyAndEmenta(text: string, llm: LLMConfigLike): Promise<any> {
+  const messages: LLMMessage[] = [
+    {
+      role: 'user',
+      content: `Classifique o documento abaixo. Responda APENAS JSON válido com: { natureza, tipoDocumento, areaDireito, assuntos (array), areas (array), topicos (array), conclusao (resumo 1 frase), keywords (array de 5-10 termos) }.\n\nDOCUMENTO:\n${text.slice(0, 4000)}`,
+    },
+  ];
 
-  const model = genai.getGenerativeModel({
-    model: 'gemini-2.0-flash',
-    systemInstruction: 'Você classifica documentos de pickleball. Responda APENAS JSON válido.',
+  const result = await generateWithProvider({
+    systemPrompt:
+      'Você é um classificador de documentos de pickleball. Responda SOMENTE com JSON válido, sem markdown.',
+    messages,
+    config: llm,
   });
 
-  const prompt = `Classifique o documento abaixo. Responda JSON com: { natureza, tipoDocumento, areaDireito, assuntos (array), areas (array), topicos (array), conclusao (resumo 1 frase), keywords (array de 5-10 termos) }.
-
-DOCUMENTO:
-${text.slice(0, 4000)}`;
-
-  const result = await model.generateContent(prompt);
-  const response = result.response.text();
-  const jsonMatch = response.match(/\{[\s\S]*\}/);
-  if (!jsonMatch) throw new Error('Resposta não é JSON');
+  const jsonMatch = result.content.match(/\{[\s\S]*\}/);
+  if (!jsonMatch) throw new Error('Resposta não é JSON: ' + result.content.slice(0, 200));
   return JSON.parse(jsonMatch[0]);
 }
 
@@ -70,8 +71,30 @@ async function ingest(pdfPath: string) {
   const text = await extractPdfText(pdfPath);
   console.log(`   Texto extraído: ${text.length} chars`);
 
+  // 0) Verifica config de embeddings + LLM (do admin global)
+  console.log('🔍 Verificando configuração de LLM e embeddings...');
+  const embCfg = await resolveEmbeddingsConfig();
+  const llmCfg = await loadGlobalLLMConfig();
+
+  if (!embCfg) {
+    throw new Error(
+      '❌ Nenhum provider de embedding configurado.\n' +
+      'O admin master precisa configurar embeddings em Admin → LLM Global antes de rodar este script.\n' +
+      'Suportamos: openai, google, cohere, ollama, custom.',
+    );
+  }
+  if (!llmCfg) {
+    throw new Error(
+      '❌ Nenhum LLM configurado para classificação.\n' +
+      'O admin master precisa configurar o LLM em Admin → LLM Global antes de rodar este script.',
+    );
+  }
+
+  console.log(`   Embeddings: ${embCfg.provider}/${embCfg.model} (${embCfg.dimensions} dims)`);
+  console.log(`   LLM:        ${llmCfg.provider}/${llmCfg.model}`);
+
   console.log('🔍 Classificando...');
-  const ementa = await classifyAndEmenta(text);
+  const ementa = await classifyAndEmenta(text, llmCfg);
   console.log(`   Natureza: ${ementa.natureza}, Tipo: ${ementa.tipoDocumento}`);
 
   console.log('✂️  Dividindo em chunks...');
@@ -79,8 +102,8 @@ async function ingest(pdfPath: string) {
   console.log(`   ${chunks.length} chunks gerados`);
 
   console.log('🧠 Gerando embeddings...');
-  const embeddings = await embedTexts(chunks);
-  console.log(`   ${embeddings.length} embeddings (${EMBEDDING_CONFIG.dimensions} dims)`);
+  const embeddings = await gerarEmbeddings(chunks);
+  console.log(`   ${embeddings.length} embeddings (${embCfg.dimensions} dims)`);
 
   // Salva no Firestore
   const studyId = `${Date.now()}_${fileName.replace(/[^a-z0-9]/gi, '_').slice(0, 50)}`;
@@ -93,6 +116,9 @@ async function ingest(pdfPath: string) {
     titulo: fileName.replace(/\.pdf$/i, ''),
     fileName,
     status: 'active',
+    embeddingProvider: embCfg.provider,
+    embeddingModel: embCfg.model,
+    embeddingDimensions: embCfg.dimensions,
     classification: {
       natureza: ementa.natureza,
       tipoDocumento: ementa.tipoDocumento,

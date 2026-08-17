@@ -15,7 +15,7 @@
        ↓ fallback
 3. Config GLOBAL do admin (admin-config/llm + llm-secret)
        ↓ fallback
-4. env var GEMINI_API_KEY (Google Gemini)
+4. **Nenhum fallback hardcoded** — se ninguém configurou, o agente retorna mensagem amigável pedindo setup
 ```
 
 Cada agente pode ter seu próprio LLM (`mode: 'custom'`) ou usar o global (`mode: 'global'`).
@@ -331,7 +331,7 @@ Ver `functions/src/services/ai/`:
 - `nutricionista.ts` — persona Nutricionista
 - `estrategista.ts` — persona Estrategista
 - `general.ts` — persona General
-- `orquestrador.ts` — orquestra chamada Gemini
+- `orquestrador.ts` — orquestra chamada ao LLM configurado (provider-agnostic)
 
 ---
 

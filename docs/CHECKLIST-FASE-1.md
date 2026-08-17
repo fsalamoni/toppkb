@@ -21,7 +21,8 @@ Estrutura clonada do Cofrito. Antes de ir para produção, valide cada item.
 
 ## LLM Multi-Provider (4 níveis)
 
-- [x] 17 providers suportados (Gemini, OpenAI, Anthropic, etc)
+- [x] 17 providers suportados (Google AI, OpenAI, Anthropic, OpenRouter, DeepSeek, Kimi, Qwen, Groq, NVIDIA, Mistral, xAI, Cohere, Together, Fireworks, Perplexity, Ollama, Custom)
+- [x] **Sistema provider-agnostic** — NENHUM LLM é hardcoded como padrão; sem config, agentes retornam mensagem amigável
 - [x] Hierarquia: Agent custom → User → Global → env
 - [x] apiKey segura (admin-config/llm-secret)
 - [x] `getLLMConfig`, `setLLMConfig`, `deleteLLMConfig`
@@ -66,7 +67,7 @@ Estrutura clonada do Cofrito. Antes de ir para produção, valide cada item.
 - [x] Express API (REST) em `/api/**`
 - [x] Callable handlers (alternativa)
 - [x] Middleware (auth, consent, ratelimit)
-- [x] Embeddings service (Gemini text-embedding-004)
+- [x] Embeddings service (multi-provider: OpenAI text-embedding-3, Google text-embedding-004, Cohere embed-v3, Ollama nomic-embed, Custom)
 - [x] Retrieval service (Firestore Vector Search + cosine)
 - [x] History service (conversas, mensagens)
 - [x] Profile service (perfil, preferências)
