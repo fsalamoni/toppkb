@@ -45,6 +45,12 @@ jobs:
       - name: Install Firebase CLI
         run: npm install -g firebase-tools
 
+      - name: Discover Firebase project ID
+        run: |
+          gcloud projects list --format="value(projectId)" 2>&1 | head -10
+          echo "---"
+          gcloud config get-value project 2>&1
+
       - name: Deploy rules + indexes + functions
         working-directory: ./
         run: |
