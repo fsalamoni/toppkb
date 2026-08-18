@@ -50,7 +50,7 @@ jobs:
         run: |
           firebase deploy \
             --only firestore:rules,firestore:indexes,functions \
-            --project toppkb \
+            --project antonov \
             --force \
             --non-interactive
 
@@ -59,7 +59,7 @@ jobs:
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-          projectId: toppkb
+          projectId: antonov
           channelId: live
           target: hosting
 
