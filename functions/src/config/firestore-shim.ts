@@ -20,9 +20,8 @@ export function getOrCreateApp(): admin.app.App {
     cachedApp = apps[0];
     return cachedApp;
   }
-  // Fallback: cria um app. Em Gen 2 runtime, o Firebase já inicializou
-  // um app com nome `__FIREBASE_FUNCTIONS_SDK__`, então nunca chegamos aqui.
-  cachedApp = admin.initializeApp({ name: '__TOPPKB_FUNCTIONS_SDK__' });
+  // Fallback (não deve acontecer em Gen 2 runtime)
+  cachedApp = admin.initializeApp();
   return cachedApp;
 }
 
