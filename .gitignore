@@ -71,9 +71,8 @@ Thumbs.db
 firebase-debug.log
 firestore-debug.log
 ui-debug.log
-**/lib/
 
-# Functions
+# Functions (built output)
 functions/lib/
 functions/.env
 
