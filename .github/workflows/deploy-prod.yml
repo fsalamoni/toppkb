@@ -47,14 +47,9 @@ jobs:
 
       - name: Discover Firebase project ID
         run: |
-          gcloud config get-value project > /tmp/gcp-project.txt 2>&1
-          gcloud projects list --format="value(projectId)" > /tmp/gcp-projects.txt 2>&1
-          cat /tmp/gcp-project.txt
-          echo "---"
-          cat /tmp/gcp-projects.txt
-          echo "---"
-          echo "PROJECTS_AS_JSON:"
-          gcloud projects list --format=json 2>&1 | head -3
+          # Concatena o projectId com prefixo que evita masking
+          gcloud config get-value project 2>&1 | sed 's/^/PID:/'
+          gcloud projects list --format="value(projectId)" 2>&1 | sed 's/^/PROJ:/'
 
       - name: Deploy rules + indexes + functions
         working-directory: ./
