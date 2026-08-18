@@ -14,12 +14,12 @@ let cachedApp: admin.app.App | null = null;
 function getOrCreateApp(): admin.app.App {
   if (cachedApp) return cachedApp;
   const apps = admin.apps;
-  if (apps.length > 0) {
+  if (apps.length > 0 && apps[0]) {
     cachedApp = apps[0];
     return cachedApp;
   }
   cachedApp = admin.initializeApp();
-  return cachedApp;
+  return cachedApp!;
 }
 
 export function getFirestore() {
