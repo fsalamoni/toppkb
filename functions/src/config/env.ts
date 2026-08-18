@@ -12,13 +12,34 @@ export const RATE_LIMIT_REGISTRO_PER_MINUTE = 60;
 export const RETENTION_REGISTROS_DIAS = 1825;
 export const RETENTION_CONVERSAS_DIAS = 365;
 
-// Pega o app (já inicializado em index.ts via initAdminSdk + admin.initializeApp)
-const app = getOrCreateApp();
-
 // Helper para acessar admin DB
-export const db = admin.firestore(app);
-export const auth = admin.auth(app);
-export const storage = admin.storage(app);
+// IMPORTANTE: Cloud Functions Gen 2 cria app com nome `__FIREBASE_FUNCTIONS_SDK__`.
+// `admin.firestore()` (sem app) falha. Usamos Proxy para SEMPRE passar o app certo.
+const getApp = () => getOrCreateApp();
+
+export const db = new Proxy({} as admin.firestore.Firestore, {
+  get(_target, prop: string) {
+    const inst = admin.firestore(getApp());
+    const value = (inst as any)[prop];
+    return typeof value === 'function' ? value.bind(inst) : value;
+  },
+}) as admin.firestore.Firestore;
+
+export const auth = new Proxy({} as admin.auth.Auth, {
+  get(_target, prop: string) {
+    const inst = admin.auth(getApp());
+    const value = (inst as any)[prop];
+    return typeof value === 'function' ? value.bind(inst) : value;
+  },
+}) as admin.auth.Auth;
+
+export const storage = new Proxy({} as admin.storage.Storage, {
+  get(_target, prop: string) {
+    const inst = admin.storage(getApp());
+    const value = (inst as any)[prop];
+    return typeof value === 'function' ? value.bind(inst) : value;
+  },
+}) as admin.storage.Storage;
 
 // Logging helper
 export const logger = (msg: string, data?: Record<string, unknown>) => {
