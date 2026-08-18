@@ -45,11 +45,20 @@ jobs:
       - name: Install Firebase CLI
         run: npm install -g firebase-tools
 
-      - name: Deploy rules + indexes + functions + hosting
+      - name: Deploy rules + indexes + functions
         working-directory: ./
         run: |
           firebase deploy \
-            --only firestore:rules,firestore:indexes,functions,hosting \
+            --only firestore:rules,firestore:indexes,functions \
+            --project antonov-82411 \
+            --force \
+            --non-interactive
+
+      - name: Deploy hosting (site: toppkb)
+        working-directory: ./
+        run: |
+          firebase deploy \
+            --only hosting:toppkb \
             --project antonov-82411 \
             --force \
             --non-interactive
@@ -58,5 +67,5 @@ jobs:
         run: |
           sleep 30
           echo "Testando site..."
-          curl -fsS https://antonov-82411.web.app > /dev/null && echo "✅ Site respondendo" || (echo "❌ Site não respondeu" && exit 1)
-          curl -fsS https://antonov-82411.web.app/login > /dev/null && echo "✅ Login page OK" || (echo "❌ Login page falhou" && exit 1)
+          curl -fsS https://toppkb.web.app > /dev/null && echo "✅ Site respondendo" || (echo "❌ Site não respondeu" && exit 1)
+          curl -fsS https://toppkb.web.app/login > /dev/null && echo "✅ Login page OK" || (echo "❌ Login page falhou" && exit 1)
