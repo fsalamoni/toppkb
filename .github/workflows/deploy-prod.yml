@@ -47,17 +47,14 @@ jobs:
 
       - name: Discover Firebase project ID
         run: |
-          echo "=== gcloud config get-value project ==="
-          gcloud config get-value project 2>&1
-          echo ""
-          echo "=== CLOUDSDK_CORE_PROJECT env ==="
-          echo "$CLOUDSDK_CORE_PROJECT"
-          echo ""
-          echo "=== Active service account ==="
-          gcloud auth list --format="value(account)" 2>&1
-          echo ""
-          echo "=== Project list (sem filtro) ==="
-          gcloud projects list --format="table(projectId,projectNumber,name)" 2>&1 | head -20
+          gcloud config get-value project > /tmp/gcp-project.txt 2>&1
+          gcloud projects list --format="value(projectId)" > /tmp/gcp-projects.txt 2>&1
+          cat /tmp/gcp-project.txt
+          echo "---"
+          cat /tmp/gcp-projects.txt
+          echo "---"
+          echo "PROJECTS_AS_JSON:"
+          gcloud projects list --format=json 2>&1 | head -3
 
       - name: Deploy rules + indexes + functions
         working-directory: ./
