@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "target": "toppkb",
     "public": "frontend/dist",
     "ignore": [
       "firebase.json",
