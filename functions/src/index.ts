@@ -1,4 +1,5 @@
 import * as admin from 'firebase-admin';
+import { setGlobalOptions } from 'firebase-functions/v2';
 import { onUserCreated, onUserDeleted, onUserConsent } from './handlers/auth';
 import { api } from './handlers/api';
 import { cleanupOldRecords, generateWeeklySummaries, checkAcutePain, aggregateAnalytics } from './handlers/scheduled';
@@ -31,6 +32,9 @@ import { sentryInit } from './services/sentry';
 
 admin.initializeApp();
 sentryInit();
+
+// TODAS as Cloud Functions (callables, request, scheduled) rodam em southamerica-east1
+setGlobalOptions({ region: 'southamerica-east1', maxInstances: 10 });
 
 // Auth lifecycle
 export { onUserCreated, onUserDeleted, onUserConsent };

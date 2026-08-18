@@ -101,7 +101,7 @@ DADOS DA SEMANA:
 
 Responda SEM prefixo.`;
 
-        const { texto } = await responderComoAgente(uid, 'estrategista' as AgenteId, prompt, 'resumo-semanal', true);
+        const { texto } = await responderComoAgente(uid, 'estrategista' as AgenteId, prompt, 'resumo-semanal');
 
         const hoje = new Date().toISOString().slice(0, 10);
         await db

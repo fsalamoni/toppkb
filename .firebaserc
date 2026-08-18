@@ -1,21 +1,14 @@
 {
   "projects": {
-    "default": "toppkb-dev",
-    "dev": "toppkb-dev",
-    "prod": "toppkb"
+    "default": "antonov",
+    "dev": "antonov",
+    "prod": "antonov"
   },
   "targets": {
-    "toppkb-dev": {
+    "antonov": {
       "hosting": {
         "main": [
-          "toppkb-dev"
-        ]
-      }
-    },
-    "toppkb": {
-      "hosting": {
-        "main": [
-          "toppkb"
+          "antonov"
         ]
       }
     }

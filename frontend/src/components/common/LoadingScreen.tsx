@@ -1,26 +1,36 @@
-export function LoadingScreen({ mensagem }: { mensagem?: string }) {
+import { Loader2 } from 'lucide-react';
+import type { ReactNode } from 'react';
+
+export function Spinner({ className = 'h-4 w-4' }: { className?: string }) {
+  return <Loader2 className={`${className} animate-spin`} />;
+}
+
+export function LoadingScreen({ message = 'Carregando...' }: { message?: string }) {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen gap-4">
-      <div className="text-6xl animate-bounce">🏓</div>
-      {mensagem && <div className="text-sm text-muted-foreground">{mensagem}</div>}
+    <div className="flex h-screen flex-col items-center justify-center gap-2">
+      <Loader2 className="h-8 w-8 animate-spin" />
+      <p className="text-sm text-muted-foreground">{message}</p>
     </div>
   );
 }
 
-export function Spinner({ size = 'md' }: { size?: 'sm' | 'md' | 'lg' }) {
-  const sz = size === 'sm' ? 'h-4 w-4' : size === 'lg' ? 'h-8 w-8' : 'h-6 w-6';
+export function EmptyState({
+  icon,
+  title,
+  description,
+  action,
+}: {
+  icon?: ReactNode;
+  title: string;
+  description?: string;
+  action?: ReactNode;
+}) {
   return (
-    <div className={`${sz} animate-spin rounded-full border-2 border-current border-t-transparent text-primary`} />
-  );
-}
-
-export function EmptyState({ icone = '📭', titulo, descricao, acao }: { icone?: string; titulo: string; descricao?: string; acao?: React.ReactNode }) {
-  return (
-    <div className="flex flex-col items-center justify-center py-12 text-center">
-      <div className="text-6xl mb-4">{icone}</div>
-      <div className="text-lg font-medium">{titulo}</div>
-      {descricao && <div className="text-sm text-muted-foreground mt-2 max-w-md">{descricao}</div>}
-      {acao && <div className="mt-4">{acao}</div>}
+    <div className="flex flex-col items-center justify-center text-center p-12 gap-3">
+      {icon && <div className="text-muted-foreground">{icon}</div>}
+      <h3 className="text-lg font-semibold">{title}</h3>
+      {description && <p className="text-sm text-muted-foreground max-w-md">{description}</p>}
+      {action}
     </div>
   );
 }

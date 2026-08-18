@@ -29,8 +29,6 @@ import {
 } from '../services/agents-config';
 import { maskKey } from '../services/llm-providers';
 
-const MASK = '••••••••';
-
 function isMasked(v: string | undefined): boolean {
   return !v || v.includes('•');
 }
@@ -87,7 +85,7 @@ export const adminSaveAgentsConfig = onCall(
       }
     }
 
-    await saveConfigDoc(incoming, {
+    await saveConfigDoc(incoming as unknown as Record<string, unknown>, {
       uid: request.auth.uid,
       path: AGENTS_CONFIG_PATH,
       tag: 'agents',

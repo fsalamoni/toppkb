@@ -1,6 +1,3 @@
-import { Response, NextFunction } from 'express';
-import { AuthedRequest } from './auth';
-
 /**
  * Rate limit in-memory (por processo).
  * Em produção, substituir por Redis ou Upstash.
@@ -14,9 +11,13 @@ interface Bucket {
 const buckets = new Map<string, Bucket>();
 
 export function rateLimit(limit: number, windowSec: number = 60) {
-  return (req: AuthedRequest, res: Response, next: NextFunction) => {
-    if (!req.uid) return next();
-    const key = `${req.uid}:${req.path}`;
+  return (req: any, res: any, next: any): void => {
+    const uid = req.user?.uid;
+    if (!uid) {
+      next();
+      return;
+    }
+    const key = `${uid}:${req.path}`;
     const now = Date.now();
     let bucket = buckets.get(key);
 
@@ -27,12 +28,13 @@ export function rateLimit(limit: number, windowSec: number = 60) {
 
     bucket.count++;
     if (bucket.count > limit) {
-      return res.status(429).json({
+      res.status(429).json({
         error: {
           code: 'rate_limited',
           message: `Limite de ${limit} requisições por ${windowSec}s excedido`,
         },
       });
+      return;
     }
 
     next();

@@ -18,7 +18,7 @@
 
 import { logger } from 'firebase-functions';
 import { loadGlobalLLMConfig, loadUserLLMConfig } from './llm-config';
-import type { LLMConfigLike, LLMProvider } from './llm-providers';
+import type { LLMProvider } from './llm-providers';
 
 // Configuração de embeddings por provider: {model default, dimensões}
 export const EMBEDDING_PROVIDER_DEFAULTS: Record<string, { model: string; dimensions: number; format: 'openai' | 'google' | 'custom' }> = {

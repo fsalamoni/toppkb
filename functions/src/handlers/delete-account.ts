@@ -8,8 +8,6 @@ import { db } from '../config/env';
 import * as admin from 'firebase-admin';
 import { logger } from 'firebase-functions';
 
-const RATE_LIMIT_DAILY = 1;
-
 export const deleteAccount = onCall(
   { cors: true, enforceAppCheck: false },
   async (request) => {

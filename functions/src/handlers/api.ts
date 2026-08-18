@@ -1,5 +1,4 @@
 import { onRequest } from 'firebase-functions/v2/https';
-import { setGlobalOptions } from 'firebase-functions/v2';
 import express from 'express';
 import { authMiddleware } from '../middleware/auth';
 import { consentMiddleware } from '../middleware/consent';
@@ -11,7 +10,8 @@ import { z } from 'zod';
 import { v4 as uuidv4 } from 'uuid';
 import * as admin from 'firebase-admin';
 
-setGlobalOptions({ region: 'southamerica-east1', maxInstances: 10 });
+// setGlobalOptions é definido em index.ts para garantir que TODAS as functions
+// (callables, scheduled, este request) usem a mesma região.
 
 const app = express();
 app.use(express.json({ limit: '5mb' }));
@@ -21,7 +21,10 @@ app.use((req, res, next) => {
   res.set('Access-Control-Allow-Origin', '*');
   res.set('Access-Control-Allow-Headers', 'Authorization, Content-Type');
   res.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  if (req.method === 'OPTIONS') return res.status(204).send('');
+  if (req.method === 'OPTIONS') {
+    res.status(204).send('');
+    return;
+  }
   next();
 });
 
@@ -35,7 +38,7 @@ app.get('/health', (_req, res) => {
 });
 
 // ============ AUTH (público) ============
-app.post('/auth/send-link', async (req, res) => {
+app.post('/auth/send-link', async (req, res): Promise<void> => {
   try {
     const schema = z.object({ email: z.string().email() });
     schema.parse(req.body);
@@ -46,11 +49,11 @@ app.post('/auth/send-link', async (req, res) => {
 });
 
 // ============ USER ============
-app.get('/user/me', authMiddleware, async (req: any, res) => {
+app.get('/user/me', authMiddleware, async (req: any, res): Promise<void> => {
   try {
-    const snap = await db.collection('users').doc(req.uid).get();
+    const snap = await db.collection('users').doc(req.user.uid).get();
     if (!snap.exists) {
-      return res.status(404).json({ error: { code: 'not_found', message: 'Usuário não encontrado' } });
+        res.status(404).json({ error: { code: 'not_found', message: 'Usuário não encontrado' } });
     }
     res.json({ id: snap.id, ...snap.data() });
   } catch (e: any) {
@@ -58,7 +61,7 @@ app.get('/user/me', authMiddleware, async (req: any, res) => {
   }
 });
 
-app.patch('/user/me', authMiddleware, async (req: any, res) => {
+app.patch('/user/me', authMiddleware, async (req: any, res): Promise<void> => {
   try {
     const allowed = [
       'displayName', 'photoURL', 'preferences',
@@ -70,18 +73,18 @@ app.patch('/user/me', authMiddleware, async (req: any, res) => {
     for (const k of allowed) {
       if (k in req.body) updates[k] = req.body[k];
     }
-    await db.collection('users').doc(req.uid).update(updates);
+    await db.collection('users').doc(req.user.uid).update(updates);
     res.json({ ok: true });
   } catch (e: any) {
     res.status(500).json({ error: { code: 'internal_error', message: e.message } });
   }
 });
 
-app.post('/user/accept-consent', authMiddleware, async (req: any, res) => {
+app.post('/user/accept-consent', authMiddleware, async (req: any, res): Promise<void> => {
   try {
     const schema = z.object({ version: z.string() });
     const { version } = schema.parse(req.body);
-    await db.collection('users').doc(req.uid).set(
+    await db.collection('users').doc(req.user.uid).set(
       {
         consent: {
           acceptedAt: admin.firestore.FieldValue.serverTimestamp(),
@@ -103,11 +106,11 @@ const COLECOES = [
   'dores', 'avaliacoes', 'estudos', 'torneios', 'metas',
 ];
 
-app.post('/registros/:colecao', authMiddleware, consentMiddleware, rateLimit(60), async (req: any, res) => {
+app.post('/registros/:colecao', authMiddleware, consentMiddleware, rateLimit(60), async (req: any, res): Promise<void> => {
   try {
     const colecao = req.params.colecao;
     if (!COLECOES.includes(colecao)) {
-      return res.status(404).json({ error: { code: 'not_found', message: 'Coleção inválida' } });
+        res.status(404).json({ error: { code: 'not_found', message: 'Coleção inválida' } });
     }
     const id = uuidv4();
     const payload = {
@@ -115,23 +118,23 @@ app.post('/registros/:colecao', authMiddleware, consentMiddleware, rateLimit(60)
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
       updatedAt: admin.firestore.FieldValue.serverTimestamp(),
     };
-    await db.collection('users').doc(req.uid).collection(colecao).doc(id).set(payload);
+    await db.collection('users').doc(req.user.uid).collection(colecao).doc(id).set(payload);
     res.status(201).json({ id });
   } catch (e: any) {
     res.status(500).json({ error: { code: 'internal_error', message: e.message } });
   }
 });
 
-app.get('/registros/:colecao', authMiddleware, consentMiddleware, async (req: any, res) => {
+app.get('/registros/:colecao', authMiddleware, consentMiddleware, async (req: any, res): Promise<void> => {
   try {
     const colecao = req.params.colecao;
     if (!COLECOES.includes(colecao)) {
-      return res.status(404).json({ error: { code: 'not_found', message: 'Coleção inválida' } });
+        res.status(404).json({ error: { code: 'not_found', message: 'Coleção inválida' } });
     }
     const limit = Math.min(Number(req.query.limit) || 20, 100);
-    let q: any = db.collection('users').doc(req.uid).collection(colecao).orderBy('data', 'desc').limit(limit);
+    let q: any = db.collection('users').doc(req.user.uid).collection(colecao).orderBy('data', 'desc').limit(limit);
     if (req.query.cursor) {
-      const cursorSnap = await db.collection('users').doc(req.uid).collection(colecao).doc(req.query.cursor).get();
+      const cursorSnap = await db.collection('users').doc(req.user.uid).collection(colecao).doc(req.query.cursor).get();
       q = q.startAfter(cursorSnap);
     }
     const snap = await q.get();
@@ -145,27 +148,27 @@ app.get('/registros/:colecao', authMiddleware, consentMiddleware, async (req: an
   }
 });
 
-app.put('/registros/:colecao/:id', authMiddleware, consentMiddleware, async (req: any, res) => {
+app.put('/registros/:colecao/:id', authMiddleware, consentMiddleware, async (req: any, res): Promise<void> => {
   try {
     const { colecao, id } = req.params;
     if (!COLECOES.includes(colecao)) {
-      return res.status(404).json({ error: { code: 'not_found', message: 'Coleção inválida' } });
+        res.status(404).json({ error: { code: 'not_found', message: 'Coleção inválida' } });
     }
     const payload = { ...req.body, updatedAt: admin.firestore.FieldValue.serverTimestamp() };
-    await db.collection('users').doc(req.uid).collection(colecao).doc(id).update(payload);
+    await db.collection('users').doc(req.user.uid).collection(colecao).doc(id).update(payload);
     res.json({ id });
   } catch (e: any) {
     res.status(500).json({ error: { code: 'internal_error', message: e.message } });
   }
 });
 
-app.delete('/registros/:colecao/:id', authMiddleware, consentMiddleware, async (req: any, res) => {
+app.delete('/registros/:colecao/:id', authMiddleware, consentMiddleware, async (req: any, res): Promise<void> => {
   try {
     const { colecao, id } = req.params;
     if (!COLECOES.includes(colecao)) {
-      return res.status(404).json({ error: { code: 'not_found', message: 'Coleção inválida' } });
+        res.status(404).json({ error: { code: 'not_found', message: 'Coleção inválida' } });
     }
-    await db.collection('users').doc(req.uid).collection(colecao).doc(id).delete();
+    await db.collection('users').doc(req.user.uid).collection(colecao).doc(id).delete();
     res.status(204).send('');
   } catch (e: any) {
     res.status(500).json({ error: { code: 'internal_error', message: e.message } });
@@ -173,7 +176,7 @@ app.delete('/registros/:colecao/:id', authMiddleware, consentMiddleware, async (
 });
 
 // ============ CHAT IA ============
-app.post('/chat/message', authMiddleware, consentMiddleware, rateLimit(20), async (req: any, res) => {
+app.post('/chat/message', authMiddleware, consentMiddleware, rateLimit(20), async (req: any, res): Promise<void> => {
   const startTime = Date.now();
   try {
     const schema = z.object({
@@ -188,7 +191,7 @@ app.post('/chat/message', authMiddleware, consentMiddleware, rateLimit(20), asyn
     let convId = conversaId;
     if (!convId) {
       const agInicial: AgenteId = agente === 'auto' ? detectarAgente(mensagem) : agente;
-      const ref = await db.collection('users').doc(req.uid).collection('conversas').doc();
+      const ref = await db.collection('users').doc(req.user.uid).collection('conversas').doc();
       convId = ref.id;
       await ref.set({
         titulo: gerarTituloConversa(mensagem),
@@ -203,7 +206,7 @@ app.post('/chat/message', authMiddleware, consentMiddleware, rateLimit(20), asyn
 
     // 2) Salva msg do user
     await db
-      .collection('users').doc(req.uid)
+      .collection('users').doc(req.user.uid)
       .collection('conversas').doc(convId)
       .collection('messages').add({
         role: 'user',
@@ -213,7 +216,7 @@ app.post('/chat/message', authMiddleware, consentMiddleware, rateLimit(20), asyn
 
     // 3) Chama orquestrador (resolve agente + LLM + provider)
     const resposta = await responderComoAgente(
-      req.uid,
+      req.user.uid,
       agente,
       mensagem,
       convId,
@@ -221,7 +224,7 @@ app.post('/chat/message', authMiddleware, consentMiddleware, rateLimit(20), asyn
 
     // 4) Salva resposta
     const msgRef = await db
-      .collection('users').doc(req.uid)
+      .collection('users').doc(req.user.uid)
       .collection('conversas').doc(convId)
       .collection('messages').add({
         role: 'assistant',
@@ -240,7 +243,7 @@ app.post('/chat/message', authMiddleware, consentMiddleware, rateLimit(20), asyn
 
     // 5) Atualiza conversa
     await db
-      .collection('users').doc(req.uid)
+      .collection('users').doc(req.user.uid)
       .collection('conversas').doc(convId)
       .update({
         agente: resposta.agenteUsado,
@@ -249,7 +252,7 @@ app.post('/chat/message', authMiddleware, consentMiddleware, rateLimit(20), asyn
 
     // 6) Audit
     await db.collection('audit').add({
-      uid: req.uid,
+      uid: req.user.uid,
       acao: 'chat.message',
       metadata: {
         conversaId: convId,
@@ -282,10 +285,10 @@ app.post('/chat/message', authMiddleware, consentMiddleware, rateLimit(20), asyn
   }
 });
 
-app.get('/chat/conversas', authMiddleware, consentMiddleware, async (req: any, res) => {
+app.get('/chat/conversas', authMiddleware, consentMiddleware, async (req: any, res): Promise<void> => {
   try {
     const snap = await db
-      .collection('users').doc(req.uid)
+      .collection('users').doc(req.user.uid)
       .collection('conversas')
       .orderBy('updatedAt', 'desc')
       .limit(50)
@@ -298,10 +301,10 @@ app.get('/chat/conversas', authMiddleware, consentMiddleware, async (req: any, r
   }
 });
 
-app.get('/chat/conversas/:id/messages', authMiddleware, consentMiddleware, async (req: any, res) => {
+app.get('/chat/conversas/:id/messages', authMiddleware, consentMiddleware, async (req: any, res): Promise<void> => {
   try {
     const snap = await db
-      .collection('users').doc(req.uid)
+      .collection('users').doc(req.user.uid)
       .collection('conversas').doc(req.params.id)
       .collection('messages')
       .orderBy('createdAt', 'asc')
@@ -316,9 +319,9 @@ app.get('/chat/conversas/:id/messages', authMiddleware, consentMiddleware, async
 });
 
 // ============ MÉTRICAS ============
-app.get('/metricas/dashboard', authMiddleware, consentMiddleware, async (req: any, res) => {
+app.get('/metricas/dashboard', authMiddleware, consentMiddleware, async (req: any, res): Promise<void> => {
   try {
-    const uid = req.uid;
+    const uid = req.user.uid;
     const ref = db.collection('users').doc(uid);
 
     const pesoSnap = await ref.collection('peso').orderBy('data', 'desc').limit(2).get();
@@ -388,9 +391,9 @@ app.get('/metricas/dashboard', authMiddleware, consentMiddleware, async (req: an
 });
 
 // ============ LGPD ============
-app.get('/exportar/tudo', authMiddleware, async (req: any, res) => {
+app.get('/exportar/tudo', authMiddleware, async (req: any, res): Promise<void> => {
   try {
-    const uid = req.uid;
+    const uid = req.user.uid;
     const ref = db.collection('users').doc(uid);
     const userSnap = await ref.get();
     const exportData: any = {
@@ -426,9 +429,9 @@ app.get('/exportar/tudo', authMiddleware, async (req: any, res) => {
   }
 });
 
-app.delete('/deletar-conta', authMiddleware, rateLimit(1, 86400), async (req: any, res) => {
+app.delete('/deletar-conta', authMiddleware, rateLimit(1, 86400), async (req: any, res): Promise<void> => {
   try {
-    const uid = req.uid;
+    const uid = req.user.uid;
     const ref = db.collection('users').doc(uid);
 
     await db.collection('audit').add({

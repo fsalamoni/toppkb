@@ -14,15 +14,14 @@
  */
 
 import { AgenteId, detectarAgente } from './router';
-import { carregarSystemPrompt, PROMPTS } from '../../prompts';
+import { PROMPTS } from '../../prompts';
 import { resolveEffectiveLLMConfig } from '../llm-config';
-import { loadAgentsConfig, type AgentsConfig, type AgentConfigRef } from '../agents-config';
+import { loadAgentsConfig, type AgentsConfig, type AgentConfig } from '../agents-config';
 import { db, logger } from '../../config/env';
 import { LLMMessage } from '../llm-providers';
 import { runAgent } from '../../agents/runner';
 import { retrieveRelevantChunks, RetrievedChunk } from '../retrieval';
 import { anonymizeText } from '../anonymizer';
-import { getUserProfile } from '../profile';
 
 export interface ContextoUsuario {
   displayName?: string;
@@ -201,8 +200,8 @@ ${sources.map((s, i) => `[${i + 1}] ${s.content.slice(0, 500)}...`).join('\n\n')
   // 9) Histórico
   const historico = await carregarHistorico(uid, conversaId);
 
-  // 10) Converte config (compatibilidade com AgentConfigRef)
-  const agentConfigRef: AgentConfigRef = agentConfig
+  // 10) Converte config (compatibilidade com AgentConfig)
+  const agentConfigRef: AgentConfig = agentConfig
     ? {
         id: agentConfig.id,
         label: agentConfig.label,
@@ -220,11 +219,13 @@ ${sources.map((s, i) => `[${i + 1}] ${s.content.slice(0, 500)}...`).join('\n\n')
 
   // 11) Executa o agent runner
   const result = await runAgent({
-    agent: agentConfigRef,
+    agent: agentConfigRef as any,
     globalLLM: llmConfig,
     userMessage: mensagemLimpa,
     systemPromptBase,
-    history: historico.filter((h) => h.role !== 'system'),
+    history: historico
+      .filter((h) => h.role !== 'system')
+      .map((h) => ({ role: h.role as 'user' | 'assistant', content: h.content })),
     additionalContext: contextoUsuario + contextoRag,
   });
 

@@ -1,65 +1,47 @@
 import { useUIStore } from '@/stores/uiStore';
+import { X, CheckCircle, AlertCircle, Info } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { CheckCircle2, AlertCircle, X } from 'lucide-react';
-import { useEffect } from 'react';
-
-export interface Toast {
-  id: string;
-  title: string;
-  description?: string;
-  variant?: 'default' | 'destructive' | 'success';
-  duration?: number;
-}
-
-export const toast = (t: Omit<Toast, 'id'>) => {
-  const id = Math.random().toString(36).slice(2);
-  const event = new CustomEvent('toppkb-toast', { detail: { id, ...t } });
-  window.dispatchEvent(event);
-};
 
 export function Toaster() {
-  const [toasts, setToasts] = useState<Toast[]>([]);
-
-  useEffect(() => {
-    const handler = (e: Event) => {
-      const t = (e as CustomEvent<Toast>).detail;
-      setToasts((curr) => [...curr, t]);
-      setTimeout(() => {
-        setToasts((curr) => curr.filter((x) => x.id !== t.id));
-      }, t.duration || 4000);
-    };
-    window.addEventListener('toppkb-toast', handler);
-    return () => window.removeEventListener('toppkb-toast', handler);
-  }, []);
+  const toasts = useUIStore((s) => s.toasts);
+  const removeToast = useUIStore((s) => s.removeToast);
 
   return (
-    <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2 pointer-events-none">
-      {toasts.map((t) => (
-        <div
-          key={t.id}
-          className={cn(
-            'pointer-events-auto flex items-start gap-3 rounded-lg border bg-card p-4 shadow-lg animate-fade-in',
-            'min-w-[300px] max-w-md',
-            t.variant === 'destructive' && 'border-red-500',
-            t.variant === 'success' && 'border-green-500',
-          )}
-        >
-          {t.variant === 'destructive' ? (
-            <AlertCircle className="h-5 w-5 text-red-500 flex-shrink-0 mt-0.5" />
-          ) : (
-            <CheckCircle2 className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
-          )}
-          <div className="flex-1">
-            <div className="font-medium text-sm">{t.title}</div>
-            {t.description && <div className="text-xs text-muted-foreground mt-1">{t.description}</div>}
+    <div className="fixed top-4 right-4 z-50 space-y-2">
+      {toasts.map((t) => {
+        const Icon = t.type === 'success' ? CheckCircle : t.type === 'error' ? AlertCircle : Info;
+        return (
+          <div
+            key={t.id}
+            className={cn(
+              'flex items-center gap-2 min-w-[300px] max-w-md px-4 py-3 rounded-md border shadow-md bg-card',
+              t.type === 'success' && 'border-green-500/30',
+              t.type === 'error' && 'border-red-500/30',
+              t.type === 'info' && 'border-blue-500/30',
+            )}
+          >
+            <Icon
+              className={cn(
+                'h-5 w-5 flex-shrink-0',
+                t.type === 'success' && 'text-green-500',
+                t.type === 'error' && 'text-red-500',
+                t.type === 'info' && 'text-blue-500',
+              )}
+            />
+            <span className="flex-1 text-sm">{t.message}</span>
+            <button onClick={() => removeToast(t.id)} className="text-muted-foreground hover:text-foreground">
+              <X className="h-4 w-4" />
+            </button>
           </div>
-          <button onClick={() => setToasts((c) => c.filter((x) => x.id !== t.id))} className="text-muted-foreground hover:text-foreground">
-            <X className="h-4 w-4" />
-          </button>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
 
-import { useState } from 'react';
+// Compat: função `toast` estilo shadcn
+export function toast({ title, description, variant }: { title: string; description?: string; variant?: 'default' | 'destructive' | 'success' }) {
+  const addToast = useUIStore.getState().addToast;
+  const type = variant === 'destructive' ? 'error' : variant === 'success' ? 'success' : 'info';
+  addToast({ type, message: description ? `${title}: ${description}` : title });
+}
