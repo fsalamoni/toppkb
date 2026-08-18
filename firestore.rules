@@ -1,307 +1,91 @@
 rules_version = '2';
 
-service cloud.firestore {
+// =====================================================================
+// Top Pickleball 50+ — Firestore Security Rules
+// ISOLAMENTO TOTAL: este app só pode ler/escrever em paths com prefixo
+// `toppkb_`. Todas as outras collections (Cofrito, SIGO/CAOCIPP) são
+// INVISÍVEIS para este app.
+// =====================================================================
 
+service cloud.firestore {
   match /databases/{database}/documents {
 
-    // ============================================================
-    // Helpers
-    // ============================================================
-
-    function isSignedIn() {
-      return request.auth != null;
-    }
-
-    function isOwner(uid) {
-      return isSignedIn() && request.auth.uid == uid;
-    }
-
+    function isSignedIn() { return request.auth != null; }
+    function isOwner(uid) { return isSignedIn() && request.auth.uid == uid; }
     function isAdmin() {
-      return isSignedIn() &&
-        exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+      return isSignedIn() && (request.auth.token.admin == 'admin' || request.auth.token.admin == 'master');
     }
+    function isMaster() { return isSignedIn() && request.auth.token.admin == 'master'; }
 
-    function isAdminMaster() {
-      return isSignedIn() &&
-        exists(/databases/$(database)/documents/admins/$(request.auth.uid)) &&
-        get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.role == 'master';
-    }
+    // DEFAULT: bloqueia tudo. Só toppkb_* é acessível.
+    match /{document=**} { allow read, write: if false; }
 
-    function hasAcceptedConsent() {
-      return isSignedIn() &&
-        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.consent != null;
-    }
+    // USERS — namespace toppkb_users/{uid}
+    match /toppkb_users/{uid} {
+      allow read: if isOwner(uid) || isAdmin();
+      allow create: if isOwner(uid) && request.resource.data.uid == uid;
+      allow update: if isOwner(uid) && request.resource.data.uid == uid;
+      allow delete: if isMaster();
 
-    function isValidUserUpdate() {
-      let allowed = [
-        'displayName', 'photoURL', 'preferences', 'lastSeen',
-        'onboardingComplete', 'ladoDominante', 'cidade', 'estado',
-        'parceiroDuplas', 'tempoDeJogoMeses', 'outrosEsportes',
-        'historicoLesoes', 'pesoMeta', 'metaPosicao', 'llmConfig',
-        'agentsConfig', 'agentsConfigUpdatedAt'
-      ];
-      return request.resource.data.diff(resource.data).affectedKeys()
-        .hasOnly(allowed);
-    }
-
-    function isValidLLMConfig() {
-      let allowed = ['provider', 'model', 'apiKey', 'enabled', 'updatedAt'];
-      return request.resource.data.diff(resource.data).affectedKeys()
-        .hasOnly(allowed);
-    }
-
-    // ============================================================
-    // Users — dados 100% isolados por usuário
-    // ============================================================
-
-    match /users/{uid} {
-      // Doc principal
-      allow read, delete: if isOwner(uid);
-      allow create: if isOwner(uid) &&
-        request.resource.data.keys().hasAll([
-          'uid', 'email', 'displayName', 'createdAt', 'consent',
-          'onboardingComplete', 'ladoDominante', 'pesoInicial', 'altura',
-          'imcInicial', 'nivelInicial', 'objetivoFinal', 'prazoMeses', 'pesoMeta'
-        ]) &&
-        request.resource.data.email is string &&
-        request.resource.data.displayName is string &&
-        request.resource.data.consent != null;
-      allow update: if isOwner(uid) && isValidUserUpdate();
-
-      // Perfil detalhado
-      match /profile/main {
-        allow read, write: if isOwner(uid);
+      match /{collection}/{docId} {
+        allow read: if isOwner(uid) || isAdmin();
+        allow create: if isOwner(uid) && request.resource.data.uid == uid;
+        allow update: if isOwner(uid) && request.resource.data.uid == uid;
+        allow delete: if isOwner(uid) || isMaster();
       }
 
-      // Settings
-      match /settings/{settingId} {
-        allow read, write: if isOwner(uid);
-      }
-      match /settings/llm {
-        allow read, write: if isOwner(uid) && isValidLLMConfig();
-      }
-      match /settings/preferences {
-        allow read, write: if isOwner(uid);
-      }
-
-      // Conversas + Mensagens
-      match /conversas/{conversaId} {
-        allow read, write: if isOwner(uid);
-        match /messages/{messageId} {
-          allow read, write: if isOwner(uid);
+      match /chat/conversas/{conversaId} {
+        allow read, write: if isOwner(uid) || isAdmin();
+        match /mensagens/{msgId} {
+          allow read, write: if isOwner(uid) || isAdmin();
         }
       }
-
-      // Feedback
-      match /feedback/{feedbackId} {
-        allow read, write: if isOwner(uid);
+      match /profile/{docId} {
+        allow read: if isOwner(uid) || isAdmin();
+        allow write: if isOwner(uid) || isAdmin();
       }
-
-      // ========================================================
-      // Coleções esportivas (todas isoladas por user)
-      // ========================================================
-
-      // 🏓 Treinos
-      match /treinos/{treinoId} {
-        allow read, write: if isOwner(uid);
-      }
-
-      // 🎾 Partidas
-      match /partidas/{partidaId} {
-        allow read, write: if isOwner(uid);
-      }
-
-      // 💪 Fisio
-      match /fisio/{fisioId} {
-        allow read, write: if isOwner(uid);
-      }
-
-      // 🏋️ Força
-      match /forca/{forcaId} {
-        allow read, write: if isOwner(uid);
-      }
-
-      // 🤸 Mobilidade
-      match /mobilidade/{mobilidadeId} {
-        allow read, write: if isOwner(uid);
-      }
-
-      // 🏃 Cardio
-      match /cardio/{cardioId} {
-        allow read, write: if isOwner(uid);
-      }
-
-      // 🥗 Refeições
-      match /refeicoes/{refeicaoId} {
-        allow read, write: if isOwner(uid);
-      }
-
-      // 💧 Água
-      match /agua/{aguaId} {
-        allow read, write: if isOwner(uid);
-      }
-
-      // 💊 Suplementos
-      match /suplementos/{suplId} {
-        allow read, write: if isOwner(uid);
-      }
-
-      // ⚖️ Peso
-      match /peso/{pesoId} {
-        allow read, write: if isOwner(uid);
-      }
-
-      // 📏 Medidas
-      match /medidas/{medidaId} {
-        allow read, write: if isOwner(uid);
-      }
-
-      // 😴 Sono
-      match /sono/{sonoId} {
-        allow read, write: if isOwner(uid);
-      }
-
-      // 🩹 Dores
-      match /dores/{dorId} {
-        allow read, write: if isOwner(uid);
-      }
-
-      // 📊 Avaliações mensais
-      match /avaliacoes/{avaliacaoId} {
-        allow read, write: if isOwner(uid);
-      }
-
-      // 📚 Estudos
-      match /estudos/{estudoId} {
-        allow read, write: if isOwner(uid);
-      }
-
-      // 🏆 Torneios + jogos
-      match /torneios/{torneioId} {
-        allow read, write: if isOwner(uid);
-        match /jogos/{jogoId} {
-          allow read, write: if isOwner(uid);
-        }
-      }
-
-      // 🎯 Metas
-      match /metas/{metaId} {
-        allow read, write: if isOwner(uid);
-      }
-
-      // 📁 Documentos do user (fotos, PDFs)
-      match /documentos/{docId} {
-        allow read, write: if isOwner(uid);
-        match /chunks/{chunkId} {
-          allow read, write: if isOwner(uid);
-        }
-      }
-
-      // 📈 Agregações (escritas pelo backend)
-      match /agregados/{agregadoId} {
-        allow read: if isOwner(uid);
-        allow write: if false;
+      match /onboarding/{docId} {
+        allow read: if isOwner(uid) || isAdmin();
+        allow write: if isOwner(uid) || isAdmin();
       }
     }
 
-    // ============================================================
-    // Admins
-    // ============================================================
-
-    match /admins/{uid} {
-      allow read: if isOwner(uid);
-      allow write: if false;
-      match /settings/{settingId} {
-        allow read, write: if isOwner(uid) && isAdmin();
-      }
-      match /settings/llm {
-        allow read, write: if isOwner(uid) && isAdmin() && isValidLLMConfig();
-      }
-    }
-
-    // ============================================================
-    // Admin Config GLOBAL
-    // ============================================================
-
-    match /admin-config/{configId} {
-      // LLM global: qualquer user autenticado PODE ler (detectar se há config ativa)
-      // LLM secret: SOMENTE master
-      // Agents: master only (contém apiKey dos agentes)
-      allow read: if isAdminMaster()
-        || (isSignedIn() && configId != 'llm-secret' && configId != 'agents');
-      allow write: if isAdminMaster();
-    }
-
-    match /admin-config/llm-secret/{document=**} {
-      allow read, write: if isAdminMaster();
-    }
-
-    match /admin-config/agents/{document=**} {
-      allow read, write: if isAdminMaster();
-    }
-
-    // ============================================================
-    // Corpus (base de conhecimento)
-    // ============================================================
-
-    match /corpus/{document=**} {
-      allow read: if hasAcceptedConsent() || isAdmin();
+    // AGENTS CONFIG
+    match /toppkb_agents_config/{docId} {
+      allow read: if isSignedIn();
       allow write: if isAdmin();
     }
-
-    match /corpus/sources/{sourceId} {
-      allow read: if hasAcceptedConsent();
-      allow write: if isAdmin();
+    match /toppkb_agents_config/users/{uid} {
+      allow read: if isOwner(uid) || isAdmin();
+      allow write: if isOwner(uid) || isAdmin();
     }
 
-    match /corpus/studies/{docId} {
-      allow read: if hasAcceptedConsent();
-      allow write: if isAdmin();
-      match /chunks/{chunkId} {
-        allow read: if hasAcceptedConsent();
-        allow write: if isAdmin();
-      }
-    }
-
-    // ============================================================
-    // Auditoria
-    // ============================================================
-
-    match /audit/{auditId} {
-      allow read: if isAdmin();
-      allow write: if false;
-    }
-
-    // ============================================================
-    // Feature flags
-    // ============================================================
-
-    match /feature-flags/{flagKey} {
+    // CORPUS
+    match /toppkb_corpus/{collection}/{docId} {
       allow read: if isSignedIn();
       allow write: if isAdmin();
     }
 
-    // ============================================================
-    // System
-    // ============================================================
-
-    match /system/{document=**} {
-      allow read: if isAdmin();
-      allow write: if false;
+    // SEED DATA (read-only)
+    match /toppkb_seed/{collection}/{docId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
     }
 
-    // ============================================================
-    // Agent Events (tempo real do orquestrador)
-    // ============================================================
-
-    match /agentEvents/{conversaId} {
+    // TOURNAMENTS PUBLIC
+    match /toppkb_tournaments_public/{docId} {
       allow read: if isSignedIn();
-      allow write: if false;
-      match /events/{eventId} {
-        allow read: if isSignedIn();
-        allow write: if false;
-      }
+      allow write: if isAdmin();
+    }
+
+    // ADMIN
+    match /toppkb_admin/{collection}/{docId} {
+      allow read: if isAdmin();
+      allow write: if isAdmin();
+    }
+    match /toppkb_admin/admins/{uid} {
+      allow read: if isOwner(uid) || isAdmin();
+      allow write: if isMaster();
     }
   }
 }
