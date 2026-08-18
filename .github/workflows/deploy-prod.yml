@@ -69,3 +69,4 @@ jobs:
           echo "Testando site..."
           curl -fsS https://toppkb.web.app > /dev/null && echo "✅ Site respondendo" || (echo "❌ Site não respondeu" && exit 1)
           curl -fsS https://toppkb.web.app/login > /dev/null && echo "✅ Login page OK" || (echo "❌ Login page falhou" && exit 1)
+# Updated: Tue Aug 18 19:56:31 UTC 2026
