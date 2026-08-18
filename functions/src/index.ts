@@ -1,5 +1,5 @@
-import * as admin from 'firebase-admin';
 import { setGlobalOptions } from 'firebase-functions/v2';
+import { initAdminSdk } from './config/firestore-shim';
 import { onUserCreated, onUserDeleted, onUserConsent } from './handlers/auth';
 import { api } from './handlers/api';
 import { cleanupOldRecords, generateWeeklySummaries, checkAcutePain, aggregateAnalytics } from './handlers/scheduled';
@@ -30,7 +30,10 @@ import { deleteAccount } from './handlers/delete-account';
 
 import { sentryInit } from './services/sentry';
 
-admin.initializeApp();
+// IMPORTANTE: shim ANTES de qualquer uso de admin para que admin.firestore() use o app certo.
+// NÃO chamamos admin.initializeApp() aqui — o Firebase runtime (Gen 2) já inicializa
+// automaticamente, e o shim pega o app existente via getOrCreateApp().
+initAdminSdk();
 sentryInit();
 
 // TODAS as Cloud Functions (callables, request, scheduled) rodam em southamerica-east1
