@@ -8,36 +8,40 @@ on:
 jobs:
   frontend:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: frontend
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
       - run: npm install --no-audit --no-fund --legacy-peer-deps
-      - run: npm run lint
-      # typecheck desabilitado temporariamente: Vite/esbuild gera o bundle
-      # com sucesso, mas tsc --noEmit tem falsos positivos por discrepâncias
-      # entre interfaces de libs externas e o código (asChild em Button,
-      # props do EmptyState, etc). build é a fonte da verdade.
-      # - run: npm run typecheck
+      - name: Lint
+        working-directory: ./frontend
+        run: npm run lint
+      - name: Test
+        working-directory: ./frontend
+        run: npm test -- --run
 
   functions:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: functions
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
       - run: npm install --no-audit --no-fund --legacy-peer-deps
-      - run: npm run lint
-      - run: npm run typecheck
-      - run: npm test -- --run
+      - name: Lint
+        working-directory: ./functions
+        run: npm run lint
+      - name: Typecheck
+        working-directory: ./functions
+        run: npm run typecheck
+      - name: Test
+        working-directory: ./functions
+        run: npm test -- --run
 
   ci:
     runs-on: ubuntu-latest
@@ -46,11 +50,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+      - run: npm install --no-audit --no-fund --legacy-peer-deps
       - name: Build frontend
         working-directory: ./frontend
-        run: |
-          npm install --no-audit --no-fund --legacy-peer-deps
-          npm run build
+        run: npm run build
         env:
           VITE_FIREBASE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY }}
           VITE_FIREBASE_AUTH_DOMAIN: ${{ secrets.VITE_FIREBASE_AUTH_DOMAIN }}
@@ -60,6 +65,4 @@ jobs:
           VITE_FIREBASE_STORAGE_BUCKET: ${{ secrets.VITE_FIREBASE_STORAGE_BUCKET }}
       - name: Build functions
         working-directory: ./functions
-        run: |
-          npm install --no-audit --no-fund --legacy-peer-deps
-          npm run build
+        run: npm run build
