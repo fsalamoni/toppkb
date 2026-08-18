@@ -5,12 +5,10 @@
  * (NÃO `[DEFAULT]`). `admin.firestore()` sem app falha com
  * "The default Firebase app does not exist".
  *
- * SOLUÇÃO: monkey-patch `admin.firestore` para usar o app criado.
- * Chamado uma vez no module load.
+ * SOLUÇÃO: wrappers que sempre passam o app criado.
  */
 import * as admin from 'firebase-admin';
 
-let initialized = false;
 let cachedApp: admin.app.App | null = null;
 
 export function getOrCreateApp(): admin.app.App {
@@ -26,32 +24,37 @@ export function getOrCreateApp(): admin.app.App {
 }
 
 /**
- * Patch global que faz `admin.firestore()` retornar o firestore
- * do app com nome `__TOPPKB_FUNCTIONS_SDK__` (ou qualquer um se já existir).
+ * Helpers que sempre passam o app explícito.
+ * IMPORTANTE: usar estes em vez de admin.firestore()/admin.auth() diretamente.
  */
-export function initAdminSdk(): void {
-  if (initialized) return;
-  initialized = true;
-
-  const app = getOrCreateApp();
-
-  // Substitui `admin.firestore()` para sempre usar o app
-  const originalFirestore = admin.firestore.bind(admin);
-  (admin as any).firestore = function firestore(appArg?: any) {
-    if (appArg) return originalFirestore(appArg);
-    return originalFirestore(app);
-  };
-
-  // Mesmo para auth e storage
-  const originalAuth = admin.auth.bind(admin);
-  (admin as any).auth = function auth(appArg?: any) {
-    if (appArg) return originalAuth(appArg);
-    return originalAuth(app);
-  };
-
-  const originalStorage = admin.storage.bind(admin);
-  (admin as any).storage = function storage(appArg?: any) {
-    if (appArg) return originalStorage(appArg);
-    return originalStorage(app);
-  };
+export function db() {
+  return admin.firestore(getOrCreateApp());
 }
+
+export function auth() {
+  return admin.auth(getOrCreateApp());
+}
+
+export function storage() {
+  return admin.storage(getOrCreateApp());
+}
+
+export function initAdminSdk(): void {
+  // Apenas garante que o app foi inicializado.
+  getOrCreateApp();
+}
+
+/**
+ * Proxy de admin.firestore que sempre passa o app.
+ * Uso: `firestoreProxy.collection(...)` em vez de `admin.firestore().collection(...)`.
+ */
+export const firestoreProxy: admin.firestore.Firestore = new Proxy({} as admin.firestore.Firestore, {
+  get(_target, prop) {
+    const inst = admin.firestore(getOrCreateApp());
+    const value = (inst as any)[prop];
+    if (typeof value === 'function') {
+      return value.bind(inst);
+    }
+    return value;
+  },
+});
