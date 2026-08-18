@@ -45,23 +45,14 @@ jobs:
       - name: Install Firebase CLI
         run: npm install -g firebase-tools
 
-      - name: Deploy rules + indexes + functions
+      - name: Deploy rules + indexes + functions + hosting
         working-directory: ./
         run: |
           firebase deploy \
-            --only firestore:rules,firestore:indexes,functions \
+            --only firestore:rules,firestore:indexes,functions,hosting \
             --project antonov-82411 \
             --force \
             --non-interactive
-
-      - name: Deploy hosting
-        uses: FirebaseExtended/action-hosting-deploy@v0
-        with:
-          repoToken: ${{ secrets.GITHUB_TOKEN }}
-          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-          projectId: antonov-82411
-          channelId: live
-          target: hosting
 
       - name: Smoke test
         run: |
