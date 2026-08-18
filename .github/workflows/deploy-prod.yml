@@ -14,15 +14,14 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
 
       - name: Install frontend deps
         working-directory: ./frontend
-        run: npm ci || npm install
+        run: npm install --no-audit --no-fund
 
       - name: Install functions deps
         working-directory: ./functions
-        run: npm ci || npm install
+        run: npm install --no-audit --no-fund
 
       - name: Build frontend
         working-directory: ./frontend
