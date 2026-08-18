@@ -45,11 +45,11 @@ jobs:
       - name: Install Firebase CLI
         run: npm install -g firebase-tools
 
-      - name: Deploy rules + indexes + storage + functions
+      - name: Deploy rules + indexes + functions
         working-directory: ./
         run: |
           firebase deploy \
-            --only firestore:rules,firestore:indexes,storage,functions \
+            --only firestore:rules,firestore:indexes,functions \
             --project antonov \
             --force \
             --non-interactive
