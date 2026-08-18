@@ -68,3 +68,28 @@ export function slugify(str: string): string {
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '');
 }
+
+/**
+ * Formata duração em minutos para texto legível.
+ * 65 → "1h 5min"
+ * 30 → "30min"
+ * 120 → "2h"
+ */
+export function formatDuration(min: number): string {
+  if (min < 60) return `${min}min`;
+  const h = Math.floor(min / 60);
+  const m = min % 60;
+  if (m === 0) return `${h}h`;
+  return `${h}h ${m}min`;
+}
+
+/**
+ * Formata data-hora relativo a partir de qualquer tipo.
+ */
+export function formatDateTimeAny(ts: any): string {
+  if (!ts) return '';
+  if (ts instanceof Timestamp) return formatDateTime(ts.toDate().toISOString());
+  if (typeof ts === 'string') return formatDateTime(ts);
+  if (ts.toDate) return formatDateTime(ts.toDate().toISOString());
+  return formatDateTime(ts);
+}

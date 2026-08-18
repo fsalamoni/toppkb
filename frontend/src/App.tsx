@@ -8,6 +8,7 @@ import { Login } from './pages/Login';
 import { Landing } from './pages/Landing';
 import { Dashboard } from './pages/Dashboard';
 import { Treinos } from './pages/Treinos';
+import { TreinoForm } from './pages/TreinoForm';
 import { Partidas } from './pages/Partidas';
 import { Fisio } from './pages/Fisio';
 import { Nutricao } from './pages/Nutricao';
@@ -60,6 +61,8 @@ function AppShell() {
             <Route path="/" element={<Navigate to="/app/dashboard" replace />} />
             <Route path="/app/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
             <Route path="/app/treinos" element={<PrivateRoute><Treinos /></PrivateRoute>} />
+            <Route path="/app/treinos/novo" element={<PrivateRoute><TreinoForm /></PrivateRoute>} />
+            <Route path="/app/treinos/:id" element={<PrivateRoute><TreinoForm /></PrivateRoute>} />
             <Route path="/app/partidas" element={<PrivateRoute><Partidas /></PrivateRoute>} />
             <Route path="/app/fisio" element={<PrivateRoute><Fisio /></PrivateRoute>} />
             <Route path="/app/nutricao" element={<PrivateRoute><Nutricao /></PrivateRoute>} />

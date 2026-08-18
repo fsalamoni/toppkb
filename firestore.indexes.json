@@ -1,77 +1,56 @@
 {
   "indexes": [
-    {
-      "collectionGroup": "treinos",
-      "queryScope": "COLLECTION_GROUP",
+    { "collectionGroup": "treinos", "queryScope": "COLLECTION",
       "fields": [
-        { "fieldPath": "tipo", "order": "ASCENDING" },
+        { "fieldPath": "uid", "order": "ASCENDING" },
         { "fieldPath": "data", "order": "DESCENDING" }
-      ]
-    },
-    {
-      "collectionGroup": "partidas",
-      "queryScope": "COLLECTION_GROUP",
+      ]},
+    { "collectionGroup": "partidas", "queryScope": "COLLECTION",
       "fields": [
-        { "fieldPath": "resultado", "order": "ASCENDING" },
+        { "fieldPath": "uid", "order": "ASCENDING" },
         { "fieldPath": "data", "order": "DESCENDING" }
-      ]
-    },
-    {
-      "collectionGroup": "partidas",
-      "queryScope": "COLLECTION_GROUP",
+      ]},
+    { "collectionGroup": "peso", "queryScope": "COLLECTION",
       "fields": [
-        { "fieldPath": "contexto", "order": "ASCENDING" },
+        { "fieldPath": "uid", "order": "ASCENDING" },
         { "fieldPath": "data", "order": "DESCENDING" }
-      ]
-    },
-    {
-      "collectionGroup": "dores",
-      "queryScope": "COLLECTION_GROUP",
+      ]},
+    { "collectionGroup": "sono", "queryScope": "COLLECTION",
       "fields": [
-        { "fieldPath": "regiao", "order": "ASCENDING" },
+        { "fieldPath": "uid", "order": "ASCENDING" },
         { "fieldPath": "data", "order": "DESCENDING" }
-      ]
-    },
-    {
-      "collectionGroup": "dores",
-      "queryScope": "COLLECTION_GROUP",
+      ]},
+    { "collectionGroup": "dores", "queryScope": "COLLECTION",
       "fields": [
-        { "fieldPath": "intensidade", "order": "ASCENDING" },
+        { "fieldPath": "uid", "order": "ASCENDING" },
+        { "fieldPath": "ativa", "order": "ASCENDING" },
         { "fieldPath": "data", "order": "DESCENDING" }
-      ]
-    },
-    {
-      "collectionGroup": "refeicoes",
-      "queryScope": "COLLECTION_GROUP",
+      ]},
+    { "collectionGroup": "nutricao", "queryScope": "COLLECTION",
       "fields": [
-        { "fieldPath": "contexto", "order": "ASCENDING" },
+        { "fieldPath": "uid", "order": "ASCENDING" },
         { "fieldPath": "data", "order": "DESCENDING" }
-      ]
-    },
-    {
-      "collectionGroup": "torneios",
-      "queryScope": "COLLECTION_GROUP",
+      ]},
+    { "collectionGroup": "metas", "queryScope": "COLLECTION",
       "fields": [
-        { "fieldPath": "status", "order": "ASCENDING" },
-        { "fieldPath": "dataInicio", "order": "ASCENDING" }
-      ]
-    },
-    {
-      "collectionGroup": "metas",
-      "queryScope": "COLLECTION_GROUP",
-      "fields": [
-        { "fieldPath": "status", "order": "ASCENDING" },
+        { "fieldPath": "uid", "order": "ASCENDING" },
         { "fieldPath": "prazo", "order": "ASCENDING" }
-      ]
-    },
-    {
-      "collectionGroup": "messages",
-      "queryScope": "COLLECTION_GROUP",
+      ]},
+    { "collectionGroup": "torneios", "queryScope": "COLLECTION",
       "fields": [
-        { "fieldPath": "conversationId", "order": "ASCENDING" },
-        { "fieldPath": "createdAt", "order": "DESCENDING" }
-      ]
-    }
+        { "fieldPath": "uid", "order": "ASCENDING" },
+        { "fieldPath": "dataInicio", "order": "ASCENDING" }
+      ]},
+    { "collectionGroup": "preparacao", "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "uid", "order": "ASCENDING" },
+        { "fieldPath": "data", "order": "DESCENDING" }
+      ]},
+    { "collectionGroup": "conversas", "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "uid", "order": "ASCENDING" },
+        { "fieldPath": "updatedAt", "order": "DESCENDING" }
+      ]}
   ],
   "fieldOverrides": []
 }
