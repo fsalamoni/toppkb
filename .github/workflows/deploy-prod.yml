@@ -58,5 +58,5 @@ jobs:
         run: |
           sleep 30
           echo "Testando site..."
-          curl -fsS https://toppkb.web.app > /dev/null && echo "✅ Site respondendo" || (echo "❌ Site não respondeu" && exit 1)
-          curl -fsS https://toppkb.web.app/login > /dev/null && echo "✅ Login page OK" || (echo "❌ Login page falhou" && exit 1)
+          curl -fsS https://antonov-82411.web.app > /dev/null && echo "✅ Site respondendo" || (echo "❌ Site não respondeu" && exit 1)
+          curl -fsS https://antonov-82411.web.app/login > /dev/null && echo "✅ Login page OK" || (echo "❌ Login page falhou" && exit 1)
