@@ -33,7 +33,7 @@ export function PerfilEdit() {
         { merge: true },
       );
       toast({ title: 'Perfil atualizado!', variant: 'success' });
-      navigate('/configuracoes');
+      navigate('/app/configuracoes');
     } catch (e: any) {
       toast({ title: 'Erro', description: e.message, variant: 'destructive' });
     } finally {
@@ -75,7 +75,7 @@ export function PerfilEdit() {
             <Textarea value={form.objetivoFinal} onChange={(e) => setForm({ ...form, objetivoFinal: e.target.value })} />
           </div>
           <div className="flex gap-2 pt-2">
-            <Button variant="outline" onClick={() => navigate('/configuracoes')}>Cancelar</Button>
+            <Button variant="outline" onClick={() => navigate('/app/configuracoes')}>Cancelar</Button>
             <Button onClick={onSave} disabled={saving} className="flex-1">
               {saving ? 'Salvando...' : 'Salvar'}
             </Button>

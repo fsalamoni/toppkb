@@ -40,7 +40,7 @@ export function Consent() {
         { merge: true },
       );
       toast({ title: 'Consentimento aceito!', variant: 'success' });
-      navigate('/onboarding');
+      navigate('/app/onboarding');
     } catch (e: any) {
       toast({ title: 'Erro', description: e.message, variant: 'destructive' });
     } finally {
@@ -93,7 +93,7 @@ export function Consent() {
           </label>
 
           <div className="flex gap-2">
-            <Button variant="outline" onClick={() => signOut().then(() => navigate('/login'))}>
+            <Button variant="outline" onClick={() => signOut().then(() => navigate('/app/'))}>
               Sair
             </Button>
             <Button onClick={handleAccept} disabled={!accepted || saving} className="flex-1">

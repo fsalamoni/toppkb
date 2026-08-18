@@ -36,7 +36,7 @@ export function AdminUsers() {
     if (!email.trim()) return;
     setGranting(true);
     try {
-      await adminGrantAdmin(email.trim(), 'admin');
+      await adminGrantAdmin(email.trim(), '/app/admin');
       addToast({ type: 'success', message: `${email} agora é admin` });
       setEmail('');
       await load();

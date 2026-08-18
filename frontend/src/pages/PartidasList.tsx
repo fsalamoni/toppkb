@@ -14,10 +14,10 @@ export function PartidasList() {
   const { user } = useAuth();
 
   const { data, isLoading } = useQuery({
-    queryKey: ['partidas', user?.uid],
+    queryKey: ['/app/partidas', user?.uid],
     queryFn: async () => {
       if (!user) return [];
-      const q = query(collection(db, 'users', user.uid, 'partidas'), orderBy('data', 'desc'));
+      const q = query(collection(db, 'users', user.uid, '/app/partidas'), orderBy('data', 'desc'));
       const snap = await getDocs(q);
       return snap.docs.map((d) => ({ id: d.id, ...d.data() } as any));
     },
@@ -34,7 +34,7 @@ export function PartidasList() {
     <div className="max-w-4xl mx-auto space-y-4">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">🎾 Partidas</h1>
-        <Button asChild><Link to="/partidas/nova"><Plus className="h-4 w-4" /> Nova partida</Link></Button>
+        <Button asChild><Link to="/app/partidas/nova"><Plus className="h-4 w-4" /> Nova partida</Link></Button>
       </div>
 
       <div className="grid grid-cols-3 gap-3">
@@ -44,7 +44,7 @@ export function PartidasList() {
       </div>
 
       {data && data.length === 0 ? (
-        <EmptyState icone="🎾" titulo="Nenhuma partida registrada" descricao="Registre sua primeira partida!" acao={<Button asChild><Link to="/partidas/nova">Registrar partida</Link></Button>} />
+        <EmptyState icone="🎾" titulo="Nenhuma partida registrada" descricao="Registre sua primeira partida!" acao={<Button asChild><Link to="/app/partidas/nova">Registrar partida</Link></Button>} />
       ) : (
         <div className="space-y-2">
           {data?.map((p: any) => (

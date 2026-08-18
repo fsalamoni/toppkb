@@ -13,53 +13,53 @@ const NAV_GROUPS = [
   {
     label: 'Principal',
     items: [
-      { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+      { to: '/app/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     ],
   },
   {
     label: '🏓 Pickleball',
     items: [
-      { to: '/treinos', label: 'Treinos', icon: CircleDot },
-      { to: '/partidas', label: 'Partidas', icon: Trophy },
-      { to: '/estudos', label: 'Estudos', icon: CalendarDays },
+      { to: '/app/treinos', label: 'Treinos', icon: CircleDot },
+      { to: '/app/partidas', label: 'Partidas', icon: Trophy },
+      { to: '/app/estudos', label: 'Estudos', icon: CalendarDays },
     ],
   },
   {
     label: '💪 Preparação',
     items: [
-      { to: '/fisio', label: 'Fisio', icon: Heart },
+      { to: '/app/fisio', label: 'Fisio', icon: Heart },
     ],
   },
   {
     label: '🥗 Nutrição',
     items: [
-      { to: '/nutricao', label: 'Alimentação', icon: Apple },
+      { to: '/app/nutricao', label: 'Alimentação', icon: Apple },
     ],
   },
   {
     label: '🩹 Saúde',
     items: [
-      { to: '/peso', label: 'Peso', icon: Scale },
-      { to: '/sono', label: 'Sono', icon: BedDouble },
-      { to: '/dores', label: 'Dores', icon: AlertCircle },
+      { to: '/app/peso', label: 'Peso', icon: Scale },
+      { to: '/app/sono', label: 'Sono', icon: BedDouble },
+      { to: '/app/dores', label: 'Dores', icon: AlertCircle },
     ],
   },
   {
     label: '🏆 Competição',
     items: [
-      { to: '/torneios', label: 'Torneios', icon: Trophy },
+      { to: '/app/torneios', label: 'Torneios', icon: Trophy },
     ],
   },
   {
     label: '📊 Métricas',
     items: [
-      { to: '/metas', label: 'Metas', icon: Target },
+      { to: '/app/metas', label: 'Metas', icon: Target },
     ],
   },
   {
     label: '🤖 IA',
     items: [
-      { to: '/chat', label: 'Chat com a equipe', icon: MessageCircle },
+      { to: '/app/chat', label: 'Chat com a equipe', icon: MessageCircle },
     ],
   },
 ];
@@ -71,7 +71,7 @@ export function Sidebar() {
 
   const handleSignOut = async () => {
     await signOut();
-    navigate('/login');
+    navigate('/app/');
   };
 
   return (
@@ -126,7 +126,7 @@ export function Sidebar() {
               </div>
             )}
             <NavLink
-              to="/admin"
+              to="/app/admin"
               className={({ isActive }) =>
                 cn(
                   'flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors',
@@ -144,7 +144,7 @@ export function Sidebar() {
 
       <div className="border-t border-border p-2">
         <NavLink
-          to="/configuracoes"
+          to="/app/configuracoes"
           className={({ isActive }) =>
             cn(
               'flex items-center gap-3 rounded-md px-3 py-2 text-sm',
@@ -157,7 +157,7 @@ export function Sidebar() {
           {sidebarOpen && <span>Configurações</span>}
         </NavLink>
         <NavLink
-          to="/perfil"
+          to="/app/perfil"
           className={({ isActive }) =>
             cn(
               'flex items-center gap-3 rounded-md px-3 py-2 text-sm',

@@ -26,10 +26,10 @@ export function TorneiosList() {
   });
 
   const { data, isLoading } = useQuery({
-    queryKey: ['torneios', user?.uid],
+    queryKey: ['/app/torneios', user?.uid],
     queryFn: async () => {
       if (!user) return [];
-      const q = query(collection(db, 'users', user.uid, 'torneios'), orderBy('dataInicio', 'desc'));
+      const q = query(collection(db, 'users', user.uid, '/app/torneios'), orderBy('dataInicio', 'desc'));
       const snap = await getDocs(q);
       return snap.docs.map((d) => ({ id: d.id, ...d.data() } as any));
     },
@@ -39,7 +39,7 @@ export function TorneiosList() {
   const add = useMutation({
     mutationFn: async () => {
       if (!user) return;
-      await addDoc(collection(db, 'users', user.uid, 'torneios'), {
+      await addDoc(collection(db, 'users', user.uid, '/app/torneios'), {
         ...form,
         dataInicio: new Date(form.dataInicio).toISOString(),
         status: 'planejado',
@@ -47,7 +47,7 @@ export function TorneiosList() {
       });
     },
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['torneios'] });
+      qc.invalidateQueries({ queryKey: ['/app/torneios'] });
       setOpen(false);
       setForm({ nome: '', dataInicio: new Date().toISOString().slice(0, 10), local: '', categoria: '50+', nivel: 'regional' });
       toast({ title: 'Torneio registrado!', variant: 'success' });

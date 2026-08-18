@@ -2,9 +2,8 @@ import * as React from 'react';
 import { useEffect, useState, createContext, useContext } from 'react';
 import {
   onAuthStateChanged,
-  signInWithEmailLink,
-  sendSignInLinkToEmail,
-  isSignInWithEmailLink,
+  GoogleAuthProvider,
+  signInWithPopup,
   signOut as fbSignOut,
   User,
 } from 'firebase/auth';
@@ -16,6 +15,7 @@ export interface UserDoc {
   uid: string;
   displayName?: string;
   email?: string;
+  photoURL?: string;
   pesoInicial?: number;
   pesoMeta?: number;
   altura?: number;
@@ -27,11 +27,6 @@ export interface UserDoc {
   role?: 'user' | 'admin' | 'master';
 }
 
-const ACTION_CODE_SETTINGS = {
-  url: typeof window !== 'undefined' ? window.location.origin : 'https://toppkb.web.app',
-  handleCodeInApp: true,
-};
-
 export interface AuthContextValue {
   user: User | null;
   userDoc: UserDoc | null;
@@ -39,18 +34,23 @@ export interface AuthContextValue {
   isAdmin: boolean;
   isMaster: boolean;
   loading: boolean;
-  sendLink: (email: string) => Promise<void>;
-  completeSignIn: (email: string, link: string) => Promise<void>;
+  signInWithGoogle: () => Promise<User>;
   signOut: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
+
+const googleProvider = new GoogleAuthProvider();
+googleProvider.setCustomParameters({
+  prompt: 'select_account',
+});
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const { user, userDoc, setUser, setUserDoc, setLoading, signOut: clearStore, loading } = useAuthStore();
   const [bootstrapping, setBootstrapping] = useState(true);
   const [claims, setClaims] = useState<{ admin?: 'admin' | 'master' } | null>(null);
 
+  // Bootstrap do user + claims + role
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (fbUser) => {
       setUser(fbUser);
@@ -60,7 +60,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (snap.exists()) {
           setUserDoc(snap.data() as UserDoc);
         } else {
-          setUserDoc(null);
+          // Cria o doc de usuário com dados básicos do Google
+          const newDoc: UserDoc = {
+            uid: fbUser.uid,
+            email: fbUser.email || undefined,
+            displayName: fbUser.displayName || undefined,
+            photoURL: fbUser.photoURL || undefined,
+            consent: false,
+            onboardingComplete: false,
+            role: 'user',
+          };
+          setUserDoc(newDoc);
         }
         // checa custom claims
         const tokenResult = await fbUser.getIdTokenResult();
@@ -100,16 +110,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return unsub;
   }, [user, setUserDoc]);
 
-  const sendLink = async (email: string) => {
-    await sendSignInLinkToEmail(auth, email, ACTION_CODE_SETTINGS);
-    window.localStorage.setItem('emailForSignIn', email);
-  };
-
-  const completeSignIn = async (email: string, link: string) => {
-    if (isSignInWithEmailLink(auth, link)) {
-      await signInWithEmailLink(auth, email, link);
-      window.localStorage.removeItem('emailForSignIn');
-    }
+  const signInWithGoogle = async (): Promise<User> => {
+    const result = await signInWithPopup(auth, googleProvider);
+    return result.user;
   };
 
   const signOut = async () => {
@@ -124,8 +127,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     isAdmin: !!claims?.admin,
     isMaster: claims?.admin === 'master',
     loading: loading || bootstrapping,
-    sendLink,
-    completeSignIn,
+    signInWithGoogle,
     signOut,
   };
 

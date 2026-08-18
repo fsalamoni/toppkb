@@ -5,6 +5,7 @@ import { Toaster } from './components/ui/toaster';
 import { Sidebar } from './components/layout/Sidebar';
 import { Topbar } from './components/layout/Topbar';
 import { Login } from './pages/Login';
+import { Landing } from './pages/Landing';
 import { Dashboard } from './pages/Dashboard';
 import { Treinos } from './pages/Treinos';
 import { Partidas } from './pages/Partidas';
@@ -44,7 +45,7 @@ function PrivateRoute({ children, adminOnly = false }: { children: React.ReactNo
     );
   }
   if (!user) return <Navigate to="/login" replace />;
-  if (adminOnly && !claims?.admin) return <Navigate to="/dashboard" replace />;
+  if (adminOnly && !claims?.admin) return <Navigate to="/app/dashboard" replace />;
   return <>{children}</>;
 }
 
@@ -56,24 +57,25 @@ function AppShell() {
         <Topbar />
         <main className="flex-1 overflow-y-auto p-6">
           <Routes>
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
-            <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
-            <Route path="/treinos" element={<PrivateRoute><Treinos /></PrivateRoute>} />
-            <Route path="/partidas" element={<PrivateRoute><Partidas /></PrivateRoute>} />
-            <Route path="/fisio" element={<PrivateRoute><Fisio /></PrivateRoute>} />
-            <Route path="/nutricao" element={<PrivateRoute><Nutricao /></PrivateRoute>} />
-            <Route path="/sono" element={<PrivateRoute><Sono /></PrivateRoute>} />
-            <Route path="/peso" element={<PrivateRoute><Peso /></PrivateRoute>} />
-            <Route path="/dores" element={<PrivateRoute><Dores /></PrivateRoute>} />
-            <Route path="/torneios" element={<PrivateRoute><Torneios /></PrivateRoute>} />
-            <Route path="/metas" element={<PrivateRoute><Metas /></PrivateRoute>} />
-            <Route path="/estudos" element={<PrivateRoute><Estudos /></PrivateRoute>} />
-            <Route path="/chat" element={<PrivateRoute><ChatPage /></PrivateRoute>} />
-            <Route path="/onboarding" element={<PrivateRoute><Onboarding /></PrivateRoute>} />
-            <Route path="/configuracoes" element={<PrivateRoute><Configuracoes /></PrivateRoute>} />
+            <Route path="/" element={<Navigate to="/app/dashboard" replace />} />
+            <Route path="/app/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
+            <Route path="/app/treinos" element={<PrivateRoute><Treinos /></PrivateRoute>} />
+            <Route path="/app/partidas" element={<PrivateRoute><Partidas /></PrivateRoute>} />
+            <Route path="/app/fisio" element={<PrivateRoute><Fisio /></PrivateRoute>} />
+            <Route path="/app/nutricao" element={<PrivateRoute><Nutricao /></PrivateRoute>} />
+            <Route path="/app/sono" element={<PrivateRoute><Sono /></PrivateRoute>} />
+            <Route path="/app/peso" element={<PrivateRoute><Peso /></PrivateRoute>} />
+            <Route path="/app/dores" element={<PrivateRoute><Dores /></PrivateRoute>} />
+            <Route path="/app/torneios" element={<PrivateRoute><Torneios /></PrivateRoute>} />
+            <Route path="/app/metas" element={<PrivateRoute><Metas /></PrivateRoute>} />
+            <Route path="/app/estudos" element={<PrivateRoute><Estudos /></PrivateRoute>} />
+            <Route path="/app/chat" element={<PrivateRoute><ChatPage /></PrivateRoute>} />
+            <Route path="/app/onboarding" element={<PrivateRoute><Onboarding /></PrivateRoute>} />
+            <Route path="/consent" element={<PrivateRoute><Onboarding /></PrivateRoute>} />
+            <Route path="/app/configuracoes" element={<PrivateRoute><Configuracoes /></PrivateRoute>} />
             <Route path="/configuracoes/llm" element={<PrivateRoute><ConfiguracoesLLM /></PrivateRoute>} />
-            <Route path="/perfil" element={<PrivateRoute><Perfil /></PrivateRoute>} />
-            <Route path="/admin" element={<PrivateRoute adminOnly><AdminLayout /></PrivateRoute>}>
+            <Route path="/app/perfil" element={<PrivateRoute><Perfil /></PrivateRoute>} />
+            <Route path="/app/admin" element={<PrivateRoute adminOnly><AdminLayout /></PrivateRoute>}>
               <Route index element={<AdminDashboard />} />
               <Route path="corpus" element={<AdminCorpus />} />
               <Route path="llm" element={<AdminLLMConfig />} />
@@ -81,7 +83,7 @@ function AppShell() {
               <Route path="users" element={<AdminUsers />} />
               <Route path="stats" element={<AdminStats />} />
             </Route>
-            <Route path="*" element={<Navigate to="/dashboard" replace />} />
+            <Route path="*" element={<Navigate to="/app/dashboard" replace />} />
           </Routes>
         </main>
       </div>
@@ -95,8 +97,10 @@ export default function App() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <Routes>
+          <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/*" element={<AppShell />} />
+          <Route path="/app/*" element={<AppShell />} />
+          <Route path="*" element={<Navigate to="/app/" replace />} />
         </Routes>
       </AuthProvider>
     </QueryClientProvider>

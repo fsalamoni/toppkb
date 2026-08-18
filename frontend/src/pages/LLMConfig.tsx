@@ -149,7 +149,7 @@ export function LLMConfig() {
     <div className="max-w-3xl mx-auto space-y-4">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">🤖 Meu LLM Pessoal</h1>
-        <Button variant="ghost" onClick={() => navigate('/configuracoes')}>← Voltar</Button>
+        <Button variant="ghost" onClick={() => navigate('/app/configuracoes')}>← Voltar</Button>
       </div>
 
       <Card>

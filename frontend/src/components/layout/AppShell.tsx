@@ -27,9 +27,9 @@ const NAV_GROUPS = [
   {
     label: '🏓 Pickleball',
     items: [
-      { to: '/treinos', label: 'Treinos', icon: Pickleball },
-      { to: '/partidas', label: 'Partidas', icon: Trophy },
-      { to: '/estudos', label: 'Estudos', icon: CalendarDays },
+      { to: '/app/treinos', label: 'Treinos', icon: Pickleball },
+      { to: '/app/partidas', label: 'Partidas', icon: Trophy },
+      { to: '/app/estudos', label: 'Estudos', icon: CalendarDays },
     ],
   },
   {
@@ -60,18 +60,18 @@ const NAV_GROUPS = [
   },
   {
     label: '🏆 Competição',
-    items: [{ to: '/torneios', label: 'Torneios', icon: Trophy }],
+    items: [{ to: '/app/torneios', label: 'Torneios', icon: Trophy }],
   },
   {
     label: '📊 Métricas',
     items: [
-      { to: '/metricas', label: 'Visão geral', icon: TrendingUp },
+      { to: '/app/metricas', label: 'Visão geral', icon: TrendingUp },
       { to: '/metricas/metas', label: 'Metas', icon: TargetIcon },
     ],
   },
   {
     label: '🤖 IA',
-    items: [{ to: '/chat', label: 'Chat com a equipe', icon: MessageCircle }],
+    items: [{ to: '/app/chat', label: 'Chat com a equipe', icon: MessageCircle }],
   },
 ];
 
@@ -92,7 +92,7 @@ export function AppShell() {
 
   const handleSignOut = async () => {
     await signOut();
-    navigate('/login');
+    navigate('/app/');
   };
 
   return (
@@ -145,7 +145,7 @@ export function AppShell() {
 
         <div className="border-t border-border p-2">
           <NavLink
-            to="/configuracoes"
+            to="/app/configuracoes"
             className={({ isActive }) =>
               cn(
                 'flex items-center gap-3 rounded-md px-3 py-2 text-sm',
@@ -179,10 +179,10 @@ export function AppShell() {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <Link to="/chat" className="text-sm text-muted-foreground hover:text-foreground">
+            <Link to="/app/chat" className="text-sm text-muted-foreground hover:text-foreground">
               💬 Chat
             </Link>
-            <Link to="/configuracoes/perfil" className="text-sm text-muted-foreground hover:text-foreground">
+            <Link to="/app/configuracoes/perfil" className="text-sm text-muted-foreground hover:text-foreground">
               <UserIcon className="h-5 w-5" />
             </Link>
           </div>

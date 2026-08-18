@@ -1,145 +1,110 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { toast } from '@/components/ui/toaster';
-import { isSignInWithEmailLink } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
-
-const schema = z.object({
-  email: z.string().email('E-mail inválido'),
-});
-
-type FormData = z.infer<typeof schema>;
+import { ShieldCheck, Sparkles, Trophy } from 'lucide-react';
 
 export function Login() {
-  const { sendLink, completeSignIn, user, userDoc, loading } = useAuth();
+  const { signInWithGoogle, user, userDoc, loading } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
-  const [sending, setSending] = useState(false);
-  const [linkSent, setLinkSent] = useState(false);
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    getValues,
-  } = useForm<FormData>({ resolver: zodResolver(schema) });
+  const [signing, setSigning] = useState(false);
 
   // Se já está logado, redireciona
   useEffect(() => {
-    if (!loading && user) {
-      if (!userDoc) navigate('/onboarding');
-      else if (!userDoc.consent) navigate('/consent');
-      else if (!userDoc.onboardingComplete) navigate('/onboarding');
-      else navigate('/');
-    }
+    if (loading) return;
+    if (!user) return;
+    if (!userDoc) navigate('/app/onboarding', { replace: true });
+    else if (!userDoc.consent) navigate('/app/consent', { replace: true });
+    else if (!userDoc.onboardingComplete) navigate('/app/onboarding', { replace: true });
+    else navigate('/app/dashboard', { replace: true });
   }, [user, userDoc, loading, navigate]);
 
-  // Detecta magic link na URL
-  useEffect(() => {
-    if (isSignInWithEmailLink(auth, window.location.href)) {
-      let email = window.localStorage.getItem('emailForSignIn');
-      if (!email) {
-        email = window.prompt('Confirme seu e-mail:') || '';
-      }
-      if (email) {
-        completeSignIn(email, window.location.href)
-          .then(() => {
-            toast({ title: 'Login realizado!', variant: 'success' });
-          })
-          .catch((e) => {
-            toast({ title: 'Erro ao logar', description: e.message, variant: 'destructive' });
-          });
-      }
-    }
-  }, [completeSignIn]);
-
-  const onSubmit = async (data: FormData) => {
-    setSending(true);
+  const onGoogleSignIn = async () => {
+    setSigning(true);
     try {
-      await sendLink(data.email);
-      setLinkSent(true);
-      toast({
-        title: 'Link enviado!',
-        description: 'Verifique sua caixa de entrada (e o spam).',
-        variant: 'success',
-      });
+      await signInWithGoogle();
     } catch (e: any) {
-      toast({
-        title: 'Erro ao enviar link',
-        description: e.message,
-        variant: 'destructive',
-      });
-    } finally {
-      setSending(false);
+      // erro já é logado no hook
+      setSigning(false);
     }
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center p-4 bg-background">
+    <div className="flex min-h-screen items-center justify-center p-4 bg-gradient-to-br from-emerald-500/5 via-background to-amber-500/5">
       <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <div className="text-5xl mb-2">🏓</div>
+        <CardHeader className="text-center space-y-2">
+          <Link to="/app/" className="inline-block text-5xl mb-1 hover:scale-110 transition">
+            🏓
+          </Link>
           <CardTitle className="text-2xl">Top Pickleball 50+</CardTitle>
           <CardDescription>
-            Sua plataforma para ser o melhor 50+ do Brasil em 2032
+            Entre com sua conta Google para acessar a plataforma
           </CardDescription>
         </CardHeader>
-        <CardContent>
-          {linkSent ? (
-            <div className="text-center space-y-4">
-              <div className="text-4xl">📧</div>
-              <p className="text-sm">
-                Enviamos um link mágico para <strong>{getValues('email')}</strong>.
-              </p>
-              <p className="text-xs text-muted-foreground">
-                Clique no link para entrar. O link expira em 1 hora.
-              </p>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setLinkSent(false)}
-              >
-                Usar outro e-mail
-              </Button>
-            </div>
-          ) : (
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="email">E-mail</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="seu@email.com"
-                  {...register('email')}
-                  autoComplete="email"
-                  autoFocus
-                />
-                {errors.email && (
-                  <p className="text-xs text-red-500">{errors.email.message}</p>
-                )}
-              </div>
+        <CardContent className="space-y-4">
+          <Button
+            type="button"
+            size="lg"
+            className="w-full text-base"
+            onClick={onGoogleSignIn}
+            disabled={signing || loading}
+          >
+            {signing || loading ? (
+              'Conectando...'
+            ) : (
+              <>
+                <GoogleIcon className="mr-3 h-5 w-5" />
+                Entrar com Google
+              </>
+            )}
+          </Button>
 
-              <Button type="submit" className="w-full" disabled={sending}>
-                {sending ? 'Enviando...' : 'Entrar com link mágico'}
-              </Button>
+          <div className="rounded-lg border border-border/60 bg-muted/30 p-3 text-xs text-muted-foreground space-y-1">
+            <p className="flex items-center gap-2">
+              <ShieldCheck className="h-3.5 w-3.5 text-emerald-500" />
+              Login seguro via Firebase Auth
+            </p>
+            <p className="flex items-center gap-2">
+              <Sparkles className="h-3.5 w-3.5 text-amber-500" />
+              Primeira vez? Sua conta é criada automaticamente
+            </p>
+            <p className="flex items-center gap-2">
+              <Trophy className="h-3.5 w-3.5 text-orange-500" />
+              Plano até 2032 — ser o melhor 50+ do Brasil
+            </p>
+          </div>
 
-              <p className="text-xs text-center text-muted-foreground">
-                Sem senha. Você receberá um link por e-mail para entrar.
-                <br />
-                Primeira vez? Sua conta será criada automaticamente.
-              </p>
-            </form>
-          )}
+          <p className="text-center text-xs text-muted-foreground pt-2">
+            <Link to="/app/" className="hover:text-foreground underline-offset-2 hover:underline">
+              ← Voltar para a apresentação
+            </Link>
+          </p>
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+function GoogleIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" aria-hidden="true">
+      <path
+        fill="#4285F4"
+        d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+      />
+      <path
+        fill="#34A853"
+        d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+      />
+      <path
+        fill="#FBBC05"
+        d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+      />
+      <path
+        fill="#EA4335"
+        d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+      />
+    </svg>
   );
 }

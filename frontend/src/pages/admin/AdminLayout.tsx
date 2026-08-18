@@ -3,12 +3,12 @@ import { ArrowLeft, Database, Brain, Users, BarChart3, Settings as SettingsIcon 
 import { cn } from '@/lib/utils';
 
 const TABS = [
-  { to: '/admin', label: 'Dashboard', icon: BarChart3, end: true },
-  { to: '/admin/corpus', label: 'Corpus', icon: Database },
-  { to: '/admin/llm', label: 'LLM Global', icon: SettingsIcon },
-  { to: '/admin/agents', label: 'Agentes', icon: Brain },
-  { to: '/admin/users', label: 'Usuários', icon: Users },
-  { to: '/admin/stats', label: 'Estatísticas', icon: BarChart3 },
+  { to: '/app/admin', label: 'Dashboard', icon: BarChart3, end: true },
+  { to: '/app/admin/corpus', label: 'Corpus', icon: Database },
+  { to: '/app/admin/llm', label: 'LLM Global', icon: SettingsIcon },
+  { to: '/app/admin/agents', label: 'Agentes', icon: Brain },
+  { to: '/app/admin/users', label: 'Usuários', icon: Users },
+  { to: '/app/admin/stats', label: 'Estatísticas', icon: BarChart3 },
 ];
 
 export function AdminLayout() {
@@ -19,7 +19,7 @@ export function AdminLayout() {
           <h1 className="text-2xl font-bold">Painel Administrativo</h1>
           <p className="text-sm text-muted-foreground">Gerencie LLM, corpus, agentes e usuários.</p>
         </div>
-        <Link to="/dashboard" className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-1">
+        <Link to="/app/dashboard" className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-1">
           <ArrowLeft className="h-4 w-4" />
           Voltar ao app
         </Link>

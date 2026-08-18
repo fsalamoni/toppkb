@@ -5,7 +5,7 @@ export function Metas() {
     <GenericCRUDPage
       titulo="Metas SMART"
       icone="🎯"
-      colecao="metas"
+      colecao="/app/metas"
       orderByField="prazo"
       orderDirection="asc"
       campos={[
@@ -14,7 +14,7 @@ export function Metas() {
         {
           name: 'tipo', label: 'Tipo', type: 'select', required: true,
           options: [
-            { value: 'peso', label: 'Peso' },
+            { value: '/app/peso', label: 'Peso' },
             { value: 'performance', label: 'Performance' },
             { value: 'competicao', label: 'Competição' },
             { value: 'saude', label: 'Saúde' },

@@ -32,10 +32,10 @@ export function DoresList() {
   });
 
   const { data, isLoading } = useQuery({
-    queryKey: ['dores', user?.uid],
+    queryKey: ['/app/dores', user?.uid],
     queryFn: async () => {
       if (!user) return [];
-      const q = query(collection(db, 'users', user.uid, 'dores'), orderBy('data', 'desc'));
+      const q = query(collection(db, 'users', user.uid, '/app/dores'), orderBy('data', 'desc'));
       const snap = await getDocs(q);
       return snap.docs.map((d) => ({ id: d.id, ...d.data() } as any));
     },
@@ -46,7 +46,7 @@ export function DoresList() {
     mutationFn: async () => {
       if (!user) return;
       const alertaAtivado = form.intensidade >= 7;
-      await addDoc(collection(db, 'users', user.uid, 'dores'), {
+      await addDoc(collection(db, 'users', user.uid, '/app/dores'), {
         ...form,
         data: new Date().toISOString(),
         alertaAtivado,
@@ -63,7 +63,7 @@ export function DoresList() {
       }
     },
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['dores'] });
+      qc.invalidateQueries({ queryKey: ['/app/dores'] });
       setOpen(false);
     },
   });

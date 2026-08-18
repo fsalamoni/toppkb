@@ -204,7 +204,7 @@ export function AdminLLMConfig() {
     <div className="max-w-5xl mx-auto space-y-4">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">👑 Config de IA (Admin Master)</h1>
-        <Button variant="ghost" onClick={() => navigate('/configuracoes')}>← Voltar</Button>
+        <Button variant="ghost" onClick={() => navigate('/app/configuracoes')}>← Voltar</Button>
       </div>
 
       {/* Tabs */}

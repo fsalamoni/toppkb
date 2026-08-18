@@ -26,10 +26,10 @@ export function Fisio() {
   });
 
   const { data, isLoading } = useQuery({
-    queryKey: ['fisio', user?.uid],
+    queryKey: ['/app/fisio', user?.uid],
     queryFn: async () => {
       if (!user) return [];
-      const q = query(collection(db, 'users', user.uid, 'fisio'), orderBy('data', 'desc'));
+      const q = query(collection(db, 'users', user.uid, '/app/fisio'), orderBy('data', 'desc'));
       const snap = await getDocs(q);
       return snap.docs.map((d) => ({ id: d.id, ...d.data() } as any));
     },
@@ -39,7 +39,7 @@ export function Fisio() {
   const add = useMutation({
     mutationFn: async () => {
       if (!user) return;
-      await addDoc(collection(db, 'users', user.uid, 'fisio'), {
+      await addDoc(collection(db, 'users', user.uid, '/app/fisio'), {
         ...form,
         tipo: 'sessao',
         exercicios: [],
@@ -47,7 +47,7 @@ export function Fisio() {
       });
     },
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['fisio'] });
+      qc.invalidateQueries({ queryKey: ['/app/fisio'] });
       setOpen(false);
       toast({ title: 'Sessão registrada!', variant: 'success' });
     },

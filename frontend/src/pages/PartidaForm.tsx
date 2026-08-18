@@ -30,7 +30,7 @@ export function PartidaForm() {
   const onSubmit = async (data: any) => {
     if (!user) return;
     try {
-      await addDoc(collection(db, 'users', user.uid, 'partidas'), {
+      await addDoc(collection(db, 'users', user.uid, '/app/partidas'), {
         data: new Date(data.data).toISOString(),
         local: data.local,
         tipo: data.tipo,
@@ -43,7 +43,7 @@ export function PartidaForm() {
         createdAt: serverTimestamp(),
       });
       toast({ title: 'Partida registrada! 🎾', variant: 'success' });
-      navigate('/partidas');
+      navigate('/app/partidas');
     } catch (e: any) {
       toast({ title: 'Erro', description: e.message, variant: 'destructive' });
     }
@@ -115,7 +115,7 @@ export function PartidaForm() {
             </div>
 
             <div className="flex gap-2 pt-4">
-              <Button type="button" variant="outline" onClick={() => navigate('/partidas')}>Cancelar</Button>
+              <Button type="button" variant="outline" onClick={() => navigate('/app/partidas')}>Cancelar</Button>
               <Button type="submit" disabled={isSubmitting} className="flex-1">
                 {isSubmitting ? 'Salvando...' : 'Salvar partida'}
               </Button>

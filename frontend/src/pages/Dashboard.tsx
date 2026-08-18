@@ -12,7 +12,7 @@ import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip, CartesianG
 export function Dashboard() {
   const { userDoc } = useAuth();
   const { data, isLoading, error } = useQuery({
-    queryKey: ['dashboard'],
+    queryKey: ['/app/dashboard'],
     queryFn: () => getDashboard({}),
     refetchInterval: 5 * 60 * 1000, // 5 min
   });
@@ -119,7 +119,7 @@ export function Dashboard() {
           </CardHeader>
           <CardContent>
             <p className="text-sm whitespace-pre-line">{k.resumoIA}</p>
-            <Link to="/chat" className="text-sm text-primary hover:underline mt-3 inline-block">
+            <Link to="/app/chat" className="text-sm text-primary hover:underline mt-3 inline-block">
               Ver conversa completa →
             </Link>
           </CardContent>
@@ -147,7 +147,7 @@ export function Dashboard() {
                 <div className="text-xs text-muted-foreground">dias restantes</div>
               </div>
             </div>
-            <Link to="/torneios" className="text-sm text-primary hover:underline mt-3 inline-block">
+            <Link to="/app/torneios" className="text-sm text-primary hover:underline mt-3 inline-block">
               Ver detalhes →
             </Link>
           </CardContent>
@@ -161,16 +161,16 @@ export function Dashboard() {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
-            <Button asChild variant="outline"><Link to="/treinos/novo">🏓 Novo treino</Link></Button>
-            <Button asChild variant="outline"><Link to="/partidas/nova">🎾 Nova partida</Link></Button>
-            <Button asChild variant="outline"><Link to="/saude/peso">⚖️ Registrar peso</Link></Button>
-            <Button asChild variant="outline"><Link to="/saude/dores">🩹 Registrar dor</Link></Button>
-            <Button asChild variant="outline"><Link to="/alimentacao/refeicoes">🥗 Nova refeição</Link></Button>
-            <Button asChild variant="outline"><Link to="/chat">💬 Falar com IA</Link></Button>
-            <Button asChild variant="outline"><Link to="/metricas/avaliacoes/nova">📊 Avaliação mensal</Link></Button>
-            <Button asChild variant="outline"><Link to="/torneios">🏆 Novo torneio</Link></Button>
-            <Button asChild variant="outline"><Link to="/saude/sono">😴 Registrar sono</Link></Button>
-            <Button asChild variant="outline"><Link to="/fisico/forca">🏋️ Sessão de força</Link></Button>
+            <Button asChild variant="outline"><Link to="/app/treinos/novo">🏓 Novo treino</Link></Button>
+            <Button asChild variant="outline"><Link to="/app/partidas/nova">🎾 Nova partida</Link></Button>
+            <Button asChild variant="outline"><Link to="/app/saude/peso">⚖️ Registrar peso</Link></Button>
+            <Button asChild variant="outline"><Link to="/app/saude/dores">🩹 Registrar dor</Link></Button>
+            <Button asChild variant="outline"><Link to="/app/alimentacao/refeicoes">🥗 Nova refeição</Link></Button>
+            <Button asChild variant="outline"><Link to="/app/chat">💬 Falar com IA</Link></Button>
+            <Button asChild variant="outline"><Link to="/app/metricas/avaliacoes/nova">📊 Avaliação mensal</Link></Button>
+            <Button asChild variant="outline"><Link to="/app/torneios">🏆 Novo torneio</Link></Button>
+            <Button asChild variant="outline"><Link to="/app/saude/sono">😴 Registrar sono</Link></Button>
+            <Button asChild variant="outline"><Link to="/app/fisico/forca">🏋️ Sessão de força</Link></Button>
           </div>
         </CardContent>
       </Card>

@@ -23,10 +23,10 @@ export function SonoList() {
   });
 
   const { data, isLoading } = useQuery({
-    queryKey: ['sono', user?.uid],
+    queryKey: ['/app/sono', user?.uid],
     queryFn: async () => {
       if (!user) return [];
-      const q = query(collection(db, 'users', user.uid, 'sono'), orderBy('data', 'desc'));
+      const q = query(collection(db, 'users', user.uid, '/app/sono'), orderBy('data', 'desc'));
       const snap = await getDocs(q);
       return snap.docs.map((d) => ({ id: d.id, ...d.data() } as any));
     },
@@ -36,7 +36,7 @@ export function SonoList() {
   const add = useMutation({
     mutationFn: async () => {
       if (!user) return;
-      await addDoc(collection(db, 'users', user.uid, 'sono'), {
+      await addDoc(collection(db, 'users', user.uid, '/app/sono'), {
         data: new Date(form.data).toISOString(),
         horasTotais: Number(form.horas),
         qualidade: Number(form.qualidade),
@@ -44,7 +44,7 @@ export function SonoList() {
       });
     },
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['sono'] });
+      qc.invalidateQueries({ queryKey: ['/app/sono'] });
       setOpen(false);
       toast({ title: 'Sono registrado!', variant: 'success' });
     },

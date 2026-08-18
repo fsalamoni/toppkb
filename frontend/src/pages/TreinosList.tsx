@@ -17,11 +17,11 @@ export function TreinosList() {
   const qc = useQueryClient();
 
   const { data, isLoading } = useQuery({
-    queryKey: ['treinos', user?.uid],
+    queryKey: ['/app/treinos', user?.uid],
     queryFn: async () => {
       if (!user) return [];
       const q = query(
-        collection(db, 'users', user.uid, 'treinos'),
+        collection(db, 'users', user.uid, '/app/treinos'),
         orderBy('data', 'desc'),
       );
       const snap = await getDocs(q);
@@ -33,10 +33,10 @@ export function TreinosList() {
   const del = useMutation({
     mutationFn: async (id: string) => {
       if (!user) return;
-      await deleteDoc(doc(db, 'users', user.uid, 'treinos', id));
+      await deleteDoc(doc(db, 'users', user.uid, '/app/treinos', id));
     },
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['treinos'] });
+      qc.invalidateQueries({ queryKey: ['/app/treinos'] });
       toast({ title: 'Treino removido', variant: 'success' });
     },
   });
@@ -47,7 +47,7 @@ export function TreinosList() {
     <div className="max-w-4xl mx-auto space-y-4">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">🏓 Treinos</h1>
-        <Button asChild><Link to="/treinos/novo"><Plus className="h-4 w-4" /> Novo treino</Link></Button>
+        <Button asChild><Link to="/app/treinos/novo"><Plus className="h-4 w-4" /> Novo treino</Link></Button>
       </div>
 
       {data && data.length === 0 ? (
@@ -55,7 +55,7 @@ export function TreinosList() {
           icone="🏓"
           titulo="Nenhum treino registrado"
           descricao="Comece registrando seu primeiro treino!"
-          acao={<Button asChild><Link to="/treinos/novo">Registrar treino</Link></Button>}
+          acao={<Button asChild><Link to="/app/treinos/novo">Registrar treino</Link></Button>}
         />
       ) : (
         <div className="space-y-2">

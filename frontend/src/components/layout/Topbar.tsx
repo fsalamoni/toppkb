@@ -25,14 +25,14 @@ export function Topbar() {
       </div>
       <div className="flex items-center gap-2">
         <Link
-          to="/chat"
+          to="/app/chat"
           className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-1"
         >
           <MessageCircle className="h-4 w-4" />
           <span className="hidden md:inline">Chat</span>
         </Link>
         <Link
-          to="/perfil"
+          to="/app/perfil"
           className="text-sm text-muted-foreground hover:text-foreground"
         >
           <UserIcon className="h-5 w-5" />

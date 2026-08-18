@@ -5,7 +5,7 @@ export function Estudos() {
     <GenericCRUDPage
       titulo="Estudos"
       icone="📚"
-      colecao="estudos"
+      colecao="/app/estudos"
       campos={[
         { name: 'data', label: 'Data', type: 'datetime-local', required: true },
         { name: 'duracaoMin', label: 'Duração (min)', type: 'number', defaultValue: 30, required: true },

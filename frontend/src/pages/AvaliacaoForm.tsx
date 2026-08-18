@@ -44,7 +44,7 @@ export function AvaliacaoForm() {
         createdAt: serverTimestamp(),
       });
       toast({ title: 'Avaliação salva!', variant: 'success' });
-      navigate('/metricas');
+      navigate('/app/metricas');
     } catch (e: any) {
       toast({ title: 'Erro', description: e.message, variant: 'destructive' });
     } finally {
@@ -131,7 +131,7 @@ export function AvaliacaoForm() {
           </div>
 
           <div className="flex gap-2 pt-2">
-            <Button variant="outline" onClick={() => navigate('/metricas')}>Cancelar</Button>
+            <Button variant="outline" onClick={() => navigate('/app/metricas')}>Cancelar</Button>
             <Button onClick={onSave} disabled={saving} className="flex-1">
               {saving ? 'Salvando...' : 'Salvar avaliação'}
             </Button>

@@ -56,9 +56,9 @@ export function TreinoForm() {
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
       };
-      await addDoc(collection(db, 'users', user.uid, 'treinos'), payload);
+      await addDoc(collection(db, 'users', user.uid, '/app/treinos'), payload);
       toast({ title: 'Treino registrado! 💪', variant: 'success' });
-      navigate('/treinos');
+      navigate('/app/treinos');
     } catch (e: any) {
       toast({ title: 'Erro', description: e.message, variant: 'destructive' });
     }
@@ -154,7 +154,7 @@ export function TreinoForm() {
             </div>
 
             <div className="flex gap-2 pt-4">
-              <Button type="button" variant="outline" onClick={() => navigate('/treinos')}>
+              <Button type="button" variant="outline" onClick={() => navigate('/app/treinos')}>
                 Cancelar
               </Button>
               <Button type="submit" disabled={isSubmitting} className="flex-1">

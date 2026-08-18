@@ -42,7 +42,7 @@ export function Configuracoes() {
       await deletarConta({});
       await signOut();
       toast({ title: 'Conta deletada', variant: 'success' });
-      navigate('/login');
+      navigate('/app/');
     } catch (e: any) {
       toast({ title: 'Erro', description: e.message, variant: 'destructive' });
     } finally {
@@ -61,7 +61,7 @@ export function Configuracoes() {
         </CardHeader>
         <CardContent>
           <Button asChild variant="outline">
-            <Link to="/configuracoes/perfil">
+            <Link to="/app/configuracoes/perfil">
               <User className="h-4 w-4" /> Editar perfil
             </Link>
           </Button>
@@ -75,7 +75,7 @@ export function Configuracoes() {
         </CardHeader>
         <CardContent>
           <Button asChild variant="outline" className="w-full">
-            <Link to="/configuracoes/llm">
+            <Link to="/app/configuracoes/llm">
               <Sparkles className="h-4 w-4" /> Meu LLM Pessoal
             </Link>
           </Button>
@@ -130,7 +130,7 @@ export function Configuracoes() {
         </CardHeader>
         <CardContent>
           <Button asChild variant="outline" className="w-full">
-            <Link to="/admin/llm">
+            <Link to="/app/admin/llm">
               <Shield className="h-4 w-4" /> Configurar LLM Global + Agentes
             </Link>
           </Button>

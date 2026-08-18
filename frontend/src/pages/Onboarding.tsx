@@ -80,7 +80,7 @@ export function Onboarding() {
         { merge: true },
       );
       toast({ title: 'Perfil completo!', description: 'Bem-vindo à jornada 🎯', variant: 'success' });
-      navigate('/');
+      navigate('/app/dashboard');
     } catch (e: any) {
       toast({ title: 'Erro', description: e.message, variant: 'destructive' });
     } finally {

@@ -13,10 +13,10 @@ export function Metricas() {
   const { user } = useAuth();
 
   const { data: pesos, isLoading: loadPeso } = useQuery({
-    queryKey: ['peso-chart', user?.uid],
+    queryKey: ['/app/peso-chart', user?.uid],
     queryFn: async () => {
       if (!user) return [];
-      const q = query(collection(db, 'users', user.uid, 'peso'), orderBy('data', 'asc'));
+      const q = query(collection(db, 'users', user.uid, '/app/peso'), orderBy('data', 'asc'));
       const snap = await getDocs(q);
       return snap.docs.map((d) => ({ data: d.data(), id: d.id } as any));
     },
@@ -24,10 +24,10 @@ export function Metricas() {
   });
 
   const { data: treinos, isLoading: loadTreinos } = useQuery({
-    queryKey: ['treinos-chart', user?.uid],
+    queryKey: ['/app/treinos-chart', user?.uid],
     queryFn: async () => {
       if (!user) return [];
-      const q = query(collection(db, 'users', user.uid, 'treinos'), orderBy('data', 'desc'));
+      const q = query(collection(db, 'users', user.uid, '/app/treinos'), orderBy('data', 'desc'));
       const snap = await getDocs(q);
       return snap.docs.map((d) => ({ data: d.data(), id: d.id } as any));
     },
@@ -35,10 +35,10 @@ export function Metricas() {
   });
 
   const { data: dores, isLoading: loadDores } = useQuery({
-    queryKey: ['dores-chart', user?.uid],
+    queryKey: ['/app/dores-chart', user?.uid],
     queryFn: async () => {
       if (!user) return [];
-      const q = query(collection(db, 'users', user.uid, 'dores'), orderBy('data', 'desc'));
+      const q = query(collection(db, 'users', user.uid, '/app/dores'), orderBy('data', 'desc'));
       const snap = await getDocs(q);
       return snap.docs.map((d) => ({ data: d.data(), id: d.id } as any));
     },
@@ -81,7 +81,7 @@ export function Metricas() {
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">📊 Métricas</h1>
         <Button asChild>
-          <Link to="/metricas/avaliacoes/nova">Preencher avaliação mensal</Link>
+          <Link to="/app/metricas/avaliacoes/nova">Preencher avaliação mensal</Link>
         </Button>
       </div>
 
@@ -97,7 +97,7 @@ export function Metricas() {
                 <XAxis dataKey="data" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} />
                 <YAxis tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} />
                 <Tooltip contentStyle={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border))' }} />
-                <Line type="monotone" dataKey="peso" stroke="hsl(var(--primary))" strokeWidth={2} />
+                <Line type="monotone" dataKey="/app/peso" stroke="hsl(var(--primary))" strokeWidth={2} />
               </LineChart>
             </ResponsiveContainer>
           </CardContent>

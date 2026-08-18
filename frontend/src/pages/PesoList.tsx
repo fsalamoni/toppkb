@@ -21,10 +21,10 @@ export function PesoList() {
   const [novaData, setNovaData] = useState(new Date().toISOString().slice(0, 10));
 
   const { data, isLoading } = useQuery({
-    queryKey: ['peso', user?.uid],
+    queryKey: ['/app/peso', user?.uid],
     queryFn: async () => {
       if (!user) return [];
-      const q = query(collection(db, 'users', user.uid, 'peso'), orderBy('data', 'asc'));
+      const q = query(collection(db, 'users', user.uid, '/app/peso'), orderBy('data', 'asc'));
       const snap = await getDocs(q);
       return snap.docs.map((d) => ({ id: d.id, ...d.data() } as any));
     },
@@ -37,7 +37,7 @@ export function PesoList() {
       const kg = Number(novoPeso);
       if (!kg || kg < 30 || kg > 250) throw new Error('Peso inválido');
       const imc = userDoc?.altura ? calcularIMC(kg, userDoc.altura) : null;
-      await addDoc(collection(db, 'users', user.uid, 'peso'), {
+      await addDoc(collection(db, 'users', user.uid, '/app/peso'), {
         data: new Date(novaData).toISOString(),
         pesoKg: kg,
         imc,
@@ -45,8 +45,8 @@ export function PesoList() {
       });
     },
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['peso'] });
-      qc.invalidateQueries({ queryKey: ['dashboard'] });
+      qc.invalidateQueries({ queryKey: ['/app/peso'] });
+      qc.invalidateQueries({ queryKey: ['/app/dashboard'] });
       setOpen(false);
       setNovoPeso('');
       toast({ title: 'Peso registrado!', variant: 'success' });
@@ -153,7 +153,7 @@ export function PesoList() {
                   contentStyle={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: 8 }}
                 />
                 <ReferenceLine y={pesoMeta} stroke="hsl(var(--primary))" strokeDasharray="5 5" label="Meta" />
-                <Line type="monotone" dataKey="peso" stroke="hsl(var(--primary))" strokeWidth={2} dot={{ r: 3 }} />
+                <Line type="monotone" dataKey="/app/peso" stroke="hsl(var(--primary))" strokeWidth={2} dot={{ r: 3 }} />
               </LineChart>
             </ResponsiveContainer>
           </CardContent>

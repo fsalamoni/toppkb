@@ -9,7 +9,7 @@ export function NotFound() {
       <h1 className="text-3xl font-bold mb-2">404</h1>
       <p className="text-muted-foreground mb-6">Página não encontrada</p>
       <Button asChild>
-        <Link to="/">
+        <Link to="/app/">
           <Home className="h-4 w-4" /> Voltar ao dashboard
         </Link>
       </Button>
