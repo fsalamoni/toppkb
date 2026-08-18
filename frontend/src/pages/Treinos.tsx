@@ -1,5 +1,5 @@
-import { GenericCRUDPage } from './GenericCRUDPage';
+import { TreinosList } from './TreinosList';
 
 export function Treinos() {
-  return <GenericCRUDPage colecao="/app/treinos" titulo="Treinos" />;
+  return <TreinosList />;
 }
