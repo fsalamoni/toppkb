@@ -15,6 +15,10 @@ jobs:
         with:
           node-version: '20'
 
+      - uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+
       - name: Install frontend deps
         working-directory: ./frontend
         run: npm install --no-audit --no-fund --legacy-peer-deps
@@ -38,35 +42,30 @@ jobs:
         working-directory: ./functions
         run: npm run build
 
-      - name: Cache Firebase CLI
-        uses: actions/cache@v4
-        with:
-          path: ~/.firebase
-          key: ${{ runner.os }}-firebase
-
       - name: Install Firebase CLI
         run: npm install -g firebase-tools
 
-      - name: Authenticate with Firebase service account
-        run: |
-          echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}" > /tmp/firebase-sa.json
-          echo "Service account salvo em /tmp/firebase-sa.json"
-          cat /tmp/firebase-sa.json | head -1
-
-      - name: Deploy rules + indexes + storage + functions + hosting
+      - name: Deploy rules + indexes + storage + functions
         working-directory: ./
-        env:
-          GOOGLE_APPLICATION_CREDENTIALS: /tmp/firebase-sa.json
         run: |
           firebase deploy \
-            --only firestore:rules,firestore:indexes,storage,functions,hosting \
+            --only firestore:rules,firestore:indexes,storage,functions \
             --project antonov \
             --force \
             --non-interactive
 
+      - name: Deploy hosting
+        uses: FirebaseExtended/action-hosting-deploy@0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          projectId: antonov
+          channelId: live
+          target: hosting
+
       - name: Smoke test
         run: |
-          sleep 20
+          sleep 30
           echo "Testando site..."
           curl -fsS https://toppkb.web.app > /dev/null && echo "✅ Site respondendo" || (echo "❌ Site não respondeu" && exit 1)
           curl -fsS https://toppkb.web.app/login > /dev/null && echo "✅ Login page OK" || (echo "❌ Login page falhou" && exit 1)
