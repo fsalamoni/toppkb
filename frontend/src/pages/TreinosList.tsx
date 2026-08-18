@@ -1,15 +1,14 @@
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { collection, query, where, orderBy, getDocs, deleteDoc, doc } from 'firebase/firestore';
+import { collection, query, orderBy, getDocs, deleteDoc, doc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useAuth } from '@/hooks/useAuth';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Spinner, EmptyState } from '@/components/common/LoadingScreen';
 import { toast } from '@/components/ui/toaster';
 import { Plus, Trash2 } from 'lucide-react';
-import { formatDateTime, formatKg } from '@/lib/utils';
+import { formatDateTime } from '@/lib/utils';
 import type { Treino } from '@/lib/api';
 
 export function TreinosList() {
@@ -76,7 +75,7 @@ export function TreinosList() {
                     </div>
                     {t.drillsRealizados && t.drillsRealizados.length > 0 && (
                       <div className="flex flex-wrap gap-1 mt-2">
-                        {t.drillsRealizados.map((d) => (
+                        {t.drillsRealizados.map((d: string) => (
                           <span key={d} className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded">
                             {d}
                           </span>

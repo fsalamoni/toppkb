@@ -29,14 +29,14 @@ export function AdminUsers() {
     }
   };
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); /* eslint-disable-line */ }, []);
 
   const handleGrant = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email.trim()) return;
     setGranting(true);
     try {
-      await adminGrantAdmin(email.trim(), '/app/admin');
+      await adminGrantAdmin(email.trim(), 'admin');
       addToast({ type: 'success', message: `${email} agora é admin` });
       setEmail('');
       await load();

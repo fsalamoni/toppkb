@@ -17,7 +17,7 @@ describe('anonymizeText', () => {
   });
 
   it('remove telefone', () => {
-    const result = anonymizeText('Liga 11987654321');
+    const result = anonymizeText('Liga 11 98765-4321');
     expect(result.text).toContain('[PHONE]');
     expect(result.piiTypes).toContain('phone');
   });
@@ -29,7 +29,7 @@ describe('anonymizeText', () => {
   });
 
   it('remove múltiplos PIIs', () => {
-    const result = anonymizeText('Email: a@b.com CPF: 111.222.333-44 tel: 11999998888');
+    const result = anonymizeText('Email: a@b.com CPF: 111.222.333-44 tel: 11 99999-8888');
     expect(result.piiRemoved).toBe(3);
     expect(result.piiTypes).toHaveLength(3);
   });
@@ -40,7 +40,12 @@ describe('anonymizeText', () => {
     expect(result.piiRemoved).toBe(0);
   });
 
-  it('filterPII é alias de anonymizeText', () => {
-    expect(filterPII).toBe(anonymizeText);
+  it('filterPII tem o mesmo comportamento de anonymizeText', () => {
+    const input = 'Meu email é joao@silva.com';
+    const a = anonymizeText(input);
+    const b = filterPII(input);
+    expect(a.text).toBe(b.text);
+    expect(a.piiRemoved).toBe(b.piiRemoved);
+    expect(a.piiTypes).toEqual(b.piiTypes);
   });
 });

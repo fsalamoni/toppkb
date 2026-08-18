@@ -3,11 +3,13 @@ import { create } from 'zustand';
 interface UIState {
   sidebarOpen: boolean;
   temaEscuro: boolean;
+  theme?: 'light' | 'dark';
   toasts: Array<{ id: string; type: 'success' | 'error' | 'info'; message: string }>;
   toggleSidebar: () => void;
   setSidebar: (open: boolean) => void;
   toggleTema: () => void;
   setTema: (escuro: boolean) => void;
+  setTheme?: (theme: 'light' | 'dark') => void;
   addToast: (toast: { type: 'success' | 'error' | 'info'; message: string }) => void;
   removeToast: (id: string) => void;
 }

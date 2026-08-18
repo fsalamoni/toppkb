@@ -1,7 +1,6 @@
-import { useState, useEffect, useRef } from 'react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { useState, useEffect } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ChatMessages, ChatInput } from '@/components/chat/ChatMessage';
 import { sendMessage, listMensagens, listConversas, saveFeedback, ChatAgent } from '@/lib/chat-api';
@@ -38,6 +37,7 @@ export function ChatPage() {
   useEffect(() => {
     if (!conversaIdAtual) return;
     listMensagens(conversaIdAtual).then(setMessages).catch(() => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [conversaIdAtual]);
 
   const handleSend = async (text: string) => {

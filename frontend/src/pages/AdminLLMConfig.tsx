@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Spinner, EmptyState } from '@/components/common/LoadingScreen';
+import { Spinner } from '@/components/common/LoadingScreen';
 import { toast } from '@/components/ui/toaster';
 import {
   LLM_PROVIDERS,
@@ -25,7 +25,7 @@ import {
   type AgentModelInput,
   type AgentSkillClient,
 } from '@/lib/llm-api';
-import { Sparkles, Key, RefreshCw, ExternalLink, Save, Trash2 } from 'lucide-react';
+import { Sparkles, Key, RefreshCw, Save, Trash2 } from 'lucide-react';
 
 type Tab = 'global' | 'agentes';
 
@@ -36,6 +36,7 @@ export function AdminLLMConfig() {
 
   useEffect(() => {
     load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const load = async () => {

@@ -1,7 +1,7 @@
 import { Outlet, NavLink, Link, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard,
-  Pickleball,
+  CircleDot,
   Trophy,
   Dumbbell,
   Apple,
@@ -27,7 +27,7 @@ const NAV_GROUPS = [
   {
     label: '🏓 Pickleball',
     items: [
-      { to: '/app/treinos', label: 'Treinos', icon: Pickleball },
+      { to: '/app/treinos', label: 'Treinos', icon: CircleDot },
       { to: '/app/partidas', label: 'Partidas', icon: Trophy },
       { to: '/app/estudos', label: 'Estudos', icon: CalendarDays },
     ],

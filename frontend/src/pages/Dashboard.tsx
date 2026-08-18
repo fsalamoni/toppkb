@@ -7,7 +7,6 @@ import { Button } from '@/components/ui/button';
 import { Spinner, EmptyState } from '@/components/common/LoadingScreen';
 import { TrendingDown, TrendingUp, AlertCircle, Trophy, Target, Scale, Activity } from 'lucide-react';
 import { classificarIMC, formatKg } from '@/lib/utils';
-import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip, CartesianGrid } from 'recharts';
 
 export function Dashboard() {
   const { userDoc } = useAuth();

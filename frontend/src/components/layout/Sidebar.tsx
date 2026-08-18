@@ -1,13 +1,12 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, Trophy, Apple, Heart, MessageCircle,
-  CalendarDays, Settings, LogOut, Menu, Scale, BedDouble, AlertCircle,
+  CalendarDays, Settings, LogOut, Scale, BedDouble, AlertCircle,
   Target, User as UserIcon, CircleDot,
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useUIStore } from '@/stores/uiStore';
 import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
 
 const NAV_GROUPS = [
   {
@@ -65,8 +64,8 @@ const NAV_GROUPS = [
 ];
 
 export function Sidebar() {
-  const { user, signOut, isAdmin } = useAuth();
-  const { sidebarOpen, toggleSidebar } = useUIStore();
+  const { signOut, isAdmin } = useAuth();
+  const { sidebarOpen } = useUIStore();
   const navigate = useNavigate();
 
   const handleSignOut = async () => {

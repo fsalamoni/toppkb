@@ -7,7 +7,7 @@ import { Spinner, EmptyState } from '@/components/common/LoadingScreen';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, CartesianGrid } from 'recharts';
-import { formatDate, formatKg } from '@/lib/utils';
+import { formatDate } from '@/lib/utils';
 
 export function Metricas() {
   const { user } = useAuth();

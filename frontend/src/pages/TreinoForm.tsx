@@ -16,7 +16,7 @@ export function TreinoForm() {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  const { register, handleSubmit, watch, setValue, formState: { errors, isSubmitting } } = useForm({
+  const { register, handleSubmit, watch, setValue, formState: { isSubmitting } } = useForm({
     defaultValues: {
       data: new Date().toISOString().slice(0, 16),
       duracaoMin: 60,

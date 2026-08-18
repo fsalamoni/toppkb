@@ -2,7 +2,7 @@
  * Página CRUD genérica para coleções simples.
  * Use para: Forca, Mobilidade, Cardio, Agua, Suplementos, Medidas, Estudos, Metas.
  */
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { collection, query, orderBy, getDocs, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase';

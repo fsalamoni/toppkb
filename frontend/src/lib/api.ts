@@ -3,7 +3,7 @@
  * Compatível com o que o frontend vai chamar via api (REST) ou callable.
  */
 
-import { getFunctions, httpsCallable } from 'firebase/functions';
+import { httpsCallable } from 'firebase/functions';
 import { functions } from './firebase';
 
 /* =========================================================

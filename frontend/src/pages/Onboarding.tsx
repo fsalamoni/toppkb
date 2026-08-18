@@ -28,7 +28,7 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 export function Onboarding() {
-  const { user, userDoc, refresh } = useAuth();
+  const { user, userDoc } = useAuth();
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [saving, setSaving] = useState(false);
@@ -37,7 +37,6 @@ export function Onboarding() {
     register,
     handleSubmit,
     watch,
-    formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {

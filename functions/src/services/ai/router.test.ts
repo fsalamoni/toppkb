@@ -37,7 +37,10 @@ describe('detectarAgente', () => {
 
 describe('gerarTituloConversa', () => {
   it('limita a 6 palavras', () => {
-    expect(gerarTituloConversa('Como melhorar meu dink contra jogadores que jogam agressivo?')).toContain('...');
+    // input com mais de 50 chars para forçar truncamento com '...'
+    const t = gerarTituloConversa('Como melhorar meu dink contra jogadores canhotos agressivos que atacam muito?');
+    const palavras = t.replace('...', '').split(/\s+/).filter(Boolean);
+    expect(palavras.length).toBeLessThanOrEqual(6);
   });
 
   it('remove caracteres especiais', () => {

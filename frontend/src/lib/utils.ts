@@ -31,6 +31,7 @@ export function formatKg(kg: number, digits = 1): string {
 }
 
 export function calcularIMC(peso: number, alturaCm: number): number {
+  if (!alturaCm || alturaCm <= 0) return 0;
   const alturaM = alturaCm / 100;
   return peso / (alturaM * alturaM);
 }

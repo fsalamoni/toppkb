@@ -35,7 +35,7 @@ export function AdminCorpus() {
     }
   };
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); /* eslint-disable-line */ }, []);
 
   const filtered = docs.filter((d) => {
     if (!debouncedSearch) return true;

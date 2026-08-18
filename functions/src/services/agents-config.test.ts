@@ -103,7 +103,7 @@ describe('resolveAgentLLMConfig', () => {
       skills: [],
     };
     const result = resolveAgentLLMConfig(agent, global);
-    expect(result?.provider).toBe('google');
+    expect(result?.provider).toBe('openai');
     expect(result?.apiKey).toBe('global-key');
   });
 
@@ -116,7 +116,7 @@ describe('resolveAgentLLMConfig', () => {
       skills: [],
     };
     const result = resolveAgentLLMConfig(agent, global);
-    expect(result?.provider).toBe('google');
+    expect(result?.provider).toBe('openai');
   });
 
   it('retorna null se global é null e custom é incompleto', () => {

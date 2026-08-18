@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { StatCard } from '@/components/dashboard/StatCard';
 import { BarChartCard, PieChartCard } from '@/components/dashboard/LineChartCard';
 import { adminGetPlatformStats } from '@/lib/api';
-import { Users, MessageSquare, AlertCircle, FileText, Activity, TrendingUp } from 'lucide-react';
+import { Users, MessageSquare, FileText, Activity, TrendingUp } from 'lucide-react';
 import { useUIStore } from '@/stores/uiStore';
 
 export function AdminStats() {
@@ -17,6 +16,7 @@ export function AdminStats() {
       .then(setStats)
       .catch((e) => addToast({ type: 'error', message: 'Erro: ' + e.message }))
       .finally(() => setLoading(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (loading) {

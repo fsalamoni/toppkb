@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import type { User } from 'firebase/auth';
-import type { UserDoc } from '@/lib/api';
+import type { UserDoc } from '@/hooks/useAuth';
 
 interface AuthState {
   user: User | null;

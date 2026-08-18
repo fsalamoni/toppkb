@@ -1,5 +1,5 @@
-import { useQuery, useMutation, useQueryClient, UseQueryOptions } from '@tanstack/react-query';
-import { collection, query, orderBy, getDocs, doc, addDoc, setDoc, deleteDoc, where, limit, startAfter, getDoc, QueryConstraint } from 'firebase/firestore';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { collection, query, orderBy, getDocs, doc, addDoc, setDoc, deleteDoc, limit, getDoc, QueryConstraint } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useAuth } from './useAuth';
 
