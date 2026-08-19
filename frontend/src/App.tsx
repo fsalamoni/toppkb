@@ -45,6 +45,7 @@ const SuplementosForm = lazy(() => import('./pages/SuplementosForm').then((m) =>
 const Hidratacao = lazy(() => import('./pages/Hidratacao').then((m) => ({ default: m.Hidratacao })));
 const HidratacaoForm = lazy(() => import('./pages/HidratacaoForm').then((m) => ({ default: m.HidratacaoForm })));
 const Onboarding = lazy(() => import('./pages/Onboarding').then((m) => ({ default: m.Onboarding })));
+const Consent = lazy(() => import('./pages/Consent').then((m) => ({ default: m.Consent })));
 const Configuracoes = lazy(() => import('./pages/Configuracoes').then((m) => ({ default: m.Configuracoes })));
 const Perfil = lazy(() => import('./pages/Perfil').then((m) => ({ default: m.Perfil })));
 const ConfiguracoesLLM = lazy(() => import('./pages/ConfiguracoesLLM').then((m) => ({ default: m.ConfiguracoesLLM })));
@@ -194,7 +195,7 @@ function AppShell() {
               <Route path="/app/estudos/:id" element={<PrivateRoute><EstudosForm /></PrivateRoute>} />
               <Route path="/app/chat" element={<PrivateRoute><ChatPage /></PrivateRoute>} />
               <Route path="/app/onboarding" element={<PrivateRoute><Onboarding /></PrivateRoute>} />
-              <Route path="/consent" element={<PrivateRoute><Onboarding /></PrivateRoute>} />
+              <Route path="/app/consent" element={<PrivateRoute><Consent /></PrivateRoute>} />
               <Route path="/app/configuracoes" element={<PrivateRoute><Configuracoes /></PrivateRoute>} />
               <Route path="/app/notificacoes" element={<PrivateRoute><Notificacoes /></PrivateRoute>} />
               <Route path="/configuracoes/llm" element={<PrivateRoute><ConfiguracoesLLM /></PrivateRoute>} />

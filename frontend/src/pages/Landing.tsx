@@ -111,10 +111,18 @@ export function Landing() {
   useEffect(() => {
     if (loading) return;
     if (!user) return;
-    if (!userDoc) navigate('/app/onboarding', { replace: true });
-    else if (!userDoc.consent) navigate('/app/consent', { replace: true });
-    else if (!userDoc.onboardingComplete) navigate('/app/onboarding', { replace: true });
-    else navigate('/app/dashboard', { replace: true });
+    // IMPORTANTE: verificar consent ANTES de tudo (LGPD)
+    // userDoc.consent pode ser `true` ou um objeto { acceptedAt, version, ip }
+    const hasConsent = userDoc?.consent === true || (userDoc?.consent && typeof userDoc.consent === 'object');
+    if (!hasConsent) {
+      navigate('/app/consent', { replace: true });
+      return;
+    }
+    if (!userDoc?.onboardingComplete) {
+      navigate('/app/onboarding', { replace: true });
+      return;
+    }
+    navigate('/app/dashboard', { replace: true });
   }, [user, userDoc, loading, navigate]);
 
   return (

@@ -1,48 +1,82 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from '@/components/ui/toaster';
-import { doc, serverTimestamp } from 'firebase/firestore';
+import { doc, serverTimestamp, setDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { Check } from 'lucide-react';
 
+/** Helper de timeout para evitar que setDoc pendure */
+function withTimeout<T>(p: Promise<T>, ms: number, label: string): Promise<T> {
+  return Promise.race([
+    p,
+    new Promise<T>((_, reject) =>
+      setTimeout(() => reject(new Error(`${label} timeout após ${ms}ms`)), ms),
+    ),
+  ]);
+}
+
 export function Consent() {
-  const { user, signOut } = useAuth();
+  const { user, userDoc, loading, signOut } = useAuth();
   const navigate = useNavigate();
   const [accepted, setAccepted] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+  // Se já tem consent + onboarding, manda pro dashboard
+  useEffect(() => {
+    if (loading) return;
+    if (!user) {
+      navigate('/login', { replace: true });
+      return;
+    }
+    const hasConsent = userDoc?.consent === true || (userDoc?.consent && typeof userDoc.consent === 'object');
+    const hasOnboarding = userDoc?.onboardingComplete === true;
+    if (hasConsent && hasOnboarding) {
+      navigate('/app/dashboard', { replace: true });
+    } else if (hasConsent) {
+      navigate('/app/onboarding', { replace: true });
+    }
+  }, [user, userDoc, loading, navigate]);
 
   const handleAccept = async () => {
     if (!user || !accepted) return;
     setSaving(true);
+    setErrorMsg(null);
     try {
-      await doc(db, 'toppkb_users', user.uid, 'profile', 'main'); // ensure exists
-      // update via set with merge
-      const { setDoc } = await import('firebase/firestore');
-      await setDoc(
-        doc(db, 'toppkb_users', user.uid, 'profile', 'main'),
-        {
-          uid: user.uid,
-          email: user.email,
-          displayName: user.displayName || user.email?.split('@')[0] || 'Atleta',
-          consent: {
-            acceptedAt: serverTimestamp(),
-            version: '1.0',
-            ip: '', // backend pode preencher
+      // setDoc com timeout 8s — Firestore pode pendurar
+      await withTimeout(
+        setDoc(
+          doc(db, 'toppkb_users', user.uid, 'profile', 'main'),
+          {
+            uid: user.uid,
+            email: user.email,
+            displayName: user.displayName || user.email?.split('@')[0] || 'Atleta',
+            consent: {
+              acceptedAt: serverTimestamp(),
+              version: '1.0',
+              ip: '',
+            },
+            createdAt: serverTimestamp(),
+            updatedAt: serverTimestamp(),
+            updatedAtIso: new Date().toISOString(),
+            onboardingComplete: false,
+            preferences: { theme: 'dark', language: 'pt-BR', units: 'metric' },
           },
-          createdAt: serverTimestamp(),
-          updatedAt: serverTimestamp(),
-          onboardingComplete: false,
-          preferences: { theme: 'dark', language: 'pt-BR', units: 'metric' },
-        },
-        { merge: true },
+          { merge: true },
+        ),
+        8000,
+        'Salvamento do consentimento',
       );
       toast({ title: 'Consentimento aceito!', variant: 'success' });
-      navigate('/app/onboarding');
+      navigate('/app/onboarding', { replace: true });
     } catch (e: any) {
-      toast({ title: 'Erro', description: e.message, variant: 'destructive' });
+      console.error('[consent] erro:', e);
+      const msg = e?.message || 'Erro desconhecido';
+      setErrorMsg(msg);
+      toast({ title: 'Erro', description: msg, variant: 'destructive' });
     } finally {
       setSaving(false);
     }
@@ -56,6 +90,12 @@ export function Consent() {
           <CardDescription>Seus dados são seus. Sempre.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
+          {errorMsg && (
+            <div className="rounded-md border border-red-500/50 bg-red-500/5 p-3 text-sm">
+              <strong className="text-red-600">Erro ao salvar consentimento</strong>
+              <p className="text-xs text-muted-foreground mt-1 break-all">{errorMsg}</p>
+            </div>
+          )}
           <p>Este app coleta e processa, com seu consentimento:</p>
 
           <ul className="space-y-2 text-sm">
