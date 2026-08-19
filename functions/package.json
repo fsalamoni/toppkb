@@ -21,6 +21,7 @@
   "dependencies": {
     "@google-cloud/vertexai": "^1.5.0",
     "@google/generative-ai": "^0.17.0",
+    "@types/web-push": "^3.6.4",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "firebase-admin": "^12.3.0",
@@ -29,6 +30,7 @@
     "pdf-parse": "^1.1.1",
     "resend": "^3.4.0",
     "uuid": "^10.0.0",
+    "web-push": "^3.6.7",
     "zod": "^3.23.8"
   },
   "devDependencies": {

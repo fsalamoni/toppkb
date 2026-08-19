@@ -48,6 +48,7 @@ const Onboarding = lazy(() => import('./pages/Onboarding').then((m) => ({ defaul
 const Configuracoes = lazy(() => import('./pages/Configuracoes').then((m) => ({ default: m.Configuracoes })));
 const Perfil = lazy(() => import('./pages/Perfil').then((m) => ({ default: m.Perfil })));
 const ConfiguracoesLLM = lazy(() => import('./pages/ConfiguracoesLLM').then((m) => ({ default: m.ConfiguracoesLLM })));
+const Notificacoes = lazy(() => import('./pages/Notificacoes').then((m) => ({ default: m.Notificacoes })));
 const AdminLayout = lazy(() => import('./pages/admin/AdminLayout').then((m) => ({ default: m.AdminLayout })));
 const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard').then((m) => ({ default: m.AdminDashboard })));
 const AdminCorpus = lazy(() => import('./pages/admin/AdminCorpus').then((m) => ({ default: m.AdminCorpus })));
@@ -195,6 +196,7 @@ function AppShell() {
               <Route path="/app/onboarding" element={<PrivateRoute><Onboarding /></PrivateRoute>} />
               <Route path="/consent" element={<PrivateRoute><Onboarding /></PrivateRoute>} />
               <Route path="/app/configuracoes" element={<PrivateRoute><Configuracoes /></PrivateRoute>} />
+              <Route path="/app/notificacoes" element={<PrivateRoute><Notificacoes /></PrivateRoute>} />
               <Route path="/configuracoes/llm" element={<PrivateRoute><ConfiguracoesLLM /></PrivateRoute>} />
               <Route path="/app/perfil" element={<PrivateRoute><Perfil /></PrivateRoute>} />
               <Route path="/app/admin" element={<PrivateRoute adminOnly><AdminLayout /></PrivateRoute>}>

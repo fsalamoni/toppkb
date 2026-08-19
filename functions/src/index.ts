@@ -22,6 +22,11 @@ import { getMeHandler, updateMeHandler } from './handlers/profile';
 import { saveFeedback } from './handlers/feedback';
 import { listConversationsHandler, listMessagesHandler, deleteConversaHandler } from './handlers/history';
 
+// Push Notifications
+import {
+  savePushSubscription, removePushSubscription, getPushConfig, setPushConfig, sendDailyReminders,
+} from './handlers/notifications';
+
 // Admin
 import { adminListDocuments, adminGetDocument, adminDeleteDocument, adminGetStats } from './handlers/admin-documents';
 import { adminGetPlatformStats } from './handlers/admin-stats';
@@ -71,6 +76,12 @@ export { saveFeedback };
 export const listConversas = listConversationsHandler;
 export const listMensagens = listMessagesHandler;
 export const deleteConversa = deleteConversaHandler;
+
+// Push Notifications
+export {
+  savePushSubscription, removePushSubscription,
+  getPushConfig, setPushConfig, sendDailyReminders,
+};
 
 // Admin
 export {

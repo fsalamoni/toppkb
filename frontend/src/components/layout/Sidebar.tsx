@@ -3,7 +3,7 @@ import {
   LayoutDashboard, Trophy, Apple, Heart, MessageCircle,
   Settings, LogOut, Scale, BedDouble, AlertCircle,
   Target, User as UserIcon, CircleDot, Ruler, Pill, Droplets,
-  Activity, Sparkles, BookOpen,
+  Activity, Sparkles, BookOpen, Bell,
 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { collection, getDocs, query, where, limit } from 'firebase/firestore';
@@ -189,6 +189,19 @@ export function Sidebar() {
       </nav>
 
       <div className="border-t border-border p-2 flex-shrink-0">
+        <NavLink
+          to="/app/notificacoes"
+          className={({ isActive }) =>
+            cn(
+              'flex items-center gap-3 rounded-md px-3 py-2 text-sm',
+              'hover:bg-accent',
+              isActive && 'bg-accent',
+            )
+          }
+        >
+          <Bell className="h-4 w-4 flex-shrink-0" />
+          {sidebarOpen && <span>Notificações</span>}
+        </NavLink>
         <NavLink
           to="/app/configuracoes"
           className={({ isActive }) =>
