@@ -194,8 +194,7 @@ app.post('/chat/message', authMiddleware, consentMiddleware, rateLimit(20), asyn
       const agInicial: AgenteId = agente === 'auto' ? detectarAgente(mensagem) : agente;
       const ref = db
         .collection(globalCol('users')).doc(req.user.uid)
-        .collection('chat').doc('conversas')
-        .collection('conversas').doc();
+        .collection('chat').doc();
       convId = ref.id;
       await ref.set({
         titulo: gerarTituloConversa(mensagem),
@@ -211,8 +210,7 @@ app.post('/chat/message', authMiddleware, consentMiddleware, rateLimit(20), asyn
     // 2) Salva msg do user
     await db
       .collection(globalCol('users')).doc(req.user.uid)
-      .collection('chat').doc('conversas')
-      .collection('conversas').doc(convId)
+      .collection('chat').doc(convId)
       .collection('mensagens').add({
         role: 'user',
         content: mensagem,
@@ -230,8 +228,7 @@ app.post('/chat/message', authMiddleware, consentMiddleware, rateLimit(20), asyn
     // 4) Salva resposta
     const msgRef = await db
       .collection(globalCol('users')).doc(req.user.uid)
-      .collection('chat').doc('conversas')
-      .collection('conversas').doc(convId)
+      .collection('chat').doc(convId)
       .collection('mensagens').add({
         role: 'assistant',
         content: resposta.texto,
@@ -250,8 +247,7 @@ app.post('/chat/message', authMiddleware, consentMiddleware, rateLimit(20), asyn
     // 5) Atualiza conversa
     await db
       .collection(globalCol('users')).doc(req.user.uid)
-      .collection('chat').doc('conversas')
-      .collection('conversas').doc(convId)
+      .collection('chat').doc(convId)
       .update({
         agente: resposta.agenteUsado,
         updatedAt: admin.firestore.FieldValue.serverTimestamp(),
@@ -296,8 +292,7 @@ app.get('/chat/conversas', authMiddleware, consentMiddleware, async (req: any, r
   try {
     const snap = await db
       .collection(globalCol('users')).doc(req.user.uid)
-      .collection('chat').doc('conversas')
-      .collection('conversas')
+      .collection('chat')
       .orderBy('updatedAt', 'desc')
       .limit(50)
       .get();
@@ -313,8 +308,7 @@ app.get('/chat/conversas/:id/messages', authMiddleware, consentMiddleware, async
   try {
     const snap = await db
       .collection(globalCol('users')).doc(req.user.uid)
-      .collection('chat').doc('conversas')
-      .collection('conversas').doc(req.params.id)
+      .collection('chat').doc(req.params.id)
       .collection('mensagens')
       .orderBy('createdAt', 'asc')
       .limit(200)
@@ -421,7 +415,7 @@ app.get('/exportar/tudo', authMiddleware, async (req: any, res): Promise<void> =
       exportData.registros[c] = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
     }
 
-    const convSnap = await ref.collection('chat').doc('conversas').collection('conversas').get();
+    const convSnap = await ref.collection('chat').get();
     exportData.conversas = [];
     for (const c of convSnap.docs) {
       const msgSnap = await c.ref.collection('mensagens').get();

@@ -34,7 +34,7 @@ service cloud.firestore {
         allow delete: if isOwner(uid) || isMaster();
       }
 
-      match /chat/conversas/{conversaId} {
+      match /chat/{conversaId} {
         allow read, write: if isOwner(uid) || isAdmin();
         match /mensagens/{msgId} {
           allow read, write: if isOwner(uid) || isAdmin();

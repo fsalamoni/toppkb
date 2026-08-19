@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { collection, query, orderBy, getDocs, addDoc, serverTimestamp, doc, setDoc } from 'firebase/firestore';
+import { collection, query, orderBy, getDocs } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useAuth } from '@/hooks/useAuth';
 import { Card } from '@/components/ui/card';
@@ -30,25 +30,27 @@ export function Chat() {
   const [conversaAtiva, setConversaAtiva] = useState<string | null>(conversaId || null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // Lista de conversas
+  // Lista de conversas — path: toppkb_users/{uid}/chat/{id}
   const { data: conversas } = useQuery({
     queryKey: ['conversas', user?.uid],
     queryFn: async () => {
       if (!user) return [];
-      const q = query(collection(db, 'toppkb_users', user.uid, 'conversas'), orderBy('updatedAt', 'desc'));
-      const snap = await getDocs(q);
-      return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+      const ref = await getDocs(query(
+        collection(db, 'toppkb_users', user.uid, 'chat'),
+        orderBy('updatedAt', 'desc'),
+      ));
+      return ref.docs.map((d) => ({ id: d.id, ...d.data() }));
     },
     enabled: !!user,
   });
 
-  // Mensagens da conversa ativa
+  // Mensagens da conversa ativa — path: toppkb_users/{uid}/chat/{id}/mensagens/{id}
   const { data: mensagens, isLoading: loadingMsgs } = useQuery({
     queryKey: ['mensagens', user?.uid, conversaAtiva],
     queryFn: async () => {
       if (!user || !conversaAtiva) return [];
       const q = query(
-        collection(db, 'toppkb_users', user.uid, 'conversas', conversaAtiva, 'messages'),
+        collection(db, 'toppkb_users', user.uid, 'chat', conversaAtiva, 'mensagens'),
         orderBy('createdAt', 'asc'),
       );
       const snap = await getDocs(q);
@@ -65,50 +67,18 @@ export function Chat() {
     mutationFn: async (msg: string) => {
       if (!user) throw new Error('Não autenticado');
 
-      let convId = conversaAtiva;
-      if (!convId) {
-        const convRef = await addDoc(collection(db, 'toppkb_users', user.uid, 'conversas'), {
-          titulo: msg.slice(0, 50),
-          agente: 'general',
-          topico: '',
-          createdAt: serverTimestamp(),
-          updatedAt: serverTimestamp(),
-          messageCount: 0,
-          ativo: true,
-        });
-        convId = convRef.id;
-        setConversaAtiva(convId);
-      }
-
-      // Salva msg do user
-      await addDoc(collection(db, 'toppkb_users', user.uid, 'conversas', convId, 'messages'), {
-        role: 'user',
-        content: msg,
-        createdAt: serverTimestamp(),
-      });
-
-      // Chama API
+      // Chama a Cloud Function que faz TUDO (cria conversa, salva user, orquestra LLM, salva resposta)
       const { chatCallable } = await import('@/lib/api');
-      const res: any = await chatCallable({ conversaId: convId, agente: 'auto', mensagem: msg });
-
-      // Salva resposta
-      await addDoc(collection(db, 'toppkb_users', user.uid, 'conversas', convId, 'messages'), {
-        role: 'assistant',
-        content: res.resposta || res.data?.resposta || 'Sem resposta',
-        agente: res.agenteUsado || res.data?.agenteUsado,
-        metadata: res.metadata || res.data?.metadata,
-        createdAt: serverTimestamp(),
+      const res: any = await chatCallable({
+        conversaId: conversaAtiva || undefined,
+        agente: 'auto',
+        mensagem: msg,
       });
 
-      // Atualiza conversa
-      await setDoc(
-        doc(db, 'toppkb_users', user.uid, 'conversas', convId),
-        {
-          agente: res.agenteUsado || res.data?.agenteUsado,
-          updatedAt: serverTimestamp(),
-        },
-        { merge: true },
-      );
+      // Atualiza conversa ativa no estado local
+      if (!conversaAtiva && res?.conversaId) {
+        setConversaAtiva(res.conversaId);
+      }
 
       return res;
     },
@@ -117,7 +87,7 @@ export function Chat() {
       qc.invalidateQueries({ queryKey: ['mensagens'] });
     },
     onError: (e: any) => {
-      toast({ title: 'Erro', description: e.message, variant: 'destructive' });
+      toast.error(e.message || 'Erro ao enviar mensagem');
     },
   });
 

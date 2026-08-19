@@ -186,11 +186,41 @@ export async function deleteAccount() {
 }
 
 /* =========================================================
-   CHAT
+   CHAT (Cloud Function api/chat/message)
    ========================================================= */
 
-export async function chatCallable(_params: { conversaId: string; agente: string; mensagem: string }) {
-  // Stub: chamada genérica para Cloud Function de chat (a ser criada).
-  // Implementação real chamará httpsCallable(functions, 'chat')(params)
-  return { ok: true, data: { resposta: '...' } };
+export async function chatCallable(params: { conversaId?: string; agente: string; mensagem: string }) {
+  // Chama a Cloud Function api (Express) que faz toda a pipeline:
+  // 1) Cria conversa se necessário
+  // 2) Salva msg do user
+  // 3) Chama orquestrador (resolve agente + LLM + provider)
+  // 4) Salva resposta
+  // 5) Atualiza conversa
+  // 6) Audit log
+  const { auth } = await import('./firebase');
+  const user = auth.currentUser;
+  if (!user) throw new Error('Não autenticado');
+  const idToken = await user.getIdToken();
+
+  // URL do Cloud Function (Express) deployed como `api` em southamerica-east1
+  // Será resolvida pelo Firebase Hosting rewrite (mesma origem em prod) ou
+  // pela URL do Cloud Run em dev
+  const projectId = (await import('./firebase')).db.app.options.projectId;
+  const fnUrl = `https://southamerica-east1-${projectId}.cloudfunctions.net/api/chat/message`;
+
+  const response = await fetch(fnUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${idToken}`,
+    },
+    body: JSON.stringify(params),
+  });
+
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({ error: { message: 'Erro desconhecido' } }));
+    throw new Error(err.error?.message || `HTTP ${response.status}`);
+  }
+
+  return response.json();
 }
