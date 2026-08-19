@@ -60,10 +60,10 @@ export function TreinoForm() {
   // Se tiver id, é edição
   const { data: treinoExistente, isLoading: loadingTreino } = useQuery({
     queryKey: ['treino', id],
-    queryFn: async () => {
+    queryFn: async (): Promise<any | null> => {
       if (!id || !user) return null;
       const snap = await getDoc(doc(db, 'toppkb_users', user.uid, 'treinos', id));
-      return snap.exists() ? { id: snap.id, ...snap.data() } : null;
+      return snap.exists() ? ({ id: snap.id, ...snap.data() } as any) : null;
     },
     enabled: !!id && !!user,
   });

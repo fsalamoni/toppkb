@@ -9,9 +9,9 @@ import { Spinner } from '@/components/common/LoadingScreen';
 import { cn } from '@/lib/utils';
 import {
   Activity, AlertCircle, Flame, Calendar, TrendingUp,
-  Plus, ChevronRight, Apple, Brain, Dumbbell, Target, Sparkles, Heart,
+  Plus, ChevronRight, Apple, Brain, Dumbbell, Target, Sparkles, Heart, Trophy,
 } from 'lucide-react';
-import { differenceInDays, subDays } from '@/lib/utils';
+import { differenceInDays, subDays, formatYmd } from '@/lib/utils';
 
 function tsToDate(ts: any): Date | null {
   if (!ts) return null;
@@ -59,7 +59,7 @@ async function loadDashboardData(uid: string): Promise<DashboardData> {
   }).length;
 
   // Partidas
-  const partidas = partidasSnap.docs.map((d) => ({ id: d.id, ...d.data() }));
+  const partidas = partidasSnap.docs.map((d) => ({ id: d.id, ...d.data() } as any));
   const partidas7d = partidas.filter((p: any) => {
     const d = tsToDate(p.data);
     return d && d >= seteDiasAtras;
@@ -105,7 +105,7 @@ async function loadDashboardData(uid: string): Promise<DashboardData> {
   const diasAtivos = new Set<string>();
   [...treinos, ...partidas].forEach((r: any) => {
     const d = tsToDate(r.data);
-    if (d) diasAtivos.add(format(d, 'yyyy-MM-dd'));
+    if (d) diasAtivos.add(formatYmd(d));
   });
 
   return {
@@ -264,7 +264,7 @@ export function Dashboard() {
           <div className="grid grid-cols-15 gap-1">
             {Array.from({ length: 30 }, (_, i) => {
               const day = subDays(new Date(), 29 - i);
-              const key = format(day, 'yyyy-MM-dd');
+              const key = formatYmd(day);
               const ativo = data.diasAtivos.has(key);
               return (
                 <div
@@ -275,7 +275,7 @@ export function Dashboard() {
                       ? "bg-emerald-500/80 text-white"
                       : "bg-muted text-muted-foreground/50",
                   )}
-                  title={format(day, "dd 'de' MMMM")}
+                  title={day.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long' })}
                 >
                   {day.getDate()}
                 </div>

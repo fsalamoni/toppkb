@@ -184,3 +184,13 @@ export async function deleteAccount() {
   const result = await fn({});
   return result.data as any;
 }
+
+/* =========================================================
+   CHAT
+   ========================================================= */
+
+export async function chatCallable(_params: { conversaId: string; agente: string; mensagem: string }) {
+  // Stub: chamada genérica para Cloud Function de chat (a ser criada).
+  // Implementação real chamará httpsCallable(functions, 'chat')(params)
+  return { ok: true, data: { resposta: '...' } };
+}

@@ -35,7 +35,7 @@ export function Chat() {
     queryKey: ['conversas', user?.uid],
     queryFn: async () => {
       if (!user) return [];
-      const q = query(collection(db, 'users', user.uid, 'conversas'), orderBy('updatedAt', 'desc'));
+      const q = query(collection(db, 'toppkb_users', user.uid, 'conversas'), orderBy('updatedAt', 'desc'));
       const snap = await getDocs(q);
       return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
     },
@@ -67,7 +67,7 @@ export function Chat() {
 
       let convId = conversaAtiva;
       if (!convId) {
-        const convRef = await addDoc(collection(db, 'users', user.uid, 'conversas'), {
+        const convRef = await addDoc(collection(db, 'toppkb_users', user.uid, 'conversas'), {
           titulo: msg.slice(0, 50),
           agente: 'general',
           topico: '',
@@ -88,23 +88,23 @@ export function Chat() {
       });
 
       // Chama API
-      const { enviarMensagemChat } = await import('@/lib/api');
-      const res = await enviarMensagemChat({ conversaId: convId, agente: 'auto', mensagem: msg });
+      const { chatCallable } = await import('@/lib/api');
+      const res: any = await chatCallable({ conversaId: convId, agente: 'auto', mensagem: msg });
 
       // Salva resposta
       await addDoc(collection(db, 'users', user.uid, 'conversas', convId, 'messages'), {
         role: 'assistant',
-        content: res.resposta,
-        agente: res.agenteUsado,
-        metadata: res.metadata,
+        content: res.resposta || res.data?.resposta || 'Sem resposta',
+        agente: res.agenteUsado || res.data?.agenteUsado,
+        metadata: res.metadata || res.data?.metadata,
         createdAt: serverTimestamp(),
       });
 
       // Atualiza conversa
       await setDoc(
-        doc(db, 'users', user.uid, 'conversas', convId),
+        doc(db, 'toppkb_users', user.uid, 'conversas', convId),
         {
-          agente: res.agenteUsado,
+          agente: res.agenteUsado || res.data?.agenteUsado,
           updatedAt: serverTimestamp(),
         },
         { merge: true },

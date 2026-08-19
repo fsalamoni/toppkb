@@ -25,6 +25,10 @@ export interface UserDoc {
   consent?: boolean;
   onboardingComplete?: boolean;
   role?: 'user' | 'admin' | 'master';
+  cidade?: string;
+  estado?: string;
+  parceiroDuplas?: string;
+  [key: string]: any;
 }
 
 export interface AuthContextValue {

@@ -9,7 +9,7 @@ import { Spinner, EmptyState } from '@/components/common/LoadingScreen';
 import { toast } from '@/components/ui/toaster';
 import { Plus, Trash2, MapPin, Users, Zap, Clock, ChevronRight } from 'lucide-react';
 import { formatDateTime, formatDuration } from '@/lib/utils';
-import type { Treino } from '@/lib/api';
+import type { Treino } from '@/lib/types';
 
 const INTENSIDADE_CORES: Record<number, string> = {
   1: 'bg-slate-500',

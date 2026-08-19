@@ -59,10 +59,10 @@ export function PartidaForm() {
   // Se tiver id, é edição
   const { data: partidaExistente, isLoading: loadingPartida } = useQuery({
     queryKey: ['partida', id],
-    queryFn: async () => {
+    queryFn: async (): Promise<any | null> => {
       if (!id || !user) return null;
       const snap = await getDoc(doc(db, 'toppkb_users', user.uid, 'partidas', id));
-      return snap.exists() ? { id: snap.id, ...snap.data() } : null;
+      return snap.exists() ? ({ id: snap.id, ...snap.data() } as any) : null;
     },
     enabled: !!id && !!user,
   });

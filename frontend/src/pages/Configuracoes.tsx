@@ -18,7 +18,7 @@ export function Configuracoes() {
   const handleExport = async () => {
     setLoading(true);
     try {
-      const data = await exportarTudo({});
+      const data = await exportarTudo();
       const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -39,7 +39,7 @@ export function Configuracoes() {
     if (!confirm('Última chance: confirmar exclusão da conta?')) return;
     setLoading(true);
     try {
-      await deletarConta({});
+      await deletarConta();
       await signOut();
       toast({ title: 'Conta deletada', variant: 'success' });
       navigate('/app/');
@@ -89,21 +89,15 @@ export function Configuracoes() {
         <CardContent className="flex gap-2">
           <Button
             variant={theme === 'light' ? 'default' : 'outline'}
-            onClick={() => setTheme('light')}
+            onClick={() => setTheme?.('light')}
           >
             <Sun className="h-4 w-4" /> Claro
           </Button>
           <Button
             variant={theme === 'dark' ? 'default' : 'outline'}
-            onClick={() => setTheme('dark')}
+            onClick={() => setTheme?.('dark')}
           >
             <Moon className="h-4 w-4" /> Escuro
-          </Button>
-          <Button
-            variant={theme === 'auto' ? 'default' : 'outline'}
-            onClick={() => setTheme('auto')}
-          >
-            Auto
           </Button>
         </CardContent>
       </Card>

@@ -9,7 +9,7 @@ import { db } from '@/lib/firebase';
 import { Check } from 'lucide-react';
 
 export function Consent() {
-  const { user, userDoc, signOut } = useAuth();
+  const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const [accepted, setAccepted] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -32,7 +32,7 @@ export function Consent() {
             version: '1.0',
             ip: '', // backend pode preencher
           },
-          createdAt: userDoc?.createdAt || serverTimestamp(),
+          createdAt: serverTimestamp(),
           updatedAt: serverTimestamp(),
           onboardingComplete: false,
           preferences: { theme: 'dark', language: 'pt-BR', units: 'metric' },

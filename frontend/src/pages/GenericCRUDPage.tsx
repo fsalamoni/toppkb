@@ -65,7 +65,7 @@ export function GenericCRUDPage({
     queryKey: [colecao, user?.uid],
     queryFn: async () => {
       if (!user) return [];
-      const q = query(collection(db, 'users', user.uid, colecao), orderBy(orderByField, orderDirection));
+      const q = query(collection(db, 'toppkb_users', user.uid, colecao), orderBy(orderByField, orderDirection));
       const snap = await getDocs(q);
       return snap.docs.map((d) => ({ id: d.id, ...d.data() } as any));
     },
@@ -89,7 +89,7 @@ export function GenericCRUDPage({
           payload[c.name] = Number(form[c.name]);
         }
       });
-      await addDoc(collection(db, 'users', user.uid, colecao), payload);
+      await addDoc(collection(db, 'toppkb_users', user.uid, colecao), payload);
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: [colecao] });

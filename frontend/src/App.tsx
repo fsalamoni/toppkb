@@ -11,14 +11,25 @@ import { Treinos } from './pages/Treinos';
 import { TreinoForm } from './pages/TreinoForm';
 import { Partidas } from './pages/Partidas';
 import { PartidaForm } from './pages/PartidaForm';
-import { Fisio } from './pages/Fisio';
+import { Preparacao } from './pages/Preparacao';
+import { PreparacaoForm } from './pages/PreparacaoForm';
 import { Nutricao } from './pages/Nutricao';
+import { NutricaoForm } from './pages/NutricaoForm';
 import { Sono } from './pages/Sono';
+import { SonoForm } from './pages/SonoForm';
 import { Peso } from './pages/Peso';
+import { PesoForm } from './pages/PesoForm';
 import { Dores } from './pages/Dores';
+import { DoresForm } from './pages/DoresForm';
 import { Torneios } from './pages/Torneios';
+import { TorneiosForm } from './pages/TorneiosForm';
 import { Metas } from './pages/Metas';
+import { MetasForm } from './pages/MetasForm';
 import { Estudos } from './pages/Estudos';
+import { Medidas } from './pages/Medidas';
+import { MedidasForm } from './pages/MedidasForm';
+import { Lesoes } from './pages/Lesoes';
+import { LesoesForm } from './pages/LesoesForm';
 import { Onboarding } from './pages/Onboarding';
 import { Configuracoes } from './pages/Configuracoes';
 import { Perfil } from './pages/Perfil';
@@ -67,13 +78,34 @@ function AppShell() {
             <Route path="/app/partidas" element={<PrivateRoute><Partidas /></PrivateRoute>} />
             <Route path="/app/partidas/nova" element={<PrivateRoute><PartidaForm /></PrivateRoute>} />
             <Route path="/app/partidas/:id" element={<PrivateRoute><PartidaForm /></PrivateRoute>} />
-            <Route path="/app/fisio" element={<PrivateRoute><Fisio /></PrivateRoute>} />
+            <Route path="/app/fisio" element={<PrivateRoute><Preparacao /></PrivateRoute>} />
+            <Route path="/app/preparacao" element={<PrivateRoute><Preparacao /></PrivateRoute>} />
+            <Route path="/app/preparacao/nova" element={<PrivateRoute><PreparacaoForm /></PrivateRoute>} />
+            <Route path="/app/preparacao/:id" element={<PrivateRoute><PreparacaoForm /></PrivateRoute>} />
             <Route path="/app/nutricao" element={<PrivateRoute><Nutricao /></PrivateRoute>} />
+            <Route path="/app/nutricao/nova" element={<PrivateRoute><NutricaoForm /></PrivateRoute>} />
+            <Route path="/app/nutricao/:id" element={<PrivateRoute><NutricaoForm /></PrivateRoute>} />
             <Route path="/app/sono" element={<PrivateRoute><Sono /></PrivateRoute>} />
+            <Route path="/app/sono/nova" element={<PrivateRoute><SonoForm /></PrivateRoute>} />
+            <Route path="/app/sono/:id" element={<PrivateRoute><SonoForm /></PrivateRoute>} />
             <Route path="/app/peso" element={<PrivateRoute><Peso /></PrivateRoute>} />
+            <Route path="/app/peso/nova" element={<PrivateRoute><PesoForm /></PrivateRoute>} />
+            <Route path="/app/peso/:id" element={<PrivateRoute><PesoForm /></PrivateRoute>} />
+            <Route path="/app/medidas" element={<PrivateRoute><Medidas /></PrivateRoute>} />
+            <Route path="/app/medidas/nova" element={<PrivateRoute><MedidasForm /></PrivateRoute>} />
+            <Route path="/app/medidas/:id" element={<PrivateRoute><MedidasForm /></PrivateRoute>} />
             <Route path="/app/dores" element={<PrivateRoute><Dores /></PrivateRoute>} />
+            <Route path="/app/dores/nova" element={<PrivateRoute><DoresForm /></PrivateRoute>} />
+            <Route path="/app/dores/:id" element={<PrivateRoute><DoresForm /></PrivateRoute>} />
+            <Route path="/app/lesoes" element={<PrivateRoute><Lesoes /></PrivateRoute>} />
+            <Route path="/app/lesoes/nova" element={<PrivateRoute><LesoesForm /></PrivateRoute>} />
+            <Route path="/app/lesoes/:id" element={<PrivateRoute><LesoesForm /></PrivateRoute>} />
             <Route path="/app/torneios" element={<PrivateRoute><Torneios /></PrivateRoute>} />
+            <Route path="/app/torneios/novo" element={<PrivateRoute><TorneiosForm /></PrivateRoute>} />
+            <Route path="/app/torneios/:id" element={<PrivateRoute><TorneiosForm /></PrivateRoute>} />
             <Route path="/app/metas" element={<PrivateRoute><Metas /></PrivateRoute>} />
+            <Route path="/app/metas/nova" element={<PrivateRoute><MetasForm /></PrivateRoute>} />
+            <Route path="/app/metas/:id" element={<PrivateRoute><MetasForm /></PrivateRoute>} />
             <Route path="/app/estudos" element={<PrivateRoute><Estudos /></PrivateRoute>} />
             <Route path="/app/chat" element={<PrivateRoute><ChatPage /></PrivateRoute>} />
             <Route path="/app/onboarding" element={<PrivateRoute><Onboarding /></PrivateRoute>} />
