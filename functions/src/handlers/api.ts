@@ -192,7 +192,10 @@ app.post('/chat/message', authMiddleware, consentMiddleware, rateLimit(20), asyn
     let convId = conversaId;
     if (!convId) {
       const agInicial: AgenteId = agente === 'auto' ? detectarAgente(mensagem) : agente;
-      const ref = await db.collection(globalCol('users')).doc(req.user.uid).collection('chat').doc('conversas').collection('chat').doc('conversas').collection('conversas').doc();
+      const ref = db
+        .collection(globalCol('users')).doc(req.user.uid)
+        .collection('chat').doc('conversas')
+        .collection('conversas').doc();
       convId = ref.id;
       await ref.set({
         titulo: gerarTituloConversa(mensagem),
@@ -208,7 +211,8 @@ app.post('/chat/message', authMiddleware, consentMiddleware, rateLimit(20), asyn
     // 2) Salva msg do user
     await db
       .collection(globalCol('users')).doc(req.user.uid)
-      .collection('chat').doc('conversas').collection('chat').doc('conversas').collection('conversas').doc(convId)
+      .collection('chat').doc('conversas')
+      .collection('conversas').doc(convId)
       .collection('mensagens').add({
         role: 'user',
         content: mensagem,
@@ -226,7 +230,8 @@ app.post('/chat/message', authMiddleware, consentMiddleware, rateLimit(20), asyn
     // 4) Salva resposta
     const msgRef = await db
       .collection(globalCol('users')).doc(req.user.uid)
-      .collection('chat').doc('conversas').collection('chat').doc('conversas').collection('conversas').doc(convId)
+      .collection('chat').doc('conversas')
+      .collection('conversas').doc(convId)
       .collection('mensagens').add({
         role: 'assistant',
         content: resposta.texto,
@@ -245,7 +250,8 @@ app.post('/chat/message', authMiddleware, consentMiddleware, rateLimit(20), asyn
     // 5) Atualiza conversa
     await db
       .collection(globalCol('users')).doc(req.user.uid)
-      .collection('chat').doc('conversas').collection('chat').doc('conversas').collection('conversas').doc(convId)
+      .collection('chat').doc('conversas')
+      .collection('conversas').doc(convId)
       .update({
         agente: resposta.agenteUsado,
         updatedAt: admin.firestore.FieldValue.serverTimestamp(),
@@ -290,7 +296,8 @@ app.get('/chat/conversas', authMiddleware, consentMiddleware, async (req: any, r
   try {
     const snap = await db
       .collection(globalCol('users')).doc(req.user.uid)
-      .collection('chat').doc('conversas').collection('conversas')
+      .collection('chat').doc('conversas')
+      .collection('conversas')
       .orderBy('updatedAt', 'desc')
       .limit(50)
       .get();
@@ -306,7 +313,8 @@ app.get('/chat/conversas/:id/messages', authMiddleware, consentMiddleware, async
   try {
     const snap = await db
       .collection(globalCol('users')).doc(req.user.uid)
-      .collection('chat').doc('conversas').collection('chat').doc('conversas').collection('conversas').doc(req.params.id)
+      .collection('chat').doc('conversas')
+      .collection('conversas').doc(req.params.id)
       .collection('mensagens')
       .orderBy('createdAt', 'asc')
       .limit(200)
