@@ -7,7 +7,9 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Spinner, EmptyState } from '@/components/common/LoadingScreen';
 import { toast } from '@/components/ui/toaster';
-import { Plus, Trash2, ChevronRight, TrendingUp, Minus } from 'lucide-react';
+import * as LucideIcons from 'lucide-react';
+
+const { Plus, Trash2, ChevronRight, TrendingUp, TrendingDown, Minus } = LucideIcons;
 import { formatDate } from '@/lib/utils';
 import { cn } from '@/lib/utils';
 
@@ -27,6 +29,9 @@ const TIPO_LABELS: Record<string, string> = {
   simples: 'Simples',
   misto: 'Misto',
 };
+
+const _ICON_REF = [TrendingUp, TrendingDown, Minus] as const;
+void _ICON_REF;
 
 const RESULTADO_BADGE: Record<string, { bg: string; text: string; label: string; icon: any }> = {
   vitoria: { bg: 'bg-emerald-500/10', text: 'text-emerald-700 dark:text-emerald-300', label: 'Vitória', icon: TrendingUp },
