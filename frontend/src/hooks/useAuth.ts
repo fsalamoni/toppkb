@@ -59,11 +59,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const unsub = onAuthStateChanged(auth, async (fbUser) => {
       setUser(fbUser);
       if (fbUser) {
+        // CRÍTICO: getDoc pode pendurar indefinidamente (Firestore sem índice, offline, etc).
+        // SEMPRE usar com timeout para garantir que o app não fique travado.
+        const withTimeout = <T,>(p: Promise<T>, ms: number, label: string): Promise<T | null> =>
+          Promise.race([
+            p,
+            new Promise<null>((resolve) => setTimeout(() => {
+              console.warn(`[auth] ${label} timeout ${ms}ms`);
+              resolve(null);
+            }, ms)),
+          ]);
+
         try {
           // Namespace toppkb_ (isolamento total)
           const ref = doc(db, 'toppkb_users', fbUser.uid, 'profile', 'main');
-          const snap = await getDoc(ref);
-          if (snap.exists()) {
+          const snap = await withTimeout(getDoc(ref), 5000, 'load profile');
+          if (snap && snap.exists()) {
             setUserDoc(snap.data() as UserDoc);
           } else {
             // Cria o doc de usuário com dados básicos do Google
@@ -91,14 +102,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           } as UserDoc);
         }
         try {
-          // checa custom claims
-          const tokenResult = await fbUser.getIdTokenResult();
-          if (tokenResult.claims?.admin) {
+          // checa custom claims (também com timeout)
+          const tokenResult = await withTimeout(fbUser.getIdTokenResult(), 3000, 'getIdTokenResult');
+          if (tokenResult && tokenResult.claims?.admin) {
             setClaims({ admin: tokenResult.claims.admin as 'admin' | 'master' });
           } else {
-            // checa doc admins/{uid} (namespace toppkb_)
-            const adminSnap = await getDoc(doc(db, 'toppkb_admin', 'admins', fbUser.uid));
-            if (adminSnap.exists()) {
+            // checa doc admins/{uid} (namespace toppkb_) — também com timeout
+            const adminSnap = await withTimeout(
+              getDoc(doc(db, 'toppkb_admin', 'admins', fbUser.uid)),
+              3000,
+              'load admin',
+            );
+            if (adminSnap && adminSnap.exists()) {
               const data = adminSnap.data() as any;
               if (data?.active !== false) {
                 setClaims({ admin: data.role === 'master' ? 'master' : 'admin' });
