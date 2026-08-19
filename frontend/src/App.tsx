@@ -1,5 +1,6 @@
 import { Suspense, lazy } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import * as React from 'react';
+import { useNavigate, useLocation, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider, useAuth } from './hooks/useAuth';
 import { Toaster } from './components/ui/toaster';
@@ -68,6 +69,40 @@ function PageLoader() {
   );
 }
 
+// Redireciona com base no path: se é /app ou /, vai para /app/dashboard.
+// Senão, vai para /app/dashboard.
+function NotFoundRedirect() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  React.useEffect(() => {
+    navigate('/app/dashboard', { replace: true });
+  }, [navigate, location.pathname]);
+  return (
+    <div className="flex items-center justify-center min-h-screen">
+      <Loader2 className="h-8 w-8 animate-spin text-primary" />
+    </div>
+  );
+}
+
+// Versão interna para o Routes aninhado do AppShell — redireciona se user null
+function NotFoundRedirectInner() {
+  const navigate = useNavigate();
+  const { user, loading } = useAuth();
+  React.useEffect(() => {
+    if (loading) return;
+    if (!user) {
+      navigate('/login', { replace: true });
+    } else {
+      navigate('/app/dashboard', { replace: true });
+    }
+  }, [navigate, user, loading]);
+  return (
+    <div className="flex items-center justify-center py-12">
+      <Loader2 className="h-8 w-8 animate-spin text-primary" />
+    </div>
+  );
+}
+
 function PrivateRoute({ children, adminOnly = false }: { children: React.ReactNode; adminOnly?: boolean }) {
   const { user, claims, loading } = useAuth();
   if (loading) {
@@ -113,7 +148,6 @@ function AppShell() {
           <ErrorBoundary>
             <Suspense fallback={<PageLoader />}>
               <Routes>
-                <Route index element={<Navigate to="/app/dashboard" replace />} />
                 <Route path="/app/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
               <Route path="/app/treinos" element={<PrivateRoute><Treinos /></PrivateRoute>} />
               <Route path="/app/treinos/novo" element={<PrivateRoute><TreinoForm /></PrivateRoute>} />
@@ -171,7 +205,7 @@ function AppShell() {
                 <Route path="users" element={<AdminUsers />} />
                 <Route path="stats" element={<AdminStats />} />
               </Route>
-              <Route path="*" element={<Navigate to="/app/dashboard" replace />} />
+              <Route path="*" element={<NotFoundRedirectInner />} />
             </Routes>
           </Suspense>
           </ErrorBoundary>
@@ -191,7 +225,7 @@ export default function App() {
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
           <Route path="/app/*" element={<AppShell />} />
-          <Route path="*" element={<Navigate to="/app/" replace />} />
+          <Route path="*" element={<NotFoundRedirect />} />
         </Routes>
       </AuthProvider>
     </QueryClientProvider>
