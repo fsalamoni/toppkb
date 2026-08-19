@@ -25,7 +25,7 @@ import { Torneios } from './pages/Torneios';
 import { TorneiosForm } from './pages/TorneiosForm';
 import { Metas } from './pages/Metas';
 import { MetasForm } from './pages/MetasForm';
-import { Estudos } from './pages/Estudos';
+import { Estudos, EstudosForm } from './pages/Estudos';
 import { Medidas } from './pages/Medidas';
 import { MedidasForm } from './pages/MedidasForm';
 import { Lesoes } from './pages/Lesoes';
@@ -107,6 +107,8 @@ function AppShell() {
             <Route path="/app/metas/nova" element={<PrivateRoute><MetasForm /></PrivateRoute>} />
             <Route path="/app/metas/:id" element={<PrivateRoute><MetasForm /></PrivateRoute>} />
             <Route path="/app/estudos" element={<PrivateRoute><Estudos /></PrivateRoute>} />
+            <Route path="/app/estudos/novo" element={<PrivateRoute><EstudosForm /></PrivateRoute>} />
+            <Route path="/app/estudos/:id" element={<PrivateRoute><EstudosForm /></PrivateRoute>} />
             <Route path="/app/chat" element={<PrivateRoute><ChatPage /></PrivateRoute>} />
             <Route path="/app/onboarding" element={<PrivateRoute><Onboarding /></PrivateRoute>} />
             <Route path="/consent" element={<PrivateRoute><Onboarding /></PrivateRoute>} />
