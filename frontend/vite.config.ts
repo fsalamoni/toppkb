@@ -18,6 +18,18 @@ export default defineConfig({
     outDir: 'dist',
     sourcemap: true,
     target: 'es2020',
+    chunkSizeWarningLimit: 1500,
+    rollupOptions: {
+      output: {
+        // Vendor chunks separados para melhor caching
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+          'firebase-vendor': ['firebase/app', 'firebase/auth', 'firebase/firestore'],
+          'tanstack-vendor': ['@tanstack/react-query'],
+          'lucide-vendor': ['lucide-react'],
+        },
+      },
+    },
   },
   test: {
     globals: true,
