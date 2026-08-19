@@ -99,7 +99,6 @@ export function useNotifications() {
           // Salvar no Firestore
           return 'granted' as const;
         } catch (e) {
-          // eslint-disable-next-line no-console
           console.warn('[pwa] Falha ao subscrever push:', e);
         }
       }

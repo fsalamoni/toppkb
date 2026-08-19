@@ -22,11 +22,9 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker
       .register('/sw.js', { scope: '/' })
       .then((reg) => {
-        // eslint-disable-next-line no-console
         console.log('[pwa] Service Worker registrado:', reg.scope);
       })
       .catch((err) => {
-        // eslint-disable-next-line no-console
         console.warn('[pwa] Falha ao registrar SW:', err);
       });
   });
