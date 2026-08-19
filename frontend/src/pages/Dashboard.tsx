@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
-import { collection, query, getDocs, orderBy, limit, Timestamp } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { Timestamp } from 'firebase/firestore';
 import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -53,26 +52,43 @@ async function loadDashboardData(uid: string): Promise<DashboardData> {
   const seteDiasAtras = subDays(agora, 7);
   const trintaDiasAtras = subDays(agora, 30);
 
-  // Carrega paralelamente
-  const [treinosSnap, partidasSnap, doresSnap, pesoSnap, sonoSnap, torneiosSnap, hidratacaoSnap] = await Promise.all([
-    getDocs(query(collection(db, 'toppkb_users', uid, 'treinos'), orderBy('data', 'desc'), limit(50))),
-    getDocs(query(collection(db, 'toppkb_users', uid, 'partidas'), orderBy('data', 'desc'), limit(50))),
-    getDocs(query(collection(db, 'toppkb_users', uid, 'dores'), orderBy('data', 'desc'), limit(20))),
-    getDocs(query(collection(db, 'toppkb_users', uid, 'peso'), orderBy('data', 'desc'), limit(30))),
-    getDocs(query(collection(db, 'toppkb_users', uid, 'sono'), orderBy('data', 'desc'), limit(30))),
-    getDocs(query(collection(db, 'toppkb_users', uid, 'torneios'), orderBy('dataInicio', 'asc'), limit(5))),
-    getDocs(query(collection(db, 'toppkb_users', uid, 'hidratacao'), orderBy('data', 'desc'), limit(1))),
+  // Helper de timeout (Firestore pode demorar com índices faltando)
+  const safeGet = async (col: string): Promise<any[]> => {
+    try {
+      const { getDocs, collection: c } = await import('firebase/firestore');
+      const { db } = await import('@/lib/firebase');
+      return await Promise.race([
+        getDocs(c(db, 'toppkb_users', uid, col)).then((snap) =>
+          snap.docs.map((d) => ({ id: d.id, ...d.data() })),
+        ),
+        new Promise<any[]>((_, reject) => setTimeout(() => reject(new Error(`Timeout ${col}`)), 6000)),
+      ]);
+    } catch (e) {
+      console.warn(`[dashboard] ${col} falhou:`, e);
+      return [];
+    }
+  };
+
+  // Carrega todas as coleções em paralelo
+  const [treinosRaw, partidasRaw, dores, pesos, sonos, torneios, hidratacoes] = await Promise.all([
+    safeGet('treinos'),
+    safeGet('partidas'),
+    safeGet('dores'),
+    safeGet('peso'),
+    safeGet('sono'),
+    safeGet('torneios'),
+    safeGet('hidratacao'),
   ]);
 
   // Treinos
-  const treinos = treinosSnap.docs.map((d) => ({ id: d.id, ...d.data() }));
+  const treinos = treinosRaw;
   const treinos7d = treinos.filter((t: any) => {
     const d = tsToDate(t.data);
     return d && d >= seteDiasAtras;
   }).length;
 
   // Partidas
-  const partidas = partidasSnap.docs.map((d) => ({ id: d.id, ...d.data() } as any));
+  const partidas = partidasRaw;
   const partidas7d = partidas.filter((p: any) => {
     const d = tsToDate(p.data);
     return d && d >= seteDiasAtras;
@@ -94,21 +110,21 @@ async function loadDashboardData(uid: string): Promise<DashboardData> {
   }
 
   // Dor ativa (intensidade >= 5 e ainda não resolvida)
-  const dores = doresSnap.docs.map((d) => ({ id: d.id, ...d.data() }));
-  const dorAtiva = dores.find((d: any) => d.ativa !== false && (d.intensidade || 0) >= 5) || null;
+  const doresList = dores;
+  const dorAtiva = doresList.find((d: any) => d.ativa !== false && (d.intensidade || 0) >= 5) || null;
 
   // Peso atual
-  const pesoAtual = pesoSnap.docs[0]?.data()?.peso || null;
+  const pesoAtual = pesos[0]?.data()?.peso || null;
 
   // Sono médio (7 dias)
-  const sonoDocs = sonoSnap.docs.map((d) => d.data()).filter((s: any) => s.horasDormidas);
+  const sonoDocs = sonos.map((d: any) => d.data()).filter((s: any) => s.horasDormidas);
   const sonoMedio = sonoDocs.length > 0
     ? sonoDocs.reduce((acc: number, s: any) => acc + (s.horasDormidas || 0), 0) / sonoDocs.length
     : null;
 
   // Próximo torneio
-  const proximoTorneio = torneiosSnap.docs
-    .map((d) => ({ id: d.id, ...d.data() }))
+  const proximoTorneio = torneios
+    .map((d: any) => ({ id: d.id, ...d.data() }))
     .find((t: any) => {
       const di = tsToDate(t.dataInicio);
       return di && di >= agora;
@@ -122,25 +138,25 @@ async function loadDashboardData(uid: string): Promise<DashboardData> {
   });
 
   // Peso histórico (mais antigo -> mais novo para sparkline)
-  const pesoDocs = pesoSnap.docs.map((d) => d.data()).filter((p: any) => p.peso);
+  const pesoDocs = pesos.map((d: any) => d.data()).filter((p: any) => p.peso);
   const pesoHistorico = pesoDocs
     .map((p: any) => {
       const d = tsToDate(p.data);
       return d ? { date: formatYmd(d), value: p.peso } : null;
     })
     .filter((x: any): x is { date: string; value: number } => x !== null)
-    .sort((a, b) => a.date.localeCompare(b.date))
+    .sort((a: any, b: any) => a.date.localeCompare(b.date))
     .slice(-30);
 
   // Sono histórico
-  const sonoDocsAll = sonoSnap.docs.map((d) => d.data()).filter((s: any) => s.horasDormidas);
+  const sonoDocsAll = sonos.map((d: any) => d.data()).filter((s: any) => s.horasDormidas);
   const sonoHistorico = sonoDocsAll
     .map((s: any) => {
       const d = tsToDate(s.data);
       return d ? { date: formatYmd(d), value: s.horasDormidas } : null;
     })
     .filter((x: any): x is { date: string; value: number } => x !== null)
-    .sort((a, b) => a.date.localeCompare(b.date))
+    .sort((a: any, b: any) => a.date.localeCompare(b.date))
     .slice(-30);
 
   // V/D/E últimos 30d
@@ -153,7 +169,7 @@ async function loadDashboardData(uid: string): Promise<DashboardData> {
   const e30 = partidas30d.filter((p: any) => p.resultado === 'empate').length;
 
   // Hidratação hoje
-  const hidDoc = hidratacaoSnap.docs[0]?.data();
+  const hidDoc = hidratacoes[0]?.data();
   const hidratacaoHoje = hidDoc?.totalMl || 0;
   // Meta: 35ml/kg. Sem peso definido, assume 80kg.
   // (peso virá de userDoc, mas Dashboard usa estimativa)

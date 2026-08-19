@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { collection, query, orderBy, getDocs, deleteDoc, doc, Timestamp } from 'firebase/firestore';
+import { safeGetDocs } from '@/lib/asyncUtils';
+import { collection, query, orderBy,  deleteDoc, doc, Timestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent } from '@/components/ui/card';
@@ -51,8 +52,7 @@ export function PartidasList() {
         collection(db, 'toppkb_users', user.uid, 'partidas'),
         orderBy('data', 'desc'),
       );
-      const snap = await getDocs(q);
-      return snap.docs.map((d) => ({ id: d.id, ...d.data() } as any));
+      return safeGetDocs(q, 10000, 'collection');
     },
     enabled: !!user,
   });

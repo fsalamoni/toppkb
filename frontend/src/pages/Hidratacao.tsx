@@ -1,5 +1,5 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { collection, query, orderBy, getDocs, deleteDoc, doc, where, limit, Timestamp } from 'firebase/firestore';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { deleteDoc, doc, Timestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent } from '@/components/ui/card';
@@ -9,6 +9,7 @@ import { toast } from '@/components/ui/toaster';
 import { Plus, Droplets, Trash2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
+import { useCollection } from '@/hooks/useCollection';
 
 function tsToDate(ts: any): Date | null {
   if (!ts) return null;
@@ -22,36 +23,8 @@ export function Hidratacao() {
   const { user, userDoc } = useAuth();
   const qc = useQueryClient();
 
-  const { data, isLoading } = useQuery({
-    queryKey: ['hidratacao', user?.uid],
-    queryFn: async () => {
-      if (!user) return [];
-      const q = query(
-        collection(db, 'toppkb_users', user.uid, 'hidratacao'),
-        orderBy('data', 'desc'),
-        limit(60),
-      );
-      const snap = await getDocs(q);
-      return snap.docs.map((d) => ({ id: d.id, ...d.data() } as any));
-    },
-    enabled: !!user,
-  });
-
-  const { data: registroHoje } = useQuery({
-    queryKey: ['hidratacao-hoje', user?.uid, new Date().toISOString().slice(0, 10)],
-    queryFn: async () => {
-      if (!user) return null;
-      const dataKey = new Date().toISOString().slice(0, 10);
-      const q = query(
-        collection(db, 'toppkb_users', user.uid, 'hidratacao'),
-        where('data', '==', dataKey),
-        limit(1),
-      );
-      const snap = await getDocs(q);
-      if (snap.empty) return null;
-      return { id: snap.docs[0].id, ...snap.docs[0].data() } as any;
-    },
-    enabled: !!user,
+  const { data: registros = [], isLoading } = useCollection<any>({
+    collectionName: 'hidratacao',
   });
 
   const del = useMutation({
@@ -60,15 +33,23 @@ export function Hidratacao() {
       await deleteDoc(doc(db, 'toppkb_users', user.uid, 'hidratacao', id));
     },
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['hidratacao', user?.uid] });
-      qc.invalidateQueries({ queryKey: ['hidratacao-hoje', user?.uid] });
+      qc.invalidateQueries({ queryKey: ['col', 'hidratacao', user?.uid] });
       toast.success('Registro removido');
     },
+    onError: (e: any) => toast.error(e.message || 'Erro ao remover'),
   });
 
-  if (isLoading) return <div className="flex justify-center py-12"><Spinner size="lg" /></div>;
+  if (isLoading) {
+    return (
+      <div className="flex justify-center py-12">
+        <Spinner size="lg" />
+      </div>
+    );
+  }
 
-  const registros = data || [];
+  // Calcular registro de hoje client-side
+  const hoje = new Date().toISOString().slice(0, 10);
+  const registroHoje = registros.find((r: any) => r.data === hoje) || null;
   const totalMl = registroHoje?.totalMl || 0;
   const peso = userDoc?.pesoInicial || 80;
   const metaMl = Math.round(peso * 35);
@@ -79,6 +60,9 @@ export function Hidratacao() {
   const mediaMl = registros.length > 0
     ? registros.reduce((acc: number, r: any) => acc + (r.totalMl || 0), 0) / registros.length
     : 0;
+
+  // Ordenar por data desc
+  const registrosOrdenados = [...registros].sort((a, b) => (b.data || '').localeCompare(a.data || ''));
 
   return (
     <div className="space-y-4">
@@ -173,7 +157,7 @@ export function Hidratacao() {
         </Card>
       ) : (
         <div className="grid gap-2">
-          {registros.map((r: any) => {
+          {registrosOrdenados.map((r: any) => {
             const prog = Math.min(100, Math.round((r.totalMl / metaMl) * 100));
             return (
               <Card key={r.id} className="hover:border-primary/30 transition group">
@@ -187,7 +171,7 @@ export function Hidratacao() {
                       <div className="flex items-center justify-between">
                         <div>
                           <h3 className="font-semibold text-sm">
-                            {tsToDate(r.data)?.toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: 'short' })}
+                            {tsToDate(r.data)?.toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: 'short' }) || r.data}
                           </h3>
                           <p className="text-xs text-muted-foreground">
                             {r.totalMl}ml · {prog}% da meta
