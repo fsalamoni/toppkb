@@ -4,6 +4,7 @@
 
 import { onCall, HttpsError } from 'firebase-functions/v2/https';
 import { db } from '../config/env';
+import { globalCol } from '../config/namespace';
 import { assertAdmin } from '../middleware/auth';
 
 export const adminGetPlatformStats = onCall(
@@ -13,11 +14,11 @@ export const adminGetPlatformStats = onCall(
     await assertAdmin(request.auth.uid);
 
     const [users, admins, conversas, mensagens, eventosAuditoria] = await Promise.all([
-      db.collection('users').get(),
-      db.collection('admins').get(),
+      db.collection(globalCol('users')).get(),
+      db.collection(globalCol('admin')).doc('admins').collection('admins').get(),
       db.collectionGroup('conversas').get(),
       db.collectionGroup('messages').get(),
-      db.collection('audit').get(),
+      db.collection(globalCol('admin')).doc('audit_logs').collection('logs').get(),
     ]);
 
     // Métricas por coleção do user

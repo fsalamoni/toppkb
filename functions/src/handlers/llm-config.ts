@@ -3,7 +3,7 @@
  *
  * Storage:
  *  - user: campo `llmConfig` em `users/{uid}` (subcollection path com 3 segments é inválido)
- *  - master: doc `admin-config/llm` (global, esconde user)
+ *  - master: doc `toppkb_agents_config/llm_global` (global, esconde user)
  *
  * Inspirado no Cofrito.
  */
@@ -13,6 +13,7 @@ import { saveConfigDoc, loadConfigDoc } from '../services/config-store';
 import { assertAdminMaster } from '../middleware/auth';
 import { listModelsForProvider, maskKey, isMaskedKey, type LLMConfigLike, type LLMProvider } from '../services/llm-providers';
 import { readGlobalApiKey, writeGlobalApiKey, deleteGlobalApiKey } from '../services/global-llm';
+import { userDoc, globalCol, globalDoc } from '../config/namespace';
 
 // ── USER: get/set/delete config pessoal ─────────────────────────────────
 
@@ -21,7 +22,7 @@ export const getLLMConfig = onCall(
   async (request) => {
     if (!request.auth) throw new HttpsError('unauthenticated', 'Faça login.');
     const db = getFirestore();
-    const snap = await db.doc(`users/${request.auth.uid}`).get();
+    const snap = await db.doc(userDoc(request.auth.uid)).get();
     if (!snap.exists) return null;
     const data = snap.data() as any;
     const cfg = data.llmConfig;
@@ -49,7 +50,7 @@ export const setLLMConfig = onCall(
       throw new HttpsError('invalid-argument', 'provider e model são obrigatórios');
     }
     const db = getFirestore();
-    await db.doc(`users/${request.auth.uid}`).set(
+    await db.doc(userDoc(request.auth.uid)).set(
       {
         llmConfig: {
           ...cfg,
@@ -68,7 +69,7 @@ export const deleteLLMConfig = onCall(
   async (request) => {
     if (!request.auth) throw new HttpsError('unauthenticated', 'Faça login.');
     const db = getFirestore();
-    await db.doc(`users/${request.auth.uid}`).set(
+    await db.doc(userDoc(request.auth.uid)).set(
       { llmConfig: FieldValue.delete() },
       { merge: true },
     );
@@ -83,7 +84,7 @@ export const adminGetGlobalLLM = onCall(
   async (request) => {
     if (!request.auth) throw new HttpsError('unauthenticated', 'Faça login.');
     await assertAdminMaster(request.auth.uid);
-    const loaded = await loadConfigDoc<any>('admin-config/llm', 'llm-global');
+    const loaded = await loadConfigDoc<any>('toppkb_agents_config/llm_global', 'llm-global');
     if (!loaded) return null;
     const data = loaded.data;
     const apiKey = await readGlobalApiKey(data.apiKey);
@@ -110,14 +111,14 @@ export const adminSetGlobalLLM = onCall(
     await assertAdminMaster(request.auth.uid);
     const cfg = request.data as LLMConfigLike | null;
     if (!cfg) {
-      await getFirestore().doc('admin-config/llm').delete();
+      await getFirestore().doc(globalDoc('agents_config', 'llm_global')).delete();
       await deleteGlobalApiKey();
       return { ok: true, removed: true };
     }
     // Preservar a chave quando vier vazia/mascarada
     let apiKey = cfg.apiKey;
     if (isMaskedKey(apiKey)) {
-      const existing = await loadConfigDoc<any>('admin-config/llm', 'llm-global');
+      const existing = await loadConfigDoc<any>('toppkb_agents_config/llm_global', 'llm-global');
       const legacyKey = existing?.data?.apiKey as string | undefined;
       apiKey = await readGlobalApiKey(legacyKey);
     }
@@ -127,7 +128,7 @@ export const adminSetGlobalLLM = onCall(
       { ...rest, scope: 'global' },
       {
         uid: request.auth!.uid,
-        path: 'admin-config/llm',
+        path: 'toppkb_agents_config/llm_global',
         tag: 'llm-global',
       },
     );
@@ -162,7 +163,7 @@ export const adminListAdmins = onCall(
     if (!request.auth) throw new HttpsError('unauthenticated', 'Faça login.');
     await assertAdminMaster(request.auth.uid);
     const db = getFirestore();
-    const snap = await db.collection('admins').orderBy('grantedAt', 'desc').get();
+    const snap = await db.collection(globalCol('admin')).doc('admins').collection('admins').orderBy('grantedAt', 'desc').get();
     return snap.docs.map((d) => ({ uid: d.id, ...d.data() }));
   },
 );
@@ -178,12 +179,12 @@ export const adminGrantAdmin = onCall(
       throw new HttpsError('invalid-argument', 'role deve ser "admin" ou "master"');
     }
     const db = getFirestore();
-    const users = await db.collection('users').where('email', '==', email).limit(1).get();
+    const users = await db.collection(globalCol('users')).where('email', '==', email).limit(1).get();
     if (users.empty) {
       throw new HttpsError('not-found', `Nenhum usuário com email ${email} ainda.`);
     }
     const userDoc = users.docs[0];
-    await db.doc(`admins/${userDoc.id}`).set(
+    await db.doc(globalDoc('admin', `admins/${userDoc.id}`)).set(
       {
         uid: userDoc.id,
         email,
@@ -209,7 +210,7 @@ export const adminRevokeAdmin = onCall(
       throw new HttpsError('failed-precondition', 'Você não pode revogar seu próprio acesso.');
     }
     const db = getFirestore();
-    await db.doc(`admins/${uid}`).delete();
+    await db.doc(globalDoc('admin', `admins/${uid}`)).delete();
     return { ok: true };
   },
 );
@@ -220,7 +221,7 @@ export const adminListUserLLM = onCall(
     if (!request.auth) throw new HttpsError('unauthenticated', 'Faça login.');
     await assertAdminMaster(request.auth.uid);
     const db = getFirestore();
-    const usersSnap = await db.collection('users').get();
+    const usersSnap = await db.collection(globalCol('users')).get();
     const out: Array<{ uid: string; displayName: string; email: string; config: any }> = [];
     for (const userDoc of usersSnap.docs) {
       const data = userDoc.data() as any;

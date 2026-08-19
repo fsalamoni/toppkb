@@ -1,5 +1,5 @@
-import { GenericCRUDPage } from './GenericCRUDPage';
+import { PartidasList } from './PartidasList';
 
 export function Partidas() {
-  return <GenericCRUDPage colecao="/app/partidas" titulo="Partidas" />;
+  return <PartidasList />;
 }

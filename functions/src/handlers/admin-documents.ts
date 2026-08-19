@@ -10,6 +10,7 @@
 
 import { onCall, HttpsError } from 'firebase-functions/v2/https';
 import { db } from '../config/env';
+import { globalCol } from '../config/namespace';
 import { assertAdmin } from '../middleware/auth';
 
 export const adminListDocuments = onCall(
@@ -87,7 +88,7 @@ export const adminDeleteDocument = onCall(
     await batch.commit();
 
     // Audit
-    await db.collection('audit').add({
+    await db.collection(globalCol('admin')).doc('audit_logs').collection('logs').add({
       uid: request.auth.uid,
       acao: 'admin.document.deleted',
       metadata: { documentId },
@@ -108,7 +109,7 @@ export const adminGetStats = onCall(
       db.collection('corpus').doc('studies').collection('studies').get(),
       db.collectionGroup('chunks').get(),
       db.collection('corpus').doc('studies').collection('sources').get(),
-      db.collection('users').get(),
+      db.collection(globalCol('users')).get(),
     ]);
 
     // Agrupa por status

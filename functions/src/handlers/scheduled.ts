@@ -1,5 +1,6 @@
 import * as functions from 'firebase-functions/v2/scheduler';
 import { db, logger, RETENTION_REGISTROS_DIAS, RETENTION_CONVERSAS_DIAS } from '../config/env';
+import { globalCol } from '../config/namespace';
 import { responderComoAgente, carregarContextoUsuario } from '../services/ai/orquestrador';
 import { AgenteId } from '../services/ai/router';
 import * as admin from 'firebase-admin';
@@ -16,12 +17,12 @@ export const cleanupOldRecords = functions.onSchedule(
     const cutoffRegistros = new Date(Date.now() - RETENTION_REGISTROS_DIAS * 24 * 60 * 60 * 1000);
     const cutoffConversas = new Date(Date.now() - RETENTION_CONVERSAS_DIAS * 24 * 60 * 60 * 1000);
 
-    const usersSnap = await db.collection('users').get();
+    const usersSnap = await db.collection(globalCol('users')).get();
     let totalDeletados = 0;
 
-    for (const userDoc of usersSnap.docs) {
-      const uid = userDoc.id;
-      const ref = db.collection('users').doc(uid);
+    for (const u of usersSnap.docs) {
+      const uid = u.id;
+      const ref = db.collection(globalCol('users')).doc(uid);
 
       for (const colecao of ['treinos', 'partidas', 'dores', 'peso', 'refeicoes']) {
         const snap = await ref
@@ -38,12 +39,12 @@ export const cleanupOldRecords = functions.onSchedule(
       }
 
       const convSnap = await ref
-        .collection('conversas')
+        .collection('chat').doc('conversas').collection('conversas')
         .where('updatedAt', '<', admin.firestore.Timestamp.fromDate(cutoffConversas))
         .limit(100)
         .get();
       for (const convDoc of convSnap.docs) {
-        const msgs = await convDoc.ref.collection('messages').get();
+        const msgs = await convDoc.ref.collection('mensagens').get();
         const batch = db.batch();
         msgs.docs.forEach((m) => batch.delete(m.ref));
         batch.delete(convDoc.ref);
@@ -64,12 +65,12 @@ export const generateWeeklySummaries = functions.onSchedule(
   async () => {
     logger('scheduled.weeklySummary.start');
 
-    const usersSnap = await db.collection('users').get();
+    const usersSnap = await db.collection(globalCol('users')).get();
     let gerados = 0;
 
-    for (const userDoc of usersSnap.docs) {
-      const uid = userDoc.id;
-      const consent = userDoc.data().consent;
+    for (const u of usersSnap.docs) {
+      const uid = u.id;
+      const consent = u.data().consent;
       if (!consent) continue;
 
       try {
@@ -78,9 +79,9 @@ export const generateWeeklySummaries = functions.onSchedule(
         // Coleta métricas da semana
         const semanaAtras = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
         const [treinos, partidas, dores] = await Promise.all([
-          db.collection('users').doc(uid).collection('treinos').where('data', '>=', semanaAtras.toISOString()).get(),
-          db.collection('users').doc(uid).collection('partidas').where('data', '>=', semanaAtras.toISOString()).get(),
-          db.collection('users').doc(uid).collection('dores').where('data', '>=', semanaAtras.toISOString()).get(),
+          db.collection(globalCol('users')).doc(uid).collection('treinos').where('data', '>=', semanaAtras.toISOString()).get(),
+          db.collection(globalCol('users')).doc(uid).collection('partidas').where('data', '>=', semanaAtras.toISOString()).get(),
+          db.collection(globalCol('users')).doc(uid).collection('dores').where('data', '>=', semanaAtras.toISOString()).get(),
         ]);
 
         const horasTreino = treinos.docs.reduce((acc, d) => acc + (d.data().duracaoMin || 0), 0) / 60;
@@ -105,7 +106,7 @@ Responda SEM prefixo.`;
 
         const hoje = new Date().toISOString().slice(0, 10);
         await db
-          .collection('users').doc(uid)
+          .collection(globalCol('users')).doc(uid)
           .collection('agregados')
           .doc(`resumo-semanal-${hoje}`)
           .set({
@@ -117,7 +118,7 @@ Responda SEM prefixo.`;
           }, { merge: true });
 
         // Também atualiza no user doc (campo simples)
-        await db.collection('users').doc(uid).update({
+        await db.collection(globalCol('users')).doc(uid).update({
           'agregados.ultimoResumo': texto,
           'agregados.ultimoResumoEm': admin.firestore.FieldValue.serverTimestamp(),
         });
@@ -169,7 +170,7 @@ export const aggregateAnalytics = functions.onSchedule(
 
     const umaSemanaAtras = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
     const [users, messages, errors] = await Promise.all([
-      db.collection('users').where('createdAt', '>=', umaSemanaAtras).get().catch(() => ({ size: 0, docs: [] } as any)),
+      db.collection(globalCol('users')).where('createdAt', '>=', umaSemanaAtras).get().catch(() => ({ size: 0, docs: [] } as any)),
       db.collectionGroup('messages').where('createdAt', '>=', umaSemanaAtras).get().catch(() => ({ size: 0, docs: [] } as any)),
       db.collection('analytics').where('event', '==', 'error').where('timestamp', '>=', umaSemanaAtras).get().catch(() => ({ size: 0, docs: [] } as any)),
     ]);

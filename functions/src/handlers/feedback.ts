@@ -6,6 +6,7 @@
 
 import { onCall, HttpsError } from 'firebase-functions/v2/https';
 import { db } from '../config/env';
+import { globalCol } from '../config/namespace';
 import { logger } from 'firebase-functions';
 
 export const saveFeedback = onCall(
@@ -26,9 +27,9 @@ export const saveFeedback = onCall(
     }
 
     const msgRef = db
-      .collection('users').doc(request.auth.uid)
-      .collection('conversas').doc(conversaId)
-      .collection('messages').doc(messageId);
+      .collection(globalCol('users')).doc(request.auth.uid)
+      .collection('chat').doc('conversas').collection('chat').doc('conversas').collection('conversas').doc(conversaId)
+      .collection('mensagens').doc(messageId);
 
     const msgSnap = await msgRef.get();
     if (!msgSnap.exists) {
@@ -42,7 +43,7 @@ export const saveFeedback = onCall(
     });
 
     // Audit
-    await db.collection('audit').add({
+    await db.collection(globalCol('admin')).doc('audit_logs').collection('logs').add({
       uid: request.auth.uid,
       acao: 'feedback.saved',
       metadata: { messageId, conversaId, feedbackPositivo },

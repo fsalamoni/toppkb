@@ -5,6 +5,7 @@
 
 import { onCall, HttpsError } from 'firebase-functions/v2/https';
 import { db } from '../config/env';
+import { globalCol } from '../config/namespace';
 import * as admin from 'firebase-admin';
 import { logger } from 'firebase-functions';
 
@@ -16,7 +17,7 @@ export const deleteAccount = onCall(
     const uid = request.auth.uid;
 
     // Rate limit: max 1 delete por dia
-    const ultimasAcoes = await db.collection('audit')
+    const ultimasAcoes = await db.collection(globalCol('admin')).doc('audit_logs').collection('logs')
       .where('uid', '==', uid)
       .where('acao', '==', 'conta.deletada')
       .orderBy('timestamp', 'desc')
@@ -32,7 +33,7 @@ export const deleteAccount = onCall(
     }
 
     // Audit
-    await db.collection('audit').add({
+    await db.collection(globalCol('admin')).doc('audit_logs').collection('logs').add({
       uid,
       acao: 'conta.deletada',
       timestamp: admin.firestore.FieldValue.serverTimestamp(),
@@ -45,7 +46,7 @@ export const deleteAccount = onCall(
       'dores', 'avaliacoes', 'estudos', 'torneios', 'metas',
       'conversas', 'profile', 'settings', 'feedback', 'agregados', 'documentos',
     ];
-    const ref = db.collection('users').doc(uid);
+    const ref = db.collection(globalCol('users')).doc(uid);
     for (const sub of subcollections) {
       const snap = await ref.collection(sub).get();
       const batch = db.batch();
@@ -55,7 +56,7 @@ export const deleteAccount = onCall(
 
     // Deleta user doc + admin
     await ref.delete();
-    await db.collection('admins').doc(uid).delete().catch(() => {});
+    await db.collection(globalCol('admin')).doc('admins').collection('admins').doc(uid).delete().catch(() => {});
 
     // Deleta Auth user
     await admin.auth().deleteUser(uid);

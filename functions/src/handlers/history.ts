@@ -4,6 +4,7 @@
 
 import { onCall, HttpsError } from 'firebase-functions/v2/https';
 import { db } from '../config/env';
+import { globalCol } from '../config/namespace';
 import { listConversations } from '../services/history';
 
 export const listConversationsHandler = onCall(
@@ -23,9 +24,9 @@ export const listMessagesHandler = onCall(
     if (!conversaId) throw new HttpsError('invalid-argument', 'conversaId obrigatório');
 
     const snap = await db
-      .collection('users').doc(request.auth.uid)
-      .collection('conversas').doc(conversaId)
-      .collection('messages')
+      .collection(globalCol('users')).doc(request.auth.uid)
+      .collection('chat').doc('conversas').collection('chat').doc('conversas').collection('conversas').doc(conversaId)
+      .collection('mensagens')
       .orderBy('createdAt', 'asc')
       .limit(Math.min(limit, 500))
       .get();
@@ -44,11 +45,11 @@ export const deleteConversaHandler = onCall(
     if (!conversaId) throw new HttpsError('invalid-argument', 'conversaId obrigatório');
 
     const ref = db
-      .collection('users').doc(request.auth.uid)
-      .collection('conversas').doc(conversaId);
+      .collection(globalCol('users')).doc(request.auth.uid)
+      .collection('chat').doc('conversas').collection('chat').doc('conversas').collection('conversas').doc(conversaId);
 
     // Deleta mensagens
-    const msgs = await ref.collection('messages').get();
+    const msgs = await ref.collection('mensagens').get();
     const batch = db.batch();
     msgs.docs.forEach((m) => batch.delete(m.ref));
     batch.delete(ref);

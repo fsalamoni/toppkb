@@ -4,6 +4,7 @@ import { authMiddleware } from '../middleware/auth';
 import { consentMiddleware } from '../middleware/consent';
 import { rateLimit } from '../middleware/ratelimit';
 import { db, logger } from '../config/env';
+import { globalCol } from '../config/namespace';
 import { AgenteId, detectarAgente, gerarTituloConversa } from '../services/ai/router';
 import { responderComoAgente } from '../services/ai/orquestrador';
 import { z } from 'zod';
@@ -51,7 +52,7 @@ app.post('/auth/send-link', async (req, res): Promise<void> => {
 // ============ USER ============
 app.get('/user/me', authMiddleware, async (req: any, res): Promise<void> => {
   try {
-    const snap = await db.collection('users').doc(req.user.uid).get();
+    const snap = await db.collection(globalCol('users')).doc(req.user.uid).get();
     if (!snap.exists) {
         res.status(404).json({ error: { code: 'not_found', message: 'Usuário não encontrado' } });
     }
@@ -73,7 +74,7 @@ app.patch('/user/me', authMiddleware, async (req: any, res): Promise<void> => {
     for (const k of allowed) {
       if (k in req.body) updates[k] = req.body[k];
     }
-    await db.collection('users').doc(req.user.uid).update(updates);
+    await db.collection(globalCol('users')).doc(req.user.uid).update(updates);
     res.json({ ok: true });
   } catch (e: any) {
     res.status(500).json({ error: { code: 'internal_error', message: e.message } });
@@ -84,7 +85,7 @@ app.post('/user/accept-consent', authMiddleware, async (req: any, res): Promise<
   try {
     const schema = z.object({ version: z.string() });
     const { version } = schema.parse(req.body);
-    await db.collection('users').doc(req.user.uid).set(
+    await db.collection(globalCol('users')).doc(req.user.uid).set(
       {
         consent: {
           acceptedAt: admin.firestore.FieldValue.serverTimestamp(),
@@ -118,7 +119,7 @@ app.post('/registros/:colecao', authMiddleware, consentMiddleware, rateLimit(60)
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
       updatedAt: admin.firestore.FieldValue.serverTimestamp(),
     };
-    await db.collection('users').doc(req.user.uid).collection(colecao).doc(id).set(payload);
+    await db.collection(globalCol('users')).doc(req.user.uid).collection(colecao).doc(id).set(payload);
     res.status(201).json({ id });
   } catch (e: any) {
     res.status(500).json({ error: { code: 'internal_error', message: e.message } });
@@ -132,9 +133,9 @@ app.get('/registros/:colecao', authMiddleware, consentMiddleware, async (req: an
         res.status(404).json({ error: { code: 'not_found', message: 'Coleção inválida' } });
     }
     const limit = Math.min(Number(req.query.limit) || 20, 100);
-    let q: any = db.collection('users').doc(req.user.uid).collection(colecao).orderBy('data', 'desc').limit(limit);
+    let q: any = db.collection(globalCol('users')).doc(req.user.uid).collection(colecao).orderBy('data', 'desc').limit(limit);
     if (req.query.cursor) {
-      const cursorSnap = await db.collection('users').doc(req.user.uid).collection(colecao).doc(req.query.cursor).get();
+      const cursorSnap = await db.collection(globalCol('users')).doc(req.user.uid).collection(colecao).doc(req.query.cursor).get();
       q = q.startAfter(cursorSnap);
     }
     const snap = await q.get();
@@ -155,7 +156,7 @@ app.put('/registros/:colecao/:id', authMiddleware, consentMiddleware, async (req
         res.status(404).json({ error: { code: 'not_found', message: 'Coleção inválida' } });
     }
     const payload = { ...req.body, updatedAt: admin.firestore.FieldValue.serverTimestamp() };
-    await db.collection('users').doc(req.user.uid).collection(colecao).doc(id).update(payload);
+    await db.collection(globalCol('users')).doc(req.user.uid).collection(colecao).doc(id).update(payload);
     res.json({ id });
   } catch (e: any) {
     res.status(500).json({ error: { code: 'internal_error', message: e.message } });
@@ -168,7 +169,7 @@ app.delete('/registros/:colecao/:id', authMiddleware, consentMiddleware, async (
     if (!COLECOES.includes(colecao)) {
         res.status(404).json({ error: { code: 'not_found', message: 'Coleção inválida' } });
     }
-    await db.collection('users').doc(req.user.uid).collection(colecao).doc(id).delete();
+    await db.collection(globalCol('users')).doc(req.user.uid).collection(colecao).doc(id).delete();
     res.status(204).send('');
   } catch (e: any) {
     res.status(500).json({ error: { code: 'internal_error', message: e.message } });
@@ -191,7 +192,7 @@ app.post('/chat/message', authMiddleware, consentMiddleware, rateLimit(20), asyn
     let convId = conversaId;
     if (!convId) {
       const agInicial: AgenteId = agente === 'auto' ? detectarAgente(mensagem) : agente;
-      const ref = await db.collection('users').doc(req.user.uid).collection('conversas').doc();
+      const ref = await db.collection(globalCol('users')).doc(req.user.uid).collection('chat').doc('conversas').collection('chat').doc('conversas').collection('conversas').doc();
       convId = ref.id;
       await ref.set({
         titulo: gerarTituloConversa(mensagem),
@@ -206,9 +207,9 @@ app.post('/chat/message', authMiddleware, consentMiddleware, rateLimit(20), asyn
 
     // 2) Salva msg do user
     await db
-      .collection('users').doc(req.user.uid)
-      .collection('conversas').doc(convId)
-      .collection('messages').add({
+      .collection(globalCol('users')).doc(req.user.uid)
+      .collection('chat').doc('conversas').collection('chat').doc('conversas').collection('conversas').doc(convId)
+      .collection('mensagens').add({
         role: 'user',
         content: mensagem,
         createdAt: admin.firestore.FieldValue.serverTimestamp(),
@@ -224,9 +225,9 @@ app.post('/chat/message', authMiddleware, consentMiddleware, rateLimit(20), asyn
 
     // 4) Salva resposta
     const msgRef = await db
-      .collection('users').doc(req.user.uid)
-      .collection('conversas').doc(convId)
-      .collection('messages').add({
+      .collection(globalCol('users')).doc(req.user.uid)
+      .collection('chat').doc('conversas').collection('chat').doc('conversas').collection('conversas').doc(convId)
+      .collection('mensagens').add({
         role: 'assistant',
         content: resposta.texto,
         agente: resposta.agenteUsado,
@@ -243,15 +244,15 @@ app.post('/chat/message', authMiddleware, consentMiddleware, rateLimit(20), asyn
 
     // 5) Atualiza conversa
     await db
-      .collection('users').doc(req.user.uid)
-      .collection('conversas').doc(convId)
+      .collection(globalCol('users')).doc(req.user.uid)
+      .collection('chat').doc('conversas').collection('chat').doc('conversas').collection('conversas').doc(convId)
       .update({
         agente: resposta.agenteUsado,
         updatedAt: admin.firestore.FieldValue.serverTimestamp(),
       });
 
     // 6) Audit
-    await db.collection('audit').add({
+    await db.collection(globalCol('admin')).doc('audit_logs').collection('logs').add({
       uid: req.user.uid,
       acao: 'chat.message',
       metadata: {
@@ -288,8 +289,8 @@ app.post('/chat/message', authMiddleware, consentMiddleware, rateLimit(20), asyn
 app.get('/chat/conversas', authMiddleware, consentMiddleware, async (req: any, res): Promise<void> => {
   try {
     const snap = await db
-      .collection('users').doc(req.user.uid)
-      .collection('conversas')
+      .collection(globalCol('users')).doc(req.user.uid)
+      .collection('chat').doc('conversas').collection('conversas')
       .orderBy('updatedAt', 'desc')
       .limit(50)
       .get();
@@ -304,9 +305,9 @@ app.get('/chat/conversas', authMiddleware, consentMiddleware, async (req: any, r
 app.get('/chat/conversas/:id/messages', authMiddleware, consentMiddleware, async (req: any, res): Promise<void> => {
   try {
     const snap = await db
-      .collection('users').doc(req.user.uid)
-      .collection('conversas').doc(req.params.id)
-      .collection('messages')
+      .collection(globalCol('users')).doc(req.user.uid)
+      .collection('chat').doc('conversas').collection('chat').doc('conversas').collection('conversas').doc(req.params.id)
+      .collection('mensagens')
       .orderBy('createdAt', 'asc')
       .limit(200)
       .get();
@@ -322,7 +323,7 @@ app.get('/chat/conversas/:id/messages', authMiddleware, consentMiddleware, async
 app.get('/metricas/dashboard', authMiddleware, consentMiddleware, async (req: any, res): Promise<void> => {
   try {
     const uid = req.user.uid;
-    const ref = db.collection('users').doc(uid);
+    const ref = db.collection(globalCol('users')).doc(uid);
 
     const pesoSnap = await ref.collection('peso').orderBy('data', 'desc').limit(2).get();
     const pesoAtual = pesoSnap.docs[0]?.data()?.pesoKg;
@@ -394,7 +395,7 @@ app.get('/metricas/dashboard', authMiddleware, consentMiddleware, async (req: an
 app.get('/exportar/tudo', authMiddleware, async (req: any, res): Promise<void> => {
   try {
     const uid = req.user.uid;
-    const ref = db.collection('users').doc(uid);
+    const ref = db.collection(globalCol('users')).doc(uid);
     const userSnap = await ref.get();
     const exportData: any = {
       exportadoEm: new Date().toISOString(),
@@ -412,10 +413,10 @@ app.get('/exportar/tudo', authMiddleware, async (req: any, res): Promise<void> =
       exportData.registros[c] = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
     }
 
-    const convSnap = await ref.collection('conversas').get();
+    const convSnap = await ref.collection('chat').doc('conversas').collection('conversas').get();
     exportData.conversas = [];
     for (const c of convSnap.docs) {
-      const msgSnap = await c.ref.collection('messages').get();
+      const msgSnap = await c.ref.collection('mensagens').get();
       exportData.conversas.push({
         id: c.id,
         ...c.data(),
@@ -432,9 +433,9 @@ app.get('/exportar/tudo', authMiddleware, async (req: any, res): Promise<void> =
 app.delete('/deletar-conta', authMiddleware, rateLimit(1, 86400), async (req: any, res): Promise<void> => {
   try {
     const uid = req.user.uid;
-    const ref = db.collection('users').doc(uid);
+    const ref = db.collection(globalCol('users')).doc(uid);
 
-    await db.collection('audit').add({
+    await db.collection(globalCol('admin')).doc('audit_logs').collection('logs').add({
       uid,
       acao: 'conta.deletada',
       timestamp: admin.firestore.FieldValue.serverTimestamp(),
@@ -454,7 +455,7 @@ app.delete('/deletar-conta', authMiddleware, rateLimit(1, 86400), async (req: an
     }
 
     await ref.delete();
-    await db.collection('admins').doc(uid).delete().catch(() => {});
+    await db.collection(globalCol('admin')).doc('admins').collection('admins').doc(uid).delete().catch(() => {});
     await admin.auth().deleteUser(uid);
 
     res.json({ ok: true, deletedAt: new Date().toISOString() });

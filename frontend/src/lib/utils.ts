@@ -1,5 +1,6 @@
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { Timestamp } from 'firebase/firestore';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -92,4 +93,34 @@ export function formatDateTimeAny(ts: any): string {
   if (typeof ts === 'string') return formatDateTime(ts);
   if (ts.toDate) return formatDateTime(ts.toDate().toISOString());
   return formatDateTime(ts);
+}
+
+/** Diferença em dias inteiros (a - b). */
+export function differenceInDays(a: Date, b: Date): number {
+  const ms = a.getTime() - b.getTime();
+  return Math.floor(ms / (1000 * 60 * 60 * 24));
+}
+
+/** Data N dias atrás. */
+export function subDays(date: Date, days: number): Date {
+  const d = new Date(date);
+  d.setDate(d.getDate() - days);
+  return d;
+}
+
+/** Formata data como 'YYYY-MM-DD'. */
+export function formatYmd(date: Date): string {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+}
+
+/** Converte qualquer tipo de timestamp do Firestore em Date. */
+export function tsToDate(ts: any): Date | null {
+  if (!ts) return null;
+  if (ts instanceof Timestamp) return ts.toDate();
+  if (ts.toDate) return ts.toDate();
+  if (typeof ts === 'string') return new Date(ts);
+  return null;
 }

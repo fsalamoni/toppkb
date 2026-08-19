@@ -6,6 +6,7 @@
 
 import { onCall, HttpsError } from 'firebase-functions/v2/https';
 import { db } from '../config/env';
+import { globalCol } from '../config/namespace';
 import * as admin from 'firebase-admin';
 
 export const bootstrapAdmin = onCall(
@@ -14,13 +15,13 @@ export const bootstrapAdmin = onCall(
     if (!request.auth) throw new HttpsError('unauthenticated', 'Faça login.');
 
     // Verifica se já existe algum master
-    const masters = await db.collection('admins').where('role', '==', 'master').limit(1).get();
+    const masters = await db.collection(globalCol('admin')).doc('admins').collection('admins').where('role', '==', 'master').limit(1).get();
     if (!masters.empty) {
       throw new HttpsError('failed-precondition', 'Já existe um admin master.');
     }
 
     // Promove o user atual para master
-    await db.collection('admins').doc(request.auth.uid).set(
+    await db.collection(globalCol('admin')).doc('admins').collection('admins').doc(request.auth.uid).set(
       {
         uid: request.auth.uid,
         email: request.auth.token.email || '',

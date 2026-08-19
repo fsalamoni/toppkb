@@ -13,6 +13,7 @@ import { onCall, HttpsError } from 'firebase-functions/v2/https';
 import { logger } from 'firebase-functions';
 import { assertAdminMaster } from '../middleware/auth';
 import { saveConfigDoc } from '../services/config-store';
+import { userDoc } from '../config/namespace';
 import { getFirestore, FieldValue } from '../services/firestore';
 import {
   loadAgentsConfig,
@@ -137,7 +138,7 @@ export const setUserAgentsConfig = onCall(
     const uid = request.auth.uid;
     const incoming = normalizeUserAgentModels(request.data);
     const db = getFirestore();
-    const snap = await db.doc(`users/${uid}`).get();
+    const snap = await db.doc(userDoc(uid)).get();
     const existing = normalizeUserAgentModels(snap.exists ? (snap.data() as Record<string, unknown>)?.agentsConfig : null);
 
     const toStore: Record<string, AgentModelConfig> = {};
@@ -148,7 +149,7 @@ export const setUserAgentsConfig = onCall(
       toStore[id] = m;
       agents[id] = modelToClientSafe(m);
     }
-    await db.doc(`users/${uid}`).set(
+    await db.doc(userDoc(uid)).set(
       { agentsConfig: toStore, agentsConfigUpdatedAt: FieldValue.serverTimestamp() },
       { merge: true },
     );
