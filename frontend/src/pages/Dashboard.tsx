@@ -70,7 +70,7 @@ async function loadDashboardData(uid: string): Promise<DashboardData> {
   };
 
   // Carrega todas as coleções em paralelo
-  const [treinosRaw, partidasRaw, dores, pesos, sonos, torneios, hidratacoes] = await Promise.all([
+  const [treinosRaw, partidasRaw, doresRaw, pesosRaw, sonosRaw, torneiosRaw, hidratacoesRaw] = await Promise.all([
     safeGet('treinos'),
     safeGet('partidas'),
     safeGet('dores'),
@@ -80,15 +80,34 @@ async function loadDashboardData(uid: string): Promise<DashboardData> {
     safeGet('hidratacao'),
   ]);
 
+  // As queries não trazem mais orderBy/limit do Firestore (evita índices),
+  // então ordenamos client-side. Mais recente primeiro (data desc).
+  const byDataDesc = (field = 'data') => (a: any, b: any) => {
+    const da = tsToDate(a[field])?.getTime() ?? 0;
+    const dbt = tsToDate(b[field])?.getTime() ?? 0;
+    return dbt - da;
+  };
+  const treinosRawSorted = [...treinosRaw].sort(byDataDesc());
+  const partidas = [...partidasRaw].sort(byDataDesc());
+  const dores = [...doresRaw].sort(byDataDesc());
+  const pesos = [...pesosRaw].sort(byDataDesc());
+  const sonos = [...sonosRaw].sort(byDataDesc());
+  const hidratacoes = [...hidratacoesRaw].sort(byDataDesc());
+  // Torneios: mais próximo primeiro (dataInicio asc)
+  const torneios = [...torneiosRaw].sort((a, b) => {
+    const da = tsToDate(a.dataInicio)?.getTime() ?? Infinity;
+    const dbt = tsToDate(b.dataInicio)?.getTime() ?? Infinity;
+    return da - dbt;
+  });
+
   // Treinos
-  const treinos = treinosRaw;
+  const treinos = treinosRawSorted;
   const treinos7d = treinos.filter((t: any) => {
     const d = tsToDate(t.data);
     return d && d >= seteDiasAtras;
   }).length;
 
   // Partidas
-  const partidas = partidasRaw;
   const partidas7d = partidas.filter((p: any) => {
     const d = tsToDate(p.data);
     return d && d >= seteDiasAtras;
@@ -114,21 +133,19 @@ async function loadDashboardData(uid: string): Promise<DashboardData> {
   const dorAtiva = doresList.find((d: any) => d.ativa !== false && (d.intensidade || 0) >= 5) || null;
 
   // Peso atual
-  const pesoAtual = pesos[0]?.data()?.peso || null;
+  const pesoAtual = pesos[0]?.peso ?? null;
 
   // Sono médio (7 dias)
-  const sonoDocs = sonos.map((d: any) => d.data()).filter((s: any) => s.horasDormidas);
+  const sonoDocs = sonos.filter((s: any) => s.horasDormidas);
   const sonoMedio = sonoDocs.length > 0
     ? sonoDocs.reduce((acc: number, s: any) => acc + (s.horasDormidas || 0), 0) / sonoDocs.length
     : null;
 
   // Próximo torneio
-  const proximoTorneio = torneios
-    .map((d: any) => ({ id: d.id, ...d.data() }))
-    .find((t: any) => {
-      const di = tsToDate(t.dataInicio);
-      return di && di >= agora;
-    }) || null;
+  const proximoTorneio = torneios.find((t: any) => {
+    const di = tsToDate(t.dataInicio);
+    return di && di >= agora;
+  }) || null;
 
   // Dias ativos (heatmap)
   const diasAtivos = new Set<string>();
@@ -138,7 +155,7 @@ async function loadDashboardData(uid: string): Promise<DashboardData> {
   });
 
   // Peso histórico (mais antigo -> mais novo para sparkline)
-  const pesoDocs = pesos.map((d: any) => d.data()).filter((p: any) => p.peso);
+  const pesoDocs = pesos.filter((p: any) => p.peso);
   const pesoHistorico = pesoDocs
     .map((p: any) => {
       const d = tsToDate(p.data);
@@ -149,7 +166,7 @@ async function loadDashboardData(uid: string): Promise<DashboardData> {
     .slice(-30);
 
   // Sono histórico
-  const sonoDocsAll = sonos.map((d: any) => d.data()).filter((s: any) => s.horasDormidas);
+  const sonoDocsAll = sonos.filter((s: any) => s.horasDormidas);
   const sonoHistorico = sonoDocsAll
     .map((s: any) => {
       const d = tsToDate(s.data);
@@ -169,7 +186,7 @@ async function loadDashboardData(uid: string): Promise<DashboardData> {
   const e30 = partidas30d.filter((p: any) => p.resultado === 'empate').length;
 
   // Hidratação hoje
-  const hidDoc = hidratacoes[0]?.data();
+  const hidDoc = hidratacoes[0];
   const hidratacaoHoje = hidDoc?.totalMl || 0;
   // Meta: 35ml/kg. Sem peso definido, assume 80kg.
   // (peso virá de userDoc, mas Dashboard usa estimativa)
