@@ -9,9 +9,14 @@ import { Spinner } from '@/components/common/LoadingScreen';
 import { cn } from '@/lib/utils';
 import {
   Activity, AlertCircle, Flame, Calendar, TrendingUp,
-  Plus, ChevronRight, Apple, Brain, Dumbbell, Target, Sparkles, Heart, Trophy,
+  Plus, ChevronRight, Apple, Brain, Dumbbell, Target, Sparkles, Heart, Trophy, Droplet,
 } from 'lucide-react';
 import { differenceInDays, subDays, formatYmd } from '@/lib/utils';
+import { SparklineChart, MiniBarChart } from '@/components/charts/SparklineChart';
+
+function DropletIcon() {
+  return <Droplet className="h-5 w-5 text-cyan-500 flex-shrink-0" />;
+}
 
 function tsToDate(ts: any): Date | null {
   if (!ts) return null;
@@ -35,20 +40,28 @@ interface DashboardData {
   ultimosTreinos: any[];
   ultimasPartidas: any[];
   diasAtivos: Set<string>;
+  // Gráficos
+  pesoHistorico: Array<{ date: string; value: number }>;
+  sonoHistorico: Array<{ date: string; value: number }>;
+  vitoriaDerrota30d: Array<{ label: string; value: number; color?: string }>;
+ hidratacaoHoje: number;
+  hidratacaoMeta: number;
 }
 
 async function loadDashboardData(uid: string): Promise<DashboardData> {
   const agora = new Date();
   const seteDiasAtras = subDays(agora, 7);
+  const trintaDiasAtras = subDays(agora, 30);
 
   // Carrega paralelamente
-  const [treinosSnap, partidasSnap, doresSnap, pesoSnap, sonoSnap, torneiosSnap] = await Promise.all([
+  const [treinosSnap, partidasSnap, doresSnap, pesoSnap, sonoSnap, torneiosSnap, hidratacaoSnap] = await Promise.all([
     getDocs(query(collection(db, 'toppkb_users', uid, 'treinos'), orderBy('data', 'desc'), limit(50))),
     getDocs(query(collection(db, 'toppkb_users', uid, 'partidas'), orderBy('data', 'desc'), limit(50))),
     getDocs(query(collection(db, 'toppkb_users', uid, 'dores'), orderBy('data', 'desc'), limit(20))),
-    getDocs(query(collection(db, 'toppkb_users', uid, 'peso'), orderBy('data', 'desc'), limit(2))),
-    getDocs(query(collection(db, 'toppkb_users', uid, 'sono'), orderBy('data', 'desc'), limit(7))),
+    getDocs(query(collection(db, 'toppkb_users', uid, 'peso'), orderBy('data', 'desc'), limit(30))),
+    getDocs(query(collection(db, 'toppkb_users', uid, 'sono'), orderBy('data', 'desc'), limit(30))),
     getDocs(query(collection(db, 'toppkb_users', uid, 'torneios'), orderBy('dataInicio', 'asc'), limit(5))),
+    getDocs(query(collection(db, 'toppkb_users', uid, 'hidratacao'), orderBy('data', 'desc'), limit(1))),
   ]);
 
   // Treinos
@@ -108,6 +121,44 @@ async function loadDashboardData(uid: string): Promise<DashboardData> {
     if (d) diasAtivos.add(formatYmd(d));
   });
 
+  // Peso histórico (mais antigo -> mais novo para sparkline)
+  const pesoDocs = pesoSnap.docs.map((d) => d.data()).filter((p: any) => p.peso);
+  const pesoHistorico = pesoDocs
+    .map((p: any) => {
+      const d = tsToDate(p.data);
+      return d ? { date: formatYmd(d), value: p.peso } : null;
+    })
+    .filter((x: any): x is { date: string; value: number } => x !== null)
+    .sort((a, b) => a.date.localeCompare(b.date))
+    .slice(-30);
+
+  // Sono histórico
+  const sonoDocsAll = sonoSnap.docs.map((d) => d.data()).filter((s: any) => s.horasDormidas);
+  const sonoHistorico = sonoDocsAll
+    .map((s: any) => {
+      const d = tsToDate(s.data);
+      return d ? { date: formatYmd(d), value: s.horasDormidas } : null;
+    })
+    .filter((x: any): x is { date: string; value: number } => x !== null)
+    .sort((a, b) => a.date.localeCompare(b.date))
+    .slice(-30);
+
+  // V/D/E últimos 30d
+  const partidas30d = partidas.filter((p: any) => {
+    const d = tsToDate(p.data);
+    return d && d >= trintaDiasAtras;
+  });
+  const v30 = partidas30d.filter((p: any) => p.resultado === 'vitoria').length;
+  const d30 = partidas30d.filter((p: any) => p.resultado === 'derrota').length;
+  const e30 = partidas30d.filter((p: any) => p.resultado === 'empate').length;
+
+  // Hidratação hoje
+  const hidDoc = hidratacaoSnap.docs[0]?.data();
+  const hidratacaoHoje = hidDoc?.totalMl || 0;
+  // Meta: 35ml/kg. Sem peso definido, assume 80kg.
+  // (peso virá de userDoc, mas Dashboard usa estimativa)
+  const hidratacaoMeta = Math.round(80 * 35);
+
   return {
     treinos7d,
     partidas7d,
@@ -122,21 +173,53 @@ async function loadDashboardData(uid: string): Promise<DashboardData> {
     ultimosTreinos: treinos.slice(0, 3),
     ultimasPartidas: partidas.slice(0, 3),
     diasAtivos,
+    pesoHistorico,
+    sonoHistorico,
+    vitoriaDerrota30d: [
+      { label: 'Vitórias', value: v30, color: 'bg-emerald-500' },
+      { label: 'Derrotas', value: d30, color: 'bg-red-500' },
+      { label: 'Empates', value: e30, color: 'bg-amber-500' },
+    ],
+    hidratacaoHoje,
+    hidratacaoMeta,
   };
 }
 
 export function Dashboard() {
   const { user, userDoc } = useAuth();
 
-  const { data, isLoading } = useQuery({
-    queryKey: ['dashboard', user?.uid],
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: ['dashboard', user?.uid, userDoc?.pesoInicial],
     queryFn: () => loadDashboardData(user!.uid),
     enabled: !!user,
     refetchOnWindowFocus: false,
     staleTime: 60 * 1000,
+    retry: 1,
   });
 
   if (isLoading || !data) {
+    if (error) {
+      // Erro real — mostrar mensagem
+      const errMsg = (error as any)?.message || String(error);
+      return (
+        <div className="max-w-2xl mx-auto py-8 space-y-3">
+          <Card className="border-red-500/50 bg-red-500/5">
+            <CardContent className="pt-4 pb-4">
+              <div className="flex items-start gap-3">
+                <AlertCircle className="h-5 w-5 text-red-500 flex-shrink-0 mt-0.5" />
+                <div className="flex-1">
+                  <div className="font-semibold text-sm">Erro ao carregar Dashboard</div>
+                  <p className="text-xs text-muted-foreground mt-1 break-all">{errMsg}</p>
+                  <Button onClick={() => refetch()} size="sm" variant="outline" className="mt-3">
+                    Tentar novamente
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      );
+    }
     return (
       <div className="flex items-center justify-center py-12">
         <Spinner size="lg" />
@@ -253,6 +336,109 @@ export function Dashboard() {
           color={data.streakType === 'V' ? 'emerald' : data.streakType === 'D' ? 'red' : 'slate'}
         />
       </div>
+
+      {/* Evolução + V/D/E 30d + Hidratação */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        {/* Peso histórico */}
+        <Card>
+          <CardHeader className="pb-2">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-sm">📈 Peso (últimas pesagens)</CardTitle>
+              <Link to="/app/peso" className="text-xs text-muted-foreground hover:text-foreground">
+                ver →
+              </Link>
+            </div>
+          </CardHeader>
+          <CardContent>
+            {data.pesoHistorico.length > 0 ? (
+              <>
+                <SparklineChart
+                  data={data.pesoHistorico.map((p) => ({ date: p.date, value: p.value }))}
+                  color="cyan"
+                  height={70}
+                  showLabels
+                />
+                <div className="flex justify-between mt-2 text-xs text-muted-foreground">
+                  <span>Min: {Math.min(...data.pesoHistorico.map((p) => p.value)).toFixed(1)}kg</span>
+                  <span>Max: {Math.max(...data.pesoHistorico.map((p) => p.value)).toFixed(1)}kg</span>
+                </div>
+              </>
+            ) : (
+              <div className="h-[70px] flex items-center justify-center text-xs text-muted-foreground">
+                Sem pesagens ainda
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Sono histórico */}
+        <Card>
+          <CardHeader className="pb-2">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-sm">😴 Sono (últimas noites)</CardTitle>
+              <Link to="/app/sono" className="text-xs text-muted-foreground hover:text-foreground">
+                ver →
+              </Link>
+            </div>
+          </CardHeader>
+          <CardContent>
+            {data.sonoHistorico.length > 0 ? (
+              <>
+                <SparklineChart
+                  data={data.sonoHistorico.map((s) => ({ date: s.date, value: s.value }))}
+                  color="purple"
+                  height={70}
+                  yMin={0}
+                  yMax={12}
+                  showLabels
+                />
+                <div className="flex justify-between mt-2 text-xs text-muted-foreground">
+                  <span>Meta: 7-9h</span>
+                  <span>Atual: {data.sonoMedio?.toFixed(1)}h</span>
+                </div>
+              </>
+            ) : (
+              <div className="h-[70px] flex items-center justify-center text-xs text-muted-foreground">
+                Sem registros ainda
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* V/D/E 30 dias */}
+        <Card>
+          <CardHeader className="pb-2">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-sm">🏆 Partidas (30d)</CardTitle>
+              <Link to="/app/partidas" className="text-xs text-muted-foreground hover:text-foreground">
+                ver →
+              </Link>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <MiniBarChart data={data.vitoriaDerrota30d} className="h-[70px]" />
+            <div className="text-center text-xs text-muted-foreground mt-2">
+              Win rate: {data.winRate}%
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Alerta de hidratação */}
+      {data.hidratacaoMeta > 0 && data.hidratacaoHoje < data.hidratacaoMeta * 0.5 && (
+        <Card className="border-cyan-500/50 bg-cyan-500/5">
+          <CardContent className="pt-4 pb-4 flex items-center gap-3">
+            <DropletIcon />
+            <div className="flex-1">
+              <div className="font-semibold text-sm">Hidratação baixa hoje: {data.hidratacaoHoje}ml / {data.hidratacaoMeta}ml</div>
+              <p className="text-xs text-muted-foreground">Para 50+, beber água antes de sentir sede é crucial.</p>
+            </div>
+            <Button asChild size="sm" variant="outline">
+              <Link to="/app/hidratacao/nova">Registrar</Link>
+            </Button>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Heatmap de atividades (últimos 30 dias) */}
       <Card>

@@ -55,7 +55,7 @@ export function Onboarding() {
     setSaving(true);
     try {
       await setDoc(
-        doc(db, 'users', user.uid),
+        doc(db, 'toppkb_users', user.uid, 'profile', 'main'),
         {
           uid: user.uid,
           email: user.email,

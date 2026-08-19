@@ -24,7 +24,7 @@ export function PesoList() {
     queryKey: ['/app/peso', user?.uid],
     queryFn: async () => {
       if (!user) return [];
-      const q = query(collection(db, 'users', user.uid, '/app/peso'), orderBy('data', 'asc'));
+      const q = query(collection(db, 'toppkb_users', user.uid, 'peso'), orderBy('data', 'asc'));
       const snap = await getDocs(q);
       return snap.docs.map((d) => ({ id: d.id, ...d.data() } as any));
     },
@@ -37,7 +37,7 @@ export function PesoList() {
       const kg = Number(novoPeso);
       if (!kg || kg < 30 || kg > 250) throw new Error('Peso inválido');
       const imc = userDoc?.altura ? calcularIMC(kg, userDoc.altura) : null;
-      await addDoc(collection(db, 'users', user.uid, '/app/peso'), {
+      await addDoc(collection(db, 'toppkb_users', user.uid, 'peso'), {
         data: new Date(novaData).toISOString(),
         pesoKg: kg,
         imc,

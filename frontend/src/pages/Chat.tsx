@@ -48,7 +48,7 @@ export function Chat() {
     queryFn: async () => {
       if (!user || !conversaAtiva) return [];
       const q = query(
-        collection(db, 'users', user.uid, 'conversas', conversaAtiva, 'messages'),
+        collection(db, 'toppkb_users', user.uid, 'conversas', conversaAtiva, 'messages'),
         orderBy('createdAt', 'asc'),
       );
       const snap = await getDocs(q);
@@ -81,7 +81,7 @@ export function Chat() {
       }
 
       // Salva msg do user
-      await addDoc(collection(db, 'users', user.uid, 'conversas', convId, 'messages'), {
+      await addDoc(collection(db, 'toppkb_users', user.uid, 'conversas', convId, 'messages'), {
         role: 'user',
         content: msg,
         createdAt: serverTimestamp(),
@@ -92,7 +92,7 @@ export function Chat() {
       const res: any = await chatCallable({ conversaId: convId, agente: 'auto', mensagem: msg });
 
       // Salva resposta
-      await addDoc(collection(db, 'users', user.uid, 'conversas', convId, 'messages'), {
+      await addDoc(collection(db, 'toppkb_users', user.uid, 'conversas', convId, 'messages'), {
         role: 'assistant',
         content: res.resposta || res.data?.resposta || 'Sem resposta',
         agente: res.agenteUsado || res.data?.agenteUsado,

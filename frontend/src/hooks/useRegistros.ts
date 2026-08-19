@@ -37,7 +37,7 @@ export function useRegistros<T extends { id?: string }>(
         orderBy(orderByField, orderDirection),
         limit(pageSize),
       ];
-      const q = query(collection(db, 'users', user.uid, colecao), ...constraints);
+      const q = query(collection(db, 'toppkb_users', user.uid, colecao), ...constraints);
       const snap = await getDocs(q);
       return snap.docs.map((d) => ({ id: d.id, ...d.data() } as T));
     },
@@ -61,7 +61,7 @@ export function useCriarRegistro<T extends Record<string, any>>(colecao: string)
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
-      const ref = await addDoc(collection(db, 'users', user.uid, colecao), payload);
+      const ref = await addDoc(collection(db, 'toppkb_users', user.uid, colecao), payload);
       return { id: ref.id, ...payload };
     },
     onSuccess: () => {
@@ -81,7 +81,7 @@ export function useAtualizarRegistro<T extends Record<string, any>>(colecao: str
     mutationFn: async ({ id, data }: { id: string; data: Partial<T> }) => {
       if (!user) throw new Error('Não autenticado');
       const payload = { ...data, updatedAt: new Date().toISOString() };
-      await setDoc(doc(db, 'users', user.uid, colecao, id), payload, { merge: true });
+      await setDoc(doc(db, 'toppkb_users', user.uid, colecao, id), payload, { merge: true });
       return { id, ...payload };
     },
     onSuccess: () => {
@@ -100,7 +100,7 @@ export function useDeletarRegistro(colecao: string) {
   return useMutation({
     mutationFn: async (id: string) => {
       if (!user) throw new Error('Não autenticado');
-      await deleteDoc(doc(db, 'users', user.uid, colecao, id));
+      await deleteDoc(doc(db, 'toppkb_users', user.uid, colecao, id));
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['registros', user?.uid, colecao] });
@@ -117,7 +117,7 @@ export function useRegistro<T extends { id?: string }>(colecao: string, id: stri
     queryKey: ['registro', user?.uid, colecao, id],
     queryFn: async () => {
       if (!user || !id) return null;
-      const snap = await getDoc(doc(db, 'users', user.uid, colecao, id));
+      const snap = await getDoc(doc(db, 'toppkb_users', user.uid, colecao, id));
       if (!snap.exists()) return null;
       return { id: snap.id, ...snap.data() } as T;
     },

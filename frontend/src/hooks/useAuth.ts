@@ -59,40 +59,59 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const unsub = onAuthStateChanged(auth, async (fbUser) => {
       setUser(fbUser);
       if (fbUser) {
-        const ref = doc(db, 'users', fbUser.uid);
-        const snap = await getDoc(ref);
-        if (snap.exists()) {
-          setUserDoc(snap.data() as UserDoc);
-        } else {
-          // Cria o doc de usuário com dados básicos do Google
-          const newDoc: UserDoc = {
+        try {
+          // Namespace toppkb_ (isolamento total)
+          const ref = doc(db, 'toppkb_users', fbUser.uid, 'profile', 'main');
+          const snap = await getDoc(ref);
+          if (snap.exists()) {
+            setUserDoc(snap.data() as UserDoc);
+          } else {
+            // Cria o doc de usuário com dados básicos do Google
+            const newDoc: UserDoc = {
+              uid: fbUser.uid,
+              email: fbUser.email || undefined,
+              displayName: fbUser.displayName || undefined,
+              photoURL: fbUser.photoURL || undefined,
+              consent: false,
+              onboardingComplete: false,
+              role: 'user',
+            };
+            setUserDoc(newDoc);
+            // Tenta criar o doc no Firestore (best-effort, não bloqueia)
+            const { setDoc } = await import('firebase/firestore');
+            setDoc(ref, newDoc, { merge: true }).catch((e) => console.warn('[auth] setDoc profile falhou:', e));
+          }
+        } catch (e) {
+          console.warn('[auth] load profile falhou:', e);
+          setUserDoc({
             uid: fbUser.uid,
             email: fbUser.email || undefined,
             displayName: fbUser.displayName || undefined,
-            photoURL: fbUser.photoURL || undefined,
-            consent: false,
-            onboardingComplete: false,
             role: 'user',
-          };
-          setUserDoc(newDoc);
+          } as UserDoc);
         }
-        // checa custom claims
-        const tokenResult = await fbUser.getIdTokenResult();
-        if (tokenResult.claims?.admin) {
-          setClaims({ admin: tokenResult.claims.admin as 'admin' | 'master' });
-        } else {
-          // checa doc admins/{uid}
-          const adminSnap = await getDoc(doc(db, 'admins', fbUser.uid));
-          if (adminSnap.exists()) {
-            const data = adminSnap.data() as any;
-            if (data?.active !== false) {
-              setClaims({ admin: data.role === 'master' ? 'master' : 'admin' });
+        try {
+          // checa custom claims
+          const tokenResult = await fbUser.getIdTokenResult();
+          if (tokenResult.claims?.admin) {
+            setClaims({ admin: tokenResult.claims.admin as 'admin' | 'master' });
+          } else {
+            // checa doc admins/{uid} (namespace toppkb_)
+            const adminSnap = await getDoc(doc(db, 'toppkb_admin', 'admins', fbUser.uid));
+            if (adminSnap.exists()) {
+              const data = adminSnap.data() as any;
+              if (data?.active !== false) {
+                setClaims({ admin: data.role === 'master' ? 'master' : 'admin' });
+              } else {
+                setClaims(null);
+              }
             } else {
               setClaims(null);
             }
-          } else {
-            setClaims(null);
           }
+        } catch (e) {
+          console.warn('[auth] load claims falhou:', e);
+          setClaims(null);
         }
       } else {
         setUserDoc(null);
@@ -107,11 +126,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // Live listener do userDoc
   useEffect(() => {
     if (!user) return;
-    const ref = doc(db, 'users', user.uid);
-    const unsub = onSnapshot(ref, (snap) => {
-      if (snap.exists()) setUserDoc(snap.data() as UserDoc);
-    });
-    return unsub;
+    try {
+      const ref = doc(db, 'toppkb_users', user.uid, 'profile', 'main');
+      const unsub = onSnapshot(
+        ref,
+        (snap) => {
+          if (snap.exists()) setUserDoc(snap.data() as UserDoc);
+        },
+        (err) => {
+          console.warn('[auth] snapshot profile falhou:', err);
+        },
+      );
+      return unsub;
+    } catch (e) {
+      console.warn('[auth] setup snapshot falhou:', e);
+      return undefined;
+    }
   }, [user, setUserDoc]);
 
   const signInWithGoogle = async (): Promise<User> => {

@@ -36,7 +36,7 @@ export function AvaliacaoForm() {
     setSaving(true);
     try {
       const imc = userDoc?.altura ? form.peso / Math.pow(userDoc.altura / 100, 2) : null;
-      await addDoc(collection(db, 'users', user.uid, 'avaliacoes'), {
+      await addDoc(collection(db, 'toppkb_users', user.uid, 'avaliacoes'), {
         ...form,
         imc,
         winRate: form.jogosMes > 0 ? (form.vitorias / form.jogosMes) * 100 : 0,

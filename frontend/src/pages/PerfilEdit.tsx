@@ -28,7 +28,7 @@ export function PerfilEdit() {
     setSaving(true);
     try {
       await setDoc(
-        doc(db, 'users', user.uid),
+        doc(db, 'toppkb_users', user.uid, 'profile', 'main'),
         { ...form, updatedAt: serverTimestamp() },
         { merge: true },
       );

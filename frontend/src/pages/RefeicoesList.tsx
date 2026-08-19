@@ -30,7 +30,7 @@ export function RefeicoesList() {
     queryKey: ['refeicoes', user?.uid],
     queryFn: async () => {
       if (!user) return [];
-      const q = query(collection(db, 'users', user.uid, 'refeicoes'), orderBy('data', 'desc'));
+      const q = query(collection(db, 'toppkb_users', user.uid, 'nutricao'), orderBy('data', 'desc'));
       const snap = await getDocs(q);
       return snap.docs.map((d) => ({ id: d.id, ...d.data() } as any));
     },
@@ -40,7 +40,7 @@ export function RefeicoesList() {
   const add = useMutation({
     mutationFn: async () => {
       if (!user) return;
-      await addDoc(collection(db, 'users', user.uid, 'refeicoes'), {
+      await addDoc(collection(db, 'toppkb_users', user.uid, 'nutricao'), {
         data: new Date().toISOString(),
         tipo: form.tipo,
         alimentos: [{ nome: form.descricao, quantidade: '1 porção' }],

@@ -30,6 +30,10 @@ import { Medidas } from './pages/Medidas';
 import { MedidasForm } from './pages/MedidasForm';
 import { Lesoes } from './pages/Lesoes';
 import { LesoesForm } from './pages/LesoesForm';
+import { Suplementos } from './pages/Suplementos';
+import { SuplementosForm } from './pages/SuplementosForm';
+import { Hidratacao } from './pages/Hidratacao';
+import { HidratacaoForm } from './pages/HidratacaoForm';
 import { Onboarding } from './pages/Onboarding';
 import { Configuracoes } from './pages/Configuracoes';
 import { Perfil } from './pages/Perfil';
@@ -100,6 +104,11 @@ function AppShell() {
             <Route path="/app/lesoes" element={<PrivateRoute><Lesoes /></PrivateRoute>} />
             <Route path="/app/lesoes/nova" element={<PrivateRoute><LesoesForm /></PrivateRoute>} />
             <Route path="/app/lesoes/:id" element={<PrivateRoute><LesoesForm /></PrivateRoute>} />
+            <Route path="/app/suplementos" element={<PrivateRoute><Suplementos /></PrivateRoute>} />
+            <Route path="/app/suplementos/novo" element={<PrivateRoute><SuplementosForm /></PrivateRoute>} />
+            <Route path="/app/suplementos/:id" element={<PrivateRoute><SuplementosForm /></PrivateRoute>} />
+            <Route path="/app/hidratacao" element={<PrivateRoute><Hidratacao /></PrivateRoute>} />
+            <Route path="/app/hidratacao/nova" element={<PrivateRoute><HidratacaoForm /></PrivateRoute>} />
             <Route path="/app/torneios" element={<PrivateRoute><Torneios /></PrivateRoute>} />
             <Route path="/app/torneios/novo" element={<PrivateRoute><TorneiosForm /></PrivateRoute>} />
             <Route path="/app/torneios/:id" element={<PrivateRoute><TorneiosForm /></PrivateRoute>} />

@@ -29,7 +29,7 @@ export function TorneiosList() {
     queryKey: ['/app/torneios', user?.uid],
     queryFn: async () => {
       if (!user) return [];
-      const q = query(collection(db, 'users', user.uid, '/app/torneios'), orderBy('dataInicio', 'desc'));
+      const q = query(collection(db, 'toppkb_users', user.uid, 'torneios'), orderBy('dataInicio', 'desc'));
       const snap = await getDocs(q);
       return snap.docs.map((d) => ({ id: d.id, ...d.data() } as any));
     },
@@ -39,7 +39,7 @@ export function TorneiosList() {
   const add = useMutation({
     mutationFn: async () => {
       if (!user) return;
-      await addDoc(collection(db, 'users', user.uid, '/app/torneios'), {
+      await addDoc(collection(db, 'toppkb_users', user.uid, 'torneios'), {
         ...form,
         dataInicio: new Date(form.dataInicio).toISOString(),
         status: 'planejado',

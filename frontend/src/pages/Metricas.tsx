@@ -16,7 +16,7 @@ export function Metricas() {
     queryKey: ['/app/peso-chart', user?.uid],
     queryFn: async () => {
       if (!user) return [];
-      const q = query(collection(db, 'users', user.uid, '/app/peso'), orderBy('data', 'asc'));
+      const q = query(collection(db, 'toppkb_users', user.uid, 'peso'), orderBy('data', 'asc'));
       const snap = await getDocs(q);
       return snap.docs.map((d) => ({ data: d.data(), id: d.id } as any));
     },
@@ -27,7 +27,7 @@ export function Metricas() {
     queryKey: ['/app/treinos-chart', user?.uid],
     queryFn: async () => {
       if (!user) return [];
-      const q = query(collection(db, 'users', user.uid, '/app/treinos'), orderBy('data', 'desc'));
+      const q = query(collection(db, 'toppkb_users', user.uid, 'treinos'), orderBy('data', 'desc'));
       const snap = await getDocs(q);
       return snap.docs.map((d) => ({ data: d.data(), id: d.id } as any));
     },
@@ -38,7 +38,7 @@ export function Metricas() {
     queryKey: ['/app/dores-chart', user?.uid],
     queryFn: async () => {
       if (!user) return [];
-      const q = query(collection(db, 'users', user.uid, '/app/dores'), orderBy('data', 'desc'));
+      const q = query(collection(db, 'toppkb_users', user.uid, 'dores'), orderBy('data', 'desc'));
       const snap = await getDocs(q);
       return snap.docs.map((d) => ({ data: d.data(), id: d.id } as any));
     },

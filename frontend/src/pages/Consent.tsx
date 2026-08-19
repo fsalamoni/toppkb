@@ -18,11 +18,11 @@ export function Consent() {
     if (!user || !accepted) return;
     setSaving(true);
     try {
-      await doc(db, 'users', user.uid); // ensure exists
+      await doc(db, 'toppkb_users', user.uid, 'profile', 'main'); // ensure exists
       // update via set with merge
       const { setDoc } = await import('firebase/firestore');
       await setDoc(
-        doc(db, 'users', user.uid),
+        doc(db, 'toppkb_users', user.uid, 'profile', 'main'),
         {
           uid: user.uid,
           email: user.email,
