@@ -16,6 +16,22 @@ const queryClient = new QueryClient({
   },
 });
 
+// PWA — registrar Service Worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker
+      .register('/sw.js', { scope: '/' })
+      .then((reg) => {
+        // eslint-disable-next-line no-console
+        console.log('[pwa] Service Worker registrado:', reg.scope);
+      })
+      .catch((err) => {
+        // eslint-disable-next-line no-console
+        console.warn('[pwa] Falha ao registrar SW:', err);
+      });
+  });
+}
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>

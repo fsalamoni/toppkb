@@ -5,6 +5,10 @@ import { AuthProvider, useAuth } from './hooks/useAuth';
 import { Toaster } from './components/ui/toaster';
 import { Sidebar } from './components/layout/Sidebar';
 import { Topbar } from './components/layout/Topbar';
+import { InstallPWA } from './components/pwa/InstallPWA';
+import { Card, CardContent } from './components/ui/card';
+import { Button } from './components/ui/button';
+import { ErrorBoundary } from './components/common/ErrorBoundary';
 import { Login } from './pages/Login';
 import { Landing } from './pages/Landing';
 import { Loader2 } from 'lucide-react';
@@ -69,11 +73,32 @@ function PrivateRoute({ children, adminOnly = false }: { children: React.ReactNo
   if (loading) {
     return (
       <div className="flex h-screen items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin" />
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     );
   }
-  if (!user) return <Navigate to="/login" replace />;
+  if (!user) {
+    return (
+      <div className="max-w-2xl mx-auto py-8 space-y-4">
+        <Card className="border-amber-500/50 bg-amber-500/5">
+          <CardContent className="pt-4 pb-4">
+            <div className="flex items-start gap-3">
+              <Loader2 className="h-5 w-5 text-amber-500 flex-shrink-0 mt-0.5" />
+              <div className="flex-1">
+                <div className="font-semibold text-sm">Sessão expirada ou não detectada</div>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Por favor, faça login novamente para acessar a plataforma.
+                </p>
+                <Button asChild size="sm" className="mt-3">
+                  <a href="/login">Ir para o login</a>
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
   if (adminOnly && !claims?.admin) return <Navigate to="/app/dashboard" replace />;
   return <>{children}</>;
 }
@@ -85,10 +110,11 @@ function AppShell() {
       <div className="flex-1 flex flex-col overflow-hidden">
         <Topbar />
         <main className="flex-1 overflow-y-auto p-6">
-          <Suspense fallback={<PageLoader />}>
-            <Routes>
-              <Route path="/" element={<Navigate to="/app/dashboard" replace />} />
-              <Route path="/app/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
+          <ErrorBoundary>
+            <Suspense fallback={<PageLoader />}>
+              <Routes>
+                <Route index element={<Navigate to="/app/dashboard" replace />} />
+                <Route path="/app/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
               <Route path="/app/treinos" element={<PrivateRoute><Treinos /></PrivateRoute>} />
               <Route path="/app/treinos/novo" element={<PrivateRoute><TreinoForm /></PrivateRoute>} />
               <Route path="/app/treinos/:id" element={<PrivateRoute><TreinoForm /></PrivateRoute>} />
@@ -148,9 +174,11 @@ function AppShell() {
               <Route path="*" element={<Navigate to="/app/dashboard" replace />} />
             </Routes>
           </Suspense>
+          </ErrorBoundary>
         </main>
       </div>
       <Toaster />
+      <InstallPWA />
     </div>
   );
 }
