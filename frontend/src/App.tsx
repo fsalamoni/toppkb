@@ -14,50 +14,77 @@ import { Login } from './pages/Login';
 import { Landing } from './pages/Landing';
 import { Loader2 } from 'lucide-react';
 
+// Carregamento de chunk resiliente: se um import dinâmico falhar ou pendurar
+// (deploy novo com hashes diferentes, service worker com cache velho, rede
+// instável no celular), recarrega a página UMA vez para buscar o index.html
+// e os chunks novos. Se ainda assim falhar, deixa o ErrorBoundary aparecer —
+// nunca fica preso no spinner do Suspense para sempre.
+function lazyWithRetry<T extends React.ComponentType<any>>(
+  factory: () => Promise<{ default: T }>,
+) {
+  return lazy(() =>
+    Promise.race<{ default: T }>([
+      factory(),
+      new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error('chunk-load-timeout')), 20000),
+      ),
+    ]).catch((err) => {
+      const RELOAD_KEY = 'toppkb-chunk-reloaded';
+      if (typeof sessionStorage !== 'undefined' && !sessionStorage.getItem(RELOAD_KEY)) {
+        sessionStorage.setItem(RELOAD_KEY, String(Date.now()));
+        window.location.reload();
+        // Trava este import até a página recarregar (não resolve nem rejeita).
+        return new Promise<{ default: T }>(() => {});
+      }
+      throw err;
+    }),
+  );
+}
+
 // Lazy load — code splitting
-const Dashboard = lazy(() => import('./pages/Dashboard').then((m) => ({ default: m.Dashboard })));
-const Treinos = lazy(() => import('./pages/Treinos').then((m) => ({ default: m.Treinos })));
-const TreinoForm = lazy(() => import('./pages/TreinoForm').then((m) => ({ default: m.TreinoForm })));
-const Partidas = lazy(() => import('./pages/Partidas').then((m) => ({ default: m.Partidas })));
-const PartidaForm = lazy(() => import('./pages/PartidaForm').then((m) => ({ default: m.PartidaForm })));
-const Preparacao = lazy(() => import('./pages/Preparacao').then((m) => ({ default: m.Preparacao })));
-const PreparacaoForm = lazy(() => import('./pages/PreparacaoForm').then((m) => ({ default: m.PreparacaoForm })));
-const Nutricao = lazy(() => import('./pages/Nutricao').then((m) => ({ default: m.Nutricao })));
-const NutricaoForm = lazy(() => import('./pages/NutricaoForm').then((m) => ({ default: m.NutricaoForm })));
-const Sono = lazy(() => import('./pages/Sono').then((m) => ({ default: m.Sono })));
-const SonoForm = lazy(() => import('./pages/SonoForm').then((m) => ({ default: m.SonoForm })));
-const Peso = lazy(() => import('./pages/Peso').then((m) => ({ default: m.Peso })));
-const PesoForm = lazy(() => import('./pages/PesoForm').then((m) => ({ default: m.PesoForm })));
-const Dores = lazy(() => import('./pages/Dores').then((m) => ({ default: m.Dores })));
-const DoresForm = lazy(() => import('./pages/DoresForm').then((m) => ({ default: m.DoresForm })));
-const Torneios = lazy(() => import('./pages/Torneios').then((m) => ({ default: m.Torneios })));
-const TorneiosForm = lazy(() => import('./pages/TorneiosForm').then((m) => ({ default: m.TorneiosForm })));
-const Metas = lazy(() => import('./pages/Metas').then((m) => ({ default: m.Metas })));
-const MetasForm = lazy(() => import('./pages/MetasForm').then((m) => ({ default: m.MetasForm })));
-const Estudos = lazy(() => import('./pages/Estudos').then((m) => ({ default: m.Estudos })));
-const EstudosForm = lazy(() => import('./pages/Estudos').then((m) => ({ default: m.EstudosForm })));
-const Medidas = lazy(() => import('./pages/Medidas').then((m) => ({ default: m.Medidas })));
-const MedidasForm = lazy(() => import('./pages/MedidasForm').then((m) => ({ default: m.MedidasForm })));
-const Lesoes = lazy(() => import('./pages/Lesoes').then((m) => ({ default: m.Lesoes })));
-const LesoesForm = lazy(() => import('./pages/LesoesForm').then((m) => ({ default: m.LesoesForm })));
-const Suplementos = lazy(() => import('./pages/Suplementos').then((m) => ({ default: m.Suplementos })));
-const SuplementosForm = lazy(() => import('./pages/SuplementosForm').then((m) => ({ default: m.SuplementosForm })));
-const Hidratacao = lazy(() => import('./pages/Hidratacao').then((m) => ({ default: m.Hidratacao })));
-const HidratacaoForm = lazy(() => import('./pages/HidratacaoForm').then((m) => ({ default: m.HidratacaoForm })));
-const Onboarding = lazy(() => import('./pages/Onboarding').then((m) => ({ default: m.Onboarding })));
-const Consent = lazy(() => import('./pages/Consent').then((m) => ({ default: m.Consent })));
-const Configuracoes = lazy(() => import('./pages/Configuracoes').then((m) => ({ default: m.Configuracoes })));
-const Perfil = lazy(() => import('./pages/Perfil').then((m) => ({ default: m.Perfil })));
-const ConfiguracoesLLM = lazy(() => import('./pages/ConfiguracoesLLM').then((m) => ({ default: m.ConfiguracoesLLM })));
-const Notificacoes = lazy(() => import('./pages/Notificacoes').then((m) => ({ default: m.Notificacoes })));
-const AdminLayout = lazy(() => import('./pages/admin/AdminLayout').then((m) => ({ default: m.AdminLayout })));
-const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard').then((m) => ({ default: m.AdminDashboard })));
-const AdminCorpus = lazy(() => import('./pages/admin/AdminCorpus').then((m) => ({ default: m.AdminCorpus })));
-const AdminLLMConfig = lazy(() => import('./pages/admin/AdminLLMConfig').then((m) => ({ default: m.AdminLLMConfig })));
-const AdminAgents = lazy(() => import('./pages/admin/AdminAgents').then((m) => ({ default: m.AdminAgents })));
-const AdminUsers = lazy(() => import('./pages/admin/AdminUsers').then((m) => ({ default: m.AdminUsers })));
-const AdminStats = lazy(() => import('./pages/admin/AdminStats').then((m) => ({ default: m.AdminStats })));
-const ChatPage = lazy(() => import('./pages/ChatPage').then((m) => ({ default: m.default })));
+const Dashboard = lazyWithRetry(() => import('./pages/Dashboard').then((m) => ({ default: m.Dashboard })));
+const Treinos = lazyWithRetry(() => import('./pages/Treinos').then((m) => ({ default: m.Treinos })));
+const TreinoForm = lazyWithRetry(() => import('./pages/TreinoForm').then((m) => ({ default: m.TreinoForm })));
+const Partidas = lazyWithRetry(() => import('./pages/Partidas').then((m) => ({ default: m.Partidas })));
+const PartidaForm = lazyWithRetry(() => import('./pages/PartidaForm').then((m) => ({ default: m.PartidaForm })));
+const Preparacao = lazyWithRetry(() => import('./pages/Preparacao').then((m) => ({ default: m.Preparacao })));
+const PreparacaoForm = lazyWithRetry(() => import('./pages/PreparacaoForm').then((m) => ({ default: m.PreparacaoForm })));
+const Nutricao = lazyWithRetry(() => import('./pages/Nutricao').then((m) => ({ default: m.Nutricao })));
+const NutricaoForm = lazyWithRetry(() => import('./pages/NutricaoForm').then((m) => ({ default: m.NutricaoForm })));
+const Sono = lazyWithRetry(() => import('./pages/Sono').then((m) => ({ default: m.Sono })));
+const SonoForm = lazyWithRetry(() => import('./pages/SonoForm').then((m) => ({ default: m.SonoForm })));
+const Peso = lazyWithRetry(() => import('./pages/Peso').then((m) => ({ default: m.Peso })));
+const PesoForm = lazyWithRetry(() => import('./pages/PesoForm').then((m) => ({ default: m.PesoForm })));
+const Dores = lazyWithRetry(() => import('./pages/Dores').then((m) => ({ default: m.Dores })));
+const DoresForm = lazyWithRetry(() => import('./pages/DoresForm').then((m) => ({ default: m.DoresForm })));
+const Torneios = lazyWithRetry(() => import('./pages/Torneios').then((m) => ({ default: m.Torneios })));
+const TorneiosForm = lazyWithRetry(() => import('./pages/TorneiosForm').then((m) => ({ default: m.TorneiosForm })));
+const Metas = lazyWithRetry(() => import('./pages/Metas').then((m) => ({ default: m.Metas })));
+const MetasForm = lazyWithRetry(() => import('./pages/MetasForm').then((m) => ({ default: m.MetasForm })));
+const Estudos = lazyWithRetry(() => import('./pages/Estudos').then((m) => ({ default: m.Estudos })));
+const EstudosForm = lazyWithRetry(() => import('./pages/Estudos').then((m) => ({ default: m.EstudosForm })));
+const Medidas = lazyWithRetry(() => import('./pages/Medidas').then((m) => ({ default: m.Medidas })));
+const MedidasForm = lazyWithRetry(() => import('./pages/MedidasForm').then((m) => ({ default: m.MedidasForm })));
+const Lesoes = lazyWithRetry(() => import('./pages/Lesoes').then((m) => ({ default: m.Lesoes })));
+const LesoesForm = lazyWithRetry(() => import('./pages/LesoesForm').then((m) => ({ default: m.LesoesForm })));
+const Suplementos = lazyWithRetry(() => import('./pages/Suplementos').then((m) => ({ default: m.Suplementos })));
+const SuplementosForm = lazyWithRetry(() => import('./pages/SuplementosForm').then((m) => ({ default: m.SuplementosForm })));
+const Hidratacao = lazyWithRetry(() => import('./pages/Hidratacao').then((m) => ({ default: m.Hidratacao })));
+const HidratacaoForm = lazyWithRetry(() => import('./pages/HidratacaoForm').then((m) => ({ default: m.HidratacaoForm })));
+const Onboarding = lazyWithRetry(() => import('./pages/Onboarding').then((m) => ({ default: m.Onboarding })));
+const Consent = lazyWithRetry(() => import('./pages/Consent').then((m) => ({ default: m.Consent })));
+const Configuracoes = lazyWithRetry(() => import('./pages/Configuracoes').then((m) => ({ default: m.Configuracoes })));
+const Perfil = lazyWithRetry(() => import('./pages/Perfil').then((m) => ({ default: m.Perfil })));
+const ConfiguracoesLLM = lazyWithRetry(() => import('./pages/ConfiguracoesLLM').then((m) => ({ default: m.ConfiguracoesLLM })));
+const Notificacoes = lazyWithRetry(() => import('./pages/Notificacoes').then((m) => ({ default: m.Notificacoes })));
+const AdminLayout = lazyWithRetry(() => import('./pages/admin/AdminLayout').then((m) => ({ default: m.AdminLayout })));
+const AdminDashboard = lazyWithRetry(() => import('./pages/admin/AdminDashboard').then((m) => ({ default: m.AdminDashboard })));
+const AdminCorpus = lazyWithRetry(() => import('./pages/admin/AdminCorpus').then((m) => ({ default: m.AdminCorpus })));
+const AdminLLMConfig = lazyWithRetry(() => import('./pages/admin/AdminLLMConfig').then((m) => ({ default: m.AdminLLMConfig })));
+const AdminAgents = lazyWithRetry(() => import('./pages/admin/AdminAgents').then((m) => ({ default: m.AdminAgents })));
+const AdminUsers = lazyWithRetry(() => import('./pages/admin/AdminUsers').then((m) => ({ default: m.AdminUsers })));
+const AdminStats = lazyWithRetry(() => import('./pages/admin/AdminStats').then((m) => ({ default: m.AdminStats })));
+const ChatPage = lazyWithRetry(() => import('./pages/ChatPage').then((m) => ({ default: m.default })));
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { staleTime: 60 * 1000, refetchOnWindowFocus: false } },
