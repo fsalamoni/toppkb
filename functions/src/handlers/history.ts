@@ -25,7 +25,7 @@ export const listMessagesHandler = onCall(
 
     const snap = await db
       .collection(globalCol('users')).doc(request.auth.uid)
-      .collection('chat').doc('conversas').collection('chat').doc('conversas').collection('conversas').doc(conversaId)
+      .collection('chat').doc(conversaId)
       .collection('mensagens')
       .orderBy('createdAt', 'asc')
       .limit(Math.min(limit, 500))
@@ -46,7 +46,7 @@ export const deleteConversaHandler = onCall(
 
     const ref = db
       .collection(globalCol('users')).doc(request.auth.uid)
-      .collection('chat').doc('conversas').collection('chat').doc('conversas').collection('conversas').doc(conversaId);
+      .collection('chat').doc(conversaId);
 
     // Deleta mensagens
     const msgs = await ref.collection('mensagens').get();

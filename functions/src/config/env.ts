@@ -1,5 +1,6 @@
 import * as admin from 'firebase-admin';
 import { getOrCreateApp } from './firestore-shim';
+import { createNamespacedFirestore } from './db-namespace';
 
 // Strings não-secretas (lê de env ou process.env)
 export const PUBLIC_URL = process.env.PUBLIC_URL || 'http://localhost:5173';
@@ -17,9 +18,11 @@ export const RETENTION_CONVERSAS_DIAS = 365;
 // `admin.firestore()` (sem app) falha. Usamos Proxy para SEMPRE passar o app certo.
 const getApp = () => getOrCreateApp();
 
+// db: instância do Firestore com ISOLAMENTO automático no namespace toppkb_.
+// (Ver config/db-namespace.ts — toda raiz vira toppkb_*.)
 export const db = new Proxy({} as admin.firestore.Firestore, {
   get(_target, prop: string) {
-    const inst = admin.firestore(getApp());
+    const inst = createNamespacedFirestore(admin.firestore(getApp()));
     const value = (inst as any)[prop];
     return typeof value === 'function' ? value.bind(inst) : value;
   },

@@ -40,7 +40,8 @@ export interface ContextoUsuario {
 export async function carregarContextoUsuario(uid: string): Promise<ContextoUsuario> {
   const ctx: ContextoUsuario = {};
   try {
-    const userDoc = await db.collection('users').doc(uid).get();
+    // Dados do atleta vivem em toppkb_users/{uid}/profile/main
+    const userDoc = await db.collection('users').doc(uid).collection('profile').doc('main').get();
     if (userDoc.exists) {
       const d = userDoc.data()!;
       ctx.displayName = d.displayName;
@@ -94,10 +95,11 @@ export async function carregarHistorico(
   limit = 10,
 ): Promise<LLMMessage[]> {
   try {
+    // Estrutura canônica do chat: toppkb_users/{uid}/chat/{convId}/mensagens
     const snap = await db
       .collection('users').doc(uid)
-      .collection('conversas').doc(conversaId)
-      .collection('messages')
+      .collection('chat').doc(conversaId)
+      .collection('mensagens')
       .orderBy('createdAt', 'desc')
       .limit(limit)
       .get();

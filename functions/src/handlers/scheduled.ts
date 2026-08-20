@@ -1,6 +1,7 @@
 import * as functions from 'firebase-functions/v2/scheduler';
 import { db, logger, RETENTION_REGISTROS_DIAS, RETENTION_CONVERSAS_DIAS } from '../config/env';
 import { globalCol } from '../config/namespace';
+import { filterToppkbDocs } from '../config/db-namespace';
 import { responderComoAgente, carregarContextoUsuario } from '../services/ai/orquestrador';
 import { AgenteId } from '../services/ai/router';
 import * as admin from 'firebase-admin';
@@ -149,7 +150,7 @@ export const checkAcutePain = functions.onSchedule(
       .get();
 
     let alertas = 0;
-    for (const doc of snap.docs) {
+    for (const doc of filterToppkbDocs(snap.docs)) {
       if (doc.data().alertaAtivado) continue;
       await doc.ref.update({ alertaAtivado: true });
       alertas++;
@@ -171,13 +172,13 @@ export const aggregateAnalytics = functions.onSchedule(
     const umaSemanaAtras = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
     const [users, messages, errors] = await Promise.all([
       db.collection(globalCol('users')).where('createdAt', '>=', umaSemanaAtras).get().catch(() => ({ size: 0, docs: [] } as any)),
-      db.collectionGroup('messages').where('createdAt', '>=', umaSemanaAtras).get().catch(() => ({ size: 0, docs: [] } as any)),
+      db.collectionGroup('mensagens').where('createdAt', '>=', umaSemanaAtras).get().catch(() => ({ size: 0, docs: [] } as any)),
       db.collection('analytics').where('event', '==', 'error').where('timestamp', '>=', umaSemanaAtras).get().catch(() => ({ size: 0, docs: [] } as any)),
     ]);
 
     const summary = {
       novosUsuariosSemana: users.size,
-      mensagensChatSemana: messages.size,
+      mensagensChatSemana: filterToppkbDocs(messages.docs).length,
       errosSemana: errors.size,
       geradoEm: new Date().toISOString(),
     };

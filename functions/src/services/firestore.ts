@@ -9,9 +9,12 @@
  */
 import * as admin from 'firebase-admin';
 import { getOrCreateApp } from '../config/firestore-shim';
+import { createNamespacedFirestore } from '../config/db-namespace';
 
+// Retorna o Firestore com ISOLAMENTO automático no namespace toppkb_.
+// (Ver config/db-namespace.ts.)
 export function getFirestore() {
-  return admin.firestore(getOrCreateApp());
+  return createNamespacedFirestore(admin.firestore(getOrCreateApp()));
 }
 
 export { FieldValue, Timestamp } from 'firebase-admin/firestore';

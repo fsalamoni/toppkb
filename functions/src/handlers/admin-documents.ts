@@ -11,6 +11,7 @@
 import { onCall, HttpsError } from 'firebase-functions/v2/https';
 import { db } from '../config/env';
 import { globalCol } from '../config/namespace';
+import { filterToppkbDocs } from '../config/db-namespace';
 import { assertAdmin } from '../middleware/auth';
 
 export const adminListDocuments = onCall(
@@ -127,7 +128,7 @@ export const adminGetStats = onCall(
 
     return {
       documents: docs.size,
-      chunks: chunks.size,
+      chunks: filterToppkbDocs(chunks.docs).length,
       sources: sources.size,
       users: users.size,
       byStatus,
