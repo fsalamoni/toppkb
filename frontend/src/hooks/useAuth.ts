@@ -7,7 +7,7 @@ import {
   signOut as fbSignOut,
   User,
 } from 'firebase/auth';
-import { doc, onSnapshot, getDoc } from 'firebase/firestore';
+import { doc, onSnapshot, getDoc, setDoc } from 'firebase/firestore';
 import { auth, db } from '@/lib/firebase';
 import { useAuthStore } from '@/stores/authStore';
 
@@ -56,86 +56,103 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // Bootstrap do user + claims + role
   useEffect(() => {
+    // Garante que o app NUNCA fica preso na tela de loading, aconteça o que
+    // acontecer com Firestore / Auth / rede. Assim que sabemos se há usuário,
+    // liberamos a renderização; perfil e claims carregam em segundo plano.
+    let settled = false;
+    const finish = () => {
+      if (settled) return;
+      settled = true;
+      setLoading(false);
+      setBootstrapping(false);
+    };
+    // Watchdog absoluto: se o onAuthStateChanged nem chegar a disparar
+    // (ex.: Auth travado), libera mesmo assim após 8s.
+    const watchdog = setTimeout(() => {
+      console.warn('[auth] watchdog: liberando app após 8s sem resolver auth');
+      finish();
+    }, 8000);
+
+    const withTimeout = <T,>(p: Promise<T>, ms: number, label: string): Promise<T | null> =>
+      Promise.race([
+        p,
+        new Promise<null>((resolve) => setTimeout(() => {
+          console.warn(`[auth] ${label} timeout ${ms}ms`);
+          resolve(null);
+        }, ms)),
+      ]);
+
     const unsub = onAuthStateChanged(auth, async (fbUser) => {
       setUser(fbUser);
-      if (fbUser) {
-        // CRÍTICO: getDoc pode pendurar indefinidamente (Firestore sem índice, offline, etc).
-        // SEMPRE usar com timeout para garantir que o app não fique travado.
-        const withTimeout = <T,>(p: Promise<T>, ms: number, label: string): Promise<T | null> =>
-          Promise.race([
-            p,
-            new Promise<null>((resolve) => setTimeout(() => {
-              console.warn(`[auth] ${label} timeout ${ms}ms`);
-              resolve(null);
-            }, ms)),
-          ]);
 
-        try {
-          // Namespace toppkb_ (isolamento total)
-          const ref = doc(db, 'toppkb_users', fbUser.uid, 'profile', 'main');
-          const snap = await withTimeout(getDoc(ref), 5000, 'load profile');
-          if (snap && snap.exists()) {
-            setUserDoc(snap.data() as UserDoc);
-          } else {
-            // Cria o doc de usuário com dados básicos do Google
-            const newDoc: UserDoc = {
-              uid: fbUser.uid,
-              email: fbUser.email || undefined,
-              displayName: fbUser.displayName || undefined,
-              photoURL: fbUser.photoURL || undefined,
-              consent: false,
-              onboardingComplete: false,
-              role: 'user',
-            };
-            setUserDoc(newDoc);
-            // Tenta criar o doc no Firestore (best-effort, não bloqueia)
-            const { setDoc } = await import('firebase/firestore');
-            setDoc(ref, newDoc, { merge: true }).catch((e) => console.warn('[auth] setDoc profile falhou:', e));
-          }
-        } catch (e) {
-          console.warn('[auth] load profile falhou:', e);
-          setUserDoc({
+      if (!fbUser) {
+        setUserDoc(null);
+        setClaims(null);
+        finish();
+        return;
+      }
+
+      // Sabemos que há um usuário autenticado: libera o app IMEDIATAMENTE.
+      // Nada abaixo pode travar a UI — é tudo best-effort em background.
+      finish();
+
+      // Perfil (best-effort)
+      try {
+        const ref = doc(db, 'toppkb_users', fbUser.uid, 'profile', 'main');
+        const snap = await withTimeout(getDoc(ref), 5000, 'load profile');
+        if (snap && snap.exists()) {
+          setUserDoc(snap.data() as UserDoc);
+        } else {
+          const newDoc: UserDoc = {
             uid: fbUser.uid,
             email: fbUser.email || undefined,
             displayName: fbUser.displayName || undefined,
+            photoURL: fbUser.photoURL || undefined,
+            consent: false,
+            onboardingComplete: false,
             role: 'user',
-          } as UserDoc);
+          };
+          setUserDoc(newDoc);
+          setDoc(ref, newDoc, { merge: true }).catch((e) => console.warn('[auth] setDoc profile falhou:', e));
         }
-        try {
-          // checa custom claims (também com timeout)
-          const tokenResult = await withTimeout(fbUser.getIdTokenResult(), 3000, 'getIdTokenResult');
-          if (tokenResult && tokenResult.claims?.admin) {
-            setClaims({ admin: tokenResult.claims.admin as 'admin' | 'master' });
+      } catch (e) {
+        console.warn('[auth] load profile falhou:', e);
+        setUserDoc({
+          uid: fbUser.uid,
+          email: fbUser.email || undefined,
+          displayName: fbUser.displayName || undefined,
+          role: 'user',
+        } as UserDoc);
+      }
+
+      // Claims / role (best-effort)
+      try {
+        const tokenResult = await withTimeout(fbUser.getIdTokenResult(), 3000, 'getIdTokenResult');
+        if (tokenResult && tokenResult.claims?.admin) {
+          setClaims({ admin: tokenResult.claims.admin as 'admin' | 'master' });
+        } else {
+          const adminSnap = await withTimeout(
+            getDoc(doc(db, 'toppkb_admin', 'admins', fbUser.uid)),
+            3000,
+            'load admin',
+          );
+          if (adminSnap && adminSnap.exists()) {
+            const data = adminSnap.data() as any;
+            setClaims(data?.active !== false ? { admin: data.role === 'master' ? 'master' : 'admin' } : null);
           } else {
-            // checa doc admins/{uid} (namespace toppkb_) — também com timeout
-            const adminSnap = await withTimeout(
-              getDoc(doc(db, 'toppkb_admin', 'admins', fbUser.uid)),
-              3000,
-              'load admin',
-            );
-            if (adminSnap && adminSnap.exists()) {
-              const data = adminSnap.data() as any;
-              if (data?.active !== false) {
-                setClaims({ admin: data.role === 'master' ? 'master' : 'admin' });
-              } else {
-                setClaims(null);
-              }
-            } else {
-              setClaims(null);
-            }
+            setClaims(null);
           }
-        } catch (e) {
-          console.warn('[auth] load claims falhou:', e);
-          setClaims(null);
         }
-      } else {
-        setUserDoc(null);
+      } catch (e) {
+        console.warn('[auth] load claims falhou:', e);
         setClaims(null);
       }
-      setLoading(false);
-      setBootstrapping(false);
     });
-    return unsub;
+
+    return () => {
+      clearTimeout(watchdog);
+      unsub();
+    };
   }, [setUser, setUserDoc, setLoading]);
 
   // Live listener do userDoc
