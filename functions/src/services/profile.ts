@@ -32,15 +32,25 @@ export interface UserProfile {
   preferences?: { theme: 'light' | 'dark' | 'auto'; language: 'pt-BR'; units: 'metric' };
 }
 
+// Perfil vive em /toppkb_users/{uid}/profile/main (mesmo caminho usado pelo
+// frontend e pelo onboarding). O caminho antigo 'users/{uid}' foi migrado.
+function profileRef(uid: string) {
+  return db.collection('toppkb_users').doc(uid).collection('profile').doc('main');
+}
+
 export async function getUserProfile(uid: string): Promise<UserProfile | null> {
-  const snap = await db.collection('users').doc(uid).get();
+  const snap = await profileRef(uid).get();
   if (!snap.exists) return null;
-  return { uid: snap.id, ...snap.data() } as UserProfile;
+  return { uid, ...snap.data() } as UserProfile;
 }
 
 export async function updateUserProfile(uid: string, patch: Partial<UserProfile>): Promise<void> {
-  await db.collection('users').doc(uid).update({
-    ...patch,
-    updatedAt: new Date(),
-  });
+  // set com merge cria o doc se ainda não existir (update falharia).
+  await profileRef(uid).set(
+    {
+      ...patch,
+      updatedAt: new Date(),
+    },
+    { merge: true },
+  );
 }
