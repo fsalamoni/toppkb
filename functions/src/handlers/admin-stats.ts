@@ -5,6 +5,7 @@
 import { onCall, HttpsError } from 'firebase-functions/v2/https';
 import { db } from '../config/env';
 import { globalCol } from '../config/namespace';
+import { filterToppkbDocs } from '../config/db-namespace';
 import { assertAdmin } from '../middleware/auth';
 
 export const adminGetPlatformStats = onCall(
@@ -16,8 +17,8 @@ export const adminGetPlatformStats = onCall(
     const [users, admins, conversas, mensagens, eventosAuditoria] = await Promise.all([
       db.collection(globalCol('users')).get(),
       db.collection(globalCol('admin')).doc('admins').collection('admins').get(),
-      db.collectionGroup('conversas').get(),
-      db.collectionGroup('messages').get(),
+      db.collectionGroup('chat').get(),
+      db.collectionGroup('mensagens').get(),
       db.collection(globalCol('admin')).doc('audit_logs').collection('logs').get(),
     ]);
 
@@ -27,7 +28,7 @@ export const adminGetPlatformStats = onCall(
     await Promise.all(
       colecoes.map(async (c) => {
         const snap = await db.collectionGroup(c).get();
-        counts[c] = snap.size;
+        counts[c] = filterToppkbDocs(snap.docs).length;
       }),
     );
 
@@ -42,8 +43,8 @@ export const adminGetPlatformStats = onCall(
       totalUsers: users.size,
       totalAdmins: admins.size,
       usuariosAtivos7d: usuariosAtivos,
-      totalConversas: conversas.size,
-      totalMensagens: mensagens.size,
+      totalConversas: filterToppkbDocs(conversas.docs).length,
+      totalMensagens: filterToppkbDocs(mensagens.docs).length,
       registrosPorColecao: counts,
       totalEventosAuditoria: eventosAuditoria.size,
       atualizadoEm: new Date().toISOString(),

@@ -10,7 +10,8 @@ export async function consentMiddleware(req: any, res: any, next: any): Promise<
       res.status(401).json({ error: { code: 'unauthenticated', message: 'Usuário não autenticado' } });
       return;
     }
-    const snap = await db.collection('users').doc(uid).get();
+    // Consentimento é gravado pelo frontend em toppkb_users/{uid}/profile/main.
+    const snap = await db.collection('users').doc(uid).collection('profile').doc('main').get();
     if (!snap.exists) {
       res.status(403).json({ error: { code: 'forbidden', message: 'Usuário não encontrado' } });
       return;

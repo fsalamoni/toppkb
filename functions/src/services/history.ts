@@ -48,9 +48,9 @@ export async function saveMessage(
 ): Promise<{ conversationId: string; messageId: string }> {
   let convId = conversaId;
 
-  // Cria conversa se necessário
+  // Cria conversa se necessário. Estrutura canônica: users/{uid}/chat/{convId}/mensagens
   if (!convId) {
-    const ref = db.collection('users').doc(uid).collection('conversas').doc();
+    const ref = db.collection('users').doc(uid).collection('chat').doc();
     convId = ref.id;
     await ref.set({
       titulo: content.slice(0, 50),
@@ -66,8 +66,8 @@ export async function saveMessage(
   // Salva mensagem
   const msgRef = await db
     .collection('users').doc(uid)
-    .collection('conversas').doc(convId)
-    .collection('messages').add({
+    .collection('chat').doc(convId)
+    .collection('mensagens').add({
       role,
       content,
       agente: agente || null,
@@ -78,7 +78,7 @@ export async function saveMessage(
   // Atualiza conversa
   await db
     .collection('users').doc(uid)
-    .collection('conversas').doc(convId)
+    .collection('chat').doc(convId)
     .update({
       updatedAt: FieldValue.serverTimestamp(),
       messageCount: FieldValue.increment(1),
@@ -101,8 +101,8 @@ export async function getRecentHistory(
   try {
     const snap = await db
       .collection('users').doc(uid)
-      .collection('conversas').doc(conversaId)
-      .collection('messages')
+      .collection('chat').doc(conversaId)
+      .collection('mensagens')
       .orderBy('createdAt', 'desc')
       .limit(limit)
       .get();
@@ -121,7 +121,7 @@ export async function getRecentHistory(
 export async function listConversations(uid: string, limit = 50): Promise<Conversa[]> {
   const snap = await db
     .collection('users').doc(uid)
-    .collection('conversas')
+    .collection('chat')
     .orderBy('updatedAt', 'desc')
     .limit(limit)
     .get();

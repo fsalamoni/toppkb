@@ -11,6 +11,7 @@
  */
 
 import { db } from '../config/env';
+import { filterToppkbDocs } from '../config/db-namespace';
 import { gerarEmbedding, cosineSimilarity, resolveEmbeddingsConfig } from './embeddings';
 import { logger } from 'firebase-functions';
 
@@ -58,13 +59,14 @@ export async function retrieveRelevantChunks(
     // 1) Gera embedding da query usando o provider configurado
     const queryEmbedding = await gerarEmbedding(query, options.uid);
 
-    // 2) Busca todos os chunks
+    // 2) Busca todos os chunks (só os deste app — collectionGroup cruza namespaces)
     const chunksSnap = await db.collectionGroup('chunks').get();
-    if (chunksSnap.empty) return [];
+    const chunkDocs = filterToppkbDocs(chunksSnap.docs);
+    if (chunkDocs.length === 0) return [];
 
     // 3) Calcula similaridade in-memory (compatível com qualquer dimensão)
     const candidates: RetrievedChunk[] = [];
-    for (const doc of chunksSnap.docs) {
+    for (const doc of chunkDocs) {
       const data = doc.data();
       const embedding = data.embedding as number[] | undefined;
       if (!embedding) continue;
