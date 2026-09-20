@@ -72,8 +72,10 @@ export function TreinamentoAchievements() {
     let streakAtual = 0;
     if (total > 0) {
       const datas = new Set(sessoesArr.map((s) => new Date(s.data).toISOString().slice(0, 10)));
-      let cursor = new Date();
-      while (datas.has(cursor.toISOString().slice(0, 10))) {
+      const cursor = new Date();
+      const maxIter = 365;
+      let iter = 0;
+      while (iter++ < maxIter && datas.has(cursor.toISOString().slice(0, 10))) {
         streakAtual++;
         cursor.setDate(cursor.getDate() - 1);
       }

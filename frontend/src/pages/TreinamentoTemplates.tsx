@@ -130,10 +130,7 @@ export function TreinamentoTemplates() {
     navigate('/app/treinamento/sessoes/nova');
   };
 
-  if (isLoading) {
-    return <div className="flex justify-center py-12"><Spinner size="lg" /></div>;
-  }
-
+  // Hooks sempre chamados (regras do React)
   const stats = useMemo(() => {
     const arr = templates || [];
     return {
@@ -142,6 +139,10 @@ export function TreinamentoTemplates() {
       totalUsos: arr.reduce((acc, t) => acc + (t.vezesUsado || 0), 0),
     };
   }, [templates]);
+
+  if (isLoading) {
+    return <div className="flex justify-center py-12"><Spinner size="lg" /></div>;
+  }
 
   return (
     <div className="space-y-6 max-w-6xl mx-auto">

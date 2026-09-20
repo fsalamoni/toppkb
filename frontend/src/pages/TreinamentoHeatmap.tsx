@@ -15,7 +15,7 @@ import { db } from '@/lib/firebase';
 import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Spinner } from '@/components/common/LoadingScreen';
+// Spinner removido — não precisamos de loading state pois queries são rápidas
 import {
   ChevronLeft, Flame, Calendar, Award,
 } from 'lucide-react';
@@ -43,7 +43,7 @@ export function TreinamentoHeatmap() {
   const { user } = useAuth();
   const [ano] = useState(new Date().getFullYear());
 
-  const { data: sessoes, isLoading } = useQuery({
+  const { data: sessoes } = useQuery({
     queryKey: ['treinamento-heatmap', user?.uid, ano],
     queryFn: async () => {
       if (!user) return [];
@@ -109,10 +109,12 @@ export function TreinamentoHeatmap() {
     let streakAtual = 0;
     let maxStreak = 0;
     let streakTemp = 0;
-    let cursor = new Date();
+    const cursor = new Date();
+    const maxIter = 365;
+    let iter = 0;
 
     // Streak atual
-    while (true) {
+    while (iter++ < maxIter) {
       const dStr = cursor.toISOString().slice(0, 10);
       const dia = heatmap.get(dStr);
       if (dia && dia.sessoes > 0) {
@@ -121,7 +123,6 @@ export function TreinamentoHeatmap() {
       } else {
         break;
       }
-      if (streakAtual > 365) break; // safety
     }
 
     // Max streak
@@ -152,11 +153,7 @@ export function TreinamentoHeatmap() {
     };
   }, [heatmap, sessoes]);
 
-  if (isLoading) {
-    return <div className="flex justify-center py-12"><Spinner size="lg" /></div>;
-  }
-
-  // Agrupa por semana (para visualização)
+  // Agrupa por semana (para visualização) - HOOK sempre chamado
   const semanas = useMemo(() => {
     const arr: DiaHeatmap[][] = [];
     let semanaAtual: DiaHeatmap[] = [];
