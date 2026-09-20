@@ -115,6 +115,13 @@ export function TreinamentoSessoesForm() {
   const [form, setForm] = useState<FormState>(initialState());
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(!!id);
+  const [planoSessaoId, setPlanoSessaoId] = useState<string | null>(null);
+
+  // Plano ID vindo da URL (?planoId=xxx)
+  const planoIdFromUrl = useMemo(() => {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('planoId');
+  }, []);
   const [buscaExercicio, setBuscaExercicio] = useState('');
   const [showExercicioPicker, setShowExercicioPicker] = useState(false);
 
@@ -131,6 +138,7 @@ export function TreinamentoSessoesForm() {
           );
           if (snap.exists()) {
             const data = snap.data();
+            if (data.planoSessaoId) setPlanoSessaoId(data.planoSessaoId);
             setForm({
               ...initialState(),
               ...data,
@@ -166,6 +174,36 @@ export function TreinamentoSessoesForm() {
           localStorage.removeItem('treinamento-template-aplicar');
         } catch (e) {
           console.error('Erro ao aplicar template', e);
+        }
+      } else {
+        // Verifica se veio sessão do plano pendente
+        const planoStr = localStorage.getItem('treinamento-sessao-pendente');
+        if (planoStr) {
+          try {
+            const s = JSON.parse(planoStr);
+            setForm({
+              ...initialState(),
+              titulo: `${s.nome} (Sem ${s.semanaIdx + 1}${s.tipo})`,
+              tipo: 'kettlebell',
+              duracaoMin: s.duracaoMin || 45,
+              observacoes: `Sessão do programa: ${s.nome} — Semana ${s.semanaIdx + 1} (${s.tipo})`,
+              exercicios: Array.isArray(s.exercicios) ? s.exercicios.map((ex: any) => ({
+                nome: ex.nome,
+                series: ex.series,
+                reps: ex.reps,
+                carga: ex.carga,
+                descansoSeg: ex.descansoSeg,
+              })) : [],
+            });
+            toast({
+              title: `Sessão ${s.tipo} carregada!`,
+              description: `${s.exercicios?.length || 0} exercícios do programa`,
+            });
+            if (s.id) setPlanoSessaoId(s.id);
+            localStorage.removeItem('treinamento-sessao-pendente');
+          } catch (e) {
+            console.error('Erro ao carregar sessão do plano', e);
+          }
         }
       }
       setLoading(false);
@@ -267,6 +305,7 @@ export function TreinamentoSessoesForm() {
         ...form,
         data: new Date(form.data).toISOString(),
         volumeTotal,
+        planoSessaoId: planoSessaoId || planoIdFromUrl || null,
         updatedAt: serverTimestamp(),
       };
 

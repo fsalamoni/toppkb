@@ -33,6 +33,7 @@ const NAV_GROUPS = [
     label: '🏋️ Treinamento Físico',
     items: [
       { to: '/app/treinamento', label: 'Visão Geral', icon: Activity, badge: null as string | null },
+      { to: '/app/treinamento/meu-programa', label: 'Meu Programa', icon: Sparkles, badge: null as string | null },
       { to: '/app/treinamento/calendario', label: 'Calendário', icon: Calendar, badge: null as string | null },
       { to: '/app/treinamento/sessoes', label: 'Sessões', icon: Activity, badge: 'treinamentoSessoes' as string | null },
       { to: '/app/treinamento/progresso', label: 'Progresso', icon: BarChart3, badge: null as string | null },
