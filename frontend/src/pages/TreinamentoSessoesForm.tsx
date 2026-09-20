@@ -29,13 +29,14 @@ import { Spinner } from '@/components/common/LoadingScreen';
 import { toast } from '@/components/ui/toaster';
 import {
   ChevronLeft, Save, Plus, Trash2, Search,
-  Activity, FileText, ChevronUp, ChevronDown,
+  Activity, FileText, ChevronUp, ChevronDown, Timer,
 } from 'lucide-react';
 import {
   KETTLEBELL_EXERCICIOS,
   KETTLEBELL_PATTERNS,
   type PadraoKettlebell,
 } from '@/data/seed/exercicios-kettlebell';
+import { WorkoutTimer } from '@/components/treinamento/WorkoutTimer';
 
 interface SeriePrescrita {
   exercicioId: string;          // 'kb-swing-2h-hardstyle' ou nome livre
@@ -433,6 +434,48 @@ export function TreinamentoSessoesForm() {
           </div>
         </CardHeader>
         <CardContent className="space-y-3">
+          {/* WORKOUT TIMER - só aparece se houver exercícios */}
+          {form.exercicios.length > 0 && (
+            <details className="border border-border rounded-lg">
+              <summary className="cursor-pointer p-3 text-sm font-medium flex items-center gap-2 hover:bg-accent">
+                <Timer className="h-4 w-4 text-emerald-400" />
+                🕐 Cronômetro de treino (clique para abrir)
+              </summary>
+              <div className="p-3 border-t border-border">
+                <WorkoutTimer
+                  exercicios={form.exercicios.map((ex) => ({
+                    nome: ex.nome,
+                    descansoSeg: ex.descansoSeg,
+                    carga: ex.carga,
+                    series: ex.series,
+                    reps: ex.reps,
+                  }))}
+                  onComplete={(stats) => {
+                    toast({
+                      title: 'Treino finalizado!',
+                      description: `Duração: ${Math.floor(stats.duracaoTotalSeg / 60)}min · ${stats.seriesCompletadas} séries`,
+                    });
+                  }}
+                />
+              </div>
+            </details>
+          )}
+
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowExercicioPicker(!showExercicioPicker)}
+            >
+              <Search className="h-4 w-4 mr-1" />
+              Da biblioteca
+            </Button>
+            <Button variant="outline" size="sm" onClick={addExercicioCustom}>
+              <Plus className="h-4 w-4 mr-1" />
+              Custom
+            </Button>
+          </div>
+
           {/* BIBLIOTECA KB */}
           {showExercicioPicker && (
             <Card className="border-emerald-500/30 bg-emerald-500/5">

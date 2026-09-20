@@ -25,7 +25,7 @@ import { Badge } from '@/components/ui/badge';
 import {
   Activity, Calendar, Target, BookOpen, Award, ClipboardList,
   TrendingUp, FileText, ChevronRight, Flame, BarChart3,
-  Timer, Zap, Plus, Dumbbell, Trophy,
+  Timer, Zap, Plus, Dumbbell, Trophy, Ruler, Heart, Settings,
 } from 'lucide-react';
 import { formatDate, tempoRelativo } from '@/lib/utils';
 import { TreinamentoAIInsights } from '@/components/treinamento/TreinamentoAIInsights';
@@ -287,6 +287,27 @@ export function TreinamentoDashboard() {
             title="Templates de Sessão"
             desc="Salve e reuse sessões recorrentes com 1 clique."
             accent="teal"
+          />
+          <NavCard
+            to="/app/treinamento/composicao"
+            icon={Ruler}
+            title="Composição Corporal"
+            desc="Peso, % gordura, massa magra, circunferências ao longo do tempo."
+            accent="cyan"
+          />
+          <NavCard
+            to="/app/treinamento/recuperacao"
+            icon={Heart}
+            title="Recuperação & Intensidade"
+            desc="Score baseado em sono, dor, fadiga. Recomendação do dia."
+            accent="rose"
+          />
+          <NavCard
+            to="/app/treinamento/config"
+            icon={Settings}
+            title="Configurações"
+            desc="Dias disponíveis, duração, unidade de carga, notificações."
+            accent="slate"
           />
         </div>
       </div>

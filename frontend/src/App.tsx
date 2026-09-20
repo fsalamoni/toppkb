@@ -64,6 +64,9 @@ const TreinamentoHeatmap = lazyWithRetry(() => import('./pages/TreinamentoHeatma
 const TreinamentoPRs = lazyWithRetry(() => import('./pages/TreinamentoPRs').then((m) => ({ default: m.TreinamentoPRs })));
 const TreinamentoAchievements = lazyWithRetry(() => import('./pages/TreinamentoAchievements').then((m) => ({ default: m.TreinamentoAchievements })));
 const TreinamentoTemplates = lazyWithRetry(() => import('./pages/TreinamentoTemplates').then((m) => ({ default: m.TreinamentoTemplates })));
+const TreinamentoComposicao = lazyWithRetry(() => import('./pages/TreinamentoComposicao').then((m) => ({ default: m.TreinamentoComposicao })));
+const TreinamentoRecuperacao = lazyWithRetry(() => import('./pages/TreinamentoRecuperacao').then((m) => ({ default: m.TreinamentoRecuperacao })));
+const TreinamentoConfig = lazyWithRetry(() => import('./pages/TreinamentoConfig').then((m) => ({ default: m.TreinamentoConfig })));
 const Nutricao = lazyWithRetry(() => import('./pages/Nutricao').then((m) => ({ default: m.Nutricao })));
 const NutricaoForm = lazyWithRetry(() => import('./pages/NutricaoForm').then((m) => ({ default: m.NutricaoForm })));
 const Sono = lazyWithRetry(() => import('./pages/Sono').then((m) => ({ default: m.Sono })));
@@ -219,6 +222,9 @@ function AppShell() {
               <Route path="treinamento/prs" element={<PrivateRoute><TreinamentoPRs /></PrivateRoute>} />
               <Route path="treinamento/achievements" element={<PrivateRoute><TreinamentoAchievements /></PrivateRoute>} />
               <Route path="treinamento/templates" element={<PrivateRoute><TreinamentoTemplates /></PrivateRoute>} />
+              <Route path="treinamento/composicao" element={<PrivateRoute><TreinamentoComposicao /></PrivateRoute>} />
+              <Route path="treinamento/recuperacao" element={<PrivateRoute><TreinamentoRecuperacao /></PrivateRoute>} />
+              <Route path="treinamento/config" element={<PrivateRoute><TreinamentoConfig /></PrivateRoute>} />
               <Route path="nutricao" element={<PrivateRoute><Nutricao /></PrivateRoute>} />
               <Route path="nutricao/nova" element={<PrivateRoute><NutricaoForm /></PrivateRoute>} />
               <Route path="nutricao/:id" element={<PrivateRoute><NutricaoForm /></PrivateRoute>} />
