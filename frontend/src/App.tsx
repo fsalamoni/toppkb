@@ -49,6 +49,8 @@ const Partidas = lazyWithRetry(() => import('./pages/Partidas').then((m) => ({ d
 const PartidaForm = lazyWithRetry(() => import('./pages/PartidaForm').then((m) => ({ default: m.PartidaForm })));
 const Preparacao = lazyWithRetry(() => import('./pages/Preparacao').then((m) => ({ default: m.Preparacao })));
 const PreparacaoForm = lazyWithRetry(() => import('./pages/PreparacaoForm').then((m) => ({ default: m.PreparacaoForm })));
+const Exercicios = lazyWithRetry(() => import('./pages/Exercicios').then((m) => ({ default: m.Exercicios })));
+const Periodizacao = lazyWithRetry(() => import('./pages/Periodizacao').then((m) => ({ default: m.Periodizacao })));
 const Nutricao = lazyWithRetry(() => import('./pages/Nutricao').then((m) => ({ default: m.Nutricao })));
 const NutricaoForm = lazyWithRetry(() => import('./pages/NutricaoForm').then((m) => ({ default: m.NutricaoForm })));
 const Sono = lazyWithRetry(() => import('./pages/Sono').then((m) => ({ default: m.Sono })));
@@ -188,6 +190,8 @@ function AppShell() {
               <Route path="preparacao" element={<PrivateRoute><Preparacao /></PrivateRoute>} />
               <Route path="preparacao/nova" element={<PrivateRoute><PreparacaoForm /></PrivateRoute>} />
               <Route path="preparacao/:id" element={<PrivateRoute><PreparacaoForm /></PrivateRoute>} />
+              <Route path="exercicios" element={<PrivateRoute><Exercicios /></PrivateRoute>} />
+              <Route path="periodizacao" element={<PrivateRoute><Periodizacao /></PrivateRoute>} />
               <Route path="nutricao" element={<PrivateRoute><Nutricao /></PrivateRoute>} />
               <Route path="nutricao/nova" element={<PrivateRoute><NutricaoForm /></PrivateRoute>} />
               <Route path="nutricao/:id" element={<PrivateRoute><NutricaoForm /></PrivateRoute>} />

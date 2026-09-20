@@ -3,7 +3,7 @@ import {
   LayoutDashboard, Trophy, Apple, Heart, MessageCircle,
   Settings, LogOut, Scale, BedDouble, AlertCircle,
   Target, User as UserIcon, CircleDot, Ruler, Pill, Droplets,
-  Activity, Sparkles, BookOpen, Bell,
+  Activity, Sparkles, BookOpen, Bell, Dumbbell,
 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { collection, getDocs, query, where, limit } from 'firebase/firestore';
@@ -31,6 +31,8 @@ const NAV_GROUPS = [
     label: '💪 Preparação Física',
     items: [
       { to: '/app/preparacao', label: 'Preparação', icon: Activity, badge: null as string | null },
+      { to: '/app/exercicios', label: 'Biblioteca de Exercícios', icon: Dumbbell, badge: null as string | null },
+      { to: '/app/periodizacao', label: 'Periodização', icon: Sparkles, badge: null as string | null },
     ],
   },
   {
