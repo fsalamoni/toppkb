@@ -27,6 +27,7 @@ export interface FieldDef {
   max?: number;
   step?: number;
   defaultValue?: any;
+  placeholder?: string;
 }
 
 export interface GenericCRUDPageProps {
@@ -152,6 +153,7 @@ export function GenericCRUDPage({
                     max={c.max}
                     step={c.step}
                     required={c.required}
+                    placeholder={c.placeholder}
                     value={form[c.name]}
                     onChange={(e) => setForm({ ...form, [c.name]: e.target.value })}
                   />

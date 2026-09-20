@@ -51,6 +51,14 @@ const Preparacao = lazyWithRetry(() => import('./pages/Preparacao').then((m) => 
 const PreparacaoForm = lazyWithRetry(() => import('./pages/PreparacaoForm').then((m) => ({ default: m.PreparacaoForm })));
 const Exercicios = lazyWithRetry(() => import('./pages/Exercicios').then((m) => ({ default: m.Exercicios })));
 const Periodizacao = lazyWithRetry(() => import('./pages/Periodizacao').then((m) => ({ default: m.Periodizacao })));
+const TreinamentoDashboard = lazyWithRetry(() => import('./pages/TreinamentoDashboard').then((m) => ({ default: m.TreinamentoDashboard })));
+const TreinamentoSessoes = lazyWithRetry(() => import('./pages/TreinamentoSessoes').then((m) => ({ default: m.TreinamentoSessoes })));
+const TreinamentoSessoesForm = lazyWithRetry(() => import('./pages/TreinamentoSessoesForm').then((m) => ({ default: m.TreinamentoSessoesForm })));
+const TreinamentoCalendario = lazyWithRetry(() => import('./pages/TreinamentoCalendario').then((m) => ({ default: m.TreinamentoCalendario })));
+const TreinamentoPlanosPage = lazyWithRetry(() => import('./pages/TreinamentoPlanos').then((m) => ({ default: m.TreinamentoPlanosPage })));
+const TreinamentoMetasPage = lazyWithRetry(() => import('./pages/TreinamentoMetas').then((m) => ({ default: m.TreinamentoMetasPage })));
+const TreinamentoNotasPage = lazyWithRetry(() => import('./pages/TreinamentoNotas').then((m) => ({ default: m.TreinamentoNotasPage })));
+const TreinamentoAvaliacoes = lazyWithRetry(() => import('./pages/TreinamentoAvaliacoes').then((m) => ({ default: m.TreinamentoAvaliacoes })));
 const Nutricao = lazyWithRetry(() => import('./pages/Nutricao').then((m) => ({ default: m.Nutricao })));
 const NutricaoForm = lazyWithRetry(() => import('./pages/NutricaoForm').then((m) => ({ default: m.NutricaoForm })));
 const Sono = lazyWithRetry(() => import('./pages/Sono').then((m) => ({ default: m.Sono })));
@@ -192,6 +200,15 @@ function AppShell() {
               <Route path="preparacao/:id" element={<PrivateRoute><PreparacaoForm /></PrivateRoute>} />
               <Route path="exercicios" element={<PrivateRoute><Exercicios /></PrivateRoute>} />
               <Route path="periodizacao" element={<PrivateRoute><Periodizacao /></PrivateRoute>} />
+              <Route path="treinamento" element={<PrivateRoute><TreinamentoDashboard /></PrivateRoute>} />
+              <Route path="treinamento/sessoes" element={<PrivateRoute><TreinamentoSessoes /></PrivateRoute>} />
+              <Route path="treinamento/sessoes/nova" element={<PrivateRoute><TreinamentoSessoesForm /></PrivateRoute>} />
+              <Route path="treinamento/sessoes/:id" element={<PrivateRoute><TreinamentoSessoesForm /></PrivateRoute>} />
+              <Route path="treinamento/calendario" element={<PrivateRoute><TreinamentoCalendario /></PrivateRoute>} />
+              <Route path="treinamento/planos" element={<PrivateRoute><TreinamentoPlanosPage /></PrivateRoute>} />
+              <Route path="treinamento/metas" element={<PrivateRoute><TreinamentoMetasPage /></PrivateRoute>} />
+              <Route path="treinamento/notas" element={<PrivateRoute><TreinamentoNotasPage /></PrivateRoute>} />
+              <Route path="treinamento/avaliacoes" element={<PrivateRoute><TreinamentoAvaliacoes /></PrivateRoute>} />
               <Route path="nutricao" element={<PrivateRoute><Nutricao /></PrivateRoute>} />
               <Route path="nutricao/nova" element={<PrivateRoute><NutricaoForm /></PrivateRoute>} />
               <Route path="nutricao/:id" element={<PrivateRoute><NutricaoForm /></PrivateRoute>} />

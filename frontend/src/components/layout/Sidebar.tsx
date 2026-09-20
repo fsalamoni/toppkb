@@ -4,6 +4,7 @@ import {
   Settings, LogOut, Scale, BedDouble, AlertCircle,
   Target, User as UserIcon, CircleDot, Ruler, Pill, Droplets,
   Activity, Sparkles, BookOpen, Bell, Dumbbell,
+  ClipboardList, Calendar, TrendingUp,
 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { collection, getDocs, query, where, limit } from 'firebase/firestore';
@@ -28,9 +29,15 @@ const NAV_GROUPS = [
     ],
   },
   {
-    label: '💪 Preparação Física',
+    label: '🏋️ Treinamento Físico',
     items: [
-      { to: '/app/preparacao', label: 'Preparação', icon: Activity, badge: null as string | null },
+      { to: '/app/treinamento', label: 'Visão Geral', icon: Activity, badge: null as string | null },
+      { to: '/app/treinamento/calendario', label: 'Calendário', icon: Calendar, badge: null as string | null },
+      { to: '/app/treinamento/sessoes', label: 'Sessões', icon: Activity, badge: 'treinamentoSessoes' as string | null },
+      { to: '/app/treinamento/planos', label: 'Planos', icon: ClipboardList, badge: null as string | null },
+      { to: '/app/treinamento/metas', label: 'Metas', icon: Target, badge: null as string | null },
+      { to: '/app/treinamento/avaliacoes', label: 'Avaliações', icon: TrendingUp, badge: null as string | null },
+      { to: '/app/treinamento/notas', label: 'Notas', icon: BookOpen, badge: null as string | null },
       { to: '/app/exercicios', label: 'Biblioteca de Exercícios', icon: Dumbbell, badge: null as string | null },
       { to: '/app/periodizacao', label: 'Periodização', icon: Sparkles, badge: null as string | null },
     ],
