@@ -4,7 +4,8 @@ import {
   Settings, LogOut, Scale, BedDouble, AlertCircle,
   Target, User as UserIcon, CircleDot, Ruler, Pill, Droplets,
   Activity, Sparkles, BookOpen, Bell, Dumbbell,
-  ClipboardList, Calendar, TrendingUp,
+  ClipboardList, Calendar, TrendingUp, Flame, Award,
+  BarChart3, FileText,
 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { collection, getDocs, query, where, limit } from 'firebase/firestore';
@@ -34,6 +35,11 @@ const NAV_GROUPS = [
       { to: '/app/treinamento', label: 'Visão Geral', icon: Activity, badge: null as string | null },
       { to: '/app/treinamento/calendario', label: 'Calendário', icon: Calendar, badge: null as string | null },
       { to: '/app/treinamento/sessoes', label: 'Sessões', icon: Activity, badge: 'treinamentoSessoes' as string | null },
+      { to: '/app/treinamento/progresso', label: 'Progresso', icon: BarChart3, badge: null as string | null },
+      { to: '/app/treinamento/heatmap', label: 'Consistência', icon: Flame, badge: null as string | null },
+      { to: '/app/treinamento/prs', label: 'Personal Records', icon: Trophy, badge: null as string | null },
+      { to: '/app/treinamento/achievements', label: 'Achievements', icon: Award, badge: null as string | null },
+      { to: '/app/treinamento/templates', label: 'Templates', icon: FileText, badge: null as string | null },
       { to: '/app/treinamento/planos', label: 'Planos', icon: ClipboardList, badge: null as string | null },
       { to: '/app/treinamento/metas', label: 'Metas', icon: Target, badge: null as string | null },
       { to: '/app/treinamento/avaliacoes', label: 'Avaliações', icon: TrendingUp, badge: null as string | null },

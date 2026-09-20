@@ -117,31 +117,58 @@ export function TreinamentoSessoesForm() {
   const [buscaExercicio, setBuscaExercicio] = useState('');
   const [showExercicioPicker, setShowExercicioPicker] = useState(false);
 
-  // Carregar sessão existente
+  // Carregar sessão existente OU template do localStorage
   useEffect(() => {
-    if (!id || !user) return;
-    (async () => {
-      try {
-        const snap = await getDoc(
-          doc(db, 'toppkb_users', user.uid, 'treinamento', 'sessoes', id),
-        );
-        if (snap.exists()) {
-          const data = snap.data();
+    if (!user) return;
+
+    if (id) {
+      // Editando sessão existente
+      (async () => {
+        try {
+          const snap = await getDoc(
+            doc(db, 'toppkb_users', user.uid, 'treinamento', 'sessoes', id),
+          );
+          if (snap.exists()) {
+            const data = snap.data();
+            setForm({
+              ...initialState(),
+              ...data,
+              exercicios: Array.isArray(data.exercicios) ? data.exercicios : [],
+              data: typeof data.data === 'string'
+                ? data.data.slice(0, 16)
+                : new Date(data.data?.toDate?.() || data.data || Date.now()).toISOString().slice(0, 16),
+            });
+          }
+        } catch (e: any) {
+          toast({ title: 'Erro ao carregar', description: e.message, variant: 'destructive' });
+        } finally {
+          setLoading(false);
+        }
+      })();
+    } else {
+      // Verifica se veio template do localStorage
+      const templateStr = localStorage.getItem('treinamento-template-aplicar');
+      if (templateStr) {
+        try {
+          const t = JSON.parse(templateStr);
           setForm({
             ...initialState(),
-            ...data,
-            exercicios: Array.isArray(data.exercicios) ? data.exercicios : [],
-            data: typeof data.data === 'string'
-              ? data.data.slice(0, 16)
-              : new Date(data.data?.toDate?.() || data.data || Date.now()).toISOString().slice(0, 16),
+            titulo: t.nome || '',
+            tipo: t.tipo || 'kettlebell',
+            duracaoMin: t.duracaoEstimadaMin || 45,
+            exercicios: Array.isArray(t.exercicios) ? t.exercicios : [],
           });
+          toast({
+            title: 'Template aplicado!',
+            description: `${t.exercicios?.length || 0} exercícios carregados`,
+          });
+          localStorage.removeItem('treinamento-template-aplicar');
+        } catch (e) {
+          console.error('Erro ao aplicar template', e);
         }
-      } catch (e: any) {
-        toast({ title: 'Erro ao carregar', description: e.message, variant: 'destructive' });
-      } finally {
-        setLoading(false);
       }
-    })();
+      setLoading(false);
+    }
   }, [id, user]);
 
   // Adicionar exercício da biblioteca KB

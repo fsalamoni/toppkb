@@ -59,6 +59,11 @@ const TreinamentoPlanosPage = lazyWithRetry(() => import('./pages/TreinamentoPla
 const TreinamentoMetasPage = lazyWithRetry(() => import('./pages/TreinamentoMetas').then((m) => ({ default: m.TreinamentoMetasPage })));
 const TreinamentoNotasPage = lazyWithRetry(() => import('./pages/TreinamentoNotas').then((m) => ({ default: m.TreinamentoNotasPage })));
 const TreinamentoAvaliacoes = lazyWithRetry(() => import('./pages/TreinamentoAvaliacoes').then((m) => ({ default: m.TreinamentoAvaliacoes })));
+const TreinamentoProgresso = lazyWithRetry(() => import('./pages/TreinamentoProgresso').then((m) => ({ default: m.TreinamentoProgresso })));
+const TreinamentoHeatmap = lazyWithRetry(() => import('./pages/TreinamentoHeatmap').then((m) => ({ default: m.TreinamentoHeatmap })));
+const TreinamentoPRs = lazyWithRetry(() => import('./pages/TreinamentoPRs').then((m) => ({ default: m.TreinamentoPRs })));
+const TreinamentoAchievements = lazyWithRetry(() => import('./pages/TreinamentoAchievements').then((m) => ({ default: m.TreinamentoAchievements })));
+const TreinamentoTemplates = lazyWithRetry(() => import('./pages/TreinamentoTemplates').then((m) => ({ default: m.TreinamentoTemplates })));
 const Nutricao = lazyWithRetry(() => import('./pages/Nutricao').then((m) => ({ default: m.Nutricao })));
 const NutricaoForm = lazyWithRetry(() => import('./pages/NutricaoForm').then((m) => ({ default: m.NutricaoForm })));
 const Sono = lazyWithRetry(() => import('./pages/Sono').then((m) => ({ default: m.Sono })));
@@ -209,6 +214,11 @@ function AppShell() {
               <Route path="treinamento/metas" element={<PrivateRoute><TreinamentoMetasPage /></PrivateRoute>} />
               <Route path="treinamento/notas" element={<PrivateRoute><TreinamentoNotasPage /></PrivateRoute>} />
               <Route path="treinamento/avaliacoes" element={<PrivateRoute><TreinamentoAvaliacoes /></PrivateRoute>} />
+              <Route path="treinamento/progresso" element={<PrivateRoute><TreinamentoProgresso /></PrivateRoute>} />
+              <Route path="treinamento/heatmap" element={<PrivateRoute><TreinamentoHeatmap /></PrivateRoute>} />
+              <Route path="treinamento/prs" element={<PrivateRoute><TreinamentoPRs /></PrivateRoute>} />
+              <Route path="treinamento/achievements" element={<PrivateRoute><TreinamentoAchievements /></PrivateRoute>} />
+              <Route path="treinamento/templates" element={<PrivateRoute><TreinamentoTemplates /></PrivateRoute>} />
               <Route path="nutricao" element={<PrivateRoute><Nutricao /></PrivateRoute>} />
               <Route path="nutricao/nova" element={<PrivateRoute><NutricaoForm /></PrivateRoute>} />
               <Route path="nutricao/:id" element={<PrivateRoute><NutricaoForm /></PrivateRoute>} />

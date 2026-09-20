@@ -25,9 +25,10 @@ import { Badge } from '@/components/ui/badge';
 import {
   Activity, Calendar, Target, BookOpen, Award, ClipboardList,
   TrendingUp, FileText, ChevronRight, Flame, BarChart3,
-  Timer, Zap, Plus, Dumbbell,
+  Timer, Zap, Plus, Dumbbell, Trophy,
 } from 'lucide-react';
 import { formatDate, tempoRelativo } from '@/lib/utils';
+import { TreinamentoAIInsights } from '@/components/treinamento/TreinamentoAIInsights';
 
 const COLECAO_BASE = 'treinamento';
 
@@ -253,14 +254,45 @@ export function TreinamentoDashboard() {
             accent="pink"
           />
           <NavCard
-            to="/app/preparacao"
+            to="/app/treinamento/progresso"
+            icon={BarChart3}
+            title="Progresso (Charts)"
+            desc="Volume, RPE, frequência e distribuição ao longo do tempo."
+            accent="blue"
+          />
+          <NavCard
+            to="/app/treinamento/heatmap"
+            icon={Flame}
+            title="Consistência (Heatmap)"
+            desc="Mapa de calor estilo GitHub dos dias treinados."
+            accent="orange"
+          />
+          <NavCard
+            to="/app/treinamento/prs"
+            icon={Trophy}
+            title="Personal Records"
+            desc="PRs calculados automaticamente de cada exercício."
+            accent="amber"
+          />
+          <NavCard
+            to="/app/treinamento/achievements"
+            icon={Award}
+            title="Achievements"
+            desc="Badges e conquistas conforme você treina."
+            accent="purple"
+          />
+          <NavCard
+            to="/app/treinamento/templates"
             icon={FileText}
-            title="Preparação"
-            desc="Sessões rápidas de musculação, cardio, mobilidade."
+            title="Templates de Sessão"
+            desc="Salve e reuse sessões recorrentes com 1 clique."
             accent="teal"
           />
         </div>
       </div>
+
+      {/* AI INSIGHTS */}
+      <TreinamentoAIInsights />
 
       {/* ÚLTIMAS SESSÕES + PLANOS ATIVOS */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
