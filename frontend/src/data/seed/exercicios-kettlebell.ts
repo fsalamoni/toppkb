@@ -34,7 +34,7 @@ export interface ExercicioKettlebell extends Exercicio {
   thumbnailUrl?: string;
 }
 
-const CDN_BASE = 'https://9kpf9n4jnm7t1.space.minimax.io/files/site';
+const CDN_BASE = '/kettlebell';
 
 function img(name: string): string {
   return `${CDN_BASE}/images/${name}`;

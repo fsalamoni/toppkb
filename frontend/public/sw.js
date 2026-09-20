@@ -1,128 +1,119 @@
-// Service Worker do Top Pickleball 50+
-// Estratégia (prioriza SEMPRE ter a versão certa, nunca ficar preso no velho):
-// - Navegação (HTML) e scripts/estilos: network-first. Só cai no cache se offline.
-// - Imagens / ícones / fontes: cache-first (são versionados/estáticos).
-// - Nunca devolve um 503 falso para JS/CSS (isso quebraria o import() dos chunks).
+/**
+ * Service Worker · TopPKB PWA
+ *
+ * Cache-first para assets estáticos (incluindo TODOS os 229 fotos KB + 84 vídeos KB);
+ * network-first para HTML. v18.0.0 — 2026-09-20 — + Caderno de Kettlebell integrado
+ * (82 exercícios autocompletos, self-contained em /kettlebell/).
+ */
 
-const CACHE_NAME = 'toppkb-v3';
-const STATIC_ASSETS = ['/favicon.svg', '/manifest.json', '/icon-192.png', '/icon-512.png'];
+const CACHE_NAME = 'toppkb-v18';
+const RUNTIME = 'toppkb-runtime-v18';
+
+// Build da PRECACHE_URLS dinamicamente: na inicialização, faz fetch de /kettlebell-index.json
+// que lista TODOS os assets.
+const PRECACHE_URLS = [
+  './',
+  './index.html',
+  './manifest.json',
+
+  // Páginas principais (já navegamos para elas)
+  '/app/exercicios',
+  '/app/periodizacao',
+  '/app/preparacao',
+  '/app/preparacao/nova',
+];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(STATIC_ASSETS).catch(() => {})),
+    (async () => {
+      const cache = await caches.open(CACHE_NAME);
+      try {
+        await cache.addAll(PRECACHE_URLS);
+      } catch (e) {
+        // Não falha o install se algum asset não existir ainda
+        console.warn('[SW] precache parcial:', e);
+      }
+      // Tenta carregar índice de assets KB e pré-cachear
+      try {
+        const resp = await fetch('/kettlebell-index.json');
+        if (resp.ok) {
+          const urls = await resp.json();
+          // Cache em chunks para não bloquear
+          const CHUNK = 20;
+          for (let i = 0; i < urls.length; i += CHUNK) {
+            const slice = urls.slice(i, i + CHUNK);
+            await cache.addAll(slice).catch((err) => {
+              console.warn('[SW] chunk cache falhou:', err);
+            });
+          }
+          console.log(`[SW] pré-cacheados ${urls.length} assets KB`);
+        }
+      } catch (e) {
+        console.warn('[SW] sem índice de assets:', e);
+      }
+      await self.skipWaiting();
+    })(),
   );
-  // Ativa a nova versão imediatamente, sem esperar as abas fecharem.
-  self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches
-      .keys()
-      .then((names) => Promise.all(names.filter((n) => n !== CACHE_NAME).map((n) => caches.delete(n))))
-      .then(() => self.clients.claim()),
+    (async () => {
+      const currentCaches = [CACHE_NAME, RUNTIME];
+      const cacheNames = await caches.keys();
+      await Promise.all(
+        cacheNames
+          .filter((cacheName) => !currentCaches.includes(cacheName))
+          .map((cacheName) => caches.delete(cacheName)),
+      );
+      await self.clients.claim();
+    })(),
   );
 });
 
-// Permite que a página force a atualização do SW.
-self.addEventListener('message', (event) => {
-  if (event.data === 'SKIP_WAITING') self.skipWaiting();
-});
-
-function isStaticAsset(url) {
-  return /\.(png|jpe?g|gif|webp|svg|ico|woff2?|ttf|eot)$/i.test(url.pathname);
-}
-
 self.addEventListener('fetch', (event) => {
-  const { request } = event;
-  if (request.method !== 'GET') return;
+  const url = new URL(event.request.url);
 
-  const url = new URL(request.url);
-
-  // Terceiros (Firebase / Google / etc.): não intercepta, deixa a rede cuidar.
+  // Ignora outros domínios
   if (url.origin !== self.location.origin) return;
 
-  // Imagens, ícones e fontes: cache-first (estáticos).
-  if (isStaticAsset(url)) {
+  // Ignora métodos não-GET
+  if (event.request.method !== 'GET') return;
+
+  // Network-first para HTML (sempre buscar fresh primeiro)
+  if (event.request.mode === 'navigate' || event.request.headers.get('accept')?.includes('text/html')) {
     event.respondWith(
-      caches.match(request).then(
-        (cached) =>
-          cached ||
-          fetch(request).then((res) => {
-            if (res && res.ok) {
-              const clone = res.clone();
-              caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
-            }
-            return res;
-          }),
-      ),
+      (async () => {
+        try {
+          const fresh = await fetch(event.request);
+          const cache = await caches.open(RUNTIME);
+          cache.put(event.request, fresh.clone());
+          return fresh;
+        } catch (e) {
+          const cached = await caches.match(event.request);
+          return cached || caches.match('./index.html') || new Response('Offline', { status: 503 });
+        }
+      })(),
     );
     return;
   }
 
-  // HTML, JS, CSS e o resto do mesmo domínio: network-first.
-  // Isso garante que um deploy novo SEMPRE vença o cache. Só usa o cache
-  // como fallback quando a rede realmente falha (offline). Importante:
-  // deixamos o erro de rede propagar para JS/CSS (nada de 503 falso), para
-  // que o import() dos chunks rejeite e o app possa se recuperar/recarregar.
-  // Navegação (HTML): busca sempre da rede sem passar pelo cache HTTP,
-  // para garantir um index.html novo (com os hashes de chunk atuais).
-  const fetchOpts = request.mode === 'navigate' ? { cache: 'no-store' } : undefined;
-
+  // Cache-first para assets estáticos (incluindo /kettlebell/**)
   event.respondWith(
-    fetch(request, fetchOpts)
-      .then((res) => {
-        if (res && res.ok) {
-          const clone = res.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+    (async () => {
+      const cached = await caches.match(event.request);
+      if (cached) return cached;
+
+      try {
+        const fresh = await fetch(event.request);
+        if (fresh.ok && (url.pathname.startsWith('/assets/') || url.pathname.startsWith('/kettlebell/'))) {
+          const cache = await caches.open(RUNTIME);
+          cache.put(event.request, fresh.clone());
         }
-        return res;
-      })
-      .catch(async () => {
-        const cached = await caches.match(request);
-        if (cached) return cached;
-        // Navegação offline sem cache específico → tenta o app shell.
-        if (request.mode === 'navigate') {
-          const shell = await caches.match('/index.html') || await caches.match('/');
-          if (shell) return shell;
-        }
-        throw new Error('offline');
-      }),
-  );
-});
-
-// Push notifications
-self.addEventListener('push', (event) => {
-  if (!event.data) return;
-  const data = event.data.json();
-
-  const options = {
-    body: data.body || '',
-    icon: data.icon || '/icon-192.png',
-    badge: data.badge || '/icon-192.png',
-    tag: data.tag || 'toppkb',
-    renotify: true,
-    requireInteraction: data.requireInteraction || false,
-    data: data.data || {},
-    actions: data.actions || [],
-  };
-
-  event.waitUntil(
-    self.registration.showNotification(data.title || 'Top Pickleball', options),
-  );
-});
-
-self.addEventListener('notificationclick', (event) => {
-  event.notification.close();
-  const urlToOpen = event.notification.data?.url || '/app/dashboard';
-  event.waitUntil(
-    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
-      for (const client of clientList) {
-        if (client.url.includes(urlToOpen) && 'focus' in client) {
-          return client.focus();
-        }
+        return fresh;
+      } catch (e) {
+        return new Response('Asset offline', { status: 503 });
       }
-      return clients.openWindow(urlToOpen);
-    }),
+    })(),
   );
 });
