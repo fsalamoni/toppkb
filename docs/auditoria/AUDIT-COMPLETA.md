@@ -2318,3 +2318,99 @@ Filename: `toppkb-semana-2025-01-13.json`
 - ✅ Combina com Print Stylesheet (Sprint 22)
 - ✅ Botões escondem automaticamente em print
 
+
+---
+
+## ✅ SPRINT 25 — Avatar Upload + Image Preview
+
+**Commit:** (próximo)
+
+### Arquivos:
+
+| Arquivo | Linhas | Função |
+|---|---|---|
+| `lib/imageUpload.ts` | 130 | Hook useImageUpload com preview + compressão |
+| `components/common/AvatarUpload.tsx` | 125 | Componente visual de avatar com upload |
+| `lib/__tests__/imageUpload.test.ts` | 8 testes | Validação + compressão |
+
+### useImageUpload Hook:
+
+```typescript
+const {
+  dataURL, // preview para mostrar
+  file, // File original
+  uploading, // boolean
+  error, // string|null
+  inputRef, // ref para input invisível
+  pickFile, // () => inputRef.current?.click()
+  handleFile, // (File|ChangeEvent) => void
+  clear, // () => void
+} = useImageUpload({
+  maxSizeMB: 5,
+  acceptedTypes: ['image/jpeg', 'image/png', 'image/webp'],
+  maxWidthPx: 1024,
+  quality: 0.85,
+});
+```
+
+### Validações Client-side:
+
+- **Tipo**: aceita jpeg/png/webp
+- **Tamanho**: até 5MB (configurável)
+- **Mensagem de erro**: type/size errors exibidos inline
+
+### Compressão:
+
+```typescript
+// Se img.width > maxWidth, redimensiona
+canvas.width = maxWidth;
+canvas.height = img.height * ratio;
+ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+canvas.toDataURL('image/jpeg', quality); // 0.85
+```
+
+**Mantém aspect ratio** com cálculo de ratio.
+
+### AvatarUpload UI:
+
+- Circular (rounded-full) com fallback de iniciais
+- Overlay com ícone de câmera ao hover
+- Botão Save (aparece após pick) + Cancel
+- Botão Remove (apenas se já tem avatar)
+- Loading spinner durante upload
+- aria-label em todos os botões
+
+### Validação:
+
+- 300 testes passando (era 292 - +8)
+- npm run lint: PASSOU
+- npm run build: PASSOU
+
+### Uso Real (futuro):
+
+```tsx
+// Em Perfil.tsx
+const profile = useProfile(user.uid);
+
+<AvatarUpload
+  currentUrl={profile.photoURL}
+  fallbackInitials={profile.displayName || 'JP'}
+  onSave={async (dataURL) => {
+    const url = await uploadToFirebaseStorage(user.uid, dataURL);
+    await updateDoc(profileRef, { photoURL: url });
+  }}
+  onClear={async () => {
+    await updateDoc(profileRef, { photoURL: null });
+  }}
+/>
+```
+
+### Benefícios:
+
+- ✅ UX simples (clica → preview → salva)
+- ✅ Sem libs externas (FileReader API + Canvas)
+- ✅ Compressão client-side (economiza banda)
+- ✅ Validação inline (mensagem clara)
+- ✅ Avatar fallback (iniciais) se não tem foto
+- ✅ Acessível (aria-label nos botões)
+
