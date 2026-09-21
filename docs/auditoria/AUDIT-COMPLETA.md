@@ -1588,3 +1588,101 @@ const { mutate: add, isSaving } = useOfflineWrite({
 
 Tudo escala.
 
+
+---
+
+## ✅ SPRINT 16 — Service Worker Update UX
+
+**Commit:** `86d2929`
+
+### Mudanças:
+
+| Arquivo | Linhas | Função |
+|---|---|---|
+| `hooks/useServiceWorkerUpdate.ts` | 120 | Detecta SW waiting + SKIP_WAITING |
+| `components/common/ServiceWorkerUpdateBanner.tsx` | 95 | Banner visual bottom-center |
+| `public/sw.js` | +5 | Handler de mensagem SKIP_WAITING |
+| `hooks/__tests__/useServiceWorkerUpdate.test.ts` | 6 testes | Mock de navigator.serviceWorker |
+
+### UX:
+- Banner fixed bottom-center (não conflita com OfflineBanner que é top)
+- Gradiente emerald-to-cyan com Sparkles icon celebrando
+- Botão "Atualizar" aplica e recarrega
+- Botão X dispensa por sessão
+
+### SW bumped v18 → v19 para forçar update de todos clients
+
+---
+
+## ✅ SPRINT 17 — Web Vitals Monitoring
+
+**Commit:** (próximo)
+
+### Funcionalidade:
+
+Captura métricas **Google Web Vitals** em tempo real + armazena no IndexedDB para análise.
+
+| Métrica | Threshold Good | Threshold Poor | O que mede |
+|---|---|---|---|
+| LCP | < 2.5s | > 4s | Largest Contentful Paint |
+| FID | < 100ms | > 300ms | First Input Delay |
+| CLS | < 0.1 | > 0.25 | Cumulative Layout Shift |
+| FCP | < 1.8s | > 3s | First Contentful Paint |
+| TTFB | < 800ms | > 1.8s | Time To First Byte |
+| INP | < 200ms | > 500ms | Interaction to Next Paint |
+
+### Arquivos Criados:
+
+| Arquivo | Linhas | Função |
+|---|---|---|
+| `lib/webVitals.ts` | 160 | Observer + thresholds + tipos |
+| `hooks/useWebVitals.ts` | 80 | Hook com persistência IndexedDB |
+| `lib/__tests__/webVitals.test.ts` | 9 testes | Categorização de ratings |
+
+### PerformanceObserver:
+
+```typescript
+new PerformanceObserver((list) => {
+  const entries = list.getEntries();
+  const last = entries[entries.length - 1];
+  callback({
+    name: 'LCP',
+    value: last.renderTime,
+    rating: getRating('LCP', value),
+    url: window.location.href,
+    timestamp: Date.now(),
+  });
+});
+```
+
+### Armazenamento:
+
+- IndexedDB store `web-vitals`
+- Ring buffer de 50 métricas (rotaciona)
+- `getStoredMetrics()` para dashboard admin futuro
+
+### Ativação em `main.tsx`:
+
+```typescript
+observeWebVitals((metric) => {
+  if (import.meta.env.DEV) {
+    console.log(`${colors[metric.rating]} [WebVital] ${metric.name} = ${metric.value.toFixed(2)}`);
+  }
+});
+```
+
+### Validação:
+
+- 209 testes passando (era 200 - +9)
+- npm run lint: PASSOU
+- npm run build: PASSOU (bundle estável ~235KB)
+- Não bloqueia main thread
+- Skip automático em ambientes sem PerformanceObserver
+
+### Benefícios:
+
+- **Detecta regressões de performance** em deploys
+- Dados armazenados localmente (LGPD-friendly, sem servidor)
+- Ring buffer de 50 previne overflow
+- Console color feedback em dev
+

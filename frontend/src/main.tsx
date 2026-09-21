@@ -61,3 +61,13 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     </QueryClientProvider>
   </React.StrictMode>,
 );
+
+// Performance monitoring
+import { observeWebVitals } from './lib/webVitals';
+observeWebVitals((metric) => {
+  // Log apenas em dev para não poluir console em prod
+  if (import.meta.env.DEV) {
+    const colors = { good: '🟢', 'needs-improvement': '🟡', poor: '🔴' };
+    console.log(`${colors[metric.rating]} [WebVital] ${metric.name} = ${metric.value.toFixed(2)}`);
+  }
+});
