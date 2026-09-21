@@ -23,10 +23,13 @@ import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Spinner, EmptyState } from '@/components/common/LoadingScreen';
+import { Spinner } from '@/components/common/LoadingScreen';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { EmptyState as EmptyStateRich } from '@/components/common/EmptyState';
+import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
+import { useConfirm } from '@/hooks/useConfirm';
 import { toast } from '@/components/ui/toaster';
 import {
   ChevronLeft, Plus, Trash2, Edit, Copy, FileText,
@@ -66,8 +69,19 @@ export function TreinamentoTemplates() {
   const { user } = useAuth();
   const qc = useQueryClient();
   const navigate = useNavigate();
+  const { confirm, ConfirmDialogRoot } = useConfirm();
   const [showForm, setShowForm] = useState(false);
   const [editandoId, setEditandoId] = useState<string | null>(null);
+
+  const handleRemoverTemplate = async (t: any) => {
+    const ok = await confirm({
+      titulo: `Remover template "${t.nome}"?`,
+      descricao: 'Esta ação não pode ser desfeita.',
+      confirmText: 'Sim, remover',
+      variant: 'destructive',
+    });
+    if (ok) del.mutate(t.id);
+  };
 
   const { data: templates, isLoading } = useQuery({
     queryKey: ['treinamento-templates', user?.uid],
@@ -147,6 +161,7 @@ export function TreinamentoTemplates() {
 
   return (
     <div className="space-y-6 max-w-6xl mx-auto">
+      <Breadcrumbs />
       {/* HEADER */}
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
@@ -213,10 +228,10 @@ export function TreinamentoTemplates() {
 
       {/* LISTA */}
       {!templates || templates.length === 0 ? (
-        <EmptyState
-          icone="📋"
-          titulo="Nenhum template ainda"
-          descricao="Crie seu primeiro template para reutilizar sessões"
+        <EmptyStateRich
+          illustration="default"
+          title="Nenhum template ainda"
+          description="Crie seu primeiro template para reutilizar sessões de treino com facilidade."
         />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -230,15 +245,12 @@ export function TreinamentoTemplates() {
                 setEditandoId(t.id);
                 setShowForm(true);
               }}
-              onRemover={() => {
-                if (confirm(`Remover template "${t.nome}"?`)) {
-                  del.mutate(t.id);
-                }
-              }}
+              onRemover={() => handleRemoverTemplate(t)}
             />
           ))}
         </div>
       )}
+      <ConfirmDialogRoot />
     </div>
   );
 }

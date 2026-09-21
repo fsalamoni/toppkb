@@ -682,3 +682,82 @@ await safeSetDoc(user, doc(db, ...), payload, { merge: true });
 - **Bundle size:** 176KB (sem mudança significativa)
 - **Arquivos modificados:** 7 (1 doc + 3 código + 1 config + 2 deletados)
 
+
+---
+
+## ✅ SPRINT 2 — UX/UI IMPLEMENTADO
+
+**Commits:** (próximo)
+**Deploy:** Validado em produção (build `index-CXjDN0o7.js`)
+**Arquivos:**
+- `frontend/src/components/ui/skeleton.tsx` (+246 linhas: SkeletonKPIGrid, SkeletonRow, SkeletonTable, SkeletonAvatar, SkeletonText, SkeletonPageHeader)
+- `frontend/src/components/common/EmptyState.tsx` (+235 linhas) — ilustrações SVG inline
+- `frontend/src/components/layout/Breadcrumbs.tsx` (+150 linhas)
+- `frontend/src/hooks/useConfirm.tsx` (+92 linhas) — substitui `window.confirm()`
+- `frontend/src/components/common/ConfirmDialog.tsx` (atualizado, foco automático, ESC, accessibility)
+
+### Aplicações:
+
+#### `useConfirm()` (substitui 11 instâncias de `window.confirm()`)
+
+| Página | Antigo | Novo |
+|---|---|---|
+| TreinamentoSessoes | `confirm('Remover esta sessão?')` | Modal descritivo com variant destructive |
+| TreinamentoTemplates | `confirm('Remover template...')` | Modal com nome do template |
+| TreinamentoMeuPrograma | `confirm('Apagar programa...')` | Modal com nome do plano |
+| TreinamentoConfig | `confirm('Restaurar config padrão?')` | Modal com variant destructive |
+| TreinamentoComposicao | `confirm('Remover esta medida?')` | Modal com variant destructive |
+| Configuracoes | 2x `confirm()` para deletar conta | 2 modais sequenciais (confirmação dupla) |
+| AdminLLMConfig | `confirm('Remover LLM global?')` | Modal com variant destructive + descrição completa |
+| LLMConfig | `confirm('Remover LLM pessoal?')` | Modal |
+| AdminUsers | `confirm('Revogar admin?')` | Modal |
+
+#### Breadcrumbs (`<Breadcrumbs />`)
+
+Aplicado em 8 páginas principais: AdminLLMConfig, Configuracoes, LLMConfig, TreinamentoConfig, TreinamentoComposicao, TreinamentoMeuPrograma, TreinamentoSessoes, TreinamentoTemplates, AdminUsers.
+
+#### Skeleton components (`<SkeletonList />`, `<SkeletonCard />`, etc.)
+
+Aplicado em: TreinamentoSessoes (SkeletonList), TreinamentoMeuPrograma (SkeletonCard), TreinamentoComposicao (SkeletonTable).
+
+#### EmptyState melhorado (`<EmptyState />` da pasta `common/`)
+
+Aplicado em: TreinamentoComposicao (peso), AdminUsers (admin vazio), TreinamentoSessoes (sessão vazia com CTA), Dashboard (CTA inicial).
+
+### Métricas Sprint 2:
+
+- **12 páginas** com UX/UI melhorado
+- **11 confirmações** com UI consistente (não mais `window.confirm()` nativo)
+- **8 Breadcrumbs** adicionados
+- **3 Skeleton** substituições em loading
+- **4 EmptyStates** com ilustrações SVG inline (leve, sem dependência externa)
+
+---
+
+## ✅ SPRINT 3 — Refatoração
+
+**Commits:** (próximo)
+**Deploy:** Validado em produção (build `index-CXjDN0o7.js`)
+
+### Dashboard.tsx split (695 → 284 linhas + 4 sub-componentes)
+
+| Arquivo | Linhas | Responsabilidade |
+|---|---|---|
+| `Dashboard.tsx` (refatorado) | 284 | Header + Heatmap + Últimas atividades + Empty state |
+| `pages/dashboard/useDashboardData.ts` | 221 | useQuery + cálculo de KPIs + transformações |
+| `pages/dashboard/DashboardKPIs.tsx` | 160 | KPICard + QuickAction + grid |
+| `pages/dashboard/DashboardCharts.tsx` | 115 | SparklineChart + MiniBarChart wrapper |
+| `pages/dashboard/DashboardAlerts.tsx` | 101 | Dor ativa, Streak, Hidratação baixa |
+
+**Benefícios:**
+- ✅ Cada componente < 300 linhas (limite prático de leitura)
+- ✅ Lógica de dados isolada em hook (testável isoladamente)
+- ✅ UI components reutilizáveis (KPICard, QuickAction)
+- ✅ Bundle não cresceu (217KB ~ 217KB) graças a code splitting existente
+
+### Próximas refatorações (Sprint 4+):
+
+- **TreinamentoMeuPrograma.tsx** (1397 linhas → ~5 componentes: SetupTab, PlanoTab, ExecutarTab, ProgressoTab, ComposiçãoTab)
+- **dashboardHelpers.ts** (extrair cálculo de streak/dorAtiva dos hooks)
+- **`temaEscuro` vs `theme`** — unificar no `uiStore`
+

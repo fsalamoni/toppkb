@@ -17,6 +17,8 @@ import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/toaster';
+import { useConfirm } from '@/hooks/useConfirm';
+import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
 import {
   ChevronLeft, Settings, Save, Calendar, Clock, Dumbbell,
   Bell, Volume2, Eye, RotateCcw, Activity, Heart,
@@ -60,6 +62,7 @@ const DIAS_SEMANA = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 export function TreinamentoConfig() {
   const [cfg, setCfg] = useState<ConfigTreinamento>(DEFAULT);
   const [saving, setSaving] = useState(false);
+  const { confirm, ConfirmDialogRoot } = useConfirm();
 
   useEffect(() => {
     try {
@@ -94,16 +97,24 @@ export function TreinamentoConfig() {
     }
   }
 
-  function reset() {
-    if (confirm('Restaurar configurações padrão?')) {
+  const reset = async () => {
+    const ok = await confirm({
+      titulo: 'Restaurar configurações padrão?',
+      descricao: 'Todas as suas configurações personalizadas serão perdidas. Você pode ajustar depois.',
+      confirmText: 'Sim, restaurar',
+      cancelText: 'Cancelar',
+      variant: 'destructive',
+    });
+    if (ok) {
       setCfg(DEFAULT);
       localStorage.removeItem(STORAGE_KEY);
-      toast({ title: 'Resetado', description: 'Recarregue a página se precisar.' });
+      toast.success('Configurações restauradas');
     }
-  }
+  };
 
   return (
     <div className="space-y-6 max-w-4xl mx-auto">
+      <Breadcrumbs />
       <div>
         <Button asChild variant="ghost" size="sm" className="mb-2">
           <Link to="/app/treinamento">
@@ -330,6 +341,7 @@ export function TreinamentoConfig() {
           Resetar
         </Button>
       </div>
+      <ConfirmDialogRoot />
     </div>
   );
 }

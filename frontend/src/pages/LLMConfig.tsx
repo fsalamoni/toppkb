@@ -6,6 +6,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/common/LoadingScreen';
 import { toast } from '@/components/ui/toaster';
+import { useConfirm } from '@/hooks/useConfirm';
+import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
 import {
   LLM_PROVIDERS,
   getLLMConfig,
@@ -20,6 +22,7 @@ import {
 import { Sparkles, Trash2, Key, RefreshCw, ExternalLink } from 'lucide-react';
 
 export function LLMConfig() {
+  const { confirm, ConfirmDialogRoot } = useConfirm();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -128,7 +131,14 @@ export function LLMConfig() {
   };
 
   const onDelete = async () => {
-    if (!confirm('Remover sua configuração pessoal de LLM? Você voltará a usar o LLM global do admin.')) return;
+    const ok = await confirm({
+      titulo: 'Remover sua configuração pessoal?',
+      descricao: 'Você voltará a usar o LLM global do admin.',
+      confirmText: 'Sim, remover',
+      cancelText: 'Cancelar',
+      variant: 'destructive',
+    });
+    if (!ok) return;
     setSaving(true);
     try {
       await deleteLLMConfig();
@@ -146,6 +156,7 @@ export function LLMConfig() {
 
   return (
     <div className="max-w-3xl mx-auto space-y-4">
+      <Breadcrumbs />
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">🤖 Meu LLM Pessoal</h1>
         <Button variant="ghost" onClick={() => navigate('/app/configuracoes')}>← Voltar</Button>
@@ -293,6 +304,7 @@ export function LLMConfig() {
           <ProviderHelp provider={form.provider} />
         </CardContent>
       </Card>
+      <ConfirmDialogRoot />
     </div>
   );
 }

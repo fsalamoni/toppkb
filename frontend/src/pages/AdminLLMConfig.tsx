@@ -6,6 +6,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/common/LoadingScreen';
 import { toast } from '@/components/ui/toaster';
+import { useConfirm } from '@/hooks/useConfirm';
+import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
 import {
   LLM_PROVIDERS,
   AGENTES,
@@ -30,6 +32,7 @@ import { Sparkles, Key, RefreshCw, Save, Trash2 } from 'lucide-react';
 type Tab = 'global' | 'agentes';
 
 export function AdminLLMConfig() {
+  const { confirm, ConfirmDialogRoot } = useConfirm();
   const navigate = useNavigate();
   const [tab, setTab] = useState<Tab>('global');
   const [loading, setLoading] = useState(true);
@@ -130,7 +133,14 @@ export function AdminLLMConfig() {
   };
 
   const onDeleteGlobal = async () => {
-    if (!confirm('Remover LLM global? Todos os usuários cairão em fallback ou precisam de config pessoal.')) return;
+    const ok = await confirm({
+      titulo: 'Remover LLM global?',
+      descricao: 'Todos os usuários cairão em fallback ou precisarão de config pessoal. Esta ação afeta TODOS os usuários do sistema.',
+      confirmText: 'Sim, remover global',
+      cancelText: 'Cancelar',
+      variant: 'destructive',
+    });
+    if (!ok) return;
     setSavingGlobal(true);
     try {
       await adminSetGlobalLLM(null);
@@ -203,6 +213,7 @@ export function AdminLLMConfig() {
 
   return (
     <div className="max-w-5xl mx-auto space-y-4">
+      <Breadcrumbs />
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">👑 Config de IA (Admin Master)</h1>
         <Button variant="ghost" onClick={() => navigate('/app/configuracoes')}>← Voltar</Button>
@@ -480,6 +491,7 @@ export function AdminLLMConfig() {
           })}
         </div>
       )}
+      <ConfirmDialogRoot />
     </div>
   );
 }

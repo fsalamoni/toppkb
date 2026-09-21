@@ -3,6 +3,7 @@ import * as React from 'react';
 import { useNavigate, useLocation, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider, useAuth } from './hooks/useAuth';
+import { ConfirmProvider } from './hooks/useConfirm';
 import { Toaster } from './components/ui/toaster';
 import { Sidebar } from './components/layout/Sidebar';
 import { Topbar } from './components/layout/Topbar';
@@ -290,12 +291,14 @@ export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
+        <ConfirmProvider>
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
           <Route path="/app/*" element={<AppShell />} />
           <Route path="*" element={<NotFoundRedirect />} />
         </Routes>
+        </ConfirmProvider>
       </AuthProvider>
     </QueryClientProvider>
   );

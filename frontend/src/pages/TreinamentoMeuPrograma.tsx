@@ -40,9 +40,11 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Spinner } from '@/components/common/LoadingScreen';
 import { toast } from '@/components/ui/toaster';
 import { Confetti } from '@/components/Confetti';
+import { useConfirm } from '@/hooks/useConfirm';
+import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
+import { SkeletonCard } from '@/components/ui/skeleton';
 import {
   ChevronLeft, Target, Calendar, Activity, ChevronRight,
   Check, Sparkles, Dumbbell, Trophy, Trash2,
@@ -65,6 +67,7 @@ type Tab = 'setup' | 'plano' | 'executar' | 'progresso';
 
 export function TreinamentoMeuPrograma() {
   const { user } = useAuth();
+  const { confirm, ConfirmDialogRoot } = useConfirm();
   const navigate = useNavigate();
   const qc = useQueryClient();
   const [tab, setTab] = useState<Tab>('setup');
@@ -191,12 +194,25 @@ export function TreinamentoMeuPrograma() {
   }, [plano, loadingPlano, autoSkipDone]);
 
   if (loadingPlano) {
-    return <div className="flex justify-center py-12"><Spinner size="lg" /></div>;
+    return (
+      <div className="space-y-4 max-w-4xl mx-auto">
+        <SkeletonCard />
+        <SkeletonCard />
+        <SkeletonCard />
+      </div>
+    );
   }
 
   const handleApagar = async () => {
     if (!plano) return;
-    if (!confirm(`Apagar programa "${plano.nome}"? Esta ação não pode ser desfeita.`)) return;
+    const ok = await confirm({
+      titulo: `Apagar programa "${plano.nome}"?`,
+      descricao: 'Esta ação não pode ser desfeita. Todo o histórico do programa será perdido.',
+      confirmText: 'Sim, apagar',
+      cancelText: 'Manter',
+      variant: 'destructive',
+    });
+    if (!ok) return;
     try {
       if (user) {
         await safeSetDoc(
@@ -237,6 +253,7 @@ export function TreinamentoMeuPrograma() {
 
   return (
     <div className="space-y-6 max-w-6xl mx-auto">
+      <Breadcrumbs />
       <Confetti trigger={showConfetti} />
 
       {/* HEADER */}
@@ -339,6 +356,7 @@ export function TreinamentoMeuPrograma() {
       {tab === 'progresso' && plano && (
         <ProgressoTab plano={plano} sessoesFeitas={sessoes || []} />
       )}
+      <ConfirmDialogRoot />
     </div>
   );
 }

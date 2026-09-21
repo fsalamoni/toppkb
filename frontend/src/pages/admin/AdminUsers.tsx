@@ -9,10 +9,14 @@ import { useUIStore } from '@/stores/uiStore';
 import { Plus, Trash2, Shield, Mail, UserCheck } from 'lucide-react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { useConfirm } from '@/hooks/useConfirm';
+import { EmptyState as EmptyStateRich } from '@/components/common/EmptyState';
+import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
 
 export function AdminUsers() {
   const [admins, setAdmins] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const { confirm, ConfirmDialogRoot } = useConfirm();
   const [email, setEmail] = useState('');
   const [granting, setGranting] = useState(false);
   const addToast = useUIStore((s) => s.addToast);
@@ -48,7 +52,14 @@ export function AdminUsers() {
   };
 
   const handleRevoke = async (e: string) => {
-    if (!confirm(`Revogar admin de ${e}?`)) return;
+    const ok = await confirm({
+      titulo: `Revogar admin de ${e}?`,
+      descricao: 'O usuário não poderá mais acessar o painel administrativo.',
+      confirmText: 'Sim, revogar',
+      cancelText: 'Cancelar',
+      variant: 'destructive',
+    });
+    if (!ok) return;
     try {
       await adminRevokeAdmin(e);
       addToast({ type: 'success', message: 'Admin revogado' });
@@ -60,6 +71,7 @@ export function AdminUsers() {
 
   return (
     <div className="space-y-4">
+      <Breadcrumbs />
       <div>
         <h1 className="text-2xl font-bold">Gerenciar Admins</h1>
         <p className="text-sm text-muted-foreground">Promova ou revogue admins da plataforma.</p>
@@ -100,7 +112,11 @@ export function AdminUsers() {
               {Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-16 w-full" />)}
             </div>
           ) : admins.length === 0 ? (
-            <p className="text-sm text-muted-foreground text-center py-4">Nenhum admin</p>
+            <EmptyStateRich
+              illustration="user"
+              title="Nenhum admin cadastrado"
+              description="Adicione o primeiro admin no campo acima."
+            />
           ) : (
             <div className="space-y-2">
               {admins.map((a) => (
@@ -136,8 +152,10 @@ export function AdminUsers() {
           )}
         </CardContent>
       </Card>
+      <ConfirmDialogRoot />
     </div>
   );
 }
 
 export default AdminUsers;
+

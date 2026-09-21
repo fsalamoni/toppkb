@@ -8,12 +8,15 @@ import { toast } from '@/components/ui/toaster';
 import { exportarTudo, deletarConta } from '@/lib/api';
 import { User, Download, Trash2, Sun, Moon, Sparkles, Shield } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useConfirm } from '@/hooks/useConfirm';
+import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
 
 export function Configuracoes() {
   const { user, userDoc, signOut } = useAuth();
   const { theme, setTheme } = useUIStore();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const { confirm, ConfirmDialogRoot } = useConfirm();
 
   const handleExport = async () => {
     setLoading(true);
@@ -35,16 +38,33 @@ export function Configuracoes() {
   };
 
   const handleDelete = async () => {
-    if (!confirm('Tem certeza? Esta ação é IRREVERSÍVEL. Todos os seus dados serão deletados.')) return;
-    if (!confirm('Última chance: confirmar exclusão da conta?')) return;
+    const ok1 = await confirm({
+      titulo: 'Tem certeza?',
+      descricao: 'Esta ação é IRREVERSÍVEL. Todos os seus dados serão deletados permanentemente.',
+      confirmText: 'Sim, quero deletar',
+      cancelText: 'Cancelar',
+      variant: 'destructive',
+    });
+    if (!ok1) return;
+
+    // Segunda confirmação para ações destrutivas de alto impacto
+    const ok2 = await confirm({
+      titulo: 'Última chance',
+      descricao: 'Confirmar definitivamente a exclusão da sua conta? Você perderá TUDO.',
+      confirmText: 'Confirmar exclusão',
+      cancelText: 'Cancelar',
+      variant: 'destructive',
+    });
+    if (!ok2) return;
+
     setLoading(true);
     try {
       await deletarConta();
       await signOut();
-      toast({ title: 'Conta deletada', variant: 'success' });
+      toast.success('Conta deletada');
       navigate('/app/');
     } catch (e: any) {
-      toast({ title: 'Erro', description: e.message, variant: 'destructive' });
+      toast.error('Erro ao deletar: ' + e.message);
     } finally {
       setLoading(false);
     }
@@ -52,6 +72,7 @@ export function Configuracoes() {
 
   return (
     <div className="max-w-2xl mx-auto space-y-4">
+      <Breadcrumbs />
       <h1 className="text-2xl font-bold">⚙️ Configurações</h1>
 
       <Card>
@@ -142,6 +163,7 @@ export function Configuracoes() {
           <div>Objetivo: {userDoc?.objetivoFinal}</div>
         </CardContent>
       </Card>
+      <ConfirmDialogRoot />
     </div>
   );
 }

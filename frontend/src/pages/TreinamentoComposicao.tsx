@@ -28,7 +28,10 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Spinner } from '@/components/common/LoadingScreen';
+import { EmptyState as EmptyStateRich } from '@/components/common/EmptyState';
+import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
+import { useConfirm } from '@/hooks/useConfirm';
+import { SkeletonTable } from '@/components/ui/skeleton';
 import { toast } from '@/components/ui/toaster';
 import {
   ChevronLeft, Plus, Trash2, Activity, TrendingUp, TrendingDown,
@@ -60,7 +63,18 @@ interface Medida {
 export function TreinamentoComposicao() {
   const { user } = useAuth();
   const qc = useQueryClient();
+  const { confirm, ConfirmDialogRoot } = useConfirm();
   const [showForm, setShowForm] = useState(false);
+
+  const handleRemoverMedida = async (m: any) => {
+    const ok = await confirm({
+      titulo: 'Remover medida corporal?',
+      descricao: 'Esta ação não pode ser desfeita.',
+      confirmText: 'Sim, remover',
+      variant: 'destructive',
+    });
+    if (ok) del.mutate(m.id);
+  };
 
   const { data: medidas, isLoading } = useQuery({
     queryKey: ['treinamento-composicao', user?.uid],
@@ -125,11 +139,17 @@ export function TreinamentoComposicao() {
   }, [medidas]);
 
   if (isLoading) {
-    return <div className="flex justify-center py-12"><Spinner size="lg" /></div>;
+    return (
+      <div className="space-y-4 max-w-6xl mx-auto">
+        <Breadcrumbs />
+        <SkeletonTable rows={5} cols={4} />
+      </div>
+    );
   }
 
   return (
     <div className="space-y-6 max-w-6xl mx-auto">
+      <Breadcrumbs />
       {/* HEADER */}
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
@@ -165,18 +185,17 @@ export function TreinamentoComposicao() {
       )}
 
       {(!medidas || medidas.length === 0) && !showForm ? (
-        <Card>
-          <CardContent className="py-12 text-center">
-            <Weight className="h-12 w-12 mx-auto text-muted-foreground mb-3" />
-            <p className="text-muted-foreground mb-3">
-              Nenhuma medida registrada ainda.
-            </p>
+        <EmptyStateRich
+          illustration="weight"
+          title="Nenhuma medida registrada"
+          description="Acompanhe peso, IMC, circunferências e evolução corporal ao longo do tempo."
+          action={
             <Button onClick={() => setShowForm(true)}>
               <Plus className="h-4 w-4 mr-1" />
               Registrar primeira medida
             </Button>
-          </CardContent>
-        </Card>
+          }
+        />
       ) : (
         <>
           {/* KPIs */}
@@ -300,8 +319,9 @@ export function TreinamentoComposicao() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => {
-                          if (confirm('Remover esta medida?')) del.mutate(m.id);
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleRemoverMedida(m);
                         }}
                       >
                         <Trash2 className="h-3 w-3 text-rose-400" />
@@ -328,6 +348,7 @@ export function TreinamentoComposicao() {
           </Card>
         </>
       )}
+      <ConfirmDialogRoot />
     </div>
   );
 }

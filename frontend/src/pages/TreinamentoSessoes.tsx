@@ -21,10 +21,13 @@ import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Spinner, EmptyState } from '@/components/common/LoadingScreen';
+import { EmptyState as EmptyStateRich } from '@/components/common/EmptyState';
+import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
+import { useConfirm } from '@/hooks/useConfirm';
+import { SkeletonList } from '@/components/ui/skeleton';
 import { toast } from '@/components/ui/toaster';
 import {
-  Plus, Trash2, ChevronLeft, Activity, Filter,
+  Plus, Trash2, Activity, Filter,
   Calendar, Edit,
 } from 'lucide-react';
 import { formatDate, formatDateTime, tempoRelativo } from '@/lib/utils';
@@ -62,8 +65,22 @@ const TIPOS_COR: Record<string, string> = {
 export function TreinamentoSessoes() {
   const { user } = useAuth();
   const qc = useQueryClient();
+  const { confirm, ConfirmDialogRoot } = useConfirm();
   const [filtroTipo, setFiltroTipo] = useState<string>('todas');
   const [filtroPeriodo, setFiltroPeriodo] = useState<string>('todas');
+
+  const handleDelete = async (id: string) => {
+    const ok = await confirm({
+      titulo: 'Remover sessão de treino?',
+      descricao: 'Esta ação não pode ser desfeita. O histórico dessa sessão será perdido.',
+      confirmText: 'Sim, remover',
+      cancelText: 'Cancelar',
+      variant: 'destructive',
+    });
+    if (ok) {
+      del.mutate(id);
+    }
+  };
 
   const { data, isLoading } = useQuery({
     queryKey: ['treinamento-sessoes', user?.uid],
@@ -129,20 +146,20 @@ export function TreinamentoSessoes() {
   }, [data, filtroTipo, filtroPeriodo]);
 
   if (isLoading) {
-    return <div className="flex justify-center py-12"><Spinner size="lg" /></div>;
+    return (
+      <div className="space-y-4 max-w-7xl mx-auto">
+        <SkeletonList count={6} />
+      </div>
+    );
   }
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
+      <Breadcrumbs />
+
       {/* HEADER */}
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
-          <Button asChild variant="ghost" size="sm" className="mb-2">
-            <Link to="/app/treinamento">
-              <ChevronLeft className="h-4 w-4 mr-1" />
-              Treinamento
-            </Link>
-          </Button>
           <h1 className="text-3xl font-bold flex items-center gap-2">
             <Activity className="h-8 w-8 text-emerald-400" />
             Sessões de Treinamento
@@ -267,10 +284,18 @@ export function TreinamentoSessoes() {
 
       {/* LISTA */}
       {sessoesFiltradas.length === 0 ? (
-        <EmptyState
-          icone="🏋️"
-          titulo="Nenhuma sessão registrada"
-          descricao="Registre sua primeira sessão de treino"
+        <EmptyStateRich
+          illustration="training"
+          title="Nenhuma sessão registrada"
+          description="Registre sua primeira sessão de treino para acompanhar seu histórico de evolução."
+          action={
+            <Button asChild>
+              <Link to="/app/treinamento/sessoes/nova">
+                <Plus className="mr-2 h-4 w-4" />
+                Registrar primeira sessão
+              </Link>
+            </Button>
+          }
         />
       ) : (
         <div className="space-y-2">
@@ -335,7 +360,7 @@ export function TreinamentoSessoes() {
                         size="sm"
                         onClick={(e) => {
                           e.preventDefault();
-                          if (confirm('Remover esta sessão?')) del.mutate(s.id);
+                          handleDelete(s.id);
                         }}
                       >
                         <Trash2 className="h-4 w-4 text-rose-400" />
@@ -348,6 +373,7 @@ export function TreinamentoSessoes() {
           })}
         </div>
       )}
+      <ConfirmDialogRoot />
     </div>
   );
 }
