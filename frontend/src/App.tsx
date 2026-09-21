@@ -15,6 +15,7 @@ import { Button } from './components/ui/button';
 import { ErrorBoundary } from './components/common/ErrorBoundary';
 import { Login } from './pages/Login';
 import { Landing } from './pages/Landing';
+import { ComponentCatalog } from './dev/ComponentCatalog';
 import { Loader2 } from 'lucide-react';
 
 // Carregamento de chunk resiliente: se um import dinâmico falhar ou pendurar
@@ -299,6 +300,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/__catalog" element={<ComponentCatalog />} />
           <Route path="/app/*" element={<AppShell />} />
           <Route path="*" element={<NotFoundRedirect />} />
         </Routes>

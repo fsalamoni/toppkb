@@ -1351,3 +1351,65 @@ const { mutate: add, isSaving } = useOfflineWrite({
 });
 ```
 
+
+---
+
+## ✅ SPRINT 12 — CATÁLOGO DE COMPONENTES (DOCS VISUAIS)
+
+**Commit:** (próximo)
+
+### Componente Criado:
+
+| Arquivo | Linhas | Função |
+|---|---|---|
+| `dev/ComponentCatalog.tsx` | 280+ | Catálogo visual standalone |
+
+### Acesso:
+
+`http://localhost:5173/__catalog`
+
+### Seções do Catálogo:
+
+1. **UI Primitivos**: Button (5 variants), Badge, Input + Label, Card
+2. **Loading States**: SkeletonCard, SkeletonList, SkeletonTable
+3. **Empty States**: 4 illustrations (training, match, sleep, trophy) com CTA opcional
+4. **Navegação**: Breadcrumbs com exemplo
+5. **Acessibilidade**: SkipLink, VisuallyHidden, Heading (h1-h6), LiveRegion
+6. **Dashboard KPIs**: KPICard (4 cores), QuickAction (4 cores)
+7. **Ícones**: 5 ícones comuns (Activity, Trophy, Heart, AlertCircle, Info)
+8. **Tipografia**: Hierarquia (text-4xl até text-xs)
+
+### Benefícios:
+
+1. **Designer/Product Owner**: revisão visual sem rodar código
+2. **QA**: verificar estado esperado dos componentes
+3. **Devs**: documentação interativa viva (não desatualiza como Storybook config)
+4. **Standalone**: rota `/__catalog` sem auth
+
+### Testes:
+- `ComponentCatalog.test.tsx` (4 testes):
+  - Renderiza cabeçalho
+  - Renderiza seções principais
+  - SkipLink acessível
+  - Botões demo
+
+### Validação:
+- 182 testes passando (era 178 - +4)
+- npm run lint: PASSOU
+- npm run build: PASSOU (bundle 257KB - +23KB pelo catálogo)
+
+### Métricas Finais Acumuladas (Sprints 1-12):
+
+| Categoria | Sprint 0 | **Atual** |
+|---|---|---|
+| Bundle | 1.9MB | **257KB** (86% menor) |
+| TreinamentoMp | 1418 | **425** (70% menor) |
+| Dashboard | 695 | **284** (59% menor) |
+| **Testes** | 0 | **182** (+7 skip) |
+| `window.confirm()` | 11 | **0** |
+| A11y helpers | 0 | **5** |
+| Offline support | ❌ | ✅ |
+| Sync queue | ❌ | ✅ (com retry+backoff) |
+| Bundle budget | ❌ | ✅ |
+| Component catalog | ❌ | ✅ `/__catalog` |
+
