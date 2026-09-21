@@ -1077,3 +1077,85 @@ npm run bundle:budget  # Verifica bundle size após build
 | prefers-reduced-motion | ❌ | ✅ | ✨ |
 | prefers-contrast | ❌ | ✅ | ✨ |
 
+
+---
+
+## ✅ SPRINT 8 — PWA OFFLINE MODE
+
+**Commit:** (próximo)
+**Bundle:** 224KB → 227KB (+3KB pelo OfflineBanner + useOnlineStatus + useOfflineQuery)
+
+### Componentes Criados:
+
+| Arquivo | Linhas | Função |
+|---|---|---|
+| `hooks/useOnlineStatus.ts` | 124 | Hook que monitora online/offline + ping |
+| `hooks/useOfflineQuery.ts` | 145 | Query com cache → network (stale-while-revalidate) |
+| `lib/idb.ts` | 154 | Wrapper IndexedDB com TTL |
+| `components/common/OfflineBanner.tsx` | 95 | Banner visual quando offline |
+
+### Funcionalidades:
+
+#### `useOnlineStatus`
+- Detecta `navigator.onLine` + listeners online/offline
+- Ping opcional para confirmar conexão real (testa URL específica)
+- Atualiza a cada 30s (configurável)
+- Retorna: `online`, `navigatorOnline`, `lastChangeAt`, `secondsSinceChange`
+
+#### `idb.ts` (IndexedDB wrapper)
+- `idbSet(key, value, { ttl })` — salva com expiração
+- `idbGet(key)` — retorna null se expirado
+- `idbKeys(prefix)` — filtra por prefixo
+- `idbClearExpired()` — limpeza de cache
+- `idbClear()` — apaga tudo
+- Auto-fallback gracioso se IDB indisponível
+
+#### `useOfflineQuery`
+- Stale-while-revalidate: cache + network em paralelo
+- Marca `isStale: true` quando mostra cache
+- `refetch()` para atualizar manualmente
+- `revalidateOnFocus` e `refetchInterval` opcionais
+
+#### `<OfflineBanner />`
+- Aparece quando `online === false`
+- Mostra tempo desde que ficou offline
+- Indica que dados em cache estão disponíveis
+- Botão "Tentar reconectar" manual
+- ARIA role="status" + aria-live="polite"
+
+### Testes Adicionados:
+
+| Arquivo | Testes | Cobre |
+|---|---|---|
+| `lib/__tests__/idb.test.ts` | 13 | set/get/delete/keys/clear/TTL/resilience |
+| `hooks/__tests__/useOfflineQuery.test.tsx` | 6 | cache+network, stale, refetch, offline |
+| **Total Sprint 8** | **19** | |
+
+### Dependência Adicionada:
+- `fake-indexeddb@6` (dev only) — emula IndexedDB real em jsdom
+
+### Validação:
+- 161 testes passando (era 142 - +19)
+- npm run lint: PASSOU
+- npm run build: PASSOU (bundle 227KB)
+
+### UX do Usuário:
+
+- **Online**: Tudo normal, dados frescos do Firestore
+- **Offline (perde conexão em quadra)**: 
+  - Banner amarelo aparece no topo
+  - Dados em cache do IndexedDB são mostrados
+  - Timer mostra há quanto tempo está offline
+  - Botão "Reconectar" para tentar manualmente
+- **Volta online**:
+  - Banner some
+  - useOfflineQuery revalida dados automaticamente
+  - Cache é atualizado com dados fresh
+
+### Próximos Passos (Sprint 9):
+
+- [ ] Virtual lists (react-window) para Dores/Treinos/Partidas com 100+ items
+- [ ] Code splitting mais agressivo (lazy load Forms)
+- [ ] IndexedDB migrations quando schema mudar
+- [ ] Background sync API para writes offline
+
