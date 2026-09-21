@@ -304,7 +304,10 @@ export function TreinamentoSessoesForm() {
     setSaving(true);
     try {
       // CRÍTICO: força refresh do token para evitar PERMISSION_DENIED
-      await ensureFreshToken(user);
+      // Só faz se online — offline não precisa
+      if (navigator.onLine) {
+        await ensureFreshToken(user);
+      }
 
       const payload = {
         uid: user.uid,
@@ -322,18 +325,23 @@ export function TreinamentoSessoesForm() {
           payload,
           { merge: true },
         );
-        toast({ title: 'Sessão atualizada!', variant: 'success' });
+        toast.success('Sessão atualizada!');
       } else {
         await safeAddDoc(
           user,
           treinoCol(db, user.uid, 'sessoes'),
           { ...payload, createdAt: serverTimestamp() },
         );
-        toast({ title: 'Sessão registrada!', variant: 'success' });
+        // Mensagem indica que se offline, vai pra fila
+        if (navigator.onLine) {
+          toast.success('Sessão registrada!');
+        } else {
+          toast.info('Sessão será sincronizada quando voltar online');
+        }
       }
       navigate('/app/treinamento/sessoes');
     } catch (e: any) {
-      toast({ title: 'Erro', description: e.message, variant: 'destructive' });
+      toast.error('Erro: ' + e.message);
     } finally {
       setSaving(false);
     }

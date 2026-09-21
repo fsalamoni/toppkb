@@ -1,16 +1,16 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { doc, setDoc, getDoc, addDoc, collection, serverTimestamp } from 'firebase/firestore';
+import { useQuery } from '@tanstack/react-query';
+import { doc, getDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useAuth } from '@/hooks/useAuth';
+import { useFormMutation } from '@/hooks/useFormMutation';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/common/LoadingScreen';
-import { toast } from '@/components/ui/toaster';
 import { ChevronLeft, Save, AlertCircle, Info } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -63,7 +63,7 @@ export function DoresForm() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { id } = useParams<{ id?: string }>();
-  const qc = useQueryClient();
+  // const qc = useQueryClient(); // Now handled inside useFormMutation
   const [regiaoHover, setRegiaoHover] = useState<string | null>(null);
 
   const { data: dorExistente, isLoading: loading } = useQuery({
@@ -96,33 +96,27 @@ export function DoresForm() {
 
   const intColor = intensidade >= 8 ? 'red' : intensidade >= 5 ? 'amber' : 'emerald';
 
-  const saveMutation = useMutation({
-    mutationFn: async (data: FormData) => {
-      if (!user) throw new Error('Sem usuário');
-      const payload = {
-        uid: user.uid,
-        ...data,
-        intensidade: Number(data.intensidade),
-        updatedAt: serverTimestamp(),
-      };
-      if (id) {
-        await setDoc(doc(db, 'toppkb_users', user.uid, 'dores', id), payload, { merge: true });
-        return 'updated' as const;
-      } else {
-        await addDoc(collection(db, 'toppkb_users', user.uid, 'dores'), {
-          ...payload,
-          createdAt: serverTimestamp(),
-        });
-        return 'created' as const;
-      }
-    },
-    onSuccess: (a) => {
-      qc.invalidateQueries({ queryKey: ['dores', user?.uid] });
-      qc.invalidateQueries({ queryKey: ['dashboard'] });
-      toast.success(a === 'created' ? 'Dor registrada' : 'Dor atualizada');
-      navigate('/app/dores');
-    },
+  const saveMutation = useFormMutation({
+    type: id ? 'set' : 'add',
+    collection: user ? `toppkb_users/${user.uid}/dores` : '',
+    docId: id,
+    merge: true,
+    queryKeysToInvalidate: user ? [['dores', user.uid], ['dashboard']] : [],
+    successMessage: id ? 'Dor atualizada (será sincronizada)' : 'Dor registrada (será sincronizada)',
+    errorMessage: 'Erro ao salvar dor',
+    onSuccess: () => navigate('/app/dores'),
   });
+
+  const onSubmit = (data: FormData) => {
+    const payload = {
+      uid: user?.uid,
+      ...data,
+      intensidade: Number(data.intensidade),
+      updatedAt: serverTimestamp(),
+      ...(id ? {} : { createdAt: serverTimestamp() }),
+    };
+    saveMutation.mutate(payload);
+  };
 
   if (loading) return <div className="flex justify-center py-12"><Spinner size="lg" /></div>;
 
@@ -133,7 +127,7 @@ export function DoresForm() {
         Voltar
       </Button>
 
-      <form onSubmit={handleSubmit((d) => saveMutation.mutate(d))} className="space-y-4">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -300,9 +294,9 @@ export function DoresForm() {
           <Button type="button" variant="outline" onClick={() => navigate('/app/dores')}>
             Cancelar
           </Button>
-          <Button type="submit" disabled={isSubmitting || saveMutation.isPending} className="flex-1">
+          <Button type="submit" disabled={isSubmitting || saveMutation.isSaving} className="flex-1">
             <Save className="mr-2 h-4 w-4" />
-            {isSubmitting || saveMutation.isPending ? 'Salvando...' : (id ? 'Atualizar' : 'Salvar')}
+            {isSubmitting || saveMutation.isSaving ? 'Salvando...' : (id ? 'Atualizar' : 'Salvar')}
           </Button>
         </div>
       </form>

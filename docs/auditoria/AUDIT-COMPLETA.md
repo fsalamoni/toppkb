@@ -1413,3 +1413,45 @@ const { mutate: add, isSaving } = useOfflineWrite({
 | Bundle budget | ❌ | ✅ |
 | Component catalog | ❌ | ✅ `/__catalog` |
 
+
+---
+
+## ✅ SPRINT 13 — Integração useOfflineWrite em Forms Reais
+
+**Commit:** (próximo)
+
+### Componente Criado:
+
+| Arquivo | Linhas | Função |
+|---|---|---|
+| `hooks/useFormMutation.ts` | 110 | Wrapper unificado para Forms (decide online/offline + invalida queries + toast) |
+
+### Forms Migrados:
+
+| File | Mudança |
+|---|---|
+| `DoresForm.tsx` | `useMutation + safeAddDoc/safeSetDoc` → `useFormMutation` |
+| `TreinamentoSessoesForm.tsx` | Wrap com `navigator.onLine` check antes de `ensureFreshToken` |
+
+### Benefícios:
+
+1. **Forms funcionam offline** — usuário pode registrar dor/treino mesmo sem sinal
+2. **Feedback claro** — `toast.info('Será sincronizada quando voltar online')` quando offline
+3. **Zero mudanças no UI** — mesmo JSX, mesmo código, só substitui a mutation
+4. **Optimistic UI possível** — invalidar queries imediatamente
+
+### Testes:
+- `useFormMutation.test.tsx` (7 testes):
+  - Chama mutate com dados
+  - Invalida queries após sucesso (múltiplas keys)
+  - onSuccess chamado
+  - isSaving reflete estado
+  - onError chamado se falha
+  - Não explode sem onError
+  - Passa collection+docId para useOfflineWrite
+
+### Validação:
+- 189 testes passando (era 182 - +7)
+- npm run lint: PASSOU
+- npm run build: PASSOU (bundle 257KB estável)
+
