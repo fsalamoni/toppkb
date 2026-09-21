@@ -1289,3 +1289,65 @@ substituindo os `safeSetDoc` por `useSyncQueue.enqueue()`.
 - [ ] Storybook (visual docs de componentes)
 - [ ] Code splitting mais agressivo
 
+
+---
+
+## ✅ SPRINT 11 — useOfflineWrite + Integração Forms
+
+**Commit:** (próximo)
+
+### Componentes Criados:
+
+| Arquivo | Linhas | Função |
+|---|---|---|
+| `hooks/useOfflineWrite.ts` | 105 | Hook unificado para writes (decide online vs offline) |
+
+### Funcionalidades:
+
+#### `useOfflineWrite({ type, collection, docId, merge })`
+- **Online**: executa Firestore direto
+- **Falha online** (network/timeout): cai pra fila automaticamente
+- **Offline**: adiciona direto pra fila
+- Retorna `mutate(data)`, `isSaving`, `error`
+
+### Benefícios:
+
+1. **Zero código duplicado em Forms**: substitui padrão `safeSetDoc` + try/catch
+2. **Fallback transparente**: usuário não vê erro se Firestore falhar
+3. **Garantia de write**: nunca perde dados (vai pra fila se falhar)
+4. **UX consistente**: `isSaving` é confiável, `error` populado só se ambos falharem
+
+### Testes Adicionados:
+
+| Arquivo | Testes |
+|---|---|
+| `useOfflineWrite.test.tsx` | 5 |
+| - Online executa Firestore direto | |
+| - Offline adiciona à fila | |
+| - Firestore falha → cai pra fila | |
+| - isSaving reflete estado | |
+| - delete sem docId é enfileirado | |
+
+### Validação:
+- 178 testes passando (era 173 - +5)
+- npm run lint: PASSOU
+- npm run build: PASSOU (bundle 234KB estável)
+
+### Migração de Forms (próximo):
+
+Para integrar em Forms existentes, substituir:
+```ts
+// ANTES
+const add = useMutation({
+  mutationFn: async (data) => {
+    await safeAddDoc(user, ..., data);
+  },
+});
+
+// DEPOIS
+const { mutate: add, isSaving } = useOfflineWrite({
+  type: 'add',
+  collection: `toppkb_users/${user?.uid}/treinos`,
+});
+```
+
