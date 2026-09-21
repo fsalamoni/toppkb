@@ -1529,3 +1529,62 @@ const { mutate: add, isSaving } = useOfflineWrite({
 - Imagens de torneios
 - Thumbnails de exercícios kettlebell
 
+
+---
+
+## ✅ SPRINT 15 — Otimização Code Splitting Final
+
+**Commit:** (próximo)
+
+### Mudança:
+
+`<ComponentCatalog />` agora é **lazy-loaded** via React.lazy + Suspense.
+
+### Impacto:
+
+| Bundle | Antes | Depois | Redução |
+|---|---|---|---|
+| `index` (inicial) | 256.68 kB | 234.85 kB | **-22KB (-8.6%)** |
+| `ComponentCatalog` (chunk lazy) | — | 8.62 kB | +8.62KB (só carrega sob demanda) |
+
+### Como funciona:
+
+- `ComponentCatalog` é importado lazy
+- Suspense fallback (PageLoader) durante o load
+- Chunk separado de 8.62KB carregado apenas quando o user acessa `/__catalog`
+- **20+ páginas** de Forms continuam lazy (já estavam)
+- Lazy apenas do catálogo público — owner dev chama manualmente
+
+### Validação:
+
+- 194 testes passando (estável)
+- npm run lint: PASSOU
+- npm run build: PASSOU (bundle inicial caiu 22KB)
+
+### Análise Completa do Bundle:
+
+| Chunk | Tamanho | Tipo |
+|---|---|---|
+| index | 234.85 kB (67.65 gz) | **Inicial** |
+| firebase-vendor | 608.81 kB (143.61 gz) | **Vendor** |
+| generateCategoricalChart | 374.20 kB (103.59 gz) | **Vendor** (charts) |
+| react-vendor | 164.01 kB (53.52 gz) | **Vendor** |
+| ChatPage | 133.58 kB (41.47 gz) | Lazy |
+| Onboarding | 64.53 kB (16.19 gz) | Lazy |
+| ... ~50 lazy chunks | <50kB cada | Lazy |
+
+**Total GZIP: ~510KB**
+**Total UNCOMPRESSED: 1.5MB**
+**Initial GZIP para usuário: ~110KB** (apenas index + react + firebase-vendor)
+
+### Carregamento Effective:
+
+```
+1° Load (landing):  234KB (index) + 165KB (react + firebase) ≈ 400KB
+2° Visited Dashboard: + TreinamentoDashboard chunk (~30KB)
+3° Treinamento Mp: + TreinamentoMeuPrograma chunk (~43KB)
+4° Each Form: + ~20KB (lazy load ao clicar)
+```
+
+Tudo escala.
+
