@@ -89,6 +89,112 @@
       --muted-foreground: 240 3.8% 80%;
     }
   }
+
+  /* Print styles - limpo e legível quando usuário imprime Forms/dados */
+  @media print {
+    /* Esconder elementos não imprimíveis */
+    .no-print,
+    nav,
+    aside,
+    [role="navigation"],
+    [aria-label*="menu"],
+    button[type="button"],
+    .sidebar,
+    .topbar {
+      display: none !important;
+    }
+
+    /* Mostrar elementos só visíveis em print */
+    .print-only {
+      display: block !important;
+    }
+
+    /* Forçar fundo branco e texto preto */
+    body, html {
+      background: white !important;
+      color: black !important;
+      font-size: 11pt;
+      line-height: 1.4;
+    }
+
+    /* Containers sem padding para caber mais */
+    main, .container {
+      padding: 0 !important;
+      margin: 0 !important;
+      max-width: 100% !important;
+    }
+
+    /* Cards com borda simples */
+    .card,
+    [class*="rounded"],
+    [class*="border"] {
+      box-shadow: none !important;
+      border: 1px solid #ddd !important;
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+
+    /* Links mostram URL após texto */
+    a[href^="http"]::after,
+    a[href^="/"]::after {
+      content: " (" attr(href) ")";
+      font-size: 9pt;
+      color: #666;
+    }
+
+    /* Quebra de página antes de h1 (cada seção em nova página) */
+    h1 {
+      page-break-before: always;
+      break-before: page;
+    }
+    h1:first-of-type {
+      page-break-before: avoid;
+      break-before: avoid;
+    }
+
+    /* Tabelas e listas sempre inteiras */
+    table, ul, ol, dl, pre, blockquote {
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+
+    /* Imagens e charts nunca cortados */
+    img, svg, canvas {
+      max-width: 100% !important;
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+
+    /* Skeletons e loading devem sumir */
+    .animate-pulse,
+    [aria-busy="true"] {
+      background: white !important;
+      animation: none !important;
+    }
+
+    /* Footer com info de impressão */
+    .print-footer {
+      display: block !important;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 4pt 0;
+      border-top: 1px solid #ccc;
+      font-size: 8pt;
+      color: #666;
+      text-align: center;
+    }
+
+    @page {
+      margin: 1.5cm;
+      @bottom-center {
+        content: "Top Pickleball 50+ — " counter(page) " de " counter(pages);
+        font-size: 8pt;
+        color: #666;
+      }
+    }
+  }
 }
 
 /* Scrollbar customizada (dark mode) */

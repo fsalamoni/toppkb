@@ -2039,3 +2039,119 @@ import { ShortcutsHelp } from '@/components/common/ShortcutsHelp';
 - ✅ Keyboard-first navigation
 - ✅ Padrão `g + X` (vim-like) para ir rapidamente
 
+
+---
+
+## ✅ SPRINT 22 — Print Stylesheet
+
+**Commit:** (próximo)
+
+### Mudanças:
+
+| Arquivo | Mudança |
+|---|---|
+| `src/index.css` | +80 linhas de regras `@media print` |
+| `src/__tests__/print-styles.test.ts` | 16 testes validando regras |
+
+### Regras Adicionadas:
+
+```css
+@media print {
+  /* Esconder elementos não imprimíveis */
+  .no-print, nav, aside, [role="navigation"],
+  button[type="button"], .sidebar, .topbar {
+    display: none !important;
+  }
+
+  /* Mostrar elementos só visíveis em print */
+  .print-only { display: block !important; }
+
+  /* Forçar fundo branco e texto preto */
+  body, html {
+    background: white !important;
+    color: black !important;
+    font-size: 11pt;
+    line-height: 1.4;
+  }
+
+  /* Containers sem padding */
+  main, .container {
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+  }
+
+  /* Cards sem sombra, bordas simples */
+  .card, [class*="rounded"], [class*="border"] {
+    box-shadow: none !important;
+    border: 1px solid #ddd !important;
+    page-break-inside: avoid;
+  }
+
+  /* Links mostram URL após texto */
+  a[href^="http"]::after, a[href^="/"]::after {
+    content: " (" attr(href) ")";
+    font-size: 9pt;
+    color: #666;
+  }
+
+  /* Quebra de página antes de h1 */
+  h1 { page-break-before: always; }
+  h1:first-of-type { page-break-before: avoid; }
+
+  /* Tabelas e listas sempre inteiras */
+  table, ul, ol, dl, pre, blockquote {
+    page-break-inside: avoid;
+  }
+
+  /* Imagens nunca cortadas */
+  img, svg, canvas {
+    max-width: 100% !important;
+    page-break-inside: avoid;
+  }
+
+  /* Skeletons viram branco */
+  .animate-pulse, [aria-busy="true"] {
+    background: white !important;
+    animation: none !important;
+  }
+
+  /* @page com margin + footer page numbers */
+  @page {
+    margin: 1.5cm;
+    @bottom-center {
+      content: "Top Pickleball 50+ — " counter(page) " de " counter(pages);
+      font-size: 8pt;
+      color: #666;
+    }
+  }
+}
+```
+
+### Como Aplicar nos Forms:
+
+```tsx
+// Esconder botão "Salvar" em print
+<Button className="no-print">Salvar</Button>
+
+// Mostrar header só em print
+<div className="print-only">
+  Documento gerado em {new Date().toLocaleDateString('pt-BR')}
+</div>
+```
+
+### Validação:
+
+- 285 testes passando (era 269 - +16 testes)
+- npm run lint: PASSOU
+- npm run build: PASSOU
+
+### Benefícios:
+
+- ✅ Atletas podem **imprimir diário de treinos** (registro físico)
+- ✅ Sem nav/sidebar/botões em print
+- ✅ Page-break inteligente (h1 inicia nova página)
+- ✅ Page numbers + nome do app no footer
+- ✅ Imagens e charts sempre inteiros
+- ✅ URL completa após links (referência)
+
