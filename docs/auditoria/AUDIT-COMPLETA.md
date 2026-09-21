@@ -2786,3 +2786,86 @@ const error = validateHeartRate(300); // 'Frequência deve estar entre 30 e 220 
 - ✅ Cobertura específica para contextos 50+ (FC, peso, duração)
 - ✅ Hook useFormValidation simplifica uso
 
+
+---
+
+## ✅ SPRINT 30 — Streak Counter + Gamificação
+
+**Commit:** (próximo)
+
+### Arquivos:
+
+| Arquivo | Linhas | Função |
+|---|---|---|
+| `lib/streak.ts` | 130 | Cálculos de streak |
+| `components/common/StreakBadge.tsx` | 85 | Componente visual |
+| `lib/__tests__/streak.test.ts` | 17 testes | Cobertura completa |
+
+### Funções de Cálculo:
+
+```typescript
+calcularStreakAtual(eventos);    // dias consecutivos ATÉ hoje
+calcularMaiorStreak(eventos);    // recorde histórico
+calcularDiasAtivos(eventos);     // total dias únicos
+getStreakLevel(streak);          // nível + cor + emoji
+```
+
+### StreakBadge UI:
+
+```tsx
+<StreakBadge eventos={treinos} label="Treinos" size="md" />
+```
+
+**Mostra:**
+- 🔥 + número grande (streak atual)
+- 🏆 melhor streak
+- 📅 dias totais ativos
+- Level + emoji:
+  - 🌱 0-6 dias (Iniciante)
+  - ⭐ 7-29 dias (Regular)
+  - 🔥 30-99 dias (Dedicado)
+  - 🏆 100-364 dias (Elite)
+  - 👑 365+ dias (Lendário)
+
+### Algoritmo de Streak:
+
+1. Normaliza todas as datas para `YYYY-MM-DD`
+2. Remove duplicatas
+3. Streak atual começa de HOJE (se ativo) ou ONTEM (se não)
+4. Conta regressivamente até quebrar
+5. Quebra = passou mais de 1 dia
+
+### Gamificação 50+:
+
+- 🔥 Incentiva consistência (atletas 50+ precisam de rotina)
+- 🏆 Reconhece recorde pessoal
+- 👑 Marca lendário (1 ano)
+- 🎯 Mensagens motivacionais em cada nível
+
+### Validação:
+
+- 364 → 381 testes passando (+17)
+- npm run lint: PASSOU
+- npm run build: PASSOU
+
+### Benefícios:
+
+- ✅ Engajamento (streak incentiva consistência)
+- ✅ Visual bonito com cores por nível
+- ✅ aria-label apropriado
+- ✅ Memoized (não recalcula desnecessariamente)
+- ✅ Aplicável em qualquer coleção (treinos, partidas, hidratação)
+
+### Aplicação no Dashboard:
+
+```tsx
+function Dashboard() {
+  const { data: treinos } = useCollection('treinos');
+  return (
+    <div>
+      <StreakBadge eventos={treinos} label="Treinos consecutivos" size="lg" />
+    </div>
+  );
+}
+```
+
