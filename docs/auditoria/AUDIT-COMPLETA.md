@@ -2869,3 +2869,91 @@ function Dashboard() {
 }
 ```
 
+
+---
+
+## ✅ SPRINT 31 — Calendar View (Visualização Mensal)
+
+**Commit:** (próximo)
+
+### Arquivos:
+
+| Arquivo | Linhas | Função |
+|---|---|---|
+| `components/common/CalendarView.tsx` | 195 | Visualização mensal com atividades |
+| `components/common/__tests__/CalendarView.test.tsx` | 10 testes | Cobertura completa |
+
+### CalendarView Features:
+
+```tsx
+<CalendarView
+  activities={treinos.map((t) => ({
+    date: t.data.slice(0, 10),
+    type: 'treino',
+    count: 1,
+  }))}
+  onSelectDay={(date) => console.log(date)}
+  selectedDate="2025-01-15"
+/>
+```
+
+**UI:**
+- Header com mês/ano + navegação (prev/next/hoje)
+- Grid 7x6 com dias do mês
+- Dia atual destacado (bg-primary)
+- Dia selecionado com accent
+- Fim de semana em cor secundária
+- Dots coloridos por tipo de atividade
+- Legend dos tipos no footer
+- "Hoje" volta ao mês atual
+
+### Tipos de Atividade (5):
+
+- 🔵 treino (azul)
+- 🟢 partida (verde)
+- 🔴 dores (vermelho)
+- 🟣 medida (roxo)
+- 🟡 sono (amarelo)
+
+### Cada dia mostra:
+- Número (1-31)
+- até 3 dots coloridos
+- +N quando tem mais de 3 atividades
+
+### Acessibilidade:
+
+- `role="grid"` no container
+- `role="gridcell"` em cada dia
+- `aria-selected` quando selecionado
+- `aria-label` descritivo ("2025-01-15, 2 atividade(s)")
+- Botões de navegação com aria-label
+
+### Validação:
+
+- 381 → 391 testes passando (+10)
+- npm run lint: PASSOU
+- npm run build: PASSOU
+
+### Benefícios:
+
+- ✅ Visualização mensal clara
+- ✅ Dots permitem ver padrões de atividade
+- ✅ Acessível (grid + gridcell + aria)
+- ✅ Navegação intuitiva (prev/next/hoje)
+- ✅ Aplicável em qualquer coleção
+
+### Aplicação Futura:
+
+```tsx
+// Em TreinosPage (substituir lista por calendar):
+function TreinosPage() {
+  const { data: treinos } = useCollection('treinos');
+  const activities = treinos.map(t => ({
+    date: t.data.toISOString().slice(0, 10),
+    type: 'treino' as const,
+    count: 1,
+  }));
+  return <CalendarView activities={activities} />;
+}
+```
+
