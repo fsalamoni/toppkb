@@ -18,8 +18,11 @@
  *
  * Sub-rota: /app/treinamento/meu-programa
  *
- * Firestore: toppkb_users/{uid}/treinamento/programa (doc "atual")
+ * Firestore: toppkb_users/{uid}/programa/atual (doc) — 4 segmentos ✓
  * localStorage: treinamento-programa (cache)
+ *
+ * ATENÇÃO: caminho antigo era toppkb_users/{uid}/treinamento/programa/atual
+ * que tem 5 segmentos (ímpar) e quebra no Firestore. Corrigido.
  */
 
 import { useEffect, useMemo, useState } from 'react';
@@ -70,7 +73,7 @@ export function TreinamentoMeuPrograma() {
     queryKey: ['treinamento-programa', user?.uid],
     queryFn: async () => {
       if (!user) return null;
-      const ref = doc(db, 'toppkb_users', user.uid, 'treinamento', 'programa', 'atual');
+      const ref = doc(db, 'toppkb_users', user.uid, 'programa', 'atual');
       const snap = await getDoc(ref);
       if (snap.exists()) return snap.data() as Plano;
       try {
@@ -88,7 +91,7 @@ export function TreinamentoMeuPrograma() {
   const savePlano = useMutation({
     mutationFn: async (novoPlano: Plano) => {
       if (!user) throw new Error('Não autenticado');
-      const ref = doc(db, 'toppkb_users', user.uid, 'treinamento', 'programa', 'atual');
+      const ref = doc(db, 'toppkb_users', user.uid, 'programa', 'atual');
       await setDoc(ref, { ...novoPlano, savedAt: new Date().toISOString() });
       localStorage.setItem(STORAGE_KEY, JSON.stringify(novoPlano));
       return novoPlano;
@@ -194,7 +197,7 @@ export function TreinamentoMeuPrograma() {
     try {
       if (user) {
         await setDoc(
-          doc(db, 'toppkb_users', user.uid, 'treinamento', 'programa', 'atual'),
+          doc(db, 'toppkb_users', user.uid, 'programa', 'atual'),
           {},
         );
       }
