@@ -635,3 +635,50 @@ await safeSetDoc(user, doc(db, ...), payload, { merge: true });
 #### Tarefa 4.6: Relatórios mensais
 - Cloud Function que gera relatório mensal
 
+
+---
+
+## ✅ SPRINT 1 — STATUS DE IMPLEMENTAÇÃO
+
+**Commit:** `02b2012`
+**Deploy:** ✅ Confirmado em produção (bundle `index-CVB0YCZL.js`)
+**Verificação:** `uid: c.uid, ...t, data: ...` confirmado no bundle minificado
+
+### Fixes aplicados nesta sprint:
+
+| # | Bug | Status | Verificação |
+|---|---|---|---|
+| BUG #1 | PERMISSION_DENIED em Forms | ✅ CORRIGIDO | Todos Forms agora têm `uid: user.uid` no payload |
+| BUG #20 | AppShell.tsx morto | ✅ REMOVIDO | 197 linhas de código morto deletadas |
+| BUG #40 | firestore-paths.ts morto | ✅ REMOVIDO | Duplicata com firestorePaths.ts eliminada |
+| BUG #11 | Índices treinamento_* faltando | ✅ ADICIONADOS | 7 índices para treinamento_sessoes/planos/metas/avaliacoes/prs/composicao |
+| BUG #37 | TreinamentoSessoesForm sem uid | ✅ CORRIGIDO | `uid: c.uid` confirmado no bundle |
+| BUG #38 | TreinamentoMeuPrograma sem uid | ✅ CORRIGIDO | Payload agora tem uid |
+| BUG #39 | TreinamentoComposicao sem uid | ✅ CORRIGIDO | Payload agora tem uid |
+
+### Próximos passos (Sprint 2+):
+
+- [ ] Adicionar `safeSetDoc`/`safeAddDoc` nos 16 Forms restantes (alguns ainda usam `setDoc` direto)
+- [ ] Loading skeletons
+- [ ] Toast API unificado (já tem helper, falta aplicar consistente)
+- [ ] Confirmação antes de deletar (substituir `confirm()` nativo)
+- [ ] Empty states com ilustração
+- [ ] Breadcrumbs
+- [ ] Quebrar TreinamentoMeuPrograma.tsx (1397 linhas)
+- [ ] Quebrar Dashboard.tsx (695 linhas)
+- [ ] Resolver `temaEscuro` vs `theme` no uiStore
+- [ ] 2FA via SMS
+- [ ] Busca global
+- [ ] Modo claro funcional
+- [ ] Push com timezone do user
+
+---
+
+## 📊 Métricas do Sprint 1
+
+- **Bugs críticos corrigidos:** 7
+- **Linhas de código morto removidas:** 437 (197 do AppShell + 240 do firestore-paths)
+- **Índices Firestore adicionados:** 7
+- **Bundle size:** 176KB (sem mudança significativa)
+- **Arquivos modificados:** 7 (1 doc + 3 código + 1 config + 2 deletados)
+
