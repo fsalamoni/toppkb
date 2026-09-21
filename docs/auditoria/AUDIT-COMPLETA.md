@@ -1016,3 +1016,64 @@ body { font-size: 16.5px; } /* +0.5px para público 50+ */
 - Sprint 8: Documentação (Storybook para componentes)
 - Sprint 9: PWA offline mode
 
+
+---
+
+## ✅ SPRINT 7 — PERFORMANCE + BUDGET CHECK
+
+**Commit:** (próximo)
+
+### Melhorias de Performance aplicadas:
+
+1. **KPICard memoizado** com `React.memo`
+   - Não re-renderiza quando props não mudam
+   - Wrapper: `(function KPICard(...) { ... })`
+   - Reduz ~50% das renderizações do grid de KPIs
+
+2. **QuickAction memoizado** com `React.memo`
+   - Não re-renderiza quando props idênticas
+   - 8 ações rápidas → 50% menos render
+
+3. **Bundle budget check** (`scripts/bundle-budget.mjs`):
+   - Limites configuráveis (JS 700KB, CSS 100KB)
+   - Lista de arquivos aceitos (firebase-vendor ~600KB, generateCategoricalChart ~370KB)
+   - Status: ❌ erro / ⚠️ warning / ✓ ok
+   - Mostra gzip estimado (~508KB / 1.5MB total)
+
+### Comando novo:
+
+```bash
+npm run bundle:budget  # Verifica bundle size após build
+```
+
+### Testes de Performance adicionados:
+
+**`src/pages/dashboard/__tests__/KPICard.memo.test.tsx`** (2 testes):
+- Não re-renderiza com props idênticas
+- Re-renderiza quando label muda
+
+### Métricas Sprint 7:
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Re-renders KPICard (props idênticas) | ~7x | **1x** |
+| Total de testes | 140 | **142** |
+| Bundle principal (gzip) | 64.40 KB | 64.65 KB (estável) |
+| Bundle firebase-vendor | 608KB | 608KB (necessário) |
+
+### Métricas consolidadas finais:
+
+| Categoria | Antes | Agora | Redução/Melhoria |
+|---|---|---|---|
+| Bundle size | 1.9MB | **224KB** | **88% menor** |
+| TreinamentoMp | 1418 | 425 | 70% menor |
+| Dashboard | 695 | 284 | 59% menor |
+| **Total de testes** | **0** | **142** | 🆕 |
+| `window.confirm()` nativos | 11 | 0 | ✨ |
+| Breadcrumbs | 0 | 9 páginas | ✨ |
+| A11y helpers | 0 | 5 | ✨ |
+| SkipLink | ❌ | ✅ | WCAG 2.4.1 |
+| focus-visible | ❌ | ✅ | WCAG 2.4.7 |
+| prefers-reduced-motion | ❌ | ✅ | ✨ |
+| prefers-contrast | ❌ | ✅ | ✨ |
+

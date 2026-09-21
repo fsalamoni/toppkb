@@ -15,6 +15,7 @@
  * - QuickAction: ação rápida de acesso
  */
 import { Link } from 'react-router-dom';
+import { memo as ReactMemo } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import {
   Activity, Trophy, TrendingUp, Heart, Target, Calendar, Flame,
@@ -89,7 +90,7 @@ export function DashboardKPIs(props: DashKPIsProps) {
   );
 }
 
-export function KPICard({
+export const KPICard = ReactMemo(function KPICard({
   label, value, sub, icon: Icon, color, link,
 }: {
   label: string;
@@ -129,9 +130,9 @@ export function KPICard({
   );
 
   return link ? <Link to={link}>{inner}</Link> : inner;
-}
+});
 
-export function QuickAction({
+export const QuickAction = ReactMemo(function QuickAction({
   href, icon: Icon, label, color,
 }: {
   href: string;
@@ -157,4 +158,4 @@ export function QuickAction({
       <span className="text-[10px] text-center leading-tight">{label}</span>
     </Link>
   );
-}
+});
