@@ -2688,3 +2688,101 @@ const { savedAt, saving, clear } = useFormAutoSave({
 </form>
 ```
 
+
+---
+
+## ✅ SPRINT 29 — Form Validation Helpers
+
+**Commit:** (próximo)
+
+### Arquivos:
+
+| Arquivo | Linhas | Função |
+|---|---|---|
+| `lib/validators.ts` | 175 | Validators reutilizáveis |
+| `hooks/useFormValidation.ts` | 70 | Hook com schema validation |
+| `lib/__tests__/validators.test.ts` | 34 testes | Todos os validators |
+
+### Validators Disponíveis (12 tipos):
+
+| Validator | Uso |
+|---|---|
+| `validateRequired` | Campo obrigatório |
+| `validateMinLength(n)` | Mínimo N caracteres |
+| `validateMaxLength(n)` | Máximo N caracteres |
+| `validateRange(min, max)` | Número entre X-Y |
+| `validateEmail` | Email válido |
+| `validateUrl` | URL válida |
+| `validateDate` | Data válida |
+| `validateNotFuture` | Data passada |
+| `validateWeight` | Peso 30-200kg |
+| `validateHeartRate` | FC 30-220 bpm |
+| `validateDuration` | 1-480 min |
+| `composeValidators` | Compor múltiplos |
+
+### useFormValidation Hook:
+
+```typescript
+const { errors, validate, validateField, isValid } = useFormValidation({
+  titulo: validateRequired,
+  duracao: validateDuration,
+  peso: validateWeight,
+});
+
+const handleSubmit = () => {
+  const errs = validate(formData);
+  if (!isValid) {
+    toast.error('Corrija os erros');
+    return;
+  }
+  save(formData);
+};
+```
+
+### Validação Direta:
+
+```typescript
+import { validateRequired, validateDuration } from '@/lib/validators';
+
+const error = validateRequired(formData.titulo, 'Título');
+if (error) {
+  toast.error(error);
+}
+```
+
+### validateObject (multi-campo):
+
+```typescript
+import { validateObject, validateRequired, validateRange } from '@/lib/validators';
+
+const errors = validateObject(formData, {
+  titulo: validateRequired,
+  duracao: validateRange(1, 480),
+});
+// errors.titulo, errors.duracao
+```
+
+### Validação 50+:
+
+```typescript
+const error = validateWeight(75); // null
+const error = validateWeight(1500); // 'Peso deve estar entre 30kg e 200kg'
+const error = validateHeartRate(220); // null
+const error = validateHeartRate(300); // 'Frequência deve estar entre 30 e 220 bpm'
+```
+
+### Validação:
+
+- 330 → 364 testes passando (+34)
+- npm run lint: PASSOU
+- npm run build: PASSOU
+
+### Benefícios:
+
+- ✅ Validators reutilizáveis em qualquer Form
+- ✅ Sem dependência externa (Zod, Yup)
+- ✅ Mensagens em pt-BR
+- ✅ Composição (composeValidators)
+- ✅ Cobertura específica para contextos 50+ (FC, peso, duração)
+- ✅ Hook useFormValidation simplifica uso
+
