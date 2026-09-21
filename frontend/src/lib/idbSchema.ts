@@ -18,7 +18,7 @@
  * 3. Migration roda automaticamente na próxima abertura
  */
 const DB_NAME = 'toppkb';
-export const DB_VERSION = 2;
+export const DB_VERSION = 3;
 
 /**
  * Migration function — recebe a conexão do banco e executa alterações
@@ -29,6 +29,7 @@ type Migration = (db: IDBDatabase, oldVersion: number, tx: IDBTransaction) => vo
  * Lista de migrations em ordem.
  * - Migration 1: cria store 'kv' (cache genérico)
  * - Migration 2: cria store 'web-vitals' (métricas) e 'sync-queue' (fila offline)
+ * - Migration 3: cria store 'errors' (log estruturado)
  */
 export const MIGRATIONS: Migration[] = [
   // v0 → v1: store 'kv' genérico
@@ -44,6 +45,12 @@ export const MIGRATIONS: Migration[] = [
     }
     if (!db.objectStoreNames.contains('sync-queue')) {
       db.createObjectStore('sync-queue');
+    }
+  },
+  // v2 → v3: store de errors
+  (db) => {
+    if (!db.objectStoreNames.contains('errors')) {
+      db.createObjectStore('errors');
     }
   },
 ];

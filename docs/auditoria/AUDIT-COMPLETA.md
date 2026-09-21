@@ -1882,3 +1882,95 @@ function TreinoForm() {
 - ✅ Acessível com aria-busy + aria-live
 - ✅ Customizável por variant OU props específicas
 
+
+---
+
+## ✅ SPRINT 20 — ErrorBoundary + Local Error Logger
+
+**Commit:** (próximo)
+
+### Mudanças:
+
+| Arquivo | Linhas | Função |
+|---|---|---|
+| `lib/errorLogger.ts` | 130 | Log estruturado de erros no IndexedDB |
+| `components/common/ErrorBoundary.tsx` | 110 | Captura erros React + UI fallback |
+| `lib/__tests__/errorLogger.test.ts` | 12 testes | Log/list/clear/ring buffer |
+| `components/common/__tests__/ErrorBoundary.test.tsx` | 8 testes | Captura, fallback, logError |
+| `lib/idbSchema.ts` | +1 migration | DB v3 com store `errors` |
+
+### errorLogger API:
+
+```typescript
+import { logError, listErrors, clearError, clearAllErrors } from '@/lib/errorLogger';
+
+// Logar erro
+await logError(error, {
+  source: 'TreinoForm.save',
+  metadata: { userId: 'u123', action: 'update' },
+});
+
+// Listar erros
+const errors = await listErrors();
+// [{ id, message, stack, source, timestamp, metadata, ... }]
+
+// Limpar
+await clearError(errorId);       // específico
+await clearAllErrors();          // todos
+```
+
+### Schema v3 Migration:
+
+```typescript
+// v2 → v3: store 'errors'
+(db) => {
+  if (!db.objectStoreNames.contains('errors')) {
+    db.createObjectStore('errors');
+  }
+}
+```
+
+### ErrorBoundary UI:
+
+```tsx
+<ErrorBoundary componentName="Dashboard" fallback={<CustomUI />}>
+  <MyPage />
+</ErrorBoundary>
+```
+
+**UI de Fallback:**
+- EmptyState com illustration `error`
+- Título "Algo deu errado"
+- Descrição com mensagem do erro
+- Botão "Tentar novamente" (reset state)
+- Botão "Dashboard" (link)
+- ID do erro visível para suporte
+
+### Ring Buffer:
+
+- Mantém últimos 100 erros no IndexedDB
+- Erros mais antigos são automaticamente removidos
+- Ordenados por timestamp desc (mais recente primeiro)
+
+### Validação:
+
+- 258 testes passando (era 238 - +20 testes)
+- npm run lint: PASSOU
+- npm run build: PASSOU (bundle estável)
+
+### Benefícios:
+
+- ✅ Não perde erros (persistência local)
+- ✅ Ring buffer previne overflow
+- ✅ UI amigável com recovery
+- ✅ Source tracking (qual componente falhou)
+- ✅ Metadata flexível para debug
+- ✅ Schema versionado (v3)
+
+### Aplicações futuras:
+
+- Sentry integration (enviar logError também pra Sentry)
+- Página `/app/admin/errors` para revisar todos os erros
+- Filtros por source/timestamp
+- Auto-ignore erros 404 comuns
+

@@ -21,6 +21,7 @@ describe('idbSchema', () => {
     await clearStore('kv');
     await clearStore('web-vitals');
     await clearStore('sync-queue');
+    await clearStore('errors');
   });
 
   describe('Open DB', () => {
@@ -30,8 +31,8 @@ describe('idbSchema', () => {
       expect(db?.version).toBe(DB_VERSION);
     });
 
-    it('retorna DB_VERSION = 2', () => {
-      expect(DB_VERSION).toBe(2);
+    it('retorna DB_VERSION = 3', () => {
+      expect(DB_VERSION).toBe(3);
     });
 
     it('executa 2 migrations', () => {
@@ -53,6 +54,11 @@ describe('idbSchema', () => {
     it('cria store sync-queue', async () => {
       const db = await openDB();
       expect(db?.objectStoreNames.contains('sync-queue')).toBe(true);
+    });
+
+    it('cria store errors', async () => {
+      const db = await openDB();
+      expect(db?.objectStoreNames.contains('errors')).toBe(true);
     });
   });
 

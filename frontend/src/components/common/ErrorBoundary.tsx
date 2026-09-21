@@ -1,70 +1,118 @@
-import { Component, type ReactNode } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { AlertCircle } from 'lucide-react';
-
-interface State {
-  error: Error | null;
-}
-
-interface Props {
-  children: ReactNode;
-}
-
 /**
- * ErrorBoundary global — captura erros de render do React
- * e exibe uma mensagem visível ao usuário.
+ * ErrorBoundary — captura erros React e loga no IndexedDB
+ *
+ * Substitui o ErrorBoundary básico anterior.
+ * - Loga erro no errorLogger
+ * - Mostra UI de fallback amigável
+ * - Permite ao usuário reportar/recarregar
+ *
+ * USO:
+ *   <ErrorBoundary>
+ *     <App />
+ *   </ErrorBoundary>
  */
-export class ErrorBoundary extends Component<Props, State> {
-  state: State = { error: null };
+import { Component, ErrorInfo, ReactNode } from 'react';
+import { RefreshCw, Home } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { logError } from '@/lib/errorLogger';
+import { Button } from '@/components/ui/button';
+import { EmptyState } from '@/components/common/EmptyState';
 
-  static getDerivedStateFromError(error: Error): State {
-    return { error };
+interface ErrorBoundaryProps {
+  children: ReactNode;
+  /** Nome do componente/página para identificar no log */
+  componentName?: string;
+  /** Custom fallback (opcional) */
+  fallback?: ReactNode;
+}
+
+interface ErrorBoundaryState {
+  hasError: boolean;
+  error: Error | null;
+  errorId: string | null;
+}
+
+export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  constructor(props: ErrorBoundaryProps) {
+    super(props);
+    this.state = { hasError: false, error: null, errorId: null };
   }
 
-  componentDidCatch(error: Error, info: any) {
-    console.error('[ErrorBoundary]', error, info);
+  static getDerivedStateFromError(error: Error): Partial<ErrorBoundaryState> {
+    return { hasError: true, error };
   }
 
-  render() {
-    if (this.state.error) {
+  override async componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    const errorId = await logError(error, {
+      source: this.props.componentName || 'React.ErrorBoundary',
+      metadata: {
+        componentStack: errorInfo.componentStack,
+      },
+    });
+    this.setState({ errorId });
+  }
+
+  reset = () => {
+    this.setState({ hasError: false, error: null, errorId: null });
+  };
+
+  override render() {
+    if (this.state.hasError) {
+      if (this.props.fallback) {
+        return this.props.fallback;
+      }
+
       return (
-        <div className="max-w-2xl mx-auto py-8">
-          <Card className="border-red-500/50 bg-red-500/5">
-            <CardContent className="pt-4 pb-4">
-              <div className="flex items-start gap-3">
-                <AlertCircle className="h-5 w-5 text-red-500 flex-shrink-0 mt-0.5" />
-                <div className="flex-1 min-w-0">
-                  <div className="font-semibold text-sm">Algo deu errado</div>
-                  <p className="text-xs text-muted-foreground mt-1 break-all">
-                    {this.state.error.message}
-                  </p>
-                  <pre className="text-[10px] text-muted-foreground mt-2 max-h-32 overflow-auto">
-                    {this.state.error.stack}
-                  </pre>
-                  <div className="flex gap-2 mt-3">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => this.setState({ error: null })}
-                    >
-                      Tentar novamente
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => window.location.reload()}
-                    >
-                      Recarregar
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+        <ErrorFallbackUI
+          error={this.state.error}
+          errorId={this.state.errorId}
+          onReset={this.reset}
+        />
       );
     }
+
     return this.props.children;
   }
+}
+
+interface ErrorFallbackUIProps {
+  error: Error | null;
+  errorId: string | null;
+  onReset: () => void;
+}
+
+function ErrorFallbackUI({ error, errorId, onReset }: ErrorFallbackUIProps) {
+  return (
+    <div className="min-h-[60vh] flex items-center justify-center p-6">
+      <div className="max-w-md w-full">
+        <EmptyState
+          illustration="error"
+          title="Algo deu errado"
+          description={
+            error?.message ||
+            'Ocorreu um erro inesperado. Você pode tentar recarregar a página ou voltar para o início.'
+          }
+          action={
+            <div className="flex gap-2 mt-4 justify-center">
+              <Button onClick={onReset} variant="default" size="sm">
+                <RefreshCw className="h-4 w-4 mr-1" />
+                Tentar novamente
+              </Button>
+              <Button asChild variant="outline" size="sm">
+                <Link to="/app/dashboard">
+                  <Home className="h-4 w-4 mr-1" />
+                  Dashboard
+                </Link>
+              </Button>
+            </div>
+          }
+        />
+        {errorId && (
+          <p className="text-xs text-muted-foreground text-center mt-4">
+            ID do erro: <code className="px-1 py-0.5 bg-muted rounded">{errorId}</code>
+          </p>
+        )}
+      </div>
+    </div>
+  );
 }
