@@ -411,6 +411,7 @@ function ComposicaoForm({
     setSaving(true);
     try {
       const payload = {
+        uid: user.uid,
         ...form,
         peso: Number(form.peso),
         altura: Number(form.altura),

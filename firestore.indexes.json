@@ -65,6 +65,42 @@
       "fields": [
         { "fieldPath": "uid", "order": "ASCENDING" },
         { "fieldPath": "data", "order": "DESCENDING" }
+      ]},
+    { "collectionGroup": "treinamento_sessoes", "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "uid", "order": "ASCENDING" },
+        { "fieldPath": "data", "order": "DESCENDING" }
+      ]},
+    { "collectionGroup": "treinamento_sessoes", "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "uid", "order": "ASCENDING" },
+        { "fieldPath": "planoSessaoId", "order": "ASCENDING" },
+        { "fieldPath": "data", "order": "DESCENDING" }
+      ]},
+    { "collectionGroup": "treinamento_planos", "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "uid", "order": "ASCENDING" },
+        { "fieldPath": "data", "order": "DESCENDING" }
+      ]},
+    { "collectionGroup": "treinamento_metas", "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "uid", "order": "ASCENDING" },
+        { "fieldPath": "prazo", "order": "ASCENDING" }
+      ]},
+    { "collectionGroup": "treinamento_avaliacoes", "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "uid", "order": "ASCENDING" },
+        { "fieldPath": "data", "order": "DESCENDING" }
+      ]},
+    { "collectionGroup": "treinamento_prs", "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "uid", "order": "ASCENDING" },
+        { "fieldPath": "data", "order": "DESCENDING" }
+      ]},
+    { "collectionGroup": "treinamento_composicao", "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "uid", "order": "ASCENDING" },
+        { "fieldPath": "data", "order": "DESCENDING" }
       ]}
   ],
   "fieldOverrides": []

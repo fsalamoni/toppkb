@@ -307,6 +307,7 @@ export function TreinamentoSessoesForm() {
       await ensureFreshToken(user);
 
       const payload = {
+        uid: user.uid,
         ...form,
         data: new Date(form.data).toISOString(),
         volumeTotal,

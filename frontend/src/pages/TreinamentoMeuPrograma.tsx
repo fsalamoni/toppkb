@@ -94,7 +94,7 @@ export function TreinamentoMeuPrograma() {
     mutationFn: async (novoPlano: Plano) => {
       if (!user) throw new Error('Não autenticado');
       const ref = programaAtualDoc(db, user.uid);
-      await safeSetDoc(user, ref, { ...novoPlano, savedAt: new Date().toISOString() });
+      await safeSetDoc(user, ref, { uid: user.uid, ...novoPlano, savedAt: new Date().toISOString() });
       localStorage.setItem(STORAGE_KEY, JSON.stringify(novoPlano));
       return novoPlano;
     },
