@@ -2225,3 +2225,96 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 4. Inspecionar cache, refetch, invalidar
 5. Útil para debug de performance
 
+
+---
+
+## ✅ SPRINT 24 — Weekly Summary Print
+
+**Commit:** (próximo)
+
+### Componente `WeeklySummary`:
+
+| Arquivo | Linhas | Função |
+|---|---|---|
+| `components/common/WeeklySummary.tsx` | 230 | Resumo semanal imprimível |
+| `components/common/__tests__/WeeklySummary.test.tsx` | 7 testes | Lógica de cálculo |
+
+### Funcionalidades:
+
+- **Coleta automática** de dados da semana atual (segunda → próximo domingo)
+- **7 coleções** em paralelo: treinos, partidas, nutricao, sono, peso, dores, lesoes
+- **Timeout 5s** em cada query (com `withTimeout`)
+- **Fallback gracioso**: se query falha, retorna array vazio
+- **Cálculos automáticos**:
+  - Total de horas treinadas
+  - Vitórias/Derrotas
+  - Média de horas de sono
+  - Dores/Lesões ativas
+
+### UI:
+
+```tsx
+<WeeklySummary userId={user.uid} />
+```
+
+**Componentes:**
+- 4 MetricBox cards (Treinos, Partidas, Sono, Dores)
+- Lista detalhada de treinos da semana
+- Lista detalhada de partidas (com cores win/loss)
+- Botões de ação (escondem em print):
+  - 🖨️ Imprimir (window.print)
+  - 💾 Exportar JSON (Blob download)
+
+### Como Funciona com Print Stylesheet:
+
+```css
+.no-print { display: none !important; }  /* esconde botões em print */
+@media print {
+  body { background: white !important; }
+  h1 { page-break-before: always; }
+}
+```
+
+**Resultado de impressão:**
+1 página A4 com:
+- Cabeçalho (Top Pickleball 50+ + período)
+- 4 cards de métricas
+- Listas de treinos e partidas
+- Footer com page numbers
+
+### Export JSON:
+
+```json
+{
+  "periodo": {
+    "inicio": "2025-01-13T00:00:00.000Z",
+    "fim": "2025-01-20T00:00:00.000Z"
+  },
+  "resumo": {
+    "treinos": 4,
+    "partidas": 2,
+    ...
+  },
+  "detalhes": {
+    "treinos": [...],
+    "partidas": [...]
+  }
+}
+```
+
+Filename: `toppkb-semana-2025-01-13.json`
+
+### Validação:
+
+- 292 testes passando (era 285 - +7 testes)
+- npm run lint: PASSOU
+- npm run build: PASSOU
+
+### Benefícios:
+
+- ✅ Atleta pode **imprimir diário semanal** em 1 página
+- ✅ Exportar dados (backup local em JSON)
+- ✅ Visual rápido da semana (sem precisar navegar)
+- ✅ Combina com Print Stylesheet (Sprint 22)
+- ✅ Botões escondem automaticamente em print
+
