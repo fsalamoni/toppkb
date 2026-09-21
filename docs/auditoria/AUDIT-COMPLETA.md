@@ -2414,3 +2414,115 @@ const profile = useProfile(user.uid);
 - ✅ Avatar fallback (iniciais) se não tem foto
 - ✅ Acessível (aria-label nos botões)
 
+
+---
+
+## ✅ SPRINT 26 — LGPD Data Export (Compliance)
+
+**Commit:** (próximo)
+
+### Arquivos:
+
+| Arquivo | Linhas | Função |
+|---|---|---|
+| `lib/dataExport.ts` | 145 | Funções de export (JSON + CSV) |
+| `components/common/DataExportPanel.tsx` | 135 | UI com confirmação + download |
+| `lib/__tests__/dataExport.test.ts` | 9 testes | Validação de CSV + estrutura |
+
+### LGPD Art. 18, V:
+
+> "O titular dos dados pessoais tem direito a obter do controlador, em
+> relação aos dados do titular por ele tratados, a **portabilidade** dos
+> dados a outro fornecedor de serviço ou produto, observados os segredos
+> comerciais e industriais."
+
+**Solução:** usuário pode baixar todos os seus dados a qualquer momento.
+
+### API `dataExport.ts`:
+
+```typescript
+const data = await exportAllUserData(uid);
+// data.metadados { versao, dataExportacao, uid, email, totalDocumentos }
+// data.perfil { ... profile/main }
+// data.colecoes { treinos: [...], partidas: [...], ... }
+
+downloadJSON(data);              // 1 arquivo JSON estruturado
+exportAllAsCSV(data);            // N arquivos CSV (1 por coleção)
+estimateSize(data);              // MB estimado
+
+convertToCSV(items);             // converte array para CSV string
+```
+
+### Coleções Exportadas (23 total):
+
+| Categoria | Coleções |
+|---|---|
+| Tracking | treinos, partidas, peso, medidas |
+| Saúde | nutricao, sono, hidratacao, suplementos |
+| Preparação | preparacao, treinamento_sessoes, treinamento_planos, ... |
+| Recuperação | dores, lesoes |
+| Competição | torneios, metas |
+| Outros | estudos, push, profile |
+
+### UI Flow:
+
+1. Usuário acessa `/app/perfil` ou similar
+2. Vê `<DataExportPanel userId={user.uid} />`
+3. Checkbox de confirmação (LGPD exige consentimento explícito)
+4. Botão "Exportar meus dados"
+5. Loading com percentage
+6. Resultados: total documentos, MB estimado, coleções
+7. 2 opções de download:
+   - JSON único (completo)
+   - CSVs separados (1 por coleção)
+
+### Exemplo de Output JSON:
+
+```json
+{
+  "metadados": {
+    "versao": "1.0",
+    "dataExportacao": "2025-01-15T10:00:00.000Z",
+    "uid": "abc123",
+    "email": "user@example.com",
+    "totalColecoes": 23,
+    "totalDocumentos": 142
+  },
+  "perfil": { "displayName": "João", ... },
+  "colecoes": {
+    "treinos": [{ "id": "x", "tipo": "quadra", ... }, ...],
+    "partidas": [...],
+    ...
+  }
+}
+```
+
+### CSV Format:
+
+```csv
+nome,idade,cidade
+João,44,São Paulo
+Maria,50,Rio de Janeiro
+```
+
+**Escaping RFC 4180:**
+- Vírgulas em valores → `"valor,com virgula"`
+- Aspas duplas → `"valor ""com aspas"""`
+- Quebras de linha → CSV-safe (com aspas)
+
+### Validação:
+
+- 309 testes passando (era 300 - +9)
+- npm run lint: PASSOU
+- npm run build: PASSOU
+
+### Benefícios:
+
+- ✅ **LGPD compliance** (Art. 18, V)
+- ✅ Usuário tem controle dos seus dados
+- ✅ Sem dependências externas
+- ✅ Timeout 8s por coleção (fail-safe)
+- ✅ Paralelismo com Promise.all
+- ✅ Mensagem "X documentos, Y MB" para o user
+- ✅ Lista de coleções com dados no UI
+
