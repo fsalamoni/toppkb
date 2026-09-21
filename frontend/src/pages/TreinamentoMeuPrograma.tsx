@@ -125,48 +125,64 @@ export function TreinamentoMeuPrograma() {
   });
 
   // Marcar como feita (rápido - cria sessão minimal)
+  // Guard contra clique duplo / race condition
+  const [pendingSessaoId, setPendingSessaoId] = useState<string | null>(null);
   const marcarFeita = useMutation({
     mutationFn: async (s: SessaoPlano) => {
-      if (!user || !plano) throw new Error('Erro');
-      const docRef = await addDoc(
-        collection(db, 'toppkb_users', user.uid, 'treinamento', 'sessoes'),
-        {
-          titulo: `${s.nome} (Sem ${s.semanaIdx + 1}${s.tipo})`,
-          data: new Date().toISOString(),
-          tipo: 'kettlebell',
-          duracaoMin: s.duracaoMin,
-          planoSessaoId: s.id,
-          planoId: plano.id,
-          exercicios: s.exercicios.map((ex) => ({
-            nome: ex.nome,
-            series: ex.series,
-            reps: ex.reps,
-            carga: ex.carga,
-            descansoSeg: ex.descansoSeg,
-            feito: true,
-          })),
-          origem: 'meu-programa',
-          createdAt: serverTimestamp(),
-          updatedAt: serverTimestamp(),
-        },
-      );
-      return docRef.id;
+      if (!user || !plano) throw new Error('Usuário não autenticado');
+      // Guard: previne criação duplicada se clicar 2x
+      if (pendingSessaoId === s.id) {
+        throw new Error('Já está sendo marcada como feita');
+      }
+      setPendingSessaoId(s.id);
+      try {
+        const docRef = await addDoc(
+          collection(db, 'toppkb_users', user.uid, 'treinamento', 'sessoes'),
+          {
+            titulo: `${s.nome} (Sem ${s.semanaIdx + 1}${s.tipo})`,
+            data: new Date().toISOString(),
+            tipo: 'kettlebell',
+            duracaoMin: s.duracaoMin,
+            planoSessaoId: s.id,
+            planoId: plano.id,
+            exercicios: s.exercicios.map((ex) => ({
+              nome: ex.nome,
+              series: ex.series,
+              reps: ex.reps,
+              carga: ex.carga,
+              descansoSeg: ex.descansoSeg,
+              feito: true,
+            })),
+            origem: 'meu-programa',
+            createdAt: serverTimestamp(),
+            updatedAt: serverTimestamp(),
+          },
+        );
+        return docRef.id;
+      } finally {
+        setPendingSessaoId(null);
+      }
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['treinamento-sessoes-para-plano'] });
       toast({ title: 'Sessão marcada como feita! ✅', variant: 'success' });
     },
     onError: (e: Error) => {
-      toast({ title: 'Erro', description: e.message, variant: 'destructive' });
+      // Ignora erro de guard (não polui toast)
+      if (!e.message.includes('Já está')) {
+        toast({ title: 'Erro ao marcar', description: e.message, variant: 'destructive' });
+      }
     },
   });
 
-  // Auto-pula para "executar" se já tem plano
+  // Auto-pula para "executar" se já tem plano (apenas quando carrega pela primeira vez)
+  const [autoSkipDone, setAutoSkipDone] = useState(false);
   useEffect(() => {
-    if (plano && tab === 'setup') {
+    if (plano && !autoSkipDone && !loadingPlano) {
       setTab('executar');
+      setAutoSkipDone(true);
     }
-  }, [plano]); // eslint-disable-line
+  }, [plano, loadingPlano, autoSkipDone]);
 
   if (loadingPlano) {
     return <div className="flex justify-center py-12"><Spinner size="lg" /></div>;
@@ -361,6 +377,29 @@ function SetupTab({ onCriar, saving }: {
 
   return (
     <div className="space-y-4">
+      {/* ONBOARDING: Explicação inicial só na primeira vez (sem plano) */}
+      {step === 1 && (
+        <Card className="border-amber-500/30 bg-gradient-to-br from-amber-500/5 to-emerald-500/5">
+          <CardContent className="p-4">
+            <div className="flex items-start gap-3">
+              <Sparkles className="h-6 w-6 text-amber-400 flex-shrink-0 mt-0.5" />
+              <div>
+                <div className="font-semibold mb-1">Como funciona o Meu Programa</div>
+                <ol className="text-sm text-muted-foreground space-y-1 list-decimal list-inside">
+                  <li>Você define <strong>objetivo</strong>, <strong>frequência</strong> e <strong>nível</strong></li>
+                  <li>A gente gera um plano de treino personalizado (sessões, séries, reps)</li>
+                  <li>Você segue e marca cada sessão como feita com 1 clique</li>
+                  <li>Acompanhe sua <strong>aderência</strong> e <strong>progresso</strong> ao longo das semanas</li>
+                </ol>
+                <div className="text-xs text-muted-foreground mt-2">
+                  💡 <strong>Dica:</strong> o plano é seu — pode pular sessões, ajustar exercícios ou trocar de objetivo a qualquer momento.
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* STEPPER */}
       <div className="flex items-center gap-2 text-xs text-muted-foreground">
         {[1, 2, 3, 4].map((n) => (
@@ -790,8 +829,18 @@ function ExecutarTab({ plano, sessoesFeitas, onExecutar, onMarcarFeita, marcando
   marcando: boolean;
 }) {
   // Calcula semana atual baseado em dias desde o início do plano
-  const hoje = new Date();
-  const inicio = new Date(plano.criadoEm);
+  // Edge case: criadoEm pode estar ausente em planos antigos → fallback pra hoje
+  const hoje = useMemo(() => new Date(), []);
+  const inicio = useMemo(() => {
+    try {
+      if (!plano.criadoEm) return new Date();
+      const d = new Date(plano.criadoEm);
+      if (isNaN(d.getTime())) return new Date();
+      return d;
+    } catch {
+      return new Date();
+    }
+  }, [plano.criadoEm]);
   const diasPassados = Math.max(0, Math.floor((hoje.getTime() - inicio.getTime()) / (1000 * 60 * 60 * 24)));
   const semanaAtual = Math.min(plano.duracaoSemanas - 1, Math.floor(diasPassados / 7));
   const isDeload = semanaAtual % 4 === 3;
@@ -1006,7 +1055,17 @@ function ProgressoTab({ plano, sessoesFeitas }: {
   plano: Plano;
   sessoesFeitas: any[];
 }) {
-  const inicio = new Date(plano.criadoEm);
+  // Edge case: criadoEm pode estar ausente → fallback pra hoje
+  const inicio = useMemo(() => {
+    try {
+      if (!plano.criadoEm) return new Date();
+      const d = new Date(plano.criadoEm);
+      if (isNaN(d.getTime())) return new Date();
+      return d;
+    } catch {
+      return new Date();
+    }
+  }, [plano.criadoEm]);
   const hoje = new Date();
   const diasPassados = Math.max(0, Math.floor((hoje.getTime() - inicio.getTime()) / (1000 * 60 * 60 * 24)));
   const semanaAtual = Math.min(plano.duracaoSemanas - 1, Math.floor(diasPassados / 7));
@@ -1035,8 +1094,7 @@ function ProgressoTab({ plano, sessoesFeitas }: {
 
   const percentualConcluido = Math.round((semanaAtual / plano.duracaoSemanas) * 100);
 
-  // Memoiza início do plano (pra usar em vários useMemo)
-  const inicioMemo = useMemo(() => new Date(plano.criadoEm), [plano.criadoEm]);
+  // Memoiza início do plano (pra usar em vários useMemo) — já memoizado acima
 
   // Streak — dias consecutivos com pelo menos 1 sessão
   const streak = useMemo(() => {
@@ -1053,7 +1111,7 @@ function ProgressoTab({ plano, sessoesFeitas }: {
     const cursor = new Date();
     cursor.setHours(0, 0, 0, 0);
     // Permite 1 dia de folga (ontem)
-    const inicioTs = inicioMemo.getTime();
+    const inicioTs = inicio.getTime();
     while (count < 365) {
       const key = `${cursor.getFullYear()}-${cursor.getMonth()}-${cursor.getDate()}`;
       if (datas.has(key)) {
@@ -1070,13 +1128,13 @@ function ProgressoTab({ plano, sessoesFeitas }: {
       }
     }
     return count;
-  }, [sessoesFeitasPlanoUnicas, inicioMemo]);
+  }, [sessoesFeitasPlanoUnicas, inicio]);
 
   // Calendário do plano (heatmap de aderência)
   const diasCalendario = useMemo(() => {
     const result: Array<{ data: Date; feita: boolean; semanaIdx: number; temSessao: boolean }> = [];
     for (let i = 0; i <= diasPassados && i < diasTotais; i++) {
-      const data = new Date(inicioMemo);
+      const data = new Date(inicio);
       data.setDate(data.getDate() + i);
       const key = `${data.getFullYear()}-${data.getMonth()}-${data.getDate()}`;
       const feita = sessoesFeitasPlanoUnicas.some((sf) => {
@@ -1092,7 +1150,7 @@ function ProgressoTab({ plano, sessoesFeitas }: {
       });
     }
     return result;
-  }, [diasPassados, diasTotais, sessoesFeitasPlanoUnicas, inicioMemo]);
+  }, [diasPassados, diasTotais, sessoesFeitasPlanoUnicas, inicio]);
 
   return (
     <div className="space-y-4">
