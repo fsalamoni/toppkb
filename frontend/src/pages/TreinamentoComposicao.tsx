@@ -18,9 +18,10 @@ import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
-  query, orderBy, getDocs, addDoc, deleteDoc, serverTimestamp,
+  query, orderBy, getDocs, deleteDoc, serverTimestamp,
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
+import { safeAddDoc } from '@/lib/firestoreWithAuth';
 import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -430,7 +431,8 @@ function ComposicaoForm({
         createdAt: serverTimestamp(),
       };
 
-      await addDoc(
+      await safeAddDoc(
+        user,
         treinoCol(db, user.uid, 'composicao'),
         payload,
       );

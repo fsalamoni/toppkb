@@ -30,9 +30,10 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
-  getDoc, setDoc, addDoc, query, orderBy, getDocs, serverTimestamp,
+  getDoc, query, orderBy, getDocs, serverTimestamp,
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
+import { safeSetDoc, safeAddDoc } from '@/lib/firestoreWithAuth';
 import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -93,7 +94,7 @@ export function TreinamentoMeuPrograma() {
     mutationFn: async (novoPlano: Plano) => {
       if (!user) throw new Error('Não autenticado');
       const ref = programaAtualDoc(db, user.uid);
-      await setDoc(ref, { ...novoPlano, savedAt: new Date().toISOString() });
+      await safeSetDoc(user, ref, { ...novoPlano, savedAt: new Date().toISOString() });
       localStorage.setItem(STORAGE_KEY, JSON.stringify(novoPlano));
       return novoPlano;
     },
@@ -140,7 +141,8 @@ export function TreinamentoMeuPrograma() {
       }
       setPendingSessaoId(s.id);
       try {
-        const docRef = await addDoc(
+        const docRef = await safeAddDoc(
+          user,
           treinoCol(db, user.uid, 'sessoes'),
           {
             titulo: `${s.nome} (Sem ${s.semanaIdx + 1}${s.tipo})`,
@@ -197,7 +199,8 @@ export function TreinamentoMeuPrograma() {
     if (!confirm(`Apagar programa "${plano.nome}"? Esta ação não pode ser desfeita.`)) return;
     try {
       if (user) {
-        await setDoc(
+        await safeSetDoc(
+          user,
           programaAtualDoc(db, user.uid),
           {},
         );

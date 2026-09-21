@@ -109,6 +109,15 @@ export function Onboarding() {
         updatedAtIso: new Date().toISOString(),
       };
 
+      // CRÍTICO: força refresh do token antes do setDoc.
+      // Sem isso, o Firestore pode rejeitar com "Missing or insufficient permissions"
+      // porque o token cacheado ficou stale.
+      try {
+        await withTimeout(user.getIdToken(true), 5000, 'refresh token');
+      } catch (e) {
+        console.warn('[onboarding] token refresh falhou, tentando mesmo assim:', e);
+      }
+
       // Seta com timeout 8s — Firestore pode pendurar
       await withTimeout(
         setDoc(

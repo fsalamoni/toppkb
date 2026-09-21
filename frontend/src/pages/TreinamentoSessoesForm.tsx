@@ -16,9 +16,10 @@ import { treinoCol, treinoDoc } from '@/lib/firestorePaths';
 import { useState, useEffect, useMemo } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import {
-  addDoc, setDoc, getDoc, serverTimestamp,
+  getDoc, serverTimestamp,
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
+import { safeSetDoc, safeAddDoc, ensureFreshToken } from '@/lib/firestoreWithAuth';
 import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -302,6 +303,9 @@ export function TreinamentoSessoesForm() {
     }
     setSaving(true);
     try {
+      // CRÍTICO: força refresh do token para evitar PERMISSION_DENIED
+      await ensureFreshToken(user);
+
       const payload = {
         ...form,
         data: new Date(form.data).toISOString(),
@@ -311,14 +315,16 @@ export function TreinamentoSessoesForm() {
       };
 
       if (id) {
-        await setDoc(
+        await safeSetDoc(
+          user,
           treinoDoc(db, user.uid, 'sessoes', id),
           payload,
           { merge: true },
         );
         toast({ title: 'Sessão atualizada!', variant: 'success' });
       } else {
-        await addDoc(
+        await safeAddDoc(
+          user,
           treinoCol(db, user.uid, 'sessoes'),
           { ...payload, createdAt: serverTimestamp() },
         );

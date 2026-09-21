@@ -46,7 +46,14 @@ export function Consent() {
     setSaving(true);
     setErrorMsg(null);
     try {
-      // setDoc com timeout 8s — Firestore pode pendurar
+      // CRÍTICO: força refresh do token antes do setDoc para evitar
+      // "Missing or insufficient permissions" por token stale
+      try {
+        await withTimeout(user.getIdToken(true), 5000, 'refresh token');
+      } catch (e) {
+        console.warn('[consent] token refresh falhou, tentando mesmo assim:', e);
+      }
+
       await withTimeout(
         setDoc(
           doc(db, 'toppkb_users', user.uid, 'profile', 'main'),
