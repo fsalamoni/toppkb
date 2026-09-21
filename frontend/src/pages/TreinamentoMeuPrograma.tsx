@@ -37,6 +37,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/common/LoadingScreen';
 import { toast } from '@/components/ui/toaster';
+import { Confetti } from '@/components/Confetti';
 import {
   ChevronLeft, Target, Calendar, Activity, ChevronRight,
   Check, Sparkles, Dumbbell, Trophy, Trash2,
@@ -62,6 +63,7 @@ export function TreinamentoMeuPrograma() {
   const navigate = useNavigate();
   const qc = useQueryClient();
   const [tab, setTab] = useState<Tab>('setup');
+  const [showConfetti, setShowConfetti] = useState(false);
 
   // Plano ativo
   const { data: plano, isLoading: loadingPlano } = useQuery({
@@ -93,7 +95,14 @@ export function TreinamentoMeuPrograma() {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['treinamento-programa'] });
-      toast({ title: 'Programa criado! 🎉', description: 'Vamos começar a seguir.', variant: 'success' });
+      setShowConfetti(true);
+      setTimeout(() => setShowConfetti(false), 3000);
+      toast({
+        title: 'Programa criado! 🎉',
+        description: 'Vamos começar a seguir. Vamos pra aba Executar.',
+        variant: 'success',
+      });
+      setTab('executar');
     },
     onError: (e: Error) => {
       toast({ title: 'Erro ao salvar', description: e.message, variant: 'destructive' });
@@ -205,6 +214,8 @@ export function TreinamentoMeuPrograma() {
 
   return (
     <div className="space-y-6 max-w-6xl mx-auto">
+      <Confetti trigger={showConfetti} />
+
       {/* HEADER */}
       <div>
         <Button asChild variant="ghost" size="sm" className="mb-2">
@@ -785,18 +796,55 @@ function ExecutarTab({ plano, sessoesFeitas, onExecutar, onMarcarFeita, marcando
   const semanaAtual = Math.min(plano.duracaoSemanas - 1, Math.floor(diasPassados / 7));
   const isDeload = semanaAtual % 4 === 3;
 
+  // Calcula dias desde a última sessão feita do plano
+  const diasSemTreinar = useMemo(() => {
+    const sessoesPlano = sessoesFeitas.filter((sf) =>
+      plano.sessoes.some((ps) => ps.id === sf.planoSessaoId),
+    );
+    if (sessoesPlano.length === 0) return diasPassados;
+    const ultima = sessoesPlano
+      .map((sf) => new Date(sf.data).getTime())
+      .sort((a, b) => b - a)[0];
+    return Math.floor((Date.now() - ultima) / (1000 * 60 * 60 * 24));
+  }, [sessoesFeitas, plano.sessoes, diasPassados]);
+
+  // Memoiza pendentes e feitas (pra usar no banner + no return)
+  const sessoesPendentesMemo = useMemo(
+    () => plano.sessoes.filter((s) => s.semanaIdx === semanaAtual && !sessoesFeitas.some((sf) => sf.planoSessaoId === s.id)),
+    [plano.sessoes, semanaAtual, sessoesFeitas],
+  );
+  const sessoesFeitasSemana = useMemo(
+    () => plano.sessoes.filter((s) => s.semanaIdx === semanaAtual && sessoesFeitas.some((sf) => sf.planoSessaoId === s.id)),
+    [plano.sessoes, semanaAtual, sessoesFeitas],
+  );
+
   // Sessões de hoje e futuras desta semana que ainda não foram feitas
-  const sessoesPendentes = plano.sessoes
-    .filter((s) => s.semanaIdx === semanaAtual && !sessoesFeitas.some((sf) => sf.planoSessaoId === s.id));
-
-  const sessoesFeitasSemana = plano.sessoes
-    .filter((s) => s.semanaIdx === semanaAtual && sessoesFeitas.some((sf) => sf.planoSessaoId === s.id));
-
-  // Próxima sessão pendente (primeira)
-  const proxima = sessoesPendentes[0];
+  // (sessões pendentes e feitas já foram memoizadas em sessoesPendentesMemo e sessoesFeitasSemana)
+  const proxima = sessoesPendentesMemo[0];
 
   return (
     <div className="space-y-4">
+      {/* BANNER: DIAS SEM TREINAR */}
+      {diasSemTreinar >= 3 && sessoesFeitas.length > 0 && (
+        <Card className="border-amber-500/40 bg-amber-500/5">
+          <CardContent className="p-3 flex items-center gap-3">
+            <AlertCircle className="h-5 w-5 text-amber-400 flex-shrink-0" />
+            <div className="flex-1">
+              <div className="font-semibold text-sm text-amber-300">
+                {diasSemTreinar} dias sem treinar
+              </div>
+              <div className="text-xs text-muted-foreground">
+                Que tal voltar hoje? Seu programa está esperando.
+              </div>
+            </div>
+            <Button size="sm" onClick={() => onExecutar(sessoesPendentesMemo[0] || sessoesFeitasSemana[0] || plano.sessoes[semanaAtual * plano.sessoesPorSemana])}>
+              <Play className="h-3 w-3 mr-1" />
+              Treinar
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+
       {/* CARD RESUMO DA SEMANA */}
       <Card className="border-blue-500/30 bg-blue-500/5">
         <CardContent className="p-4">
@@ -871,13 +919,13 @@ function ExecutarTab({ plano, sessoesFeitas, onExecutar, onMarcarFeita, marcando
       )}
 
       {/* OUTRAS SESSÕES PENDENTES */}
-      {sessoesPendentes.length > 1 && (
+      {sessoesPendentesMemo.length > 1 && (
         <div>
           <h2 className="text-sm uppercase tracking-wide text-muted-foreground mb-3">
-            📋 Restantes da semana ({sessoesPendentes.length - 1})
+            📋 Restantes da semana ({sessoesPendentesMemo.length - 1})
           </h2>
           <div className="space-y-2">
-            {sessoesPendentes.slice(1).map((s) => (
+            {sessoesPendentesMemo.slice(1).map((s) => (
               <Card key={s.id}>
                 <CardContent className="p-3">
                   <div className="flex items-center justify-between gap-3 flex-wrap">
@@ -929,7 +977,7 @@ function ExecutarTab({ plano, sessoesFeitas, onExecutar, onMarcarFeita, marcando
       )}
 
       {/* ESTADO VAZIO */}
-      {sessoesPendentes.length === 0 && sessoesFeitasSemana.length === 0 && (
+      {sessoesPendentesMemo.length === 0 && sessoesFeitasSemana.length === 0 && (
         <Card>
           <CardContent className="py-12 text-center">
             <Trophy className="h-12 w-12 mx-auto text-amber-400 mb-3" />
@@ -987,6 +1035,9 @@ function ProgressoTab({ plano, sessoesFeitas }: {
 
   const percentualConcluido = Math.round((semanaAtual / plano.duracaoSemanas) * 100);
 
+  // Memoiza início do plano (pra usar em vários useMemo)
+  const inicioMemo = useMemo(() => new Date(plano.criadoEm), [plano.criadoEm]);
+
   // Streak — dias consecutivos com pelo menos 1 sessão
   const streak = useMemo(() => {
     const datas = new Set<string>();
@@ -1022,8 +1073,6 @@ function ProgressoTab({ plano, sessoesFeitas }: {
   }, [sessoesFeitasPlanoUnicas, inicioMemo]);
 
   // Calendário do plano (heatmap de aderência)
-  const inicioMemo = useMemo(() => new Date(plano.criadoEm), [plano.criadoEm]);
-
   const diasCalendario = useMemo(() => {
     const result: Array<{ data: Date; feita: boolean; semanaIdx: number; temSessao: boolean }> = [];
     for (let i = 0; i <= diasPassados && i < diasTotais; i++) {

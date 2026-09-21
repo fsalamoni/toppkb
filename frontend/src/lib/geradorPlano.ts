@@ -248,9 +248,10 @@ function volumeParaSemana(nivel: Nivel, semanaIdx: number) {
   const series = isDeload ? cfg.series[0] : cfg.series[1];
   const descanso = isDeload ? cfg.descansoSeg[0] : cfg.descansoSeg[1];
   const rpeArr = RPE_POR_SEMANA[nivel];
-  const rpe = rpeArr[semanaIdx % rpeArr.length] - (isDeload ? 2 : 0);
+  // Deload: RPE fixo 4 (regenerativo). Normal: ciclo progressivo.
+  const rpe = isDeload ? 4 : rpeArr[semanaIdx % rpeArr.length];
 
-  return { series, reps: isDeload ? '8-12 (volume baixo)' : cfg.reps, descansoSeg: descanso, rpeAlvo: Math.max(4, rpe) };
+  return { series, reps: isDeload ? '8-12 (volume baixo)' : cfg.reps, descansoSeg: descanso, rpeAlvo: rpe };
 }
 
 // ─────────────────────────────────────────────────────────────
