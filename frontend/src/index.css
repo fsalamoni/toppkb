@@ -53,10 +53,41 @@
   body {
     @apply bg-background text-foreground;
     font-feature-settings: 'rlig' 1, 'calt' 1;
+    /* Tamanho base ligeiramente maior para legibilidade do público 50+ */
+    font-size: 16.5px;
+  }
+
+  /* A11y: foco visível para usuários de teclado */
+  *:focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* A11y: respect prefers-reduced-motion */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 
   html, body, #root {
     @apply h-full;
+  }
+
+  /* A11y: prefers-contrast (Windows High Contrast Mode) */
+  @media (prefers-contrast: more) {
+    :root {
+      --border: 240 5.9% 30%;
+      --muted-foreground: 240 3.8% 20%;
+    }
+    .dark {
+      --border: 240 5.9% 70%;
+      --muted-foreground: 240 3.8% 80%;
+    }
   }
 }
 

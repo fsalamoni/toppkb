@@ -216,7 +216,7 @@ export function GlobalSearch(_props: GlobalSearchProps) {
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-2xl p-0 gap-0 max-h-[80vh]">
           <div className="flex items-center gap-2 border-b border-border px-4">
-            <Search className="h-4 w-4 text-muted-foreground" />
+            <Search className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
             <input
               autoFocus
               type="text"
@@ -225,18 +225,23 @@ export function GlobalSearch(_props: GlobalSearchProps) {
               onKeyDown={handleKeyDown}
               placeholder="Buscar treinos, partidas, dores, páginas..."
               className="flex-1 bg-transparent border-none outline-none py-3 text-sm placeholder:text-muted-foreground"
+              aria-label="Buscar no app"
             />
             {query && (
-              <button onClick={() => setQuery('')} className="text-muted-foreground hover:text-foreground">
+              <button
+                onClick={() => setQuery('')}
+                className="text-muted-foreground hover:text-foreground"
+                aria-label="Limpar busca"
+              >
                 <X className="h-4 w-4" />
               </button>
             )}
-            <kbd className="text-[10px] bg-muted px-1.5 py-0.5 rounded">esc</kbd>
+            <kbd className="text-[10px] bg-muted px-1.5 py-0.5 rounded" aria-hidden="true">esc</kbd>
           </div>
 
-          <div className="overflow-y-auto max-h-[60vh] py-2">
+          <div className="overflow-y-auto max-h-[60vh] py-2" role="listbox" aria-label={`${results.length} resultados`}>
             {results.length === 0 ? (
-              <div className="px-4 py-8 text-center text-sm text-muted-foreground">
+              <div className="px-4 py-8 text-center text-sm text-muted-foreground" role="status">
                 Nenhum resultado para "{query}"
               </div>
             ) : (

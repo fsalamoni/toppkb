@@ -132,9 +132,10 @@ export function Sidebar() {
         'flex flex-col border-r border-border bg-card transition-all duration-200 flex-shrink-0',
         sidebarOpen ? 'w-64' : 'w-16',
       )}
+      aria-label="Menu de navegação lateral"
     >
       <div className="flex items-center gap-2 p-4 border-b border-border h-14 flex-shrink-0">
-        <div className="text-2xl">🏓</div>
+        <div className="text-2xl" aria-hidden="true">🏓</div>
         {sidebarOpen && (
           <div className="font-semibold text-sm">
             <div>Top Pickleball</div>
