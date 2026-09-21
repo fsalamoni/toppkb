@@ -1974,3 +1974,68 @@ await clearAllErrors();          // todos
 - Filtros por source/timestamp
 - Auto-ignore erros 404 comuns
 
+
+---
+
+## ✅ SPRINT 21 — Keyboard Shortcuts
+
+**Commit:** (próximo)
+
+### Atalhos Disponíveis:
+
+| Atalhos | Ação |
+|---|---|
+| `Cmd/Ctrl + S` | Salvar Form |
+| `Cmd/Ctrl + K` | Busca global |
+| `Cmd/Ctrl + N` | Novo |
+| `Esc` | Fechar modal/dropdown |
+| `?` | Mostrar ajuda |
+| `g + d` | Dashboard |
+| `g + t` | Treinos |
+| `g + p` | Partidas |
+
+### Arquivos:
+
+| Arquivo | Linhas | Função |
+|---|---|---|
+| `hooks/useKeyboardShortcuts.ts` | 100 | Hook registra atalhos globais |
+| `components/common/ShortcutsHelp.tsx` | 110 | Modal com lista de atalhos |
+| `hooks/__tests__/useKeyboardShortcuts.test.ts` | 11 testes | Todos atalhos + edge cases |
+
+### Comportamento Inteligente:
+
+- **Esc** funciona mesmo em inputs (precisa para fechar modais)
+- **?** ignorado quando typing (não atrapalha digitação)
+- **g + X** com janela de 1 segundo (vim-like)
+- **Cmd/Ctrl + S** previne save do browser padrão
+
+### ShortcutsHelp UI:
+
+```tsx
+import { ShortcutsHelp } from '@/components/common/ShortcutsHelp';
+
+// No App.tsx, mounted global
+<ShortcutsHelp />
+```
+
+- Modal centralizado com bg-black/50
+- Keyboard icon no header
+- Atalhos agrupados por categoria (Geral, Navegação)
+- Keys mostradas como `<kbd>` styled
+- Fecha com Esc, click outside ou botão
+- `?` toggle (mostra/esconde)
+
+### Validação:
+
+- 269 testes passando (era 258 - +11 testes)
+- npm run lint: PASSOU
+- npm run build: PASSOU
+
+### Benefícios:
+
+- ✅ Atalhos estilo Vim/VSCode
+- ✅ Não atrapalha digitação (Esc é exceção)
+- ✅ Modal de ajuda sempre acessível (`?`)
+- ✅ Keyboard-first navigation
+- ✅ Padrão `g + X` (vim-like) para ir rapidamente
+
