@@ -12,10 +12,11 @@
  * - avaliacoes/   → avaliações físicas periódicas
  */
 
+import { treinoCol } from '@/lib/firestorePaths';
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { collection, query, orderBy, getDocs, limit } from 'firebase/firestore';
+import {query, orderBy, getDocs, limit } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -41,7 +42,7 @@ export function TreinamentoDashboard() {
     queryFn: async () => {
       if (!user) return [];
       const q = query(
-        collection(db, 'toppkb_users', user.uid, 'treinamento', 'sessoes'),
+        treinoCol(db, user.uid, 'sessoes'),
         orderBy('data', 'desc'),
         limit(50),
       );
@@ -55,7 +56,7 @@ export function TreinamentoDashboard() {
     queryKey: [COLECAO_BASE, 'planos', user?.uid],
     queryFn: async () => {
       if (!user) return [];
-      const q = query(collection(db, 'toppkb_users', user.uid, 'treinamento', 'planos'));
+      const q = query(treinoCol(db, user.uid, 'planos'));
       const snap = await getDocs(q);
       return snap.docs.map((d) => ({ id: d.id, ...d.data() } as any));
     },
@@ -66,7 +67,7 @@ export function TreinamentoDashboard() {
     queryKey: [COLECAO_BASE, 'metas', user?.uid],
     queryFn: async () => {
       if (!user) return [];
-      const q = query(collection(db, 'toppkb_users', user.uid, 'treinamento', 'metas'));
+      const q = query(treinoCol(db, user.uid, 'metas'));
       const snap = await getDocs(q);
       return snap.docs.map((d) => ({ id: d.id, ...d.data() } as any));
     },

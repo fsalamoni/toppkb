@@ -8,9 +8,10 @@
  * especializado em insights rápidos.
  */
 
+import { treinoCol } from '@/lib/firestorePaths';
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { collection, query, orderBy, getDocs, limit } from 'firebase/firestore';
+import {query, orderBy, getDocs, limit } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -42,7 +43,7 @@ export function TreinamentoAIInsights() {
     queryFn: async () => {
       if (!user) return [];
       const q = query(
-        collection(db, 'toppkb_users', user.uid, 'treinamento', 'sessoes'),
+        treinoCol(db, user.uid, 'sessoes'),
         orderBy('data', 'desc'),
         limit(10),
       );

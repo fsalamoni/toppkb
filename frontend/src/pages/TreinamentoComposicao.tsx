@@ -13,11 +13,12 @@
  * Coleção: toppkb_users/{uid}/treinamento/composicao/
  */
 
+import { treinoCol, treinoDoc } from '@/lib/firestorePaths';
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
-  collection, query, orderBy, getDocs, addDoc, deleteDoc, doc, serverTimestamp,
+  query, orderBy, getDocs, addDoc, deleteDoc, serverTimestamp,
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useAuth } from '@/hooks/useAuth';
@@ -65,7 +66,7 @@ export function TreinamentoComposicao() {
     queryFn: async () => {
       if (!user) return [];
       const q = query(
-        collection(db, 'toppkb_users', user.uid, 'treinamento', 'composicao'),
+        treinoCol(db, user.uid, 'composicao'),
         orderBy('data', 'desc'),
       );
       const snap = await getDocs(q);
@@ -77,7 +78,7 @@ export function TreinamentoComposicao() {
   const del = useMutation({
     mutationFn: async (id: string) => {
       if (!user) return;
-      await deleteDoc(doc(db, 'toppkb_users', user.uid, 'treinamento', 'composicao', id));
+      await deleteDoc(treinoDoc(db, user.uid, 'composicao', id));
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['treinamento-composicao'] });
@@ -430,7 +431,7 @@ function ComposicaoForm({
       };
 
       await addDoc(
-        collection(db, 'toppkb_users', user.uid, 'treinamento', 'composicao'),
+        treinoCol(db, user.uid, 'composicao'),
         payload,
       );
       toast({ title: 'Medida registrada!', variant: 'success' });

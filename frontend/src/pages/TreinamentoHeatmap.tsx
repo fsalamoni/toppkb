@@ -7,10 +7,11 @@
  * Sub-rota: /app/treinamento/heatmap
  */
 
+import { treinoCol } from '@/lib/firestorePaths';
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { collection, query, orderBy, getDocs, limit } from 'firebase/firestore';
+import {query, orderBy, getDocs, limit } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -49,7 +50,7 @@ export function TreinamentoHeatmap() {
       if (!user) return [];
       const dataLimite = new Date(ano, 0, 1);
       const q = query(
-        collection(db, 'toppkb_users', user.uid, 'treinamento', 'sessoes'),
+        treinoCol(db, user.uid, 'sessoes'),
         orderBy('data', 'desc'),
         limit(1000),
       );

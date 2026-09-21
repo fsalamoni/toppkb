@@ -9,10 +9,11 @@
  * Sub-rota: /app/treinamento/calendario
  */
 
+import { treinoCol } from '@/lib/firestorePaths';
 import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { collection, getDocs, query } from 'firebase/firestore';
+import {getDocs, query } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -66,7 +67,7 @@ export function TreinamentoCalendario() {
     queryKey: ['treinamento-cal-sessoes', user?.uid],
     queryFn: async () => {
       if (!user) return [];
-      const q = query(collection(db, 'toppkb_users', user.uid, 'treinamento', 'sessoes'));
+      const q = query(treinoCol(db, user.uid, 'sessoes'));
       const snap = await getDocs(q);
       return snap.docs.map((d) => ({ id: d.id, ...d.data() } as any));
     },
@@ -77,7 +78,7 @@ export function TreinamentoCalendario() {
     queryKey: ['treinamento-cal-planos', user?.uid],
     queryFn: async () => {
       if (!user) return [];
-      const q = query(collection(db, 'toppkb_users', user.uid, 'treinamento', 'planos'));
+      const q = query(treinoCol(db, user.uid, 'planos'));
       const snap = await getDocs(q);
       return snap.docs.map((d) => ({ id: d.id, ...d.data() } as any));
     },
@@ -88,7 +89,7 @@ export function TreinamentoCalendario() {
     queryKey: ['treinamento-cal-metas', user?.uid],
     queryFn: async () => {
       if (!user) return [];
-      const q = query(collection(db, 'toppkb_users', user.uid, 'treinamento', 'metas'));
+      const q = query(treinoCol(db, user.uid, 'metas'));
       const snap = await getDocs(q);
       return snap.docs.map((d) => ({ id: d.id, ...d.data() } as any));
     },

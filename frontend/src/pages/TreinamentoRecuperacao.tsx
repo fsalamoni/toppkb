@@ -13,6 +13,7 @@
  * Sub-rota: /app/treinamento/recuperacao
  */
 
+import { treinoCol } from '@/lib/firestorePaths';
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -60,7 +61,7 @@ export function TreinamentoRecuperacao() {
     queryFn: async () => {
       if (!user) return [];
       const q = query(
-        collection(db, 'toppkb_users', user.uid, 'treinamento', 'sessoes'),
+        treinoCol(db, user.uid, 'sessoes'),
         orderBy('data', 'desc'),
         limit(10),
       );

@@ -12,10 +12,11 @@
  *   /app/treinamento/sessoes/:id    → editar
  */
 
+import { treinoCol, treinoDoc } from '@/lib/firestorePaths';
 import { useState, useEffect, useMemo } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import {
-  collection, doc, addDoc, setDoc, getDoc, serverTimestamp,
+  addDoc, setDoc, getDoc, serverTimestamp,
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useAuth } from '@/hooks/useAuth';
@@ -134,7 +135,7 @@ export function TreinamentoSessoesForm() {
       (async () => {
         try {
           const snap = await getDoc(
-            doc(db, 'toppkb_users', user.uid, 'treinamento', 'sessoes', id),
+            treinoDoc(db, user.uid, 'sessoes', id),
           );
           if (snap.exists()) {
             const data = snap.data();
@@ -311,14 +312,14 @@ export function TreinamentoSessoesForm() {
 
       if (id) {
         await setDoc(
-          doc(db, 'toppkb_users', user.uid, 'treinamento', 'sessoes', id),
+          treinoDoc(db, user.uid, 'sessoes', id),
           payload,
           { merge: true },
         );
         toast({ title: 'Sessão atualizada!', variant: 'success' });
       } else {
         await addDoc(
-          collection(db, 'toppkb_users', user.uid, 'treinamento', 'sessoes'),
+          treinoCol(db, user.uid, 'sessoes'),
           { ...payload, createdAt: serverTimestamp() },
         );
         toast({ title: 'Sessão registrada!', variant: 'success' });

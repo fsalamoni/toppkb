@@ -9,11 +9,12 @@
  * Sub-rota: /app/treinamento/sessoes
  */
 
+import { treinoCol, treinoDoc } from '@/lib/firestorePaths';
 import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
-  collection, query, orderBy, getDocs, deleteDoc, doc,
+  query, orderBy, getDocs, deleteDoc,
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useAuth } from '@/hooks/useAuth';
@@ -69,7 +70,7 @@ export function TreinamentoSessoes() {
     queryFn: async () => {
       if (!user) return [];
       const q = query(
-        collection(db, 'toppkb_users', user.uid, 'treinamento', 'sessoes'),
+        treinoCol(db, user.uid, 'sessoes'),
         orderBy('data', 'desc'),
       );
       const snap = await getDocs(q);
@@ -81,7 +82,7 @@ export function TreinamentoSessoes() {
   const del = useMutation({
     mutationFn: async (id: string) => {
       if (!user) return;
-      await deleteDoc(doc(db, 'toppkb_users', user.uid, 'treinamento', 'sessoes', id));
+      await deleteDoc(treinoDoc(db, user.uid, 'sessoes', id));
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['treinamento-sessoes'] });

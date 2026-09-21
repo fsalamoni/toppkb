@@ -10,11 +10,12 @@
  * Coleção: toppkb_users/{uid}/treinamento/templates/
  */
 
+import { treinoCol, treinoDoc } from '@/lib/firestorePaths';
 import { useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
-  collection, query, orderBy, getDocs, deleteDoc, doc, setDoc,
+  doc, query, orderBy, getDocs, deleteDoc, setDoc,
   serverTimestamp,
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
@@ -73,7 +74,7 @@ export function TreinamentoTemplates() {
     queryFn: async () => {
       if (!user) return [];
       const q = query(
-        collection(db, 'toppkb_users', user.uid, 'treinamento', 'templates'),
+        treinoCol(db, user.uid, 'templates'),
         orderBy('createdAt', 'desc'),
       );
       const snap = await getDocs(q);
@@ -85,7 +86,7 @@ export function TreinamentoTemplates() {
   const del = useMutation({
     mutationFn: async (id: string) => {
       if (!user) return;
-      await deleteDoc(doc(db, 'toppkb_users', user.uid, 'treinamento', 'templates', id));
+      await deleteDoc(treinoDoc(db, user.uid, 'templates', id));
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['treinamento-templates'] });
@@ -104,7 +105,7 @@ export function TreinamentoTemplates() {
         createdAt: serverTimestamp(),
       };
       delete (novo as any).id;
-      const ref = doc(collection(db, 'toppkb_users', user.uid, 'treinamento', 'templates'));
+      const ref = doc(treinoCol(db, user.uid, 'templates'));
       await setDoc(ref, novo);
     },
     onSuccess: () => {
@@ -119,7 +120,7 @@ export function TreinamentoTemplates() {
     // Incrementa contador
     if (user) {
       setDoc(
-        doc(db, 'toppkb_users', user.uid, 'treinamento', 'templates', t.id),
+        treinoDoc(db, user.uid, 'templates', t.id),
         {
           vezesUsado: (t.vezesUsado || 0) + 1,
           ultimoUso: new Date().toISOString(),
@@ -352,7 +353,7 @@ function TemplateForm({
   useState(() => {
     if (templateId && user) {
       (async () => {
-        const snap = await getDocs(query(collection(db, 'toppkb_users', user.uid, 'treinamento', 'templates')));
+        const snap = await getDocs(query(treinoCol(db, user.uid, 'templates')));
         const t = snap.docs.find((d) => d.id === templateId);
         if (t) {
           const data = t.data() as Template;
@@ -433,13 +434,13 @@ function TemplateForm({
 
       if (templateId) {
         await setDoc(
-          doc(db, 'toppkb_users', user.uid, 'treinamento', 'templates', templateId),
+          treinoDoc(db, user.uid, 'templates', templateId),
           payload,
           { merge: true },
         );
       } else {
         await setDoc(
-          doc(collection(db, 'toppkb_users', user.uid, 'treinamento', 'templates')),
+          doc(treinoCol(db, user.uid, 'templates')),
           { ...payload, vezesUsado: 0, createdAt: serverTimestamp() },
         );
       }

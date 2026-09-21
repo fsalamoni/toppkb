@@ -25,11 +25,12 @@
  * que tem 5 segmentos (ímpar) e quebra no Firestore. Corrigido.
  */
 
+import { treinoCol, programaAtualDoc } from '@/lib/firestorePaths';
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
-  collection, doc, getDoc, setDoc, addDoc, getDocs, query, serverTimestamp, orderBy,
+  getDoc, setDoc, addDoc, query, orderBy, getDocs, serverTimestamp,
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useAuth } from '@/hooks/useAuth';
@@ -73,7 +74,7 @@ export function TreinamentoMeuPrograma() {
     queryKey: ['treinamento-programa', user?.uid],
     queryFn: async () => {
       if (!user) return null;
-      const ref = doc(db, 'toppkb_users', user.uid, 'programa', 'atual');
+      const ref = programaAtualDoc(db, user.uid);
       const snap = await getDoc(ref);
       if (snap.exists()) return snap.data() as Plano;
       try {
@@ -91,7 +92,7 @@ export function TreinamentoMeuPrograma() {
   const savePlano = useMutation({
     mutationFn: async (novoPlano: Plano) => {
       if (!user) throw new Error('Não autenticado');
-      const ref = doc(db, 'toppkb_users', user.uid, 'programa', 'atual');
+      const ref = programaAtualDoc(db, user.uid);
       await setDoc(ref, { ...novoPlano, savedAt: new Date().toISOString() });
       localStorage.setItem(STORAGE_KEY, JSON.stringify(novoPlano));
       return novoPlano;
@@ -118,7 +119,7 @@ export function TreinamentoMeuPrograma() {
     queryFn: async () => {
       if (!user) return [];
       const q = query(
-        collection(db, 'toppkb_users', user.uid, 'treinamento', 'sessoes'),
+        treinoCol(db, user.uid, 'sessoes'),
         orderBy('data', 'desc'),
       );
       const snap = await getDocs(q);
@@ -140,7 +141,7 @@ export function TreinamentoMeuPrograma() {
       setPendingSessaoId(s.id);
       try {
         const docRef = await addDoc(
-          collection(db, 'toppkb_users', user.uid, 'treinamento', 'sessoes'),
+          treinoCol(db, user.uid, 'sessoes'),
           {
             titulo: `${s.nome} (Sem ${s.semanaIdx + 1}${s.tipo})`,
             data: new Date().toISOString(),
@@ -197,7 +198,7 @@ export function TreinamentoMeuPrograma() {
     try {
       if (user) {
         await setDoc(
-          doc(db, 'toppkb_users', user.uid, 'programa', 'atual'),
+          programaAtualDoc(db, user.uid),
           {},
         );
       }

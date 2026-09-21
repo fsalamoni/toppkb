@@ -11,10 +11,11 @@
  * Sub-rota: /app/treinamento/prs
  */
 
+import { treinoCol } from '@/lib/firestorePaths';
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { collection, query, orderBy, getDocs, limit, addDoc, serverTimestamp } from 'firebase/firestore';
+import {query, orderBy, getDocs, limit, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent } from '@/components/ui/card';
@@ -57,7 +58,7 @@ export function TreinamentoPRs() {
     queryFn: async () => {
       if (!user) return [];
       const q = query(
-        collection(db, 'toppkb_users', user.uid, 'treinamento', 'sessoes'),
+        treinoCol(db, user.uid, 'sessoes'),
         orderBy('data', 'desc'),
         limit(500),
       );
@@ -200,7 +201,7 @@ export function TreinamentoPRs() {
     const unidade = prompt('Unidade (kg, reps, min, s):') || 'kg';
 
     try {
-      await addDoc(collection(db, 'toppkb_users', user.uid, 'treinamento', 'prs'), {
+      await addDoc(treinoCol(db, user.uid, 'prs'), {
         exercicio,
         valor: Number(valor),
         unidade,

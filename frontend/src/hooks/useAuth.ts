@@ -132,7 +132,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setClaims({ admin: tokenResult.claims.admin as 'admin' | 'master' });
         } else {
           const adminSnap = await withTimeout(
-            getDoc(doc(db, 'toppkb_admin', 'admins', fbUser.uid)),
+            getDoc(doc(db, 'toppkb_admin', 'admins', 'list', fbUser.uid)),
             3000,
             'load admin',
           );

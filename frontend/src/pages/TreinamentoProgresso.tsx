@@ -11,10 +11,11 @@
  * Sub-rota: /app/treinamento/progresso
  */
 
+import { treinoCol } from '@/lib/firestorePaths';
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { collection, query, orderBy, getDocs, limit } from 'firebase/firestore';
+import {query, orderBy, getDocs, limit } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -51,7 +52,7 @@ export function TreinamentoProgresso() {
       const diasAtras = parseInt(periodo);
       const dataLimite = new Date(Date.now() - diasAtras * 24 * 60 * 60 * 1000);
       const q = query(
-        collection(db, 'toppkb_users', user.uid, 'treinamento', 'sessoes'),
+        treinoCol(db, user.uid, 'sessoes'),
         orderBy('data', 'desc'),
         limit(500),
       );

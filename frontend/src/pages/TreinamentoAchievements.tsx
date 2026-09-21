@@ -7,10 +7,11 @@
  * Sub-rota: /app/treinamento/achievements
  */
 
+import { treinoCol } from '@/lib/firestorePaths';
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { collection, query, orderBy, getDocs } from 'firebase/firestore';
+import {query, orderBy, getDocs } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent } from '@/components/ui/card';
@@ -52,7 +53,7 @@ export function TreinamentoAchievements() {
     queryFn: async () => {
       if (!user) return [];
       const q = query(
-        collection(db, 'toppkb_users', user.uid, 'treinamento', 'sessoes'),
+        treinoCol(db, user.uid, 'sessoes'),
         orderBy('data', 'desc'),
       );
       const snap = await getDocs(q);
