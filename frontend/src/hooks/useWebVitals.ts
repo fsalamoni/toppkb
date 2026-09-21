@@ -11,7 +11,7 @@
  */
 import { useEffect, useRef } from 'react';
 import { observeWebVitals, type WebVital } from '@/lib/webVitals';
-import { setItem, getItem } from '@/lib/idb';
+import { setInStore, getFromStore } from '@/lib/idbSchema';
 
 const VITALS_STORE = 'web-vitals';
 const MAX_VITALS = 50; // ring buffer
@@ -37,9 +37,9 @@ export function useWebVitals({ enabled = true, onMetric }: UseWebVitalsOptions =
     const stopObserving = observeWebVitals(async (metric) => {
       // Salvar no IndexedDB
       try {
-        const existing = (await getItem<WebVital[]>(VITALS_STORE, 'metrics')) || [];
+        const existing = (await getFromStore<WebVital[]>(VITALS_STORE, 'metrics')) || [];
         const updated = [metric, ...existing].slice(0, MAX_VITALS);
-        await setItem(VITALS_STORE, 'metrics', updated);
+        await setInStore(VITALS_STORE, 'metrics', updated);
       } catch (e) {
         console.warn('[useWebVitals] Failed to store metric:', e);
       }
@@ -72,7 +72,7 @@ export function useWebVitals({ enabled = true, onMetric }: UseWebVitalsOptions =
  */
 export async function getStoredMetrics(): Promise<WebVital[]> {
   try {
-    return (await getItem<WebVital[]>(VITALS_STORE, 'metrics')) || [];
+    return (await getFromStore<WebVital[]>(VITALS_STORE, 'metrics')) || [];
   } catch {
     return [];
   }

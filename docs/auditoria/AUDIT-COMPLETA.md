@@ -1686,3 +1686,115 @@ observeWebVitals((metric) => {
 - Ring buffer de 50 previne overflow
 - Console color feedback em dev
 
+
+---
+
+## ✅ SPRINT 18 — IndexedDB Schema Versioning + Migrations
+
+**Commit:** (próximo)
+
+### Problema Resolvido:
+
+IndexedDB anterior (`idb.ts`) usava **DB_VERSION = 1** fixo e apenas 1 store `kv`. Ao adicionar `web-vitals` e `sync-queue`, **dados antigos seriam órfãos** porque o schema não tinha migrations.
+
+### Solução: Sistema de Versioning
+
+#### `lib/idbSchema.ts` (270 linhas)
+
+```typescript
+const DB_NAME = 'toppkb';
+export const DB_VERSION = 2;
+
+type Migration = (db: IDBDatabase, oldVersion: number, tx: IDBTransaction) => void;
+
+export const MIGRATIONS: Migration[] = [
+  // v0 → v1: store 'kv' genérico
+  (db) => {
+    if (!db.objectStoreNames.contains('kv')) db.createObjectStore('kv');
+  },
+  // v1 → v2: stores específicos
+  (db) => {
+    if (!db.objectStoreNames.contains('web-vitals')) db.createObjectStore('web-vitals');
+    if (!db.objectStoreNames.contains('sync-queue')) db.createObjectStore('sync-queue');
+  },
+];
+
+async function openDB() {
+  // onupgradeneeded chama migrations em ordem
+  req.onupgradeneeded = (event) => {
+    const oldVersion = event.oldVersion;
+    let version = oldVersion;
+    while (version < DB_VERSION) {
+      MIGRATIONS[version]?.(db, version, tx);
+      version++;
+    }
+  };
+}
+```
+
+#### Helpers Genéricos (não dependem de store específico):
+
+```typescript
+export async function getFromStore<T>(storeName, key): Promise<T | undefined>
+export async function setInStore<T>(storeName, key, value): Promise<boolean>
+export async function deleteFromStore(storeName, key): Promise<boolean>
+export async function getAllKeys(storeName): Promise<string[]>
+export async function clearStore(storeName): Promise<boolean>
+export async function countStore(storeName): Promise<number>
+```
+
+#### Migração do idb.ts Antigo:
+
+O `useWebVitals` agora usa `idbSchema`:
+
+```typescript
+// ANTES (idb.ts):
+const existing = await getItem<WebVital[]>('web-vitals', 'metrics');
+await setItem('web-vitals', 'metrics', updated);
+
+// DEPOIS (idbSchema.ts):
+const existing = await getFromStore<WebVital[]>('web-vitals', 'metrics');
+await setInStore('web-vitals', 'metrics', updated);
+```
+
+### Como Adicionar Nova Migration Futura:
+
+1. Bump `DB_VERSION` para 3
+2. Adicionar migration em `MIGRATIONS[2]`:
+   ```typescript
+   (db) => {
+     if (!db.objectStoreNames.contains('chat-cache')) {
+       db.createObjectStore('chat-cache', { keyPath: 'id' });
+     }
+   }
+   ```
+3. Migration roda automaticamente na próxima abertura do DB
+
+### Testes (17 novos):
+
+- `lib/__tests__/idbSchema.test.ts`:
+  - DB_VERSION = 2
+  - 3 stores criados (kv, web-vitals, sync-queue)
+  - getFromStore/setInStore CRUD básico
+  - Sobrescrever valor
+  - Suporte a arrays
+  - deleteFromStore
+  - getAllKeys
+  - clearStore
+  - countStore
+
+### Validação:
+
+- 226 testes passando (era 209 - +17)
+- npm run lint: PASSOU
+- npm run build: PASSOU (bundle estável)
+- Browser abre DB v2 e roda migrations automaticamente
+
+### Benefícios:
+
+- ✅ Schema versionado (futuras mudanças não quebram)
+- ✅ Migrations executam em ordem
+- ✅ Stores específicos (não só kv genérico)
+- ✅ Helpers reutilizáveis para qualquer store
+- ✅ Backward compatible com idb.ts anterior
+
