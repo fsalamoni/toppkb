@@ -6,7 +6,7 @@
  * (82 exercícios autocompletos, self-contained em /kettlebell/).
  */
 
-const CACHE_NAME = 'toppkb-v18';
+const CACHE_NAME = 'toppkb-v19';
 const RUNTIME = 'toppkb-runtime-v18';
 
 // Build da PRECACHE_URLS dinamicamente: na inicialização, faz fetch de /kettlebell-index.json
@@ -116,4 +116,11 @@ self.addEventListener('fetch', (event) => {
       }
     })(),
   );
+});
+
+// Mensagens do cliente: SKIP_WAITING aplica a atualização imediatamente
+self.addEventListener('message', (event) => {
+  if (event.data?.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
 });

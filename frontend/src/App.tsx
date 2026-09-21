@@ -6,6 +6,7 @@ import { AuthProvider, useAuth } from './hooks/useAuth';
 import { ConfirmProvider } from './hooks/useConfirm';
 import { SkipLink } from './components/a11y/AccessibleHeading';
 import { OfflineBanner } from './components/common/OfflineBanner';
+import { ServiceWorkerUpdateBanner } from './components/common/ServiceWorkerUpdateBanner';
 import { Toaster } from './components/ui/toaster';
 import { Sidebar } from './components/layout/Sidebar';
 import { Topbar } from './components/layout/Topbar';
@@ -290,6 +291,7 @@ function AppShell() {
       <Toaster />
       <InstallPWA />
       <OfflineBanner />
+      <ServiceWorkerUpdateBanner />
     </div>
   );
 }
