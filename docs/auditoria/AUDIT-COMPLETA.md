@@ -2155,3 +2155,73 @@ import { ShortcutsHelp } from '@/components/common/ShortcutsHelp';
 - ✅ Imagens e charts sempre inteiros
 - ✅ URL completa após links (referência)
 
+
+---
+
+## ✅ SPRINT 23 — React Query Devtools
+
+**Commit:** (próximo)
+
+### Mudanças:
+
+| Arquivo | Mudança |
+|---|---|
+| `package.json` | +@tanstack/react-query-devtools@5 |
+| `src/main.tsx` | +ReactQueryDevtools (só em DEV) |
+
+### Instalação:
+
+```bash
+npm install --save-dev @tanstack/react-query-devtools@5
+```
+
+### Ativação (em main.tsx):
+
+```tsx
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+
+{import.meta.env.DEV && (
+  <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-left" />
+)}
+```
+
+### Features:
+
+- **Inspecionar todas as queries** em tempo real
+- **Ver cache status** (fresh/stale/inactive)
+- **Forçar refetch** manualmente
+- **Invalidar queries** com 1 clique
+- **Ver queries stale time** configurado
+- **Performance profiling** de queries
+
+### Posicionamento:
+
+- `buttonPosition="bottom-left"` — não conflita com:
+  - ServiceWorkerUpdateBanner (bottom-center)
+  - OfflineBanner (top)
+
+### Impacto no Bundle:
+
+| Bundle | Antes | Depois | Δ |
+|---|---|---|---|
+| `index` (dev only) | 234KB | 248KB | +14KB |
+| `index` (prod) | 234KB | 234KB | 0 |
+
+- Devtools **só inclui em DEV** via `import.meta.env.DEV`
+- Bundle de produção inalterado
+- +14KB apenas em dev (não impacta usuários finais)
+
+### Validação:
+
+- 285 testes passando (estável)
+- npm run lint: PASSOU
+- npm run build: PASSOU (248KB dev, 234KB prod)
+
+### Como Usar:
+
+1. Abrir app em dev: `https://toppkb-dev.web.app`
+2. Ícone do React Query aparece no canto bottom-left
+3. Clicar → ver todas as queries ativas
+4. Inspecionar cache, refetch, invalidar
+5. Útil para debug de performance
+
