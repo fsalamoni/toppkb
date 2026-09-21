@@ -2607,3 +2607,84 @@ const { data } = useQuery({
 });
 ```
 
+
+---
+
+## ✅ SPRINT 28 — Auto-save de Forms
+
+**Commit:** (próximo)
+
+### Arquivos:
+
+| Arquivo | Linhas | Função |
+|---|---|---|
+| `hooks/useFormAutoSave.ts` | 130 | Hook com debounce + beforeunload |
+| `components/common/AutoSaveIndicator.tsx` | 70 | UI de status |
+| `hooks/__tests__/useFormAutoSave.test.ts` | 6 testes | Debounce + restore + clear |
+
+### useFormAutoSave:
+
+```typescript
+const { savedAt, saving, clear, restore } = useFormAutoSave({
+  key: 'treino-draft',
+  data: formData,        // qualquer objeto
+  delay: 1000,           // 1s debounce
+  enabled: true,
+});
+```
+
+**Features:**
+- ✅ Debounce 1s (padrão) entre saves
+- ✅ Salva em `beforeunload` (garante último save)
+- ✅ Restaura rascunho ao abrir Form (hook auxiliar `useDraftRestore`)
+- ✅ Botão "Limpar" para resetar
+- ✅ Salva automaticamente (sem usuário perceber)
+- ✅ Sem dependências externas
+
+### API Auxiliar:
+
+```typescript
+// Hook para inicializar Form com rascunho
+const draft = useDraftRestore<FormData>('treino-draft');
+```
+
+### AutoSaveIndicator:
+
+- 🔵 `Salvando...` (azul pulsante) durante debounce
+- ✓ `Rascunho salvo às 14:32:05` (verde) após save
+- ✕ `Limpar` botão para resetar
+- ⚠️ `Erro ao salvar` (vermelho) em caso de falha
+
+### Validação:
+
+- 324 → 330 testes passando (+6)
+- npm run lint: PASSOU
+- npm run build: PASSOU
+
+### Benefícios:
+
+- ✅ **Não perder dados** se user fecha aba acidentalmente
+- ✅ Restauração automática ao voltar
+- ✅ Indicador visual discreto (não atrapalha)
+- ✅ Storage com timestamp
+- ✅ Sem backend necessário
+- ✅ Funciona offline (localStorage)
+
+### Aplicação Futura:
+
+```tsx
+// Em TreinoForm (20+ campos):
+const [data, setData] = useState<TreinoFormData>({});
+const { savedAt, saving, clear } = useFormAutoSave({
+  key: `treino-${userId}`,
+  data,
+  delay: 1000,
+});
+
+<form>
+  <Input value={data.tipo} onChange={...} />
+  ...
+  <AutoSaveIndicator savedAt={savedAt} saving={saving} onClear={clear} />
+</form>
+```
+
