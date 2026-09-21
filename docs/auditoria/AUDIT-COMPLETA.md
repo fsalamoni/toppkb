@@ -1798,3 +1798,87 @@ await setInStore('web-vitals', 'metrics', updated);
 - ✅ Helpers reutilizáveis para qualquer store
 - ✅ Backward compatible com idb.ts anterior
 
+
+---
+
+## ✅ SPRINT 19 — SkeletonForm Padronizado
+
+**Commit:** (próximo)
+
+### Arquivos:
+
+| Arquivo | Linhas | Função |
+|---|---|---|
+| `components/ui/skeleton-form.tsx` | 80 | Skeleton padronizado para Forms |
+| `components/ui/__tests__/skeleton-form.test.tsx` | 9 testes | Variantes e estrutura |
+
+### API:
+
+```tsx
+<SkeletonForm
+  variant="medium"        // 'small' | 'medium' | 'large'
+  fieldCount={4}           // (opcional) sobrepõe variant
+  hasTextarea={false}      // (opcional) sobrepõe variant
+  hasSelect={true}         // (opcional) sobrepõe variant
+  hasHeader={true}         // mostra título + descrição skeleton
+/>
+```
+
+### Variantes:
+
+| Variant | Fields | Select | Textarea | Uso típico |
+|---|---|---|---|---|
+| `small` | 1 | ❌ | ❌ | Toggle simples (Dores boolean) |
+| `medium` | 4 | ✅ | ❌ | Forms típicos (Treino, Partida) |
+| `large` | 7 | ✅ | ✅ (último) | Forms complexos (Onboarding, Perfil) |
+
+### Acessibilidade:
+
+- `aria-busy="true"` no container
+- `aria-live="polite"` para screen readers
+- Header skeleton com título (h-7) + descrição (h-4)
+
+### Estrutura Visual:
+
+```
+┌────────────────────────────┐
+│ [h-7 w-2/3] (título)       │ ← Header
+│ [h-4 w-1/2] (descrição)    │
+├────────────────────────────┤
+│ [h-4 w-1/4] (label 1)      │
+│ [h-10 w-full] (input 1)    │
+│ [h-4 w-1/4] (label 2)      │
+│ [h-10 w-full] (input 2)    │
+│ ...                        │
+├────────────────────────────┤
+│ [h-10 w-24] (submit)       │ ← Actions
+│ [h-10 w-20] (cancel)       │
+└────────────────────────────┘
+```
+
+### Validação:
+
+- 238 testes passando (era 226 - +9 testes)
+- npm run lint: PASSOU
+- npm run build: PASSOU (bundle estável)
+
+### Como aplicar:
+
+```tsx
+// Em qualquer Form:
+import { SkeletonForm } from '@/components/ui/skeleton-form';
+
+function TreinoForm() {
+  const { data, isLoading } = useTreino(id);
+  if (isLoading) return <SkeletonForm variant="medium" fieldCount={5} />;
+  // ...
+}
+```
+
+### Benefícios:
+
+- ✅ Padrão único para todos os Forms
+- ✅ Skeleton reflete estrutura real (header/fields/actions)
+- ✅ Acessível com aria-busy + aria-live
+- ✅ Customizável por variant OU props específicas
+
