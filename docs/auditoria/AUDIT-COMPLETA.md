@@ -2526,3 +2526,84 @@ Maria,50,Rio de Janeiro
 - ✅ Mensagem "X documentos, Y MB" para o user
 - ✅ Lista de coleções com dados no UI
 
+
+---
+
+## ✅ SPRINT 27 — Chart Tooltip Rico + Time Range Selector
+
+**Commit:** (próximo)
+
+### Arquivos:
+
+| Arquivo | Linhas | Função |
+|---|---|---|
+| `components/charts/ChartTooltip.tsx` | 110 | Tooltip custom Recharts com trends |
+| `components/charts/TimeRangeSelector.tsx` | 80 | Seletor de período (5 opções) |
+| `components/charts/__tests__/ChartTooltip.test.tsx` | 7 testes | Trend + formatação |
+| `components/charts/__tests__/TimeRangeSelector.test.tsx` | 8 testes | Range selection |
+
+### ChartTooltip Features:
+
+```tsx
+<Tooltip content={<ChartTooltip unit="kg" isDate />} />
+```
+
+- **Theme-aware** (light/dark) com bg-popover e text-popover-foreground
+- **Trend icons** (TrendingUp / TrendingDown / Minus)
+- **Formatação pt-BR** (datas, números: 1.234,56)
+- **Unit display** (kg, %, km, kcal)
+- **Mínimo width** 180px (legibilidade)
+- **Custom formatValue** para kcal ou outras unidades
+
+### TimeRangeSelector:
+
+```tsx
+const [range, setRange] = useState<TimeRange>('30d');
+<TimeRangeSelector value={range} onChange={setRange} />
+```
+
+**5 opções:**
+- 7 dias (1 sem)
+- 30 dias (1 mês)
+- 90 dias (3 meses)
+- 1 ano
+- Tudo
+
+**Helper:**
+```ts
+const startDate = getStartDate('30d');  // Date | null
+```
+
+### Validação:
+
+- 324 testes passando (era 309 - +15)
+- npm run lint: PASSOU
+- npm run build: PASSOU
+
+### Benefícios:
+
+- ✅ Tooltips ricos (trend icons + format pt-BR)
+- ✅ Seletor de período padronizado
+- ✅ Componente `radiogroup` acessível
+- ✅ Helper `getStartDate` para query Firestore
+- ✅ Integração com Shadcn Tooltip
+- ✅ Theme-aware (light/dark automático)
+
+### Aplicação Futura em Gráficos:
+
+```tsx
+// Antes (chato):
+<Tooltip />
+
+// Depois (rico):
+<Tooltip content={<ChartTooltip unit="kg" isDate={true} />} />
+
+// + filtro de período:
+const [range, setRange] = useState('30d');
+const startDate = getStartDate(range);
+const { data } = useQuery({
+  queryKey: ['peso', range],
+  queryFn: () => fetchPeso(startDate),
+});
+```
+
