@@ -3,18 +3,19 @@ import { Menu, MessageCircle, User as UserIcon } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useUIStore } from '@/stores/uiStore';
 import { Button } from '@/components/ui/button';
+import { GlobalSearch } from './GlobalSearch';
 
 export function Topbar() {
   const { userDoc, claims } = useAuth();
   const { toggleSidebar } = useUIStore();
 
   return (
-    <header className="flex items-center justify-between h-14 px-4 border-b border-border bg-card">
+    <header className="flex items-center justify-between h-14 px-4 border-b border-border bg-card gap-4">
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="icon" onClick={toggleSidebar}>
           <Menu className="h-5 w-5" />
         </Button>
-        <div className="text-sm text-muted-foreground">
+        <div className="text-sm text-muted-foreground hidden sm:block">
           Olá, <span className="text-foreground font-medium">{userDoc?.displayName || 'Atleta'}</span> 🏓
           {claims?.admin && (
             <span className="ml-2 text-xs bg-yellow-500/20 text-yellow-500 px-2 py-0.5 rounded">
@@ -23,6 +24,11 @@ export function Topbar() {
           )}
         </div>
       </div>
+
+      <div className="flex-1 max-w-md">
+        <GlobalSearch />
+      </div>
+
       <div className="flex items-center gap-2">
         <Link
           to="/app/chat"

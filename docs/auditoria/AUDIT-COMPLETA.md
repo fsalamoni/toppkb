@@ -811,3 +811,91 @@ Aplicado em: TreinamentoComposicao (peso), AdminUsers (admin vazio), Treinamento
 - Notificações agrupadas
 - Relatórios mensais (PDF/email)
 
+
+---
+
+## ✅ SPRINT 4 — Features + Finalização
+
+**Commit:** (próximo)
+**Deploy:** Bundle `index-CiqlWEpC.js` (223KB — +6KB pela busca global)
+
+### Implementações Sprint 4:
+
+#### 1. `useUIStore` consolidado
+- Eliminado duplicação `temaEscuro`/`theme` (era 2 sistemas paralelos)
+- Renomeado para `theme: 'light' | 'dark'`
+- Mantida compat com `setTema`/`toggleTema` (alias para código antigo)
+
+**Diff:** `frontend/src/stores/uiStore.ts` (45 → 56 linhas, agora com JSDoc + tipos)
+
+#### 2. `GlobalSearch` no Topbar
+- Busca global com Cmd/Ctrl + K
+- Lista todas as páginas + itens cacheados do TanStack Query
+- Resultados agrupados (páginas + treinos + partidas + dores + torneios)
+- Navegação por teclado (↑↓ + Enter + ESC)
+- Empty state quando não há resultados
+
+**Arquivo:** `frontend/src/components/layout/GlobalSearch.tsx` (245 linhas)
+
+#### 3. Topbar atualizado
+- Substitui o input de busca estático pelo `<GlobalSearch />`
+- Mantém menu, saudação e ícones de chat/perfil
+
+---
+
+## 📊 Métricas Finais — Top Pickleball 50+
+
+### Cobertura do projeto:
+
+| Categoria | Métrica | Sprint 0 | Atual |
+|---|---|---|---|
+| **Bundle size** | Página inicial | 1.9MB | **223KB** (88% menor) |
+| **TreinamentoMp** | Linhas | 1418 | **425** (70% menor) |
+| **Dashboard** | Linhas | 695 | **284** (59% menor) |
+| **Confirmações nativas** | `window.confirm()` | 11 | **0** ✨ |
+| **Breadcrumbs** | Páginas com | 0 | **9** ✨ |
+| **EmptyStates** | Com ilustração SVG | 0 | **4** ✨ |
+| **Loading skeletons** | Páginas com | 0 | **3** ✨ |
+| **Toast API** | Dual suport (shadcn + sonner) | ✓ ✓ | ✓ ✓ |
+| **Bug críticos corrigidos** | Sprint 1 | 7 | **7** |
+| **Lint** | 0 erros, 0 warnings | ✓ | ✓ |
+| **Build** | sem erros | ✓ | ✓ |
+
+### Componentes criados:
+
+| Componente | Linhas | Função |
+|---|---|---|
+| `useConfirm` | 92 | Substitui `window.confirm()` |
+| `ConfirmDialog` | 105 | Modal acessível de confirmação |
+| `ConfirmProvider` | (em useConfirm) | Context para o hook |
+| `Breadcrumbs` | 150 | Navegação hierárquica automática |
+| `GlobalSearch` | 245 | Busca global Cmd+K |
+| `EmptyState` | 235 | Estado vazio com SVG |
+| `Skeleton*` | 246 | 7 variantes (Page, Card, List, Row, Table, Avatar, Text) |
+| `DashboardAlerts` | 101 | Dor, Streak, Hidratação |
+| `DashboardKPIs` | 160 | KPICard + QuickAction |
+| `DashboardCharts` | 115 | Charts wrapper |
+| `useDashboardData` | 221 | Lógica de dados Dashboard |
+| `SetupTab` | 366 | Wizard de 4 passos |
+| `PlanoTab` | 160 | Visão semana-a-semana |
+| `ExecutarTab` | 245 | Próxima sessão pendente |
+| `ProgressoTab` | 275 | Aderência + stats |
+
+### Auditoria final:
+
+- **47 bugs mapeados** (8 críticos)
+- **Sprint 1**: 7 críticos corrigidos ✅
+- **Sprint 2**: 23 UX/UI melhorias aplicadas em 12 páginas ✅
+- **Sprint 3**: 2 refatorações grandes (Dashboard, TreinamentoMp) ✅
+- **Sprint 4**: 3 features (tema unificado, busca global, Toast compat) ✅
+
+### Próximos passos (opcionais para futuro):
+
+- [ ] 2FA via SMS (Firebase Phone Auth)
+- [ ] Push notifications com timezone do usuário
+- [ ] Notificações agrupadas
+- [ ] Relatórios mensais (PDF/email)
+- [ ] Mais testes (Vitest + Playwright)
+- [ ] Storybook para componentes
+- [ ] Documentação interativa Docusaurus
+
