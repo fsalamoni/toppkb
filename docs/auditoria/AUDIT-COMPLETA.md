@@ -1455,3 +1455,77 @@ const { mutate: add, isSaving } = useOfflineWrite({
 - npm run lint: PASSOU
 - npm run build: PASSOU (bundle 257KB estável)
 
+
+---
+
+## ✅ SPRINT 14 — Lighthouse Optimization + LazyImage
+
+**Commit:** (próximo)
+
+### Melhorias Aplicadas:
+
+#### `index.html` — Resource Hints + SEO
+
+```html
+<!-- Preconnect para Firebase (~200ms economizados em TLS handshake) -->
+<link rel="preconnect" href="https://firebaseinstallations.googleapis.com" crossorigin />
+<link rel="preconnect" href="https://firestore.googleapis.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link rel="dns-prefetch" href="https://toppkb.web.app" />
+
+<!-- SEO meta tags -->
+<meta name="keywords" content="pickleball, treino, fitness, atleta 50+" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Top Pickleball 50+" />
+<meta property="og:description" content="..." />
+<meta name="twitter:card" content="summary_large_image" />
+
+<!-- A11y noscript fallback -->
+<noscript>...</noscript>
+
+<script type="module" src="/src/main.tsx" crossorigin="anonymous" />
+```
+
+#### `<LazyImage>` Component
+
+| Arquivo | Linhas | Função |
+|---|---|---|
+| `components/common/LazyImage.tsx` | 50 | Imagens com loading="lazy" nativo |
+
+**Features:**
+- `loading="lazy"` nativo (Chrome decide quando carregar)
+- `decoding="async"` (não bloqueia main thread)
+- Suporte a `srcSet` para responsive
+- Estado `loaded` / `error` com feedback visual
+- Placeholder enquanto carrega
+
+### Testes:
+- `LazyImage.test.tsx` (5 testes):
+  - Renderiza loading=lazy e decoding=async
+  - Aceita srcSet
+  - OnLoad → opacity 1
+  - OnError → background vermelho
+  - Passa width/height
+
+### Validação:
+- 194 testes passando (era 189 - +5)
+- npm run lint: PASSOU
+- npm run build: PASSOU (bundle 257KB estável)
+- index.html: +1KB (resource hints + meta tags)
+
+### Benefícios Lighthouse esperados:
+
+| Métrica | Melhoria |
+|---|---|
+| LCP (Largest Contentful Paint) | -200ms (preconnect economiza TLS) |
+| FID (First Input Delay) | -50ms (decoding async) |
+| CLS (Cumulative Layout Shift) | +0 (width/height) |
+| Lighthouse SEO | 95+ (meta tags completos) |
+
+### Aplicações futuras:
+
+`<LazyImage>` pode ser aplicado em:
+- Avatares de usuários
+- Imagens de torneios
+- Thumbnails de exercícios kettlebell
+
