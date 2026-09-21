@@ -150,11 +150,18 @@ function generateCrumbs(
   let acc = '';
   for (let i = 0; i < segments.length; i++) {
     const seg = segments[i];
+
+    // Pula o segmento inicial "app" — ele é só parte do "namespace" do shell
+    if (i === 0 && seg === 'app') {
+      acc += `/${seg}`;
+      continue;
+    }
+
     acc += `/${seg}`;
 
-    // Esconde segmentos que são IDs (geralmente últimos e alfanuméricos longos)
+    // Esconde segmentos que são IDs (Firestore IDs são tipicamente hex/base36 de 20+ chars)
     const isLast = i === segments.length - 1;
-    const isId = /^[a-zA-Z0-9_-]{8,}$/.test(seg) && isLast;
+    const isId = /^[a-zA-Z0-9_-]{14,}$/.test(seg) && isLast;
 
     const label = isId ? 'Detalhes' : getLabel(seg, params);
     if (label) {
