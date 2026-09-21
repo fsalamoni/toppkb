@@ -4,6 +4,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useUIStore } from '@/stores/uiStore';
 import { Button } from '@/components/ui/button';
 import { GlobalSearch } from './GlobalSearch';
+import { SyncIndicator } from '@/components/common/SyncIndicator';
 
 export function Topbar() {
   const { userDoc, claims } = useAuth();
@@ -30,6 +31,7 @@ export function Topbar() {
       </div>
 
       <div className="flex items-center gap-2">
+        <SyncIndicator />
         <Link
           to="/app/chat"
           className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-1"

@@ -1214,3 +1214,78 @@ O componente está pronto para uso em:
 - Relatórios mensais (exportar tudo)
 - Tabelas admin (todos os usuários)
 
+
+---
+
+## ✅ SPRINT 10 — BACKGROUND SYNC (Fila de Writes Offline)
+
+**Commit:** (próximo)
+**Bundle:** 227KB → 234KB (+7KB pela fila de sync)
+
+### Componentes Criados:
+
+| Arquivo | Linhas | Função |
+|---|---|---|
+| `lib/syncQueue.ts` | 195 | Manager da fila com retry + backoff |
+| `hooks/useSyncQueue.ts` | 145 | Hook React + flush automático online |
+| `components/common/SyncIndicator.tsx` | 105 | Indicador visual no Topbar |
+
+### Funcionalidades:
+
+#### `syncQueue.ts`
+- **Mutation types**: `set`, `add`, `update`, `delete`
+- **Persistência**: IndexedDB (sobrevive reload/fechar tab)
+- **Exponential backoff**: 1s, 2s, 4s, 8s entre tentativas
+- **Max 3 tentativas** antes de mover para `failed`
+- **Singleton**: `syncQueue` é compartilhado por todos os componentes
+- **Subscribe/notify**: listeners React para mudanças de estado
+
+#### `useSyncQueue`
+- React hook sobre o syncQueue
+- **Auto-flush**: quando volta online + tem pendentes → flush automático
+- **Manual flush**: `flush()` para forçar
+- **Default executor**: detecta `set/add/update/delete` e executa via Firestore
+
+#### `<SyncIndicator>`
+- 4 estados visuais:
+  1. ❌ **Falhou** (vermelho): N mutations falharam
+  2. 🔄 **Sincronizando** (azul com spinner): flush em andamento
+  3. ☁️ **Online + pendentes** (amarelo): aguardando sync
+  4. ☁️⛔ **Offline + pendentes** (cinza): será sync quando voltar online
+- `role="status"` + `aria-live="polite"` (anuncia para screen readers)
+- Aparece no Topbar ao lado do menu Chat
+
+### Cenário Real (Pickleball em quadra):
+
+1. Usuário **sem sinal** toca "Registrar treino" → abre form
+2. Preenche e clica "Salvar" → vai direto para o Firestore? Não!
+3. Mutation é **enfileirada** no IndexedDB
+4. SyncIndicator aparece: "☁️⛔ 1 pendente"
+5. Usuário volta para área com Wi-Fi → useSyncQueue detecta online
+6. **Auto-flush** → mutation é enviada para Firestore
+7. SyncIndicator some + mostra "✓ Sincronizado" (5s)
+
+### Testes Adicionados:
+
+| Arquivo | Testes | Cobre |
+|---|---|---|
+| `syncQueue.test.ts` | 11 | enqueue/remove/clear/flush/retry/subscribe |
+| `SyncIndicator.test.tsx` | 1 | render invisível quando nada pendente |
+| **Total Sprint 10** | **12** | |
+
+### Validação:
+- 173 testes passando (era 161 - +12)
+- npm run lint: PASSOU
+- npm run build: PASSOU (bundle 234KB)
+
+### Aplicação em Forms (próximo):
+
+A integração completa com Forms (TreinoForm, PartidaForm, etc) será feita no Sprint 11,
+substituindo os `safeSetDoc` por `useSyncQueue.enqueue()`.
+
+### Próximo Sprint:
+
+- [ ] Integrar `useSyncQueue` em Forms principais (TreinoForm, PartidaForm, DoresForm)
+- [ ] Storybook (visual docs de componentes)
+- [ ] Code splitting mais agressivo
+
