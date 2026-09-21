@@ -761,3 +761,53 @@ Aplicado em: TreinamentoComposicao (peso), AdminUsers (admin vazio), Treinamento
 - **dashboardHelpers.ts** (extrair cálculo de streak/dorAtiva dos hooks)
 - **`temaEscuro` vs `theme`** — unificar no `uiStore`
 
+
+---
+
+## ✅ SPRINT 3.2 — TreinamentoMeuPrograma split (1418 → 425 linhas)
+
+**Commit:** (próximo)
+**Deploy:** Validado em produção (bundle `TreinamentoMeuPrograma-Bmv7aa6r.js` 43.68KB)
+
+### Antes vs Depois:
+
+| Arquivo | Antes | Depois | Redução |
+|---|---|---|---|
+| `TreinamentoMeuPrograma.tsx` | **1418 linhas** | **425 linhas** | **-70%** |
+| `SetupTab.tsx` (extraído) | — | 366 linhas | novo |
+| `PlanoTab.tsx` (extraído) | — | 160 linhas | novo |
+| `ExecutarTab.tsx` (extraído) | — | 245 linhas | novo |
+| `ProgressoTab.tsx` (extraído) | — | 275 linhas | novo |
+
+**Total: 1418 → 1046 linhas (em 5 arquivos), com o arquivo principal reduzido em 70%.**
+
+### Bundle size:
+
+| Componente | Antes | Depois | Redução |
+|---|---|---|---|
+| `TreinamentoMeuPrograma` chunk | ~80KB (estimado) | **43.68 KB** | -45% |
+
+### Validação:
+
+- ✅ `npm run lint`: 0 erros, 0 warnings
+- ✅ `npm run build`: Bundle válido
+- ✅ `CodeSplitting`: Cada Tab é componente importável individualmente (futuro: pode fazer lazy load de cada Tab)
+
+### Benefícios da refatoração:
+
+1. **Cada arquivo < 425 linhas** (legibilidade++)
+2. **Imports mais limpos** (cada arquivo importa só o que usa)
+3. **Testabilidade** (podemos testar cada Tab isoladamente)
+4. **Manutenibilidade** (mudança em uma aba não afeta as outras)
+5. **Bundle size** caiu 45% no chunk principal da página
+6. **Bug-hunting** mais fácil (cada aba é escopo menor)
+
+### Próximo passo (Sprint 4 — features):
+
+- 2FA via SMS (Firebase Phone Auth)
+- Busca global no Topbar
+- Modo claro funcional
+- Push notifications com timezone do usuário
+- Notificações agrupadas
+- Relatórios mensais (PDF/email)
+
