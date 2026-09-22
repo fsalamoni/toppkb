@@ -1,21 +1,34 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600" width="400" height="600">
 <rect width="400" height="600" fill="#0f172a"/>
 <line x1="50" y1="520" x2="350" y2="520" stroke="#475569" stroke-width="2"/>
-<text x="200" y="40" font-size="22" font-weight="bold" fill="#06b6d4" text-anchor="middle">STEP 1</text>
-<text x="200" y="62" font-size="13" fill="#94a3b8" text-anchor="middle">Side Plank Kb</text>
-<!-- Pés -->
-<circle cx="100" cy="495" r="10" fill="#cbd5e1"/>
-<circle cx="110" cy="495" r="10" fill="#cbd5e1"/>
-<!-- Corpo deitado -->
-<circle cx="50" cy="440" r="22" fill="none" stroke="#cbd5e1" stroke-width="6"/>
-<line x1="70" y1="440" x2="200" y2="440" stroke="#cbd5e1" stroke-width="12" stroke-linecap="round"/>
-<!-- Braços apoiados -->
-<line x1="100" y1="440" x2="130" y2="500" stroke="#cbd5e1" stroke-width="9" stroke-linecap="round"/>
-<!-- Pernas -->
-<line x1="100" y1="440" x2="100" y2="495" stroke="#cbd5e1" stroke-width="10" stroke-linecap="round"/>
-<line x1="100" y1="495" x2="100" y2="495" stroke="#cbd5e1" stroke-width="10" stroke-linecap="round"/>
-<!-- Linha horizontal -->
-<line x1="50" y1="450" x2="320" y2="450" stroke="#06b6d4" stroke-width="2" stroke-dasharray="5,5"/>
-<text x="100" y="445" font-size="11" fill="#06b6d4">Corpo reto</text>
-<text x="200" y="585" font-size="12" fill="#06b6d4" text-anchor="middle">PRANCHA — core trava, lombar neutra</text>
+<defs>
+  <marker id="ah-1" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+    <path d="M 0 0 L 10 5 L 0 10 z" fill="#10b981"/>
+  </marker>
+</defs>
+<rect id="header-rect" x="0" y="0" width="400" height="110" fill="#06b6d4"/>
+<text x="40" y="40" font-size="22" font-weight="bold" fill="#0f172a" font-family="sans-serif">SIDE PLANK COM KB</text>
+<text x="40" y="68" font-size="12" fill="#0f172a" opacity="0.8" font-family="sans-serif">kb-side-plank-kb</text>
+<circle cx="350" cy="55" r="40" fill="#0f172a"/>
+<text x="350" y="68" font-size="36" font-weight="bold" fill="#06b6d4" text-anchor="middle" font-family="sans-serif">1</text>
+<text x="40" y="155" font-size="20" font-weight="bold" fill="#cbd5e1" font-family="sans-serif">Setup: side plank + KB no chão</text>
+<text x="40" y="180" font-size="11" fill="#94a3b8" font-family="sans-serif">Side plank com antebraço no chão. KB na mão livre (alcançável).</text>
+
+<circle cx="200" cy="260" r="22" fill="none" stroke="#cbd5e1" stroke-width="6"/>
+<line x1="200" y1="282" x2="200" y2="420" stroke="#cbd5e1" stroke-width="12" stroke-linecap="round"/>
+<line x1="200" y1="310" x2="200" y2="380" stroke="#cbd5e1" stroke-width="9" stroke-linecap="round"/>
+<line x1="200" y1="320" x2="200" y2="380" stroke="#cbd5e1" stroke-width="9" stroke-linecap="round"/>
+<circle cx="200" cy="400" r="20" fill="#94a3b8" opacity="0.6"/>
+<rect x="188" y="385" width="24" height="32" fill="none" stroke="#64748b" stroke-width="2"/>
+<line x1="200" y1="420" x2="180" y2="510" stroke="#cbd5e1" stroke-width="10" stroke-linecap="round"/>
+<line x1="200" y1="420" x2="220" y2="510" stroke="#cbd5e1" stroke-width="10" stroke-linecap="round"/>
+<!-- Calcanhar (peso) -->
+<rect x="170" y="500" width="25" height="15" fill="#10b981" opacity="0.5" rx="2"/>
+<text x="183" y="555" font-size="11" fill="#10b981" font-weight="bold" text-anchor="middle" font-family="sans-serif">CALCANHAR ↓ peso</text>
+
+<rect x="0" y="555" width="400" height="45" fill="#06b6d4" opacity="0.15"/>
+<text x="40" y="575" font-size="12" font-weight="bold" fill="#06b6d4" font-family="sans-serif">▶ Onde/como sentir</text>
+<text x="40" y="592" font-size="10" fill="#94a3b8" font-family="sans-serif">Detalhes completos no app</text>
+
+<animate attributeName="opacity" values="1;0.85;1" dur="3s" repeatCount="indefinite" xlink:href="#header-rect"/>
 </svg>

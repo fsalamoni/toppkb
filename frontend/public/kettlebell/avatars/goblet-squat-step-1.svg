@@ -17,4 +17,6 @@
 <line x1="200" y1="370" x2="180" y2="510" stroke="#cbd5e1" stroke-width="10" stroke-linecap="round"/>
 <line x1="200" y1="370" x2="220" y2="510" stroke="#cbd5e1" stroke-width="10" stroke-linecap="round"/>
 <text x="200" y="585" font-size="12" fill="#f59e0b" text-anchor="middle">EM PÉ — KB no peito, cotovelos junto ao corpo</text>
+
+<animate attributeName="opacity" values="1;0.85;1" dur="3s" repeatCount="indefinite" xlink:href="#header-rect"/>
 </svg>

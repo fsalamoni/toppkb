@@ -7,6 +7,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { MuscleHint } from '@/components/common/MuscleHint';
 import {
   PERIODIZACAO_TEMPLATES,
   MESOCICLO_DESCRICOES,
@@ -409,6 +410,11 @@ function SessaoDetail({
                         </div>
                       )}
                     </div>
+                  )}
+
+                  {/* SPRINT 50: DICA MUSCULAR (ONDE SENTIR) */}
+                  {exercicio && (
+                    <MuscleHint exerciseId={exercicio.id} variant="inline" className="mt-2" />
                   )}
                 </div>
               );

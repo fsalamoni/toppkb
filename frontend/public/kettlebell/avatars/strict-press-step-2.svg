@@ -15,4 +15,6 @@
 <text x="290" y="220" font-size="11" fill="#a855f7">Braço</text>
 <text x="290" y="235" font-size="11" fill="#a855f7">vertical</text>
 <text x="200" y="585" font-size="12" fill="#a855f7" text-anchor="middle">TRAVA — KB sobre o ombro, deltóide firme</text>
+
+<animate attributeName="opacity" values="1;0.85;1" dur="3s" repeatCount="indefinite" xlink:href="#header-rect"/>
 </svg>

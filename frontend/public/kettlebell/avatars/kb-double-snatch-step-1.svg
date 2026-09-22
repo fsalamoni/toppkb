@@ -1,15 +1,31 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600" width="400" height="600">
 <rect width="400" height="600" fill="#0f172a"/>
 <line x1="50" y1="520" x2="350" y2="520" stroke="#475569" stroke-width="2"/>
-<text x="200" y="40" font-size="22" font-weight="bold" fill="#a855f7" text-anchor="middle">RACK</text>
-<text x="200" y="62" font-size="13" fill="#94a3b8" text-anchor="middle">Double Snatch</text>
-<circle cx="200" cy="160" r="22" fill="none" stroke="#cbd5e1" stroke-width="6"/>
-<line x1="200" y1="182" x2="200" y2="370" stroke="#cbd5e1" stroke-width="12" stroke-linecap="round"/>
-<line x1="200" y1="200" x2="220" y2="240" stroke="#cbd5e1" stroke-width="9" stroke-linecap="round"/>
-<line x1="200" y1="200" x2="180" y2="240" stroke="#cbd5e1" stroke-width="9" stroke-linecap="round"/>
-<circle cx="220" cy="245" r="22" fill="#a855f7"/>
-<rect x="208" y="230" width="24" height="35" fill="none" stroke="#1e293b" stroke-width="3"/>
+<rect id="header-rect" x="0" y="0" width="400" height="110" fill="#a855f7"/>
+<text x="40" y="40" font-size="22" font-weight="bold" fill="#0f172a" font-family="sans-serif">DOUBLE KB SNATCH</text>
+<text x="40" y="68" font-size="12" fill="#0f172a" opacity="0.8" font-family="sans-serif">kb-double-snatch</text>
+<circle cx="350" cy="55" r="40" fill="#0f172a"/>
+<text x="350" y="68" font-size="36" font-weight="bold" fill="#a855f7" text-anchor="middle" font-family="sans-serif">1</text>
+<text x="40" y="155" font-size="20" font-weight="bold" fill="#cbd5e1" font-family="sans-serif">Setup (pés fechados)</text>
+<text x="40" y="180" font-size="11" fill="#94a3b8" font-family="sans-serif">2 KBs no chão entre os pés. Pés JUNTOS (snatch é mais narrow que swing). Hipe quadril para trás.</text>
+
+<circle cx="200" cy="200" r="20" fill="none" stroke="#cbd5e1" stroke-width="6"/>
+<line x1="200" y1="220" x2="200" y2="370" stroke="#cbd5e1" stroke-width="12" stroke-linecap="round"/>
+<line x1="200" y1="240" x2="220" y2="270" stroke="#cbd5e1" stroke-width="9" stroke-linecap="round"/>
+<line x1="200" y1="240" x2="180" y2="270" stroke="#cbd5e1" stroke-width="9" stroke-linecap="round"/>
+<circle cx="220" cy="280" r="18" fill="#a855f7"/>
+<rect x="208" y="265" width="24" height="32" fill="none" stroke="#581c87" stroke-width="2"/>
 <line x1="200" y1="370" x2="180" y2="510" stroke="#cbd5e1" stroke-width="10" stroke-linecap="round"/>
 <line x1="200" y1="370" x2="220" y2="510" stroke="#cbd5e1" stroke-width="10" stroke-linecap="round"/>
-<text x="200" y="585" font-size="12" fill="#a855f7" text-anchor="middle">RACK — KB no ombro, cotovelo próximo</text>
+<!-- CORE HIGHLIGHT -->
+<rect x="190" y="280" width="20" height="80" fill="#a855f7" opacity="0.3" rx="5"/>
+<text x="240" y="320" font-size="11" fill="#a855f7" font-weight="bold" font-family="sans-serif">CORE 360°</text>
+<!-- Cotovelo próximo -->
+<line x1="200" y1="240" x2="220" y2="270" stroke="#a855f7" stroke-width="2" opacity="0.7"/>
+
+<rect x="0" y="555" width="400" height="45" fill="#a855f7" opacity="0.15"/>
+<text x="40" y="575" font-size="12" font-weight="bold" fill="#a855f7" font-family="sans-serif">▶ Onde/como sentir</text>
+<text x="40" y="592" font-size="10" fill="#94a3b8" font-family="sans-serif">Detalhes completos no app</text>
+
+<animate attributeName="opacity" values="1;0.85;1" dur="3s" repeatCount="indefinite" xlink:href="#header-rect"/>
 </svg>

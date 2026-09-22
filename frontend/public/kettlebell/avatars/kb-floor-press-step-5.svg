@@ -1,18 +1,34 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600" width="400" height="600">
 <rect width="400" height="600" fill="#0f172a"/>
+<rect x="0" y="475" width="400" height="125" fill="#1e293b" opacity="0.3"/>
 <line x1="50" y1="520" x2="350" y2="520" stroke="#475569" stroke-width="2"/>
-<text x="200" y="40" font-size="22" font-weight="bold" fill="#a855f7" text-anchor="middle">OVERHEAD</text>
-<text x="200" y="62" font-size="13" fill="#94a3b8" text-anchor="middle">Floor Press</text>
-<circle cx="200" cy="160" r="22" fill="none" stroke="#cbd5e1" stroke-width="6"/>
-<line x1="200" y1="182" x2="200" y2="370" stroke="#cbd5e1" stroke-width="12" stroke-linecap="round"/>
-<line x1="200" y1="200" x2="200" y2="100" stroke="#cbd5e1" stroke-width="9" stroke-linecap="round"/>
-<circle cx="200" cy="80" r="22" fill="#a855f7"/>
-<rect x="188" y="65" width="24" height="35" fill="none" stroke="#1e293b" stroke-width="3"/>
-<rect x="196" y="55" width="8" height="12" fill="#1e293b"/>
-<line x1="200" y1="370" x2="180" y2="510" stroke="#cbd5e1" stroke-width="10" stroke-linecap="round"/>
-<line x1="200" y1="370" x2="220" y2="510" stroke="#cbd5e1" stroke-width="10" stroke-linecap="round"/>
-<line x1="280" y1="80" x2="280" y2="370" stroke="#a855f7" stroke-width="2" stroke-dasharray="5,5"/>
-<text x="290" y="220" font-size="11" fill="#a855f7">Braço</text>
-<text x="290" y="235" font-size="11" fill="#a855f7">vertical</text>
-<text x="200" y="585" font-size="12" fill="#a855f7" text-anchor="middle">TRAVA — KB sobre o ombro</text>
+<rect id="header-rect" x="0" y="0" width="400" height="110" fill="#06b6d4"/>
+<text x="40" y="40" font-size="22" font-weight="bold" fill="#0f172a" font-family="sans-serif">FLOOR PRESS</text>
+<text x="40" y="68" font-size="12" fill="#0f172a" opacity="0.8" font-family="sans-serif">kb-floor-press</text>
+<circle cx="350" cy="55" r="40" fill="#0f172a"/>
+<text x="350" y="68" font-size="36" font-weight="bold" fill="#06b6d4" text-anchor="middle" font-family="sans-serif">5</text>
+<text x="40" y="155" font-size="20" font-weight="bold" fill="#cbd5e1" font-family="sans-serif">Descida controlada</text>
+<text x="40" y="180" font-size="11" fill="#94a3b8" font-family="sans-serif">Excêntrico 3 segundos. Cotovelos descem até tocar o chão de leve. KBs voltam à posição rack.</text>
+<!-- Cabeça -->
+<circle cx="80" cy="450" r="20" fill="none" stroke="#cbd5e1" stroke-width="6"/>
+<line x1="100" y1="450" x2="280" y2="450" stroke="#cbd5e1" stroke-width="12" stroke-linecap="round"/>
+<!-- Braço com KB -->
+<line x1="280" y1="450" x2="350" y2="380" stroke="#cbd5e1" stroke-width="9" stroke-linecap="round"/>
+<circle cx="360" cy="370" r="22" fill="#06b6d4"/>
+<rect x="348" y="355" width="24" height="32" fill="none" stroke="#7f1d1d" stroke-width="2"/>
+<!-- Perna flexa -->
+<line x1="200" y1="450" x2="270" y2="490" stroke="#cbd5e1" stroke-width="10" stroke-linecap="round"/>
+<line x1="270" y1="490" x2="310" y2="475" stroke="#cbd5e1" stroke-width="10" stroke-linecap="round"/>
+<!-- CORE TRAVA -->
+<rect x="120" y="445" width="160" height="14" fill="#ec4899" opacity="0.3" rx="5"/>
+<text x="200" y="438" font-size="11" fill="#ec4899" font-weight="bold" text-anchor="middle" font-family="sans-serif">CORE TRAVA NO CHÃO</text>
+<!-- Deltóide trava -->
+<line x1="280" y1="450" x2="350" y2="380" stroke="#06b6d4" stroke-width="3" opacity="0.7"/>
+<text x="290" y="440" font-size="11" fill="#06b6d4" font-weight="bold" font-family="sans-serif">DELTÓIDE</text>
+<text x="290" y="455" font-size="11" fill="#06b6d4" font-weight="bold" font-family="sans-serif">TRAVA</text>
+<rect x="0" y="555" width="400" height="45" fill="#06b6d4" opacity="0.15"/>
+<text x="40" y="575" font-size="12" font-weight="bold" fill="#06b6d4" font-family="sans-serif">▶ Onde/como sentir</text>
+<text x="40" y="592" font-size="10" fill="#94a3b8" font-family="sans-serif">Detalhes completos no app</text>
+
+<animate attributeName="opacity" values="1;0.85;1" dur="3s" repeatCount="indefinite" xlink:href="#header-rect"/>
 </svg>

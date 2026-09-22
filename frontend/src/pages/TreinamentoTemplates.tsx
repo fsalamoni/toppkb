@@ -590,6 +590,10 @@ function TemplateForm({
                       </Button>
                     </div>
                   </div>
+                  {/* SPRINT 50: DICA MUSCULAR (ONDE SENTIR) */}
+                  {ex.exercicioId && (
+                    <MuscleHint exerciseId={ex.exercicioId} variant="inline" className="mt-1 mb-2" />
+                  )}
                   <div className="grid grid-cols-5 gap-2">
                     <div>
                       <Label className="text-xs">Séries</Label>
