@@ -12,7 +12,10 @@
     "test": "vitest run --passWithNoTests",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "bundle:budget": "node scripts/bundle-budget.mjs"
+    "bundle:budget": "node scripts/bundle-budget.mjs",
+    "check:imports": "node scripts/check-missing-imports.mjs",
+    "prebuild": "npm run check:imports",
+    "predeploy": "npm run check:imports"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.9.1",
