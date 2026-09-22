@@ -6,8 +6,8 @@
  * (82 exercícios autocompletos, self-contained em /kettlebell/).
  */
 
-const CACHE_NAME = 'toppkb-v20';
-const RUNTIME = 'toppkb-runtime-v19';
+const CACHE_NAME = 'toppkb-v21';
+const RUNTIME = 'toppkb-runtime-v20';
 
 // Build da PRECACHE_URLS dinamicamente: na inicialização, faz fetch de /kettlebell-index.json
 // que lista TODOS os assets.
