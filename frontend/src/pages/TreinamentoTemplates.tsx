@@ -28,6 +28,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { EmptyState as EmptyStateRich } from '@/components/common/EmptyState';
+import { MuscleHint } from '@/components/common/MuscleHint';
 import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
 import { useConfirm } from '@/hooks/useConfirm';
 import { toast } from '@/components/ui/toaster';

@@ -53,12 +53,18 @@ export interface ExerciseStep {
   imagem?: ExerciseImageStep;
   /** Cues técnicos para esta etapa */
   cues?: string[];
+  /** O que você deve SENTIR nesta etapa (linguagem leiga) */
+  sensacoes?: string[];
+  /** Sinais de ERRO muscular - pare se sentir */
+  alertasMusculares?: string[];
 }
 
 export interface ExercicioKettlebell extends Exercicio {
   padraoKb: PadraoKettlebell;
   cues: string[];
   errors: string[];
+  alerta50mais?: string;
+  contraIndicacoes?: string[];
   evidencia?: string;
   referencias?: string[];
   videoUrl?: string;
@@ -70,6 +76,16 @@ export interface ExercicioKettlebell extends Exercicio {
   steps?: ExerciseStep[];
   /** Origem/contexto adicional (e.g., Wikimedia file sources) */
   fontesExternas?: { name: string; url: string; license: string }[];
+  /** Mapa muscular em linguagem leiga (Sprint 34) */
+  mapaMuscularLeigo?: string[];
+  /** Sensação principal que deve sentir (Sprint 34) */
+  sensacaoPrincipal?: string;
+  /** Erro muscular comum (Sprint 34) */
+  erroMuscular?: string;
+  /** Analogia inicial para iniciantes (Sprint 34) */
+  analogiaInicial?: string;
+  /** Carga inicial recomendada para 50+ (Sprint 34) */
+  cargaInicial50mais?: string;
 }
 
 const CDN_BASE = '/kettlebell';
@@ -133,7 +149,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
           'Se o KB estiver batendo nos joelhos: está empurrando o quadril pouco',
           'Se o calcanhar levantar do chão: KB está longe demais — aproxime',
         ],
- imagen: img('step-images/kb-swing-2h-hardstyle-step-1.png') },
+ imagem: { src: img('step-images/kb-swing-2h-hardstyle-step-1.png'), alt: 'Setup Inicial', caption: 'Setup Inicial' } },
       { numero: 2, titulo: 'Hike Pass (Backswing)', descricao: 'Mantenha os braços retos e use o quadril para empurrar o KB para trás e para cima, passando entre as pernas. Lembre-se: NÃO puxe com os braços — eles são apenas "cabos" que conectam você ao KB. O quadril empurra, os braços guiam.', duracaoSeg: 2, cues: ['Hips back', 'Bumbum para trás', 'KB próximo ao corpo'],
         sensacoes: [
           'O quadril EMPURRA para trás — o "bumbum" se afasta do KB (lembre: cadeira atrás)',
@@ -146,7 +162,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
           'Se sentir joelho empurrar para frente: está agachando em vez de fazer hinge',
           'Se sentir a lombar "puxar": pare, refaça com peso menor',
         ],
- imagen: img('step-images/kb-swing-2h-hardstyle-step-2.png') },
+ imagem: { src: img('step-images/kb-swing-2h-hardstyle-step-2.png'), alt: 'Hike Pass (Backswing)', caption: 'Hike Pass (Backswing)' } },
       { numero: 3, titulo: 'Snap Glúteo (Lockout/Topo)', descricao: 'No ponto mais alto do backswing, contraia glúteos e isquiotibiais EXPLOSIVAMENTE, projetando o quadril para frente como se fosse dar um chute para trás. O corpo forma uma prancha vertical rígida (orelha, ombro, quadril, joelho, tornozelo alinhados). KB "flutua" por 1-2 segundos no topo.', duracaoSeg: 1, cues: ['SNAP!', 'Glúteos contraídos', 'Prancha vertical', 'KB sobe e flutua'],
         sensacoes: [
           'GLÚTEO CONTRÁTIL COM FORÇA — como se fosse "esmagar uma noz entre as nádegas"',
@@ -161,7 +177,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
           'Se sentir pontada na lombar: NÃO está travando o glúteo — foque em contrair BUMBUM',
           'Se sentir dor no pescoço: olhe para o chão (não para frente)',
         ],
- imagen: img('step-images/kb-swing-2h-hardstyle-step-3.png') },
+ imagem: { src: img('step-images/kb-swing-2h-hardstyle-step-3.png'), alt: 'Snap Glúteo (Lockout/Topo)', caption: 'Snap Glúteo (Lockout/Topo)' } },
       { numero: 4, titulo: 'Queda Controlada', descricao: 'Após o lockout, deixe o KB "tombar" naturalmente enquanto mantém a posição de quadril estendido (não curve a lombar). Os braços permanecem retos, "guiando" o KB de volta ao backswing. O movimento é como um pêndulo controlado.', duracaoSeg: 2, cues: ['Pendular', 'KB flutua antes de cair', 'Costas retas no descenso'],
         sensacoes: [
           'KB desce em arco controlado (não cai solto)',
@@ -174,7 +190,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
           'Se o KB descer entre as pernas sem controle: está usando só os braços (errado)',
           'Se sentir os joelhos "colapsarem para dentro": force os joelhos alinhados com os dedos dos pés',
         ],
- imagen: img('step-images/kb-swing-2h-hardstyle-step-4.png') },
+ imagem: { src: img('step-images/kb-swing-2h-hardstyle-step-4.png'), alt: 'Queda Controlada', caption: 'Queda Controlada' } },
       { numero: 5, titulo: 'Respiração (Ritmo)', descricao: 'Inale profundamente no backswing (preparação), exale com força (hiss) no topo do snap. A respiração rítmica otimiza o core bracing e evita hipertensão.', duracaoSeg: 0, cues: ['Inalação no fundo', 'Exalação HISS no topo', 'Respiração ritmada (não prenda)'],
         sensacoes: [
           'Pronto para a próxima repetição (ciclo de 4)',
@@ -186,7 +202,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
           'Se sentir tontura: pare, sente-se, hidrate-se',
           'Se o pulso estiver acima de 80% da frequência máxima: diminua o ritmo',
         ],
- imagen: img('step-images/kb-swing-2h-hardstyle-step-5.png') },
+ imagem: { src: img('step-images/kb-swing-2h-hardstyle-step-5.png'), alt: 'Respiração (Ritmo)', caption: 'Respiração (Ritmo)' } },
     ],
     fontesExternas: [
       { name: 'Wikimedia Commons - Kettlebell Swings (categoria)', url: 'https://commons.wikimedia.org/wiki/Category:Kettlebell_swings', license: 'CC BY-SA / Own work' },
@@ -241,7 +257,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
           'Se o tronco já entortar no setup: reduza a carga',
           'Se o pulso estiver desconfortável: use "hook grip" (indicador sobre o mindinho)',
         ],
- imagen: img('step-images/kb-swing-1h-step-1.png') },
+ imagem: { src: img('step-images/kb-swing-1h-step-1.png'), alt: 'Setup 1H', caption: 'Setup 1H' } },
       { numero: 2, titulo: 'Hike Pass 1H', descricao: 'Hipe o quadril para trás, KB passa entre as pernas. Joelhos levemente flexos. KB próximo ao corpo (sem chutar para trás).', duracaoSeg: 12, cues: ['Hips back', 'Hike pass', 'KB próximo'],
         sensacoes: [
           'Quadril empurra para trás (igual ao swing 2H)',
@@ -253,7 +269,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
           'Se o tronco girar para o lado do KB: pare, reduza carga',
           'Se a mão escorregar: KB muito pesado',
         ],
- imagen: img('step-images/kb-swing-1h-step-2.png') },
+ imagem: { src: img('step-images/kb-swing-1h-step-2.png'), alt: 'Hike Pass 1H', caption: 'Hike Pass 1H' } },
       { numero: 3, titulo: 'Hip Drive + Lockout', descricao: 'Snap glúteo explosivo. KB sobe até o lockout overhead (1H). OBLÍQUOS contraindo para evitar rotação lateral. Pés permanecem firmes (sem sair do chão).', duracaoSeg: 13, cues: ['Snap glúteo', 'Anti-rotação', 'Pés firmes'],
         sensacoes: [
           'GLÚTEO trava no topo — exatamente igual ao swing 2H',
@@ -266,7 +282,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
           'Se o tronco inclinar para o lado oposto ao KB: oblíquo não travou',
           'Se o pé do mesmo lado do KB girar para fora: pé não travou',
         ],
- imagen: img('step-images/kb-swing-1h-step-3.png') },
+ imagem: { src: img('step-images/kb-swing-1h-step-3.png'), alt: 'Hip Drive + Lockout', caption: 'Hip Drive + Lockout' } },
       { numero: 4, titulo: 'Descida controlada', descricao: 'Excêntrico controlado. KB desce em arco (não solta). Mão livre continua em standby.', duracaoSeg: 14, cues: ['Excêntrico controlado', 'Arco do KB', 'Mão livre pronta'],
         sensacoes: [
           'KB desce controladamente (mão livre pode ajudar a "estabilizar" o KB)',
@@ -276,7 +292,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se o tronco tombar na descida: controle é ruim — reduza carga',
         ],
- imagen: img('step-images/kb-swing-1h-step-4.png') },
+ imagem: { src: img('step-images/kb-swing-1h-step-4.png'), alt: 'Descida controlada', caption: 'Descida controlada' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - One-Arm Swing', url: 'https://www.strongfirst.com/the-one-arm-swing/', license: 'CC BY-SA' },
@@ -325,7 +341,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se sentir tensão lombar: amplitude muito grande',
         ],
- imagen: img('step-images/kb-swing-sport-step-1.png') },
+ imagem: { src: img('step-images/kb-swing-sport-step-1.png'), alt: 'Setup 1H', caption: 'Setup 1H' } },
       { numero: 2, titulo: 'Hike Pass 1H', descricao: 'Hipe o quadril para trás, KB passa entre as pernas. Joelhos levemente flexos. KB próximo ao corpo.', duracaoSeg: 2, cues: ['Hips back', 'Hike pass', 'KB próximo'],
         sensacoes: [
           'Hike pass mais alto (double knee bend)',
@@ -335,7 +351,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se sentir joelho dominar: amplitude excessiva',
         ],
- imagen: img('step-images/kb-swing-sport-step-2.png') },
+ imagem: { src: img('step-images/kb-swing-sport-step-2.png'), alt: 'Hike Pass 1H', caption: 'Hike Pass 1H' } },
       { numero: 3, titulo: 'Hip Drive + Lockout', descricao: 'Snap glúteo explosivo. KB sobe até o lockout overhead (1H). OBLÍQUOS contraindo para evitar rotação lateral. Pés firmes.', duracaoSeg: 2, cues: ['Snap glúteo', 'Anti-rotação', 'Pés firmes'],
         sensacoes: [
           'Lockout é PENDULAR — não trava forte',
@@ -345,7 +361,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se o KB parar no topo: perdeu o ritmo',
         ],
- imagen: img('step-images/kb-swing-sport-step-3.png') },
+ imagem: { src: img('step-images/kb-swing-sport-step-3.png'), alt: 'Hip Drive + Lockout', caption: 'Hip Drive + Lockout' } },
       { numero: 4, titulo: 'Descida controlada', descricao: 'Excêntrico controlado. KB desce em arco. Mão livre continua em standby.', duracaoSeg: 2, cues: ['Excêntrico controlado', 'Arco do KB', 'Mão livre pronta'],
         sensacoes: [
           'Continua direto na próxima rep',
@@ -354,7 +370,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se frequência cardíaca > 85% máx: diminua ritmo',
         ],
- imagen: img('step-images/kb-swing-sport-step-4.png') },
+ imagem: { src: img('step-images/kb-swing-sport-step-4.png'), alt: 'Descida controlada', caption: 'Descida controlada' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - One-Arm Swing', url: 'https://www.strongfirst.com/the-one-arm-swing/', license: '© StrongFirst' },
@@ -416,7 +432,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-snatch-1h-step-1.png') },
+ imagem: { src: img('step-images/kb-snatch-1h-step-1.png'), alt: 'Setup: Pés fechados + Posição de Swing', caption: 'Setup: Pés fechados + Posição de Swing' } },
       { numero: 2, titulo: 'Hike Pass', descricao: 'Mesmo do swing: quadril empurra para trás, KB passa entre os joelhos FECHADOS. NÃO puxe com braço. O quadril é quem move.', duracaoSeg: 2, cues: ['Hips back', 'KB entre joelhos fechados', 'Quadril move, braço conduz'],
         sensacoes: [
           'Hike pass entre os joelhos fechados',
@@ -424,7 +440,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-snatch-1h-step-2.png') },
+ imagem: { src: img('step-images/kb-snatch-1h-step-2.png'), alt: 'Hike Pass', caption: 'Hike Pass' } },
       { numero: 3, titulo: 'Hip Drive + Trajectory Pull', descricao: 'Snap glúteo explosivo. KB inicia trajetória natural de arco para cima. NÃO force a rotação com pulso — a inércia é responsável. Permita ao KB rodar uma vez no antebraço.', duracaoSeg: 2, cues: ['Snap glúteo', 'Arco natural', 'Permitir rotação'],
         sensacoes: [
           'Hip drive EXPLOSIVO',
@@ -435,7 +451,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se rotação forçada: quadril não kickou',
         ],
- imagen: img('step-images/kb-snatch-1h-step-3.png') },
+ imagem: { src: img('step-images/kb-snatch-1h-step-3.png'), alt: 'Hip Drive + Trajectory Pull', caption: 'Hip Drive + Trajectory Pull' } },
       { numero: 4, titulo: 'Pull (Descida)', descricao: 'KB atinge auge (lockout) e começa a descer. ATIVAMENTE puxe o KB para baixo com a mão — NÃO solte! Use o "hand insertion" técnica: mão gira 180° (palma para trás) para ganchar o KB enquanto desce. Pode ser parecida com "amassolar".', duracaoSeg: 2, cues: ['Hand insertion', 'Pull não drop', 'Mão girando 180°'],
         sensacoes: [
           'Catch no lockout OVERHEAD',
@@ -445,8 +461,8 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-snatch-1h-step-4.png') },
-      { numero: 5, titulo: 'Backswing', descricao: 'KB desce através das pernas (backswing) e o movimento pode repetir. RITMO: Snap-Pull-Vem como uma onda. Manter respiração ritmada (não prender).', duracaoSeg: 2, cues: ['Ritmo onda', 'Respiração constante', 'Repetir sem parar'], imagen: img('step-images/kb-snatch-1h-step-5.png') },
+ imagem: { src: img('step-images/kb-snatch-1h-step-4.png'), alt: 'Pull (Descida)', caption: 'Pull (Descida)' } },
+      { numero: 5, titulo: 'Backswing', descricao: 'KB desce através das pernas (backswing) e o movimento pode repetir. RITMO: Snap-Pull-Vem como uma onda. Manter respiração ritmada (não prender).', duracaoSeg: 2, cues: ['Ritmo onda', 'Respiração constante', 'Repetir sem parar'], imagem: { src: img('step-images/kb-snatch-1h-step-5.png'), alt: 'Backswing', caption: 'Backswing' } },
       { numero: 6, titulo: 'Lockout (Punch Through)', descricao: 'No lockout, A MÃO atravessa o KB (punho para frente do ombro), formando uma "vacuidade" entre a mão e o KB. Isso chama-se punch through. KB pode FLUTUAR (lockout isométrico por 1-2s).', duracaoSeg: 1, cues: ['Punch through', 'Mão projetada', 'Flutuar no topo'] },
     ],
     fontesExternas: [
@@ -508,7 +524,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-clean-step-1.png') },
+ imagem: { src: img('step-images/kb-clean-step-1.png'), alt: 'Setup', caption: 'Setup' } },
       { numero: 2, titulo: 'Hike Pass', descricao: 'Hingar o quadril para trás, KB passa entre as pernas (como no swing). NÃO puxe com os braços. O quadril empurra, os braços "conduzem". Lembre-se: SHINGE BACK, HIPS FORWARD.', duracaoSeg: 2, cues: ['Hips back', 'Quadril empurra', 'Braços conduzem'],
         sensacoes: [
           'Hike pass',
@@ -516,7 +532,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-clean-step-2.png') },
+ imagem: { src: img('step-images/kb-clean-step-2.png'), alt: 'Hike Pass', caption: 'Hike Pass' } },
       { numero: 3, titulo: 'Hip Drive + Rotation', descricao: 'Explosivamente projetar o quadril para frente (snap). Ao mesmo tempo, MÃO guia o KB em trajetória de arco para cima, deixando o KB rotacionar com a inércia. A rotação é NATURAL (não forçar com pulso).', duracaoSeg: 2, cues: ['Snap glúteo', 'Arco natural do KB', 'Não forçar rotação'],
         sensacoes: [
           'Hip drive + cotovelo puxa',
@@ -528,7 +544,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se pulso FORÇAR: quadril não kickou',
         ],
- imagen: img('step-images/kb-clean-step-3.png') },
+ imagem: { src: img('step-images/kb-clean-step-3.png'), alt: 'Hip Drive + Rotation', caption: 'Hip Drive + Rotation' } },
       { numero: 4, titulo: 'Catch (Encaixe no Rack)', descricao: 'No topo, ALCANÇAR o KB com a mão oposta (mão livre vem ajudar). O antebraço deve estar paralelo ao chão, cotovelo próximo ao corpo. KB encaixa na base da palma/antebraço.', duracaoSeg: 1, cues: ['Cotovelo ao lado', 'Antebraço paralelo', 'KB apoiado, não preso'],
         sensacoes: [
           'CATCH (rack)',
@@ -538,7 +554,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se KB bater no peito: cotovelo não subiu',
         ],
- imagen: img('step-images/kb-clean-step-4.png') },
+ imagem: { src: img('step-images/kb-clean-step-4.png'), alt: 'Catch (Encaixe no Rack)', caption: 'Catch (Encaixe no Rack)' } },
       { numero: 5, titulo: 'Estabilização', descricao: 'KB flutua no rack com estabilidade do core. Respiração: exale no encaixe. Se o KB balançar muito, pressione-o levemente contra o peito com o antebraço (não com força).', duracaoSeg: 2, cues: ['Core ativo', 'KB estável', 'Respiração no topo'],
         sensacoes: [
           'Descida controlada',
@@ -546,7 +562,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-clean-step-5.png') },
+ imagem: { src: img('step-images/kb-clean-step-5.png'), alt: 'Estabilização', caption: 'Estabilização' } },
       { numero: 6, titulo: 'Repetir ou Avançar', descricao: 'Pode continuar com another clean, press (cima), push press, ou "back down" controlado. O clean conecta perfeitamente com: Push Press, Long Cycle (Girevoy Sport), ou Jerk.', duracaoSeg: 0, cues: ['Conectar com próximo exercício', 'Sempre com KB flutuando'] },
     ],
     fontesExternas: [
@@ -596,7 +612,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se o KB estiver batendo nos joelhos: quadril pouco hinge',
         ],
- imagen: img('step-images/kb-dead-clean-step-1.png') },
+ imagem: { src: img('step-images/kb-dead-clean-step-1.png'), alt: 'Setup (sem balanço)', caption: 'Setup (sem balanço)' } },
       { numero: 2, titulo: 'Levantar até o rack', descricao: 'Sem balanço (sem hip drive explosivo), simplesmente LEVANTA o KB controlando até a posição rack no ombro. Joelhos podem ajudar mas sem extensão explosiva.', duracaoSeg: 4, cues: ['Sem balanço', 'Controle total', 'Joelhos ajudam'],
         sensacoes: [
           'Hike pass (igual ao swing)',
@@ -604,7 +620,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-dead-clean-step-2.png') },
+ imagem: { src: img('step-images/kb-dead-clean-step-2.png'), alt: 'Levantar até o rack', caption: 'Levantar até o rack' } },
       { numero: 3, titulo: 'Encaixar no rack', descricao: 'No ombro, cotovelo PRÓXIMO ao tronco. Bíceps ao lado da costela. KB apoiado, não preso.', duracaoSeg: 2, cues: ['Cotovelo próximo', 'Bíceps ao lado', 'KB apoiado'],
         sensacoes: [
           'Hip drive explosivo (igual ao swing)',
@@ -617,7 +633,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
           'Se sentir o punho FORÇAR a rotação: quadril não kickou o suficiente',
           'Se o KB bater no antebraço: cotovelo não puxou rápido',
         ],
- imagen: img('step-images/kb-dead-clean-step-3.png') },
+ imagem: { src: img('step-images/kb-dead-clean-step-3.png'), alt: 'Encaixar no rack', caption: 'Encaixar no rack' } },
       { numero: 4, titulo: 'Descer controlado', descricao: 'KB desce de volta ao rack. Pode usar deadlift pattern reverso (quadril primeiro).', duracaoSeg: 3, cues: ['Excêntrico controlado', 'Quadril primeiro', 'Sem drop'],
         sensacoes: [
           'CATCH (rack): KB "encaixa" no ombro',
@@ -630,7 +646,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
           'Se o KB bater no peito: cotovelo não subiu o suficiente',
           'Se sentir o pulso dobrar: KB muito pesado',
         ],
- imagen: img('step-images/kb-dead-clean-step-4.png') },
+ imagem: { src: img('step-images/kb-dead-clean-step-4.png'), alt: 'Descer controlado', caption: 'Descer controlado' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - Dead Clean', url: 'https://www.strongfirst.com/the-dead-clean/', license: '© StrongFirst' },
@@ -686,7 +702,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
           'Se a lombar arredondar: STOP. Reduza carga ou amplitude',
           'Se o quadril subir antes dos ombros: stance muito aberto',
         ],
- imagen: img('step-images/kb-deadlift-step-1.png') },
+ imagem: { src: img('step-images/kb-deadlift-step-1.png'), alt: 'Setup (sem carga)', caption: 'Setup (sem carga)' } },
       { numero: 2, titulo: 'Pegada no KB', descricao: 'Com o quadril na posição hinge, dobre os joelhos um pouco mais até alcançar as alças do KB. Não flexionar demais — quadril PARA TRÁS, não PARA BAIXO. Pegada firme mas sem death grip (palmas curvadas em hook grip).', duracaoSeg: 10, cues: ['Hook grip', 'Alinhamento de escápulas', 'Lombar mantida'],
         sensacoes: [
           'Empurre o CHÃO com os pés — KB sobe "sozinho"',
@@ -700,7 +716,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
           'Se o KB sair longe do corpo: está puxando com braços',
           'Se a lombar arredondar: pare, desça, refaça',
         ],
- imagen: img('step-images/kb-deadlift-step-2.png') },
+ imagem: { src: img('step-images/kb-deadlift-step-2.png'), alt: 'Pegada no KB', caption: 'Pegada no KB' } },
       { numero: 3, titulo: 'Pull (subida)', descricao: 'Imagine empurrar o chão com os pés. Quadril e ombros sobem JUNTOS (não quadril primeiro, nem ombros primeiro). KB sobe próximo ao corpo, sem balançar pra frente. Joelhos se estendem naturalmente. Costas retas.', duracaoSeg: 4, cues: ['Drive the floor', 'Quadril + ombros juntos', 'KB próximo ao corpo'],
         sensacoes: [
           'LOCKOUT: corpo ereto, KB na frente do quadril',
@@ -714,7 +730,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
           'Se sentir a lombar "estalar para trás": você está hiperestendendo — contraia ABS',
           'Se sentir os braços cansados: está puxando com braços (errado)',
         ],
- imagen: img('step-images/kb-deadlift-step-3.png') },
+ imagem: { src: img('step-images/kb-deadlift-step-3.png'), alt: 'Pull (subida)', caption: 'Pull (subida)' } },
       { numero: 4, titulo: 'Lockout (topo)', descricao: 'Em pé, KB pendurado. Contraia GLÚTEOS no topo (squeeze). Ombros para trás e para baixo (não arredondar). Respiração: exale no topo. Pause por 1 segundo antes de descer.', duracaoSeg: 5, cues: ['Glúteos contraídos', 'Lockout firme', 'Exale no topo'],
         sensacoes: [
           'Desça empurrando o quadril para trás (NÃO flexione joelhos)',
@@ -727,7 +743,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se sentir a lombar "puxar": amplitude excessiva, ou peso muito alto',
         ],
- imagen: img('step-images/kb-deadlift-step-4.png') },
+ imagem: { src: img('step-images/kb-deadlift-step-4.png'), alt: 'Lockout (topo)', caption: 'Lockout (topo)' } },
       { numero: 5, titulo: 'Descida controlada', descricao: 'Inverta a ordem: quadril para TRÁS primeiro (mantendo lombar neutra), depois joelhos flexionam. KB controlado de volta ao chão. NÃO deixar cair — controle excêntrico é metade do trabalho.', duracaoSeg: 4, cues: ['Hinge primeiro', 'Excêntrico controlado', 'Não arredondar'],
         sensacoes: [
           'KB toca o chão de forma controlada (não bate)',
@@ -737,7 +753,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se o KB "pular" do chão: peso está leve demais (pode aumentar)',
         ],
- imagen: img('step-images/kb-deadlift-step-5.png') },
+ imagem: { src: img('step-images/kb-deadlift-step-5.png'), alt: 'Descida controlada', caption: 'Descida controlada' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - Deadlift Technique', url: 'https://www.strongfirst.com/deadlift/', license: '© StrongFirst' },
@@ -788,7 +804,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se a lombar arredondar: joelhos flexionar mais',
         ],
- imagen: img('step-images/kb-hip-hinge-step-1.png') },
+ imagem: { src: img('step-images/kb-hip-hinge-step-1.png'), alt: 'Setup', caption: 'Setup' } },
       { numero: 2, titulo: 'Hinge', descricao: 'Projete o quadril PARA TRÁS (como fechar uma porta com o bumbum). Joelhos levemente flexos (NÃO agachar). Lombar neutra.', duracaoSeg: 5, cues: ['Hips back', 'Lombar neutra', 'Não agachar'],
         sensacoes: [
           'Empurre o quadril para TRÁS (como se fosse fechar uma porta com o bumbum)',
@@ -799,7 +815,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se a lombar arredondar: pare, volte à posição inicial',
         ],
- imagen: img('step-images/kb-hip-hinge-step-2.png') },
+ imagem: { src: img('step-images/kb-hip-hinge-step-2.png'), alt: 'Hinge', caption: 'Hinge' } },
       { numero: 3, titulo: 'Sentir alongamento', descricao: 'Vai sentir alongamento nos isquiotibiais (posterior de coxa). Esta é a sensação alvo. Mantenha 3-5 segundos.', duracaoSeg: 5, cues: ['Alongamento no posterior', 'Segurar 3-5s', 'Lombar neutra mantida'],
         sensacoes: [
           'Pausa no fundo do movimento',
@@ -809,7 +825,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se sentir dor atrás da coxa: amplitude muito grande',
         ],
- imagen: img('step-images/kb-hip-hinge-step-3.png') },
+ imagem: { src: img('step-images/kb-hip-hinge-step-3.png'), alt: 'Sentir alongamento', caption: 'Sentir alongamento' } },
       { numero: 4, titulo: 'Volta', descricao: 'Contraia glúteos para voltar à posição em pé. Quadril passa POR BAIXO dos ombros.', duracaoSeg: 3, cues: ['Glúteos contraem', 'Quadril por baixo', 'Em pé'],
         sensacoes: [
           'Contraia glúteo e isquiotibial para voltar',
@@ -818,7 +834,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-hip-hinge-step-4.png') },
+ imagem: { src: img('step-images/kb-hip-hinge-step-4.png'), alt: 'Volta', caption: 'Volta' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - Hip Hinge', url: 'https://www.strongfirst.com/the-hip-hinge/', license: '© StrongFirst' },
@@ -866,7 +882,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se sentir desequilíbrio: pare e refaça a pegada',
         ],
- imagen: img('step-images/kb-alternating-swing-step-1.png') },
+ imagem: { src: img('step-images/kb-alternating-swing-step-1.png'), alt: 'Setup inicial (1H)', caption: 'Setup inicial (1H)' } },
       { numero: 2, titulo: 'Hike Pass (1ª repetição)', descricao: 'Hipe o quadril para trás, KB passa entre as pernas. Mesma técnica do swing 1H padrão. Joelhos levemente flexos.', duracaoSeg: 2, cues: ['Hips back', 'Hike pass', 'Lombar neutra'],
         sensacoes: [
           'Quadril empurra para trás (mesma mecânica)',
@@ -876,7 +892,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se sentir joelho colapsar: force para fora',
         ],
- imagen: img('step-images/kb-alternating-swing-step-2.png') },
+ imagem: { src: img('step-images/kb-alternating-swing-step-2.png'), alt: 'Hike Pass (1ª repetição)', caption: 'Hike Pass (1ª repetição)' } },
       { numero: 3, titulo: 'Lockout + PRIMEIRA TROCA', descricao: 'Snap glúteo explosivo → KB vai ao topo (lockout 1H). No TOPO do lockout, ANTES de começar a descida: transfira o KB da mão direita para a esquerda. KB flutua no topo durante 1s.', duracaoSeg: 2, cues: ['Lockout firme', 'Troca no topo', 'Mão livre pronta'],
         sensacoes: [
           'GLÚTEO trava no topo (igual)',
@@ -889,7 +905,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
           'Se o KB oscilar muito: as mãos não estão sincronizadas',
           'Se sentir dor no pulso: reduza carga',
         ],
- imagen: img('step-images/kb-alternating-swing-step-3.png') },
+ imagem: { src: img('step-images/kb-alternating-swing-step-3.png'), alt: 'Lockout + PRIMEIRA TROCA', caption: 'Lockout + PRIMEIRA TROCA' } },
       { numero: 4, titulo: 'Descida controlada (agora com mão ESQUERDA)', descricao: 'Desce o KB com a mão esquerda controlando o excêntrico. KB passa entre as pernas novamente.', duracaoSeg: 2, cues: ['Excêntrico controlado', 'Mão ESQUERDA guiando', 'Anti-rotação ativa'],
         sensacoes: [
           'KB desce com a NOVA mão dominante',
@@ -899,8 +915,8 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se a mão livre ficar "voando": mantenha-a próxima ao quadril',
         ],
- imagen: img('step-images/kb-alternating-swing-step-4.png') },
-      { numero: 5, titulo: 'Repetir e alternar', descricao: 'Lockout com mão esquerda + transfere de volta para direita. Continua alternando. Cadência deve ser constante.', duracaoSeg: 0, cues: ['Cadência constante', 'Bracing 360', 'Exale no topo'], imagen: img('step-images/kb-alternating-swing-step-5.png') },
+ imagem: { src: img('step-images/kb-alternating-swing-step-4.png'), alt: 'Descida controlada (agora com mão ESQUERDA)', caption: 'Descida controlada (agora com mão ESQUERDA)' } },
+      { numero: 5, titulo: 'Repetir e alternar', descricao: 'Lockout com mão esquerda + transfere de volta para direita. Continua alternando. Cadência deve ser constante.', duracaoSeg: 0, cues: ['Cadência constante', 'Bracing 360', 'Exale no topo'], imagem: { src: img('step-images/kb-alternating-swing-step-5.png'), alt: 'Repetir e alternar', caption: 'Repetir e alternar' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - Alternating Swing', url: 'https://www.strongfirst.com/kettlebell-swing-variations/', license: '© StrongFirst' },
@@ -941,7 +957,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-single-arm-swing-pausa-step-1.png') },
+ imagem: { src: img('step-images/kb-single-arm-swing-pausa-step-1.png'), alt: 'Setup 1H com pausa', caption: 'Setup 1H com pausa' } },
       { numero: 2, titulo: 'Hike Pass', descricao: 'Hipe o quadril para trás, KB passa entre as pernas. Mesmo padrão do swing normal. Joelhos levemente flexos.', duracaoSeg: 12, cues: ['Hips back', 'Hike pass', 'Joelhos flexos'],
         sensacoes: [
           'Hike pass',
@@ -949,7 +965,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-single-arm-swing-pausa-step-2.png') },
+ imagem: { src: img('step-images/kb-single-arm-swing-pausa-step-2.png'), alt: 'Hike Pass', caption: 'Hike Pass' } },
       { numero: 3, titulo: 'Snap + Pausa Ativa', descricao: 'Snap glúteo explosivo → KB vai ao topo → PAUSA ATIVA por 1-2 segundos. Glúteos contraídos, core bracing mantido. NÃO relaxar durante a pausa.', duracaoSeg: 13, cues: ['Hold!', 'Glúteos ativos', 'Bracing mantido'],
         sensacoes: [
           'Snap + PAUSA ATIVA',
@@ -959,7 +975,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se quadril cair: reduza',
         ],
- imagen: img('step-images/kb-single-arm-swing-pausa-step-3.png') },
+ imagem: { src: img('step-images/kb-single-arm-swing-pausa-step-3.png'), alt: 'Snap + Pausa Ativa', caption: 'Snap + Pausa Ativa' } },
       { numero: 4, titulo: 'Descida controlada', descricao: 'Excêntrico controlado. KB desce em arco. Sem soltar.', duracaoSeg: 14, cues: ['Excêntrico 2s', 'Arco controlado', 'Pronto para próxima rep'],
         sensacoes: [
           'Descida controlada',
@@ -967,7 +983,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-single-arm-swing-pausa-step-4.png') },
+ imagem: { src: img('step-images/kb-single-arm-swing-pausa-step-4.png'), alt: 'Descida controlada', caption: 'Descida controlada' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - Kettlebell Swing Pauses', url: 'https://www.strongfirst.com/the-kettlebell-swing-pause/', license: 'CC BY-SA' },
@@ -1006,21 +1022,21 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-bottoms-up-swing-step-1.png') },
+ imagem: { src: img('step-images/kb-bottoms-up-swing-step-1.png'), alt: 'Setup Invertido', caption: 'Setup Invertido' } },
       { numero: 2, titulo: 'Hike Pass com Bottoms-Up', descricao: 'Hipe o quadril para trás. KB invertido passa entre as pernas. Se o KB tombar, sinal de grip insuficiente — reduza a carga.', duracaoSeg: 12, cues: ['Hips back', 'Bottoms up mantido', 'Tomba se carga alta'],
         sensacoes: [
           'Hike pass com KB invertido',
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-bottoms-up-swing-step-2.png') },
+ imagem: { src: img('step-images/kb-bottoms-up-swing-step-2.png'), alt: 'Hike Pass com Bottoms-Up', caption: 'Hike Pass com Bottoms-Up' } },
       { numero: 3, titulo: 'Snap + Lockout Invertido', descricao: 'Snap glúteo explosivo. KB vai ao topo INVERTIDO. Grip é o limitante — se segurar bem, está ok.', duracaoSeg: 13, cues: ['Snap glúteo', 'Grip máximo', 'KB no topo invertido'],
         sensacoes: [
           'Snap + lockout INVERTIDO',
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-bottoms-up-swing-step-3.png') },
+ imagem: { src: img('step-images/kb-bottoms-up-swing-step-3.png'), alt: 'Snap + Lockout Invertido', caption: 'Snap + Lockout Invertido' } },
       { numero: 4, titulo: 'Descida + Controle de Grip', descricao: 'Excêntrico controlado. KB desce INVERTIDO. Não vire o KB durante a descida — mantenha o desafio de grip.', duracaoSeg: 14, cues: ['Grip constante', 'Excêntrico 2s', 'Não virar'],
         sensacoes: [
           'Descida invertida',
@@ -1028,7 +1044,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-bottoms-up-swing-step-4.png') },
+ imagem: { src: img('step-images/kb-bottoms-up-swing-step-4.png'), alt: 'Descida + Controle de Grip', caption: 'Descida + Controle de Grip' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - Bottoms-Up KB Training', url: 'https://www.strongfirst.com/bottoms-up-kettlebell-training/', license: 'CC BY-SA' },
@@ -1071,7 +1087,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-double-clean-step-1.png') },
+ imagem: { src: img('step-images/kb-double-clean-step-1.png'), alt: 'Hike Pass (2 KB)', caption: 'Hike Pass (2 KB)' } },
       { numero: 2, titulo: 'Hip Drive + Clean Simultâneo', descricao: 'Snap glúteo explosivo. AMBOS KBs sobem simultaneamente em trajetória de arco. Rotação simultânea das duas mãos.', duracaoSeg: 13, cues: ['Snap glúteo', 'Rotação simultânea', 'Ambos sobem'],
         sensacoes: [
           'Hike pass DUPLO',
@@ -1080,7 +1096,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se sentir desvio lateral: reduz carga',
         ],
- imagen: img('step-images/kb-double-clean-step-2.png') },
+ imagem: { src: img('step-images/kb-double-clean-step-2.png'), alt: 'Hip Drive + Clean Simultâneo', caption: 'Hip Drive + Clean Simultâneo' } },
       { numero: 3, titulo: 'Catch (rack duplo)', descricao: 'AMBOS KBs vão para o rack simultaneamente. Cotovelos próximos. Bracing 360° (core exige muito mais).', duracaoSeg: 14, cues: ['Brace 360', 'Ambos no rack', 'Cotovelos próximos'],
         sensacoes: [
           'Hip drive EXPLOSIVO',
@@ -1091,7 +1107,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se 1KB subir mais que o outro: rotação assíncrona',
         ],
- imagen: img('step-images/kb-double-clean-step-3.png') },
+ imagem: { src: img('step-images/kb-double-clean-step-3.png'), alt: 'Catch (rack duplo)', caption: 'Catch (rack duplo)' } },
       { numero: 4, titulo: 'Descida', descricao: 'Excêntrico controlado de ambos KBs. Joelhos absorvem.', duracaoSeg: 15, cues: ['Excêntrico 2s', 'Ambos descem', 'Absorver com joelhos'],
         sensacoes: [
           'Catch (rack duplo)',
@@ -1102,7 +1118,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se KB cair: cotovelo não subiu',
         ],
- imagen: img('step-images/kb-double-clean-step-4.png') },
+ imagem: { src: img('step-images/kb-double-clean-step-4.png'), alt: 'Descida', caption: 'Descida' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - Double Clean', url: 'https://www.strongfirst.com/the-double-clean/', license: 'CC BY-SA' },
@@ -1145,7 +1161,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-double-snatch-step-1.png') },
+ imagem: { src: img('step-images/kb-double-snatch-step-1.png'), alt: 'Setup (pés fechados)', caption: 'Setup (pés fechados)' } },
       { numero: 2, titulo: 'Hip Drive + Snatch Simultâneo', descricao: 'Snap glúteo explosivo. AMBOS KBs sobem em trajetória de arco e rotacionam para o lockout overhead. Pés podem saltar levemente (drop), mas voltam ao chão rapidamente.', duracaoSeg: 12, cues: ['Snap glúteo', 'Rotação simultânea', 'Pés saltam (drop)'],
         sensacoes: [
           'Hike pass',
@@ -1153,7 +1169,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-double-snatch-step-2.png') },
+ imagem: { src: img('step-images/kb-double-snatch-step-2.png'), alt: 'Hip Drive + Snatch Simultâneo', caption: 'Hip Drive + Snatch Simultâneo' } },
       { numero: 3, titulo: 'Lockout Duplo', descricao: 'AMBOS KBs overhead. Cotovelos travados. Bracing 360°.', duracaoSeg: 13, cues: ['Lockout duplo', 'Brace 360', 'Cotovelos travados'],
         sensacoes: [
           'Hip drive EXPLOSIVO',
@@ -1164,7 +1180,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se não conseguir manter a rotação: reduza carga',
         ],
- imagen: img('step-images/kb-double-snatch-step-3.png') },
+ imagem: { src: img('step-images/kb-double-snatch-step-3.png'), alt: 'Lockout Duplo', caption: 'Lockout Duplo' } },
       { numero: 4, titulo: 'Pull (descida)', descricao: 'Excêntrico controlado. Hand insertion simultâneo nas duas mãos. KBs descem para o hike pass.', duracaoSeg: 14, cues: ['Hand insertion', 'Excêntrico 2s', 'Pés firmes'],
         sensacoes: [
           'Catch (lockout OVERHEAD duplo)',
@@ -1175,7 +1191,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se os braços doerem: carga muito alta',
         ],
- imagen: img('step-images/kb-double-snatch-step-4.png') },
+ imagem: { src: img('step-images/kb-double-snatch-step-4.png'), alt: 'Pull (descida)', caption: 'Pull (descida)' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - Double Snatch', url: 'https://www.strongfirst.com/the-double-snatch/', license: 'CC BY-SA' },
@@ -1217,7 +1233,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-simple-complex-pavel-step-1.png') },
+ imagem: { src: img('step-images/kb-simple-complex-pavel-step-1.png'), alt: 'Complex: 1 Swing + 1 Clean + 1 Press', caption: 'Complex: 1 Swing + 1 Clean + 1 Press' } },
       { numero: 2, titulo: 'Swing inicial', descricao: 'Swing 1H ou 2H. KB vai ao lockout.', duracaoSeg: 12, cues: ['Swing', 'Lockout', 'Pé firme'],
         sensacoes: [
           'Swing → KB vai ao lockout',
@@ -1226,7 +1242,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-simple-complex-pavel-step-2.png') },
+ imagem: { src: img('step-images/kb-simple-complex-pavel-step-2.png'), alt: 'Swing inicial', caption: 'Swing inicial' } },
       { numero: 3, titulo: 'Clean imediatamente', descricao: 'Sem pausa, faz clean do KB para o rack. Cotovelo próximo.', duracaoSeg: 13, cues: ['Sem pausa', 'Clean', 'Cotovelo próximo'],
         sensacoes: [
           'SEM PAUSA: clean do KB para o rack',
@@ -1235,7 +1251,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se perder a pegada: reduza carga',
         ],
- imagen: img('step-images/kb-simple-complex-pavel-step-3.png') },
+ imagem: { src: img('step-images/kb-simple-complex-pavel-step-3.png'), alt: 'Clean imediatamente', caption: 'Clean imediatamente' } },
       { numero: 4, titulo: 'Press do rack', descricao: 'Sem pausa, press do rack para overhead. Lockout. Voltar ao rack.', duracaoSeg: 14, cues: ['Sem pausa', 'Press', 'Lockout'],
         sensacoes: [
           'SEM PAUSA: press do rack para overhead',
@@ -1246,7 +1262,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-simple-complex-pavel-step-4.png') },
+ imagem: { src: img('step-images/kb-simple-complex-pavel-step-4.png'), alt: 'Press do rack', caption: 'Press do rack' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - Simple Complex', url: 'https://www.strongfirst.com/the-simple-complex/', license: 'CC BY-SA' },
@@ -1287,7 +1303,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-armor-building-complex-step-1.png') },
+ imagem: { src: img('step-images/kb-armor-building-complex-step-1.png'), alt: 'Complex Dan John', caption: 'Complex Dan John' } },
       { numero: 2, titulo: 'Press 1', descricao: 'Strict press ou push press do rack. Lockout.', duracaoSeg: 12, cues: ['Press', 'Lockout', 'Braço estendido'],
         sensacoes: [
           'Press 1 (rack para overhead)',
@@ -1295,7 +1311,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-armor-building-complex-step-2.png') },
+ imagem: { src: img('step-images/kb-armor-building-complex-step-2.png'), alt: 'Press 1', caption: 'Press 1' } },
       { numero: 3, titulo: 'Clean', descricao: 'Sem pausa, clean de volta ao rack.', duracaoSeg: 13, cues: ['Clean', 'Cotovelo próximo', 'Sem pausa'],
         sensacoes: [
           'Clean',
@@ -1303,7 +1319,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-armor-building-complex-step-3.png') },
+ imagem: { src: img('step-images/kb-armor-building-complex-step-3.png'), alt: 'Clean', caption: 'Clean' } },
       { numero: 4, titulo: 'Squat', descricao: 'Front squat com KBs no rack. Profundidade parallel+.', duracaoSeg: 14, cues: ['Front squat', 'Profundidade', 'Core travado'],
         sensacoes: [
           'Squat',
@@ -1313,7 +1329,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-armor-building-complex-step-4.png') },
+ imagem: { src: img('step-images/kb-armor-building-complex-step-4.png'), alt: 'Squat', caption: 'Squat' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - Armor Building Complex', url: 'https://www.strongfirst.com/armor-building-complex/', license: 'CC BY-SA' },
@@ -1354,7 +1370,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-the-giant-pavel-step-1.png') },
+ imagem: { src: img('step-images/kb-the-giant-pavel-step-1.png'), alt: 'Complex: Clean + Squat + Press + Squat + Press', caption: 'Complex: Clean + Squat + Press + Squat + Press' } },
       { numero: 2, titulo: 'Clean', descricao: 'Clean do KB do chão para o rack. Cotovelo próximo.', duracaoSeg: 12, cues: ['Clean', 'Cotovelo próximo', 'Encaixar'],
         sensacoes: [
           'Clean: KBs vão ao rack',
@@ -1362,7 +1378,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-the-giant-pavel-step-2.png') },
+ imagem: { src: img('step-images/kb-the-giant-pavel-step-2.png'), alt: 'Clean', caption: 'Clean' } },
       { numero: 3, titulo: 'Squat 1', descricao: 'Front squat com KB no rack. Profundidade.', duracaoSeg: 13, cues: ['Front squat', 'Profundidade', 'Cotovelos altos'],
         sensacoes: [
           'Squat 1: profundidade',
@@ -1371,7 +1387,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-the-giant-pavel-step-3.png') },
+ imagem: { src: img('step-images/kb-the-giant-pavel-step-3.png'), alt: 'Squat 1', caption: 'Squat 1' } },
       { numero: 4, titulo: 'Press + Squat 2', descricao: 'Press do rack. Squat de novo. Press de novo.', duracaoSeg: 14, cues: ['Press + Squat', 'Repetir', 'Sem descanso'],
         sensacoes: [
           'Press: KBs overhead',
@@ -1381,7 +1397,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-the-giant-pavel-step-4.png') },
+ imagem: { src: img('step-images/kb-the-giant-pavel-step-4.png'), alt: 'Press + Squat 2', caption: 'Press + Squat 2' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - The Giant', url: 'https://www.strongfirst.com/the-giant-1-2-3/', license: 'CC BY-SA' },
@@ -1423,7 +1439,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-half-snatch-step-1.png') },
+ imagem: { src: img('step-images/kb-half-snatch-step-1.png'), alt: 'Setup', caption: 'Setup' } },
       { numero: 2, titulo: 'Hip Drive + Lockout', descricao: 'Snap glúteo explosivo. KB vai ao lockout overhead. Pés podem saltar levemente.', duracaoSeg: 12, cues: ['Snap glúteo', 'Lockout', 'Drop OK'],
         sensacoes: [
           'Hip drive',
@@ -1432,7 +1448,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-half-snatch-step-2.png') },
+ imagem: { src: img('step-images/kb-half-snatch-step-2.png'), alt: 'Hip Drive + Lockout', caption: 'Hip Drive + Lockout' } },
       { numero: 3, titulo: 'Pull sem Drop (Hand Insertion)', descricao: 'KB desce mas SEM tocar o chão. Para no meio do backswing. Empurra de volta ao topo.', duracaoSeg: 13, cues: ['Hand insertion', 'Sem drop', 'Continuo'],
         sensacoes: [
           'Pull (hand insertion)',
@@ -1443,7 +1459,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se o KB cair: carga muito alta',
         ],
- imagen: img('step-images/kb-half-snatch-step-3.png') },
+ imagem: { src: img('step-images/kb-half-snatch-step-3.png'), alt: 'Pull sem Drop (Hand Insertion)', caption: 'Pull sem Drop (Hand Insertion)' } },
       { numero: 4, titulo: 'Continuar sem parar', descricao: 'Reps contínuos sem drop. Carga menor que snatch completo.', duracaoSeg: 14, cues: ['Reps continuos', 'Carga menor', 'Sem parar'],
         sensacoes: [
           'Continua direto na próxima rep',
@@ -1451,7 +1467,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-half-snatch-step-4.png') },
+ imagem: { src: img('step-images/kb-half-snatch-step-4.png'), alt: 'Continuar sem parar', caption: 'Continuar sem parar' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - Half Snatch', url: 'https://www.strongfirst.com/half-snatch/', license: 'CC BY-SA' },
@@ -1512,7 +1528,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-goblet-squat-step-1.png') },
+ imagem: { src: img('step-images/kb-goblet-squat-step-1.png'), alt: 'Setup: Segurar o KB', caption: 'Setup: Segurar o KB' } },
       { numero: 2, titulo: 'Iniciar a descida', descricao: 'Comece o movimento empurrando o quadril levemente para trás (não deixe os joelhos caírem para frente imediatamente!). Desça devagar, controlado, até sentir alongamento no quadril. Mantenha o peito aberto e ereto o tempo todo.', duracaoSeg: 3, cues: ['Quadril para trás', 'Peito aberto', 'Costas retas'],
         sensacoes: [
           'Desça em squat paralelo',
@@ -1522,7 +1538,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se a lombar arredondar: KB caindo',
         ],
- imagen: img('step-images/kb-goblet-squat-step-2.png') },
+ imagem: { src: img('step-images/kb-goblet-squat-step-2.png'), alt: 'Iniciar a descida', caption: 'Iniciar a descida' } },
       { numero: 3, titulo: 'Atingir o fundo', descricao: 'Continue descendo até as coxas ficarem paralelas ao chão (ou um pouco abaixo, se sua mobilidade permitir). Os joelhos devem estar apontados para frente ou ligeiramente para fora (10-15°), e os cotovelos devem ficar entre os joelhos — isso indica boa mobilidade de quadril.', duracaoSeg: 2, cues: ['Coxa paralela ao chão', 'Cotovelos entre joelhos', 'Joelhos não passam do pé'],
         sensacoes: [
           'Empurre com o quadril',
@@ -1531,7 +1547,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-goblet-squat-step-3.png') },
+ imagem: { src: img('step-images/kb-goblet-squat-step-3.png'), alt: 'Atingir o fundo', caption: 'Atingir o fundo' } },
       { numero: 4, titulo: 'Subir', descricao: 'Empurre o chão com os pés (principalmente calcanhares) e ative glúteos para subir. Não se incline para frente durante a subida. Pense em "afastar o chão dos pés". O KB permanece fixo contra o tórax.', duracaoSeg: 2, cues: ['Empurrar calcanhares', 'Ativar glúteos', 'Manter peito ereto'],
         sensacoes: [
           'Lockout em pé',
@@ -1539,7 +1555,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-goblet-squat-step-4.png') },
+ imagem: { src: img('step-images/kb-goblet-squat-step-4.png'), alt: 'Subir', caption: 'Subir' } },
       { numero: 5, titulo: 'Lockout no topo', descricao: 'Em pé, finalize com glúteos contraídos e core ativo. Não hiperextender lombar (não "travar" os joelhos forçando a lombar para frente).', duracaoSeg: 1, cues: ['Glúteos contraídos', 'Joelhos levemente flexionados (não travados)', 'Respiração: exale ao subir'],
         sensacoes: [
           'Descida controlada',
@@ -1548,7 +1564,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-goblet-squat-step-5.png') },
+ imagem: { src: img('step-images/kb-goblet-squat-step-5.png'), alt: 'Lockout no topo', caption: 'Lockout no topo' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - Goblet Squat (Dan John)', url: 'https://www.strongfirst.com/the-goblet-squat-/', license: '© StrongFirst' },
@@ -1600,7 +1616,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se o KB cair do rack: cotovelo não subiu o suficiente',
         ],
- imagen: img('step-images/kb-front-squat-2kb-step-1.png') },
+ imagem: { src: img('step-images/kb-front-squat-2kb-step-1.png'), alt: 'Rack Position (2 KB)', caption: 'Rack Position (2 KB)' } },
       { numero: 2, titulo: 'Bracing 360°', descricao: 'Core travado. Glúteos contraídos. Front squat exige mais estabilidade do core que back squat.', duracaoSeg: 5, cues: ['Brace 360', 'Glúteos contraídos', 'Estabilidade'],
         sensacoes: [
           'INSPIRA fundo antes de descer (enche a barriga)',
@@ -1612,7 +1628,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se a lombar arredondar: pare, desça menos',
         ],
- imagen: img('step-images/kb-front-squat-2kb-step-2.png') },
+ imagem: { src: img('step-images/kb-front-squat-2kb-step-2.png'), alt: 'Bracing 360°', caption: 'Bracing 360°' } },
       { numero: 3, titulo: 'Descer (squat)', descricao: 'Joelhos flexionam primeiro, quadril desce PARA TRÁS e PARA BAIXO. Profundidade: quadril abaixo do joelho. Cotovelos continuam altos.', duracaoSeg: 4, cues: ['Joelhos primeiro', 'Profundidade abaixo do parallel', 'Cotovelos altos'],
         sensacoes: [
           'Coxa paralela ao chão (ou um pouco abaixo)',
@@ -1623,7 +1639,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se os joelhos colapsarem para dentro: force para fora',
         ],
- imagen: img('step-images/kb-front-squat-2kb-step-3.png') },
+ imagem: { src: img('step-images/kb-front-squat-2kb-step-3.png'), alt: 'Descer (squat)', caption: 'Descer (squat)' } },
       { numero: 4, titulo: 'Bottom position', descricao: 'Pausa de 1s no fundo. KBs equilibrados no rack. Joelhos alinhados aos pés.', duracaoSeg: 1, cues: ['Pausa no fundo', 'KBs equilibrados', 'Joelhos alinhados'],
         sensacoes: [
           'EXPIRA + empurre o chão com os pés',
@@ -1634,7 +1650,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se o tronco cair para frente: quadril não subiu',
         ],
- imagen: img('step-images/kb-front-squat-2kb-step-4.png') },
+ imagem: { src: img('step-images/kb-front-squat-2kb-step-4.png'), alt: 'Bottom position', caption: 'Bottom position' } },
       { numero: 5, titulo: 'Subir', descricao: 'Empurre o chão com os pés. Quadril e ombros sobem JUNTOS. Cotovelos permanecem altos.', duracaoSeg: 4, cues: ['Drive the floor', 'Cotovelos altos', 'Lockout em pé'],
         sensacoes: [
           'Lockout em pé',
@@ -1645,7 +1661,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se sentir a lombar esticar para trás: pare de empurrar o quadril',
         ],
- imagen: img('step-images/kb-front-squat-2kb-step-5.png') },
+ imagem: { src: img('step-images/kb-front-squat-2kb-step-5.png'), alt: 'Subir', caption: 'Subir' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - Front Squat', url: 'https://www.strongfirst.com/the-kettlebell-front-squat/', license: '© StrongFirst' },
@@ -1692,7 +1708,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
           'Se perder equilíbrio: use TRX ou porta',
           'Se sentir joelho desalinhar: pare, estabilize',
         ],
- imagen: img('step-images/kb-pistol-squat-step-1.png') },
+ imagem: { src: img('step-images/kb-pistol-squat-step-1.png'), alt: 'Setup (1 perna)', caption: 'Setup (1 perna)' } },
       { numero: 2, titulo: 'Descer profundo', descricao: 'Desça até o joelho da perna de trás quase encostar no chão. Equilíbrio com KB.', duracaoSeg: 12, cues: ['Profundidade', 'KB equilibra', 'Controle'],
         sensacoes: [
           'Desça LENTAMENTE (3-4 segundos)',
@@ -1703,7 +1719,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se sentir a lombar arredondar: pare, use porta',
         ],
- imagen: img('step-images/kb-pistol-squat-step-2.png') },
+ imagem: { src: img('step-images/kb-pistol-squat-step-2.png'), alt: 'Descer profundo', caption: 'Descer profundo' } },
       { numero: 3, titulo: 'Subir com KB', descricao: 'Suba usando a força da perna de apoio E o KB no rack como contrapeso. KB ajuda no equilíbrio.', duracaoSeg: 13, cues: ['KB como contrapeso', 'Perna de apoio', 'Equilíbrio'],
         sensacoes: [
           'Empurre com a perna de apoio',
@@ -1713,7 +1729,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-pistol-squat-step-3.png') },
+ imagem: { src: img('step-images/kb-pistol-squat-step-3.png'), alt: 'Subir com KB', caption: 'Subir com KB' } },
       { numero: 4, titulo: 'Repetir sem trocar', descricao: 'Complete reps antes de trocar de perna.', duracaoSeg: 14, cues: ['Reps antes de trocar', 'Respiração', 'Pouso suave'],
         sensacoes: [
           'Em pé, perna esticada à frente',
@@ -1722,7 +1738,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-pistol-squat-step-4.png') },
+ imagem: { src: img('step-images/kb-pistol-squat-step-4.png'), alt: 'Repetir sem trocar', caption: 'Repetir sem trocar' } },
     ],
     galleryImages: [],
     fontesExternas: [
@@ -1768,7 +1784,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se sentir tornozelo tenso: pare',
         ],
- imagen: img('step-images/kb-sots-press-step-1.png') },
+ imagem: { src: img('step-images/kb-sots-press-step-1.png'), alt: 'Squat fundo com KB no rack', caption: 'Squat fundo com KB no rack' } },
       { numero: 2, titulo: 'Sentar de volta', descricao: 'Sente de volta no squat profundo. Mantenha o KB no rack. NÃO suba antes de press.', duracaoSeg: 12, cues: ['Sentado', 'Sem subir', 'KB no rack'],
         sensacoes: [
           'Sente-se DE VERDADE no squat fundo',
@@ -1779,7 +1795,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se sentir dor no joelho: amplitude muito grande',
         ],
- imagen: img('step-images/kb-sots-press-step-2.png') },
+ imagem: { src: img('step-images/kb-sots-press-step-2.png'), alt: 'Sentar de volta', caption: 'Sentar de volta' } },
       { numero: 3, titulo: 'Press sentado', descricao: 'Press vertical do KB para overhead ESTANDO SENTADO no squat. Brace mantido.', duracaoSeg: 13, cues: ['Sentado', 'Vertical', 'Brace mantido'],
         sensacoes: [
           'Press vertical ESTANDO SENTADO',
@@ -1789,7 +1805,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-sots-press-step-3.png') },
+ imagem: { src: img('step-images/kb-sots-press-step-3.png'), alt: 'Press sentado', caption: 'Press sentado' } },
       { numero: 4, titulo: 'Stand com KB overhead', descricao: 'Mantenha o KB overhead. Levante-se do squat. Lockout. Só depois baixe.', duracaoSeg: 14, cues: ['Manter overhead', 'Levantar', 'Lockout'],
         sensacoes: [
           'Mantenha KB overhead',
@@ -1799,7 +1815,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-sots-press-step-4.png') },
+ imagem: { src: img('step-images/kb-sots-press-step-4.png'), alt: 'Stand com KB overhead', caption: 'Stand com KB overhead' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - Sots Press', url: 'https://www.strongfirst.com/the-sots-press/', license: 'CC BY-SA' },
@@ -1842,7 +1858,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-bulgarian-split-squat-step-1.png') },
+ imagem: { src: img('step-images/kb-bulgarian-split-squat-step-1.png'), alt: 'Setup: pé de trás no banco', caption: 'Setup: pé de trás no banco' } },
       { numero: 2, titulo: 'Descer controladamente', descricao: 'Desça até a coxa da frente ficar paralela ao chão. Joelho da frente alinhado ao pé.', duracaoSeg: 12, cues: ['Paralelo', 'Controle', 'Joelho alinhado'],
         sensacoes: [
           'Desça controlado (3 segundos)',
@@ -1853,7 +1869,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se sentir joelho colapsar: reduza amplitude',
         ],
- imagen: img('step-images/kb-bulgarian-split-squat-step-2.png') },
+ imagem: { src: img('step-images/kb-bulgarian-split-squat-step-2.png'), alt: 'Descer controladamente', caption: 'Descer controladamente' } },
       { numero: 3, titulo: 'Empurrar com perna da frente', descricao: 'Empurre com a perna da frente de volta ao topo. Perna de trás é só apoio.', duracaoSeg: 13, cues: ['Perna da frente', 'Perna de trás = apoio', 'Topo'],
         sensacoes: [
           'Empurre com a perna da frente',
@@ -1863,7 +1879,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-bulgarian-split-squat-step-3.png') },
+ imagem: { src: img('step-images/kb-bulgarian-split-squat-step-3.png'), alt: 'Empurrar com perna da frente', caption: 'Empurrar com perna da frente' } },
       { numero: 4, titulo: 'Repetir antes de trocar', descricao: 'Complete reps antes de trocar de perna.', duracaoSeg: 14, cues: ['Reps antes trocar', 'Perna dominante', 'Respiração'],
         sensacoes: [
           'Reps antes de trocar de perna',
@@ -1872,7 +1888,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-bulgarian-split-squat-step-4.png') },
+ imagem: { src: img('step-images/kb-bulgarian-split-squat-step-4.png'), alt: 'Repetir antes de trocar', caption: 'Repetir antes de trocar' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - Bulgarian Split Squat', url: 'https://www.strongfirst.com/the-bulgarian-split-squat/', license: 'CC BY-SA' },
@@ -1915,7 +1931,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-cossack-squat-step-1.png') },
+ imagem: { src: img('step-images/kb-cossack-squat-step-1.png'), alt: 'Setup: pés largos', caption: 'Setup: pés largos' } },
       { numero: 2, titulo: 'Agachar lateral', descricao: 'Agache para um lado (joelho flexo), perna oposta esticada lateralmente. Quadril desce.', duracaoSeg: 12, cues: ['Agachar lateral', 'Perna oposta esticada', 'Profundidade'],
         sensacoes: [
           'Agache para 1 lado',
@@ -1926,7 +1942,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se sentir dor: reduza amplitude',
         ],
- imagen: img('step-images/kb-cossack-squat-step-2.png') },
+ imagem: { src: img('step-images/kb-cossack-squat-step-2.png'), alt: 'Agachar lateral', caption: 'Agachar lateral' } },
       { numero: 3, titulo: 'Empurrar para o outro lado', descricao: 'Empurre com a perna flexa para voltar ao centro. Repita para o outro lado.', duracaoSeg: 13, cues: ['Voltar ao centro', 'Trocar lado', 'Equilíbrio'],
         sensacoes: [
           'Empurre para voltar ao centro',
@@ -1935,7 +1951,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-cossack-squat-step-3.png') },
+ imagem: { src: img('step-images/kb-cossack-squat-step-3.png'), alt: 'Empurrar para o outro lado', caption: 'Empurrar para o outro lado' } },
       { numero: 4, titulo: 'Alternar lados', descricao: 'Continue alternando lados. Controle em ambos.', duracaoSeg: 14, cues: ['Alternar', 'Controle', 'Respiração'],
         sensacoes: [
           'Continue alternando',
@@ -1944,7 +1960,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-cossack-squat-step-4.png') },
+ imagem: { src: img('step-images/kb-cossack-squat-step-4.png'), alt: 'Alternar lados', caption: 'Alternar lados' } },
     ],
     fontesExternas: [
       { name: 'Wikipedia - Cossack Squat', url: 'https://en.wikipedia.org/wiki/Cossack_squat', license: 'CC BY-SA' },
@@ -1987,7 +2003,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-forward-lunge-step-1.png') },
+ imagem: { src: img('step-images/kb-forward-lunge-step-1.png'), alt: 'Setup com KBs', caption: 'Setup com KBs' } },
       { numero: 2, titulo: 'Passo à frente', descricao: 'Dê um passo à frente (~80cm). Perna de trás na ponta dos pés.', duracaoSeg: 12, cues: ['Passo frontal', '80cm', 'Perna de trás apoiada'],
         sensacoes: [
           'Passo à frente (~80cm)',
@@ -1995,7 +2011,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-forward-lunge-step-2.png') },
+ imagem: { src: img('step-images/kb-forward-lunge-step-2.png'), alt: 'Passo à frente', caption: 'Passo à frente' } },
       { numero: 3, titulo: 'Descer em lunge', descricao: 'Desça até ambos joelhos formarem 90°. Joelho da frente sobre o pé. Tronco ereto.', duracaoSeg: 13, cues: ['2× 90°', 'Tronco ereto', 'Joelho alinhado'],
         sensacoes: [
           'Desça até 2 joelhos a 90°',
@@ -2005,7 +2021,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se joelho passar do pé: reduza passo',
         ],
- imagen: img('step-images/kb-forward-lunge-step-3.png') },
+ imagem: { src: img('step-images/kb-forward-lunge-step-3.png'), alt: 'Descer em lunge', caption: 'Descer em lunge' } },
       { numero: 4, titulo: 'Voltar à posição inicial', descricao: 'Empurre com a perna da frente para voltar à posição inicial. OU continue o lunge walking.', duracaoSeg: 14, cues: ['Voltar ao centro', 'Walking?', 'Reps'],
         sensacoes: [
           'Empurre com a perna da frente',
@@ -2014,7 +2030,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-forward-lunge-step-4.png') },
+ imagem: { src: img('step-images/kb-forward-lunge-step-4.png'), alt: 'Voltar à posição inicial', caption: 'Voltar à posição inicial' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - Lunge Variations', url: 'https://www.strongfirst.com/the-lunge/', license: 'CC BY-SA' },
@@ -2054,7 +2070,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-walking-lunge-step-1.png') },
+ imagem: { src: img('step-images/kb-walking-lunge-step-1.png'), alt: 'Setup', caption: 'Setup' } },
       { numero: 2, titulo: 'Passo à frente', descricao: 'Dê um passo à frente. Desça em lunge. KBs permanecem no rack.', duracaoSeg: 12, cues: ['Passo frontal', 'Lunge', 'KBs estáveis'],
         sensacoes: [
           'Passo à frente + descer',
@@ -2062,7 +2078,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-walking-lunge-step-2.png') },
+ imagem: { src: img('step-images/kb-walking-lunge-step-2.png'), alt: 'Passo à frente', caption: 'Passo à frente' } },
       { numero: 3, titulo: 'Levantar + próximo passo', descricao: 'Levante-se empurrando a perna da frente. Dê o próximo passo (com a perna de trás agora à frente).', duracaoSeg: 13, cues: ['Próximo passo', 'Alternância natural', 'Continuar'],
         sensacoes: [
           'Levantar + próximo passo',
@@ -2070,7 +2086,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-walking-lunge-step-3.png') },
+ imagem: { src: img('step-images/kb-walking-lunge-step-3.png'), alt: 'Levantar + próximo passo', caption: 'Levantar + próximo passo' } },
       { numero: 4, titulo: 'Repetir pelo espaço', descricao: 'Continue alternando passos. Respiração ritmada.', duracaoSeg: 14, cues: ['Alternância', 'Respiração', 'Distância'],
         sensacoes: [
           'Alternância natural',
@@ -2079,7 +2095,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-walking-lunge-step-4.png') },
+ imagem: { src: img('step-images/kb-walking-lunge-step-4.png'), alt: 'Repetir pelo espaço', caption: 'Repetir pelo espaço' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - Walking Lunge', url: 'https://www.strongfirst.com/walking-lunge/', license: 'CC BY-SA' },
@@ -2119,7 +2135,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-reverse-lunge-step-1.png') },
+ imagem: { src: img('step-images/kb-reverse-lunge-step-1.png'), alt: 'Setup', caption: 'Setup' } },
       { numero: 2, titulo: 'Passo atrás', descricao: 'Dê um passo PARA TRÁS (~80cm). Perna da frente fica apoiada.', duracaoSeg: 12, cues: ['Passo atrás', '80cm', 'Equilíbrio'],
         sensacoes: [
           'Passo ATRÁS (~80cm)',
@@ -2127,7 +2143,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-reverse-lunge-step-2.png') },
+ imagem: { src: img('step-images/kb-reverse-lunge-step-2.png'), alt: 'Passo atrás', caption: 'Passo atrás' } },
       { numero: 3, titulo: 'Descer em lunge', descricao: 'Desça até a coxa da frente ficar paralela. Joelho de trás quase encosta no chão.', duracaoSeg: 13, cues: ['Paralelo', 'Joelho quase toca', 'KBs estáveis'],
         sensacoes: [
           'Desça até coxa paralela',
@@ -2137,7 +2153,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se sentir joelho doer: reduza amplitude',
         ],
- imagen: img('step-images/kb-reverse-lunge-step-3.png') },
+ imagem: { src: img('step-images/kb-reverse-lunge-step-3.png'), alt: 'Descer em lunge', caption: 'Descer em lunge' } },
       { numero: 4, titulo: 'Voltar à posição inicial', descricao: 'Empurre com a perna da frente de volta ao início. Pés juntos novamente.', duracaoSeg: 14, cues: ['Voltar ao centro', 'Pés juntos', 'Reps'],
         sensacoes: [
           'Empurre com a perna da frente',
@@ -2146,7 +2162,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-reverse-lunge-step-4.png') },
+ imagem: { src: img('step-images/kb-reverse-lunge-step-4.png'), alt: 'Voltar à posição inicial', caption: 'Voltar à posição inicial' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - Reverse Lunge', url: 'https://www.strongfirst.com/reverse-lunge/', license: 'CC BY-SA' },
@@ -2185,7 +2201,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-curtsy-lunge-step-1.png') },
+ imagem: { src: img('step-images/kb-curtsy-lunge-step-1.png'), alt: 'Setup', caption: 'Setup' } },
       { numero: 2, titulo: 'Passo cruzado atrás', descricao: 'Dê um passo CRUZADO por trás da perna de apoio (~45°).', duracaoSeg: 12, cues: ['Cruzado', '45° atrás', 'Equilíbrio'],
         sensacoes: [
           'Passo CRUZADO atrás (~45°)',
@@ -2193,7 +2209,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-curtsy-lunge-step-2.png') },
+ imagem: { src: img('step-images/kb-curtsy-lunge-step-2.png'), alt: 'Passo cruzado atrás', caption: 'Passo cruzado atrás' } },
       { numero: 3, titulo: 'Descer em lunge cruzado', descricao: 'Desça flexionando a perna da frente. Perna cruzada desce para o joelho do lado oposto.', duracaoSeg: 13, cues: ['Curtsy', 'Profundidade', 'Glúteo médio'],
         sensacoes: [
           'Desça flexionando perna da frente',
@@ -2203,7 +2219,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se o joelho cair para dentro: pare',
         ],
- imagen: img('step-images/kb-curtsy-lunge-step-3.png') },
+ imagem: { src: img('step-images/kb-curtsy-lunge-step-3.png'), alt: 'Descer em lunge cruzado', caption: 'Descer em lunge cruzado' } },
       { numero: 4, titulo: 'Voltar à posição inicial', descricao: 'Empurre com a perna da frente para voltar. Trabalha glúteo médio.', duracaoSeg: 14, cues: ['Voltar', 'Glúteo médio', 'Trocar lado'],
         sensacoes: [
           'Voltar ao centro',
@@ -2211,7 +2227,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-curtsy-lunge-step-4.png') },
+ imagem: { src: img('step-images/kb-curtsy-lunge-step-4.png'), alt: 'Voltar à posição inicial', caption: 'Voltar à posição inicial' } },
     ],
     fontesExternas: [
       { name: 'Wikipedia - Curtsy Lunge', url: 'https://en.wikipedia.org/wiki/Lunge#Variations', license: 'CC BY-SA' },
@@ -2251,7 +2267,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-lateral-lunge-step-1.png') },
+ imagem: { src: img('step-images/kb-lateral-lunge-step-1.png'), alt: 'Setup: pés largos', caption: 'Setup: pés largos' } },
       { numero: 2, titulo: 'Agachar lateral', descricao: 'Agache para o lado, flexionando 1 joelho. Perna oposta esticada lateralmente.', duracaoSeg: 12, cues: ['Agachar lateral', 'Perna oposta esticada', 'Profundidade'],
         sensacoes: [
           'Agache lateral',
@@ -2261,7 +2277,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se sentir dor: reduza',
         ],
- imagen: img('step-images/kb-lateral-lunge-step-2.png') },
+ imagem: { src: img('step-images/kb-lateral-lunge-step-2.png'), alt: 'Agachar lateral', caption: 'Agachar lateral' } },
       { numero: 3, titulo: 'Empurrar de volta ao centro', descricao: 'Empurre com a perna flexa de volta ao centro.', duracaoSeg: 13, cues: ['Centro', 'Controle', 'Respiração'],
         sensacoes: [
           'Empurre de volta ao centro',
@@ -2269,7 +2285,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-lateral-lunge-step-3.png') },
+ imagem: { src: img('step-images/kb-lateral-lunge-step-3.png'), alt: 'Empurrar de volta ao centro', caption: 'Empurrar de volta ao centro' } },
       { numero: 4, titulo: 'Alternar lados', descricao: 'Continue alternando lados.', duracaoSeg: 14, cues: ['Alternar', 'Equilíbrio', 'Glúteo médio'],
         sensacoes: [
           'Alternar lados',
@@ -2277,7 +2293,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-lateral-lunge-step-4.png') },
+ imagem: { src: img('step-images/kb-lateral-lunge-step-4.png'), alt: 'Alternar lados', caption: 'Alternar lados' } },
     ],
     fontesExternas: [
       { name: 'Wikipedia - Lateral Lunge', url: 'https://en.wikipedia.org/wiki/Side_lunge', license: 'CC BY-SA' },
@@ -2317,7 +2333,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-step-up-step-1.png') },
+ imagem: { src: img('step-images/kb-step-up-step-1.png'), alt: 'Setup: de frente para o box', caption: 'Setup: de frente para o box' } },
       { numero: 2, titulo: 'Pisar no box', descricao: 'Pise com a perna inteira no box. NÃO dê impulso com a perna de trás.', duracaoSeg: 12, cues: ['Perna de apoio', 'Sem impulso', 'Pé inteiro'],
         sensacoes: [
           'Pise com a perna inteira',
@@ -2326,7 +2342,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se a perna de trás impulsionar: caixa baixa',
         ],
- imagen: img('step-images/kb-step-up-step-2.png') },
+ imagem: { src: img('step-images/kb-step-up-step-2.png'), alt: 'Pisar no box', caption: 'Pisar no box' } },
       { numero: 3, titulo: 'Empurrar até extensão completa', descricao: 'Empurre até extensão COMPLETA da perna da frente no topo.', duracaoSeg: 13, cues: ['Extensão completa', 'KBs estáveis', 'Topo'],
         sensacoes: [
           'Empurre até extensão completa',
@@ -2334,7 +2350,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-step-up-step-3.png') },
+ imagem: { src: img('step-images/kb-step-up-step-3.png'), alt: 'Empurrar até extensão completa', caption: 'Empurrar até extensão completa' } },
       { numero: 4, titulo: 'Descer controlado', descricao: 'Desça com a perna da frente de volta ao chão. Perna de trás toca primeiro OU NÃO (workout preference).', duracaoSeg: 14, cues: ['Excêntrico 2s', 'Reps', 'Trocar lado'],
         sensacoes: [
           'Desça com a perna da frente',
@@ -2343,7 +2359,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-step-up-step-4.png') },
+ imagem: { src: img('step-images/kb-step-up-step-4.png'), alt: 'Descer controlado', caption: 'Descer controlado' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - Step-Up', url: 'https://www.strongfirst.com/step-up/', license: 'CC BY-SA' },
@@ -2382,7 +2398,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-reverse-step-up-step-1.png') },
+ imagem: { src: img('step-images/kb-reverse-step-up-step-1.png'), alt: 'Setup: de costas para o box', caption: 'Setup: de costas para o box' } },
       { numero: 2, titulo: 'Subir no box de costas', descricao: 'Dê um passo PARA TRÁS subindo no box. Perna de apoio inteira.', duracaoSeg: 12, cues: ['Passo atrás', 'Perna inteira', 'Sem impulso'],
         sensacoes: [
           'Suba de costas',
@@ -2390,7 +2406,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-reverse-step-up-step-2.png') },
+ imagem: { src: img('step-images/kb-reverse-step-up-step-2.png'), alt: 'Subir no box de costas', caption: 'Subir no box de costas' } },
       { numero: 3, titulo: 'Empurrar até extensão completa', descricao: 'Empurre até extensão COMPLETA da perna da frente no topo. KBs estáveis.', duracaoSeg: 13, cues: ['Extensão completa', 'KBs estáveis', 'Topo'],
         sensacoes: [
           'Empurre com a perna da frente',
@@ -2398,7 +2414,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-reverse-step-up-step-3.png') },
+ imagem: { src: img('step-images/kb-reverse-step-up-step-3.png'), alt: 'Empurrar até extensão completa', caption: 'Empurrar até extensão completa' } },
       { numero: 4, titulo: 'Descer de costas', descricao: 'Desça com a perna da frente de volta ao chão de costas. Mais desafiador que step-up normal.', duracaoSeg: 14, cues: ['Excêntrico 2s', 'Mais difícil', 'Reps'],
         sensacoes: [
           'Desça de costas',
@@ -2406,7 +2422,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-reverse-step-up-step-4.png') },
+ imagem: { src: img('step-images/kb-reverse-step-up-step-4.png'), alt: 'Descer de costas', caption: 'Descer de costas' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - Reverse Step-Up', url: 'https://www.strongfirst.com/reverse-step-up/', license: 'CC BY-SA' },
@@ -2447,7 +2463,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-jumping-lunge-step-1.png') },
+ imagem: { src: img('step-images/kb-jumping-lunge-step-1.png'), alt: 'Setup em lunge', caption: 'Setup em lunge' } },
       { numero: 2, titulo: 'Pulo + trocar pernas', descricao: 'Pule explosivo. Em VOO, troque as pernas. Pouse em lunge com a outra perna à frente.', duracaoSeg: 13, cues: ['Pulo', 'Trocar pernas', 'Voar'],
         sensacoes: [
           'Pulo explosivo',
@@ -2457,7 +2473,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se perder o controle: pare',
         ],
- imagen: img('step-images/kb-jumping-lunge-step-2.png') },
+ imagem: { src: img('step-images/kb-jumping-lunge-step-2.png'), alt: 'Pulo + trocar pernas', caption: 'Pulo + trocar pernas' } },
       { numero: 3, titulo: 'Aterrissagem controlada', descricao: 'Aterrisse controladamente em lunge. Joelhos absorvem.', duracaoSeg: 14, cues: ['Aterrissagem suave', 'Absorver', 'Equilíbrio'],
         sensacoes: [
           'Aterrisse controladamente',
@@ -2466,7 +2482,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se dor no joelho: aterrisse mais suave',
         ],
- imagen: img('step-images/kb-jumping-lunge-step-3.png') },
+ imagem: { src: img('step-images/kb-jumping-lunge-step-3.png'), alt: 'Aterrissagem controlada', caption: 'Aterrissagem controlada' } },
       { numero: 4, titulo: 'Repetir', descricao: 'Continue alternando no ar. Cadência rápida.', duracaoSeg: 15, cues: ['Cadência rápida', 'Powers', 'Reps'],
         sensacoes: [
           'Continue alternando',
@@ -2475,7 +2491,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-jumping-lunge-step-4.png') },
+ imagem: { src: img('step-images/kb-jumping-lunge-step-4.png'), alt: 'Repetir', caption: 'Repetir' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - Jumping Lunge', url: 'https://www.strongfirst.com/jumping-lunge/', license: 'CC BY-SA' },
@@ -2516,7 +2532,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-box-jump-step-1.png') },
+ imagem: { src: img('step-images/kb-box-jump-step-1.png'), alt: 'Setup: de frente para o box', caption: 'Setup: de frente para o box' } },
       { numero: 2, titulo: 'Agachar + balanço de braços', descricao: 'Agache parcialmente. Braços balança para trás para gerar impulso.', duracaoSeg: 12, cues: ['Agachar', 'Balanço braços', 'Impulso'],
         sensacoes: [
           'Agachar parcialmente',
@@ -2524,7 +2540,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-box-jump-step-2.png') },
+ imagem: { src: img('step-images/kb-box-jump-step-2.png'), alt: 'Agachar + balanço de braços', caption: 'Agachar + balanço de braços' } },
       { numero: 3, titulo: 'Pulo + extensão', descricao: 'Pule explosivo. Pés aterrissam INTEIROS no box. Quadril, joelhos, tornozelos estendem completamente.', duracaoSeg: 13, cues: ['Pulo triplo extensão', 'Pés inteiros', 'Box'],
         sensacoes: [
           'Pulo + extensão tripla',
@@ -2532,7 +2548,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-box-jump-step-3.png') },
+ imagem: { src: img('step-images/kb-box-jump-step-3.png'), alt: 'Pulo + extensão', caption: 'Pulo + extensão' } },
       { numero: 4, titulo: 'Aterrissagem no topo', descricao: 'Aterrisse em pé no box. Quadril totalmente estendido. KBs estáveis.', duracaoSeg: 14, cues: ['Em pé no box', 'Estender', 'Sem pender'],
         sensacoes: [
           'Aterrisse em pé',
@@ -2540,7 +2556,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-box-jump-step-4.png') },
+ imagem: { src: img('step-images/kb-box-jump-step-4.png'), alt: 'Aterrissagem no topo', caption: 'Aterrissagem no topo' } },
       { numero: 5, titulo: 'Descer de costas', descricao: 'Desça do box de costas (saudável para joelhos) ou frontal.', duracaoSeg: 15, cues: ['Descida controlada', 'Saúde dos joelhos', 'Reps'],
         sensacoes: [
           'Descer de costas (saudável)',
@@ -2548,7 +2564,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-box-jump-step-5.png') },
+ imagem: { src: img('step-images/kb-box-jump-step-5.png'), alt: 'Descer de costas', caption: 'Descer de costas' } },
     ],
     fontesExternas: [
       { name: 'Wikipedia - Box Jump', url: 'https://en.wikipedia.org/wiki/Box_jump', license: 'CC BY-SA' },
@@ -2588,7 +2604,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-double-kb-front-squat-step-1.png') },
+ imagem: { src: img('step-images/kb-double-kb-front-squat-step-1.png'), alt: 'Clean 2 KBs', caption: 'Clean 2 KBs' } },
       { numero: 2, titulo: 'Bracing 360°', descricao: 'Brace 360° antes de descer. Olhar à frente.', duracaoSeg: 12, cues: ['Brace 360', 'Olhar frente', 'Pronto'],
         sensacoes: [
           'Bracing 360°',
@@ -2596,7 +2612,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-double-kb-front-squat-step-2.png') },
+ imagem: { src: img('step-images/kb-double-kb-front-squat-step-2.png'), alt: 'Bracing 360°', caption: 'Bracing 360°' } },
       { numero: 3, titulo: 'Descer controlado', descricao: 'Desça em squat paralelo+. Costas retas. KBs permanecem no rack.', duracaoSeg: 13, cues: ['Paralelo+', 'Costas retas', 'KBs no rack'],
         sensacoes: [
           'Desça controlado',
@@ -2605,7 +2621,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se a lombar arredondar: pare',
         ],
- imagen: img('step-images/kb-double-kb-front-squat-step-3.png') },
+ imagem: { src: img('step-images/kb-double-kb-front-squat-step-3.png'), alt: 'Descer controlado', caption: 'Descer controlado' } },
       { numero: 4, titulo: 'Empurrar com quadril', descricao: 'Empurre com quadril E pernas. Lockout no topo. Sem dobrar no topo.', duracaoSeg: 14, cues: ['Lockout', 'Não dobrar', 'Quadril'],
         sensacoes: [
           'Empurre com quadril',
@@ -2613,7 +2629,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-double-kb-front-squat-step-4.png') },
+ imagem: { src: img('step-images/kb-double-kb-front-squat-step-4.png'), alt: 'Empurrar com quadril', caption: 'Empurrar com quadril' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - Double Front Squat', url: 'https://www.strongfirst.com/double-front-squat/', license: 'CC BY-SA' },
@@ -2660,7 +2676,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se a lombar arquear: KB muito pesado',
         ],
- imagen: img('step-images/kb-strict-press-step-1.png') },
+ imagem: { src: img('step-images/kb-strict-press-step-1.png'), alt: 'Posição Rack', caption: 'Posição Rack' } },
       { numero: 2, titulo: 'Bracing + Respiração', descricao: 'Brace 360°. Inspire no fundo. Trave o corpo.', duracaoSeg: 12, cues: ['Brace 360', 'Respiração', 'Travar'],
         sensacoes: [
           'Bracing 360° (barriga + lombar + laterais)',
@@ -2669,7 +2685,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-strict-press-step-2.png') },
+ imagem: { src: img('step-images/kb-strict-press-step-2.png'), alt: 'Bracing + Respiração', caption: 'Bracing + Respiração' } },
       { numero: 3, titulo: 'Press vertical', descricao: 'Press vertical. NÃO inclinar. KB sobre o ombro.', duracaoSeg: 13, cues: ['Vertical', 'Sem inclinar', 'Pronto'],
         sensacoes: [
           'Press vertical',
@@ -2680,7 +2696,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se o tronco inclinar: compensação',
         ],
- imagen: img('step-images/kb-strict-press-step-3.png') },
+ imagem: { src: img('step-images/kb-strict-press-step-3.png'), alt: 'Press vertical', caption: 'Press vertical' } },
       { numero: 4, titulo: 'Lockout + Descida', descricao: 'Lockout com cotovelo travado. Descida controlada (excêntrico 3s).', duracaoSeg: 14, cues: ['Lockout', 'Excêntrico 3s', 'Reps'],
         sensacoes: [
           'Lockout: KB sobre o ombro',
@@ -2690,7 +2706,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-strict-press-step-4.png') },
+ imagem: { src: img('step-images/kb-strict-press-step-4.png'), alt: 'Lockout + Descida', caption: 'Lockout + Descida' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - Strict Press', url: 'https://www.strongfirst.com/the-strict-press/', license: 'CC BY-SA' },
@@ -2734,7 +2750,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-push-press-step-1.png') },
+ imagem: { src: img('step-images/kb-push-press-step-1.png'), alt: 'Posição Rack', caption: 'Posição Rack' } },
       { numero: 2, titulo: 'Dip (flexão leve)', descricao: 'Joelhos flexionam ~10cm (NÃO agachada profunda). É só um amortecer para armazenar energia. Tronco fica vertical.', duracaoSeg: 2, cues: ['Dip leve 10cm', 'Tronco vertical', 'Sem agachar'],
         sensacoes: [
           'Dip leve (~10cm)',
@@ -2742,7 +2758,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-push-press-step-2.png') },
+ imagem: { src: img('step-images/kb-push-press-step-2.png'), alt: 'Dip (flexão leve)', caption: 'Dip (flexão leve)' } },
       { numero: 3, titulo: 'Drive de pernas (explosivo)', descricao: 'PERNAS explodem pra cima e pra fora. Quadril e joelhos estendem juntos. A potência das pernas transfere pro KB.', duracaoSeg: 1, cues: ['Drive explosivo', 'Pernas primeiro', 'Quadril + joelhos'],
         sensacoes: [
           'Drive EXPLOSIVO',
@@ -2750,14 +2766,14 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-push-press-step-3.png') },
+ imagem: { src: img('step-images/kb-push-press-step-3.png'), alt: 'Drive de pernas (explosivo)', caption: 'Drive de pernas (explosivo)' } },
       { numero: 4, titulo: 'Press + Lockout', descricao: 'Quando KB começa a subir (pela perna), braços GUIA até o lockout. Lockout rápido: braço estendido, KB sobre ombro, core travado.', duracaoSeg: 1, cues: ['Braços guia', 'Lockout rápido', 'KB sobre ombro'],
         sensacoes: [
           'Lockout rápido',
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-push-press-step-4.png') },
+ imagem: { src: img('step-images/kb-push-press-step-4.png'), alt: 'Press + Lockout', caption: 'Press + Lockout' } },
       { numero: 5, titulo: 'Descida', descricao: 'Excêntrico controlado de volta ao rack. Joelhos absorvem novamente (mini dip reverso).', duracaoSeg: 2, cues: ['Excêntrico 2s', 'Absorver com joelhos', 'Pronto pra próxima rep'],
         sensacoes: [
           'Descida controlada (excêntrico 3s)',
@@ -2766,7 +2782,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-push-press-step-5.png') },
+ imagem: { src: img('step-images/kb-push-press-step-5.png'), alt: 'Descida', caption: 'Descida' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - Push Press', url: 'https://www.strongfirst.com/the-push-press/', license: '© StrongFirst' },
@@ -2812,7 +2828,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-floor-press-step-1.png') },
+ imagem: { src: img('step-images/kb-floor-press-step-1.png'), alt: 'Setup (deitado)', caption: 'Setup (deitado)' } },
       { numero: 2, titulo: 'Bracing + Pegada', descricao: 'Core bracing 360°. Pés firmes no chão. Pegada firme mas sem death grip.', duracaoSeg: 5, cues: ['Brace 360', 'Pés firmes', 'Hook grip'],
         sensacoes: [
           'Desça os KBs controladamente',
@@ -2823,7 +2839,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se ombro doer: cotovelos muito abertos',
         ],
- imagen: img('step-images/kb-floor-press-step-2.png') },
+ imagem: { src: img('step-images/kb-floor-press-step-2.png'), alt: 'Bracing + Pegada', caption: 'Bracing + Pegada' } },
       { numero: 3, titulo: 'Press', descricao: 'Empurre os KBs diretamente pra cima (vertical). Os cotovelos se estendem. KBs devem passar acima do peito, alinhados com ombros.', duracaoSeg: 3, cues: ['Vertical press', 'KBs sobre peito', 'Cotovelos estendendo'],
         sensacoes: [
           'Empurre os KBs para cima',
@@ -2833,9 +2849,9 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-floor-press-step-3.png') },
-      { numero: 4, titulo: 'Lockout', descricao: 'Braços totalmente estendidos. KBs acima do peito, alinhados verticalmente. Pause 1 segundo no topo.', duracaoSeg: 2, cues: ['Lockout total', 'KBs alinhados', 'Não tocar'], imagen: img('step-images/kb-floor-press-step-4.png') },
-      { numero: 5, titulo: 'Descida controlada', descricao: 'Excêntrico 3 segundos. Cotovelos descem até tocar o chão de leve. KBs voltam à posição rack.', duracaoSeg: 3, cues: ['Excêntrico 3s', 'Toque leve', 'Volta ao rack'], imagen: img('step-images/kb-floor-press-step-5.png') },
+ imagem: { src: img('step-images/kb-floor-press-step-3.png'), alt: 'Press', caption: 'Press' } },
+      { numero: 4, titulo: 'Lockout', descricao: 'Braços totalmente estendidos. KBs acima do peito, alinhados verticalmente. Pause 1 segundo no topo.', duracaoSeg: 2, cues: ['Lockout total', 'KBs alinhados', 'Não tocar'], imagem: { src: img('step-images/kb-floor-press-step-4.png'), alt: 'Lockout', caption: 'Lockout' } },
+      { numero: 5, titulo: 'Descida controlada', descricao: 'Excêntrico 3 segundos. Cotovelos descem até tocar o chão de leve. KBs voltam à posição rack.', duracaoSeg: 3, cues: ['Excêntrico 3s', 'Toque leve', 'Volta ao rack'], imagem: { src: img('step-images/kb-floor-press-step-5.png'), alt: 'Descida controlada', caption: 'Descida controlada' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - Floor Press', url: 'https://www.strongfirst.com/the-floor-press/', license: '© StrongFirst' },
@@ -2876,7 +2892,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-bent-press-step-1.png') },
+ imagem: { src: img('step-images/kb-bent-press-step-1.png'), alt: 'Setup: KB no rack', caption: 'Setup: KB no rack' } },
       { numero: 2, titulo: 'Inclinar lateralmente', descricao: 'Comece a inclinar lateralmente. Tronco vai descendo. KB sobe.', duracaoSeg: 12, cues: ['Inclinar lateral', 'Tronco desce', 'KB sobe'],
         sensacoes: [
           'Inclinar lateralmente',
@@ -2887,7 +2903,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se a lombar doer: pare',
         ],
- imagen: img('step-images/kb-bent-press-step-2.png') },
+ imagem: { src: img('step-images/kb-bent-press-step-2.png'), alt: 'Inclinar lateralmente', caption: 'Inclinar lateralmente' } },
       { numero: 3, titulo: 'Lockout inclinado', descricao: 'Quando o tronco estiver paralelo ao chão, KB está overhead (lockout).', duracaoSeg: 13, cues: ['Lockout overhead', 'Tronco paralelo', 'Mão no chão'],
         sensacoes: [
           'Tronco paralelo ao chão',
@@ -2896,7 +2912,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-bent-press-step-3.png') },
+ imagem: { src: img('step-images/kb-bent-press-step-3.png'), alt: 'Lockout inclinado', caption: 'Lockout inclinado' } },
       { numero: 4, titulo: 'Voltar à posição inicial', descricao: 'Contraia o oblíquo oposto para voltar à posição vertical. KB volta ao rack.', duracaoSeg: 14, cues: ['Voltar ao centro', 'Oblíquo oposto', 'Equilíbrio'],
         sensacoes: [
           'Oblíquo contrai para subir',
@@ -2905,7 +2921,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-bent-press-step-4.png') },
+ imagem: { src: img('step-images/kb-bent-press-step-4.png'), alt: 'Voltar à posição inicial', caption: 'Voltar à posição inicial' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - Bent Press', url: 'https://www.strongfirst.com/the-bent-press/', license: 'CC BY-SA' },
@@ -2947,7 +2963,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se o grip falhar: reduza 50%',
         ],
- imagen: img('step-images/kb-bottoms-up-press-step-1.png') },
+ imagem: { src: img('step-images/kb-bottoms-up-press-step-1.png'), alt: 'Setup com KB invertido', caption: 'Setup com KB invertido' } },
       { numero: 2, titulo: 'Bracing', descricao: 'Brace 360°. Grip é o limitante aqui — KB pode tombar se carga alta demais.', duracaoSeg: 12, cues: ['Brace 360', 'Grip limitante', 'Pode tombar'],
         sensacoes: [
           'Bracing 360°',
@@ -2955,7 +2971,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-bottoms-up-press-step-2.png') },
+ imagem: { src: img('step-images/kb-bottoms-up-press-step-2.png'), alt: 'Bracing', caption: 'Bracing' } },
       { numero: 3, titulo: 'Press vertical', descricao: 'Press vertical do KB invertido. Grip ativado MÁXIMO o tempo todo. NÃO mover o pulso.', duracaoSeg: 13, cues: ['Vertical', 'Grip máximo', 'Pulso fixo'],
         sensacoes: [
           'Press vertical',
@@ -2966,7 +2982,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se o pulso dobrar: KB vai tombar',
         ],
- imagen: img('step-images/kb-bottoms-up-press-step-3.png') },
+ imagem: { src: img('step-images/kb-bottoms-up-press-step-3.png'), alt: 'Press vertical', caption: 'Press vertical' } },
       { numero: 4, titulo: 'Lockout + Descida', descricao: 'Lockout com KB invertido. Descida controlada. KB NÃO pode tombar durante a descida.', duracaoSeg: 14, cues: ['Lockout invertido', 'Sem tombar', 'Grip'],
         sensacoes: [
           'Lockout com KB invertido',
@@ -2975,7 +2991,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-bottoms-up-press-step-4.png') },
+ imagem: { src: img('step-images/kb-bottoms-up-press-step-4.png'), alt: 'Lockout + Descida', caption: 'Lockout + Descida' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - Bottoms-Up Press', url: 'https://www.strongfirst.com/bottoms-up-kettlebell-press/', license: 'CC BY-SA' },
@@ -3016,10 +3032,9 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-waiter-walk-step-1.png'),
-    steps: [
-      { numero: 1, titulo: 'Press KB overhead', descricao: 'Press KB para overhead. Lockout ativo.', duracaoSeg: 10, cues: ['Press', 'Lockout', 'Pronto'], imagen: img('step-images/kb-waiter-walk-step-1.png') },
-      { numero: 2, titulo: 'Postura ereta', descricao: 'Postura ereta. Olhar à frente. KB sobre o ombro (não para frente).', duracaoSeg: 12, cues: ['Postura ereta', 'Olhar frente', 'KB sobre ombro'],
+        imagem: { src: img('step-images/kb-waiter-walk-step-1.png'), alt: 'Setup: KB overhead', caption: 'Setup: KB overhead' } },
+      { numero: 2, titulo: 'Press KB overhead', descricao: 'Press KB para overhead. Lockout ativo.', duracaoSeg: 10, cues: ['Press', 'Lockout', 'Pronto'], imagem: { src: img('step-images/kb-waiter-walk-step-1.png'), alt: 'Press KB overhead', caption: 'Press KB overhead' } },
+      { numero: 3, titulo: 'Postura ereta', descricao: 'Postura ereta. Olhar à frente. KB sobre o ombro (não para frente).', duracaoSeg: 12, cues: ['Postura ereta', 'Olhar frente', 'KB sobre ombro'],
         sensacoes: [
           'Postura ereta',
           'KB sobre a cabeça',
@@ -3027,8 +3042,8 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-waiter-walk-step-2.png') },
-      { numero: 3, titulo: 'Caminhar', descricao: 'Caminhe em linha reta. Passos estáveis. KB NÃO oscila.', duracaoSeg: 13, cues: ['Linha reta', 'KB estável', 'Passos firmes'],
+        imagem: { src: img('step-images/kb-waiter-walk-step-2.png'), alt: 'Postura ereta', caption: 'Postura ereta' } },
+      { numero: 4, titulo: 'Caminhar', descricao: 'Caminhe em linha reta. Passos estáveis. KB NÃO oscila.', duracaoSeg: 13, cues: ['Linha reta', 'KB estável', 'Passos firmes'],
         sensacoes: [
           'Caminhe',
           'Passos estáveis',
@@ -3036,20 +3051,15 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-waiter-walk-step-3.png') },
-      { numero: 4, titulo: 'Distância programada', descricao: 'Caminhe 10-30m. KB não pode cair.', duracaoSeg: 14, cues: ['Distância', 'Sem cair', 'Reps'],
+        imagem: { src: img('step-images/kb-waiter-walk-step-3.png'), alt: 'Caminhar', caption: 'Caminhar' } },
+      { numero: 5, titulo: 'Distância programada', descricao: 'Caminhe 10-30m. KB não pode cair.', duracaoSeg: 14, cues: ['Distância', 'Sem cair', 'Reps'],
         sensacoes: [
           'Distância programada',
           'KB não cai',
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-waiter-walk-step-4.png') },
-    ],
-    fontesExternas: [
-      { name: 'StrongFirst - Waiter Walk', url: 'https://www.strongfirst.com/waiter-walk/', license: 'CC BY-SA' },
-    ], titulo: 'Caminhar', descricao: 'Caminhe em linha reta. Passos estáveis. KB NÃO oscila.', duracaoSeg: 13, cues: ['Linha reta', 'KB estável', 'Passos firmes'], imagen: img('step-images/kb-waiter-walk-step-3.png') },
-      { numero: 4, titulo: 'Distância programada', descricao: 'Caminhe pela distância programada (10-30m). KB não pode cair.', duracaoSeg: 14, cues: ['Distância', 'Sem cair', 'Reps'], imagen: img('step-images/kb-waiter-walk-step-4.png') },
+        imagem: { src: img('step-images/kb-waiter-walk-step-4.png'), alt: 'Distância programada', caption: 'Distância programada' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - Waiter Walk', url: 'https://www.strongfirst.com/waiter-walk/', license: 'CC BY-SA' },
@@ -3089,7 +3099,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-single-arm-press-step-1.png') },
+ imagem: { src: img('step-images/kb-single-arm-press-step-1.png'), alt: 'Setup 1 braço', caption: 'Setup 1 braço' } },
       { numero: 2, titulo: 'Bracing + Anti-rotação', descricao: 'Brace 360°. OBLÍQUOS contraindo para evitar rotação lateral (a carga unilateral tende a inclinar).', duracaoSeg: 12, cues: ['Brace 360', 'Anti-rotação', 'Oblíquos ativos'],
         sensacoes: [
           'Brace 360°',
@@ -3098,7 +3108,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se o tronco já inclinar: reduza carga',
         ],
- imagen: img('step-images/kb-single-arm-press-step-2.png') },
+ imagem: { src: img('step-images/kb-single-arm-press-step-2.png'), alt: 'Bracing + Anti-rotação', caption: 'Bracing + Anti-rotação' } },
       { numero: 3, titulo: 'Press vertical', descricao: 'Press vertical do KB. Tronco permanece ereto (sem compensar inclinação).', duracaoSeg: 13, cues: ['Vertical', 'Tronco ereto', 'Sem compensar'],
         sensacoes: [
           'Press vertical',
@@ -3107,7 +3117,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-single-arm-press-step-3.png') },
+ imagem: { src: img('step-images/kb-single-arm-press-step-3.png'), alt: 'Press vertical', caption: 'Press vertical' } },
       { numero: 4, titulo: 'Lockout + Descida', descricao: 'Lockout com KB sobre o ombro. Oblíquo contraído. Descida controlada de volta ao rack.', duracaoSeg: 14, cues: ['Lockout', 'Anti-rotação', 'Volta ao rack'],
         sensacoes: [
           'Lockout',
@@ -3116,7 +3126,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-single-arm-press-step-4.png') },
+ imagem: { src: img('step-images/kb-single-arm-press-step-4.png'), alt: 'Lockout + Descida', caption: 'Lockout + Descida' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - Single-Arm Press', url: 'https://www.strongfirst.com/single-arm-press/', license: 'CC BY-SA' },
@@ -3156,7 +3166,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-double-jerk-step-1.png') },
+ imagem: { src: img('step-images/kb-double-jerk-step-1.png'), alt: 'Clean 2 KBs', caption: 'Clean 2 KBs' } },
       { numero: 2, titulo: 'Dip + Drive', descricao: 'Pequeno dip com joelhos. EM SEGUIDA, drive explosivo com quadril + pernas. KBs voam.', duracaoSeg: 12, cues: ['Dip', 'Drive', 'Explosão'],
         sensacoes: [
           'Pequeno dip',
@@ -3164,7 +3174,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-double-jerk-step-2.png') },
+ imagem: { src: img('step-images/kb-double-jerk-step-2.png'), alt: 'Dip + Drive', caption: 'Dip + Drive' } },
       { numero: 3, titulo: 'Catch no lockout', descricao: 'Catch dos KBs no lockout overhead. Joelhos levemente flexos absorveram o impacto.', duracaoSeg: 13, cues: ['Catch overhead', 'Lockout', 'Absorção'],
         sensacoes: [
           'Catch overhead',
@@ -3172,7 +3182,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-double-jerk-step-3.png') },
+ imagem: { src: img('step-images/kb-double-jerk-step-3.png'), alt: 'Catch no lockout', caption: 'Catch no lockout' } },
       { numero: 4, titulo: 'Stand + Recovery', descricao: 'Estenda joelhos e quadril. KBs estáveis no lockout. Recovery breve antes da próxima rep.', duracaoSeg: 14, cues: ['Stand', 'Recovery', 'Próxima rep'],
         sensacoes: [
           'Stand',
@@ -3180,7 +3190,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-double-jerk-step-4.png') },
+ imagem: { src: img('step-images/kb-double-jerk-step-4.png'), alt: 'Stand + Recovery', caption: 'Stand + Recovery' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - Jerk', url: 'https://www.strongfirst.com/the-jerk/', license: 'CC BY-SA' },
@@ -3219,7 +3229,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-double-push-press-step-1.png') },
+ imagem: { src: img('step-images/kb-double-push-press-step-1.png'), alt: 'Clean 2 KBs', caption: 'Clean 2 KBs' } },
       { numero: 2, titulo: 'Dip + Drive', descricao: 'Pequeno dip com joelhos. EM SEGUIDA, drive com quadril + pernas (usa pernas, não só braços).', duracaoSeg: 12, cues: ['Dip', 'Drive com pernas', 'Permitido'],
         sensacoes: [
           'Dip + drive',
@@ -3228,14 +3238,14 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se dip > 10cm: amplitude excessiva',
         ],
- imagen: img('step-images/kb-double-push-press-step-2.png') },
+ imagem: { src: img('step-images/kb-double-push-press-step-2.png'), alt: 'Dip + Drive', caption: 'Dip + Drive' } },
       { numero: 3, titulo: 'Press + Catch no lockout', descricao: 'Após drive, continue o movimento de press para o lockout. Catch com KBs overhead. Joelhos levemente flexos.', duracaoSeg: 13, cues: ['Press overhead', 'Lockout', 'ABSORVER'],
         sensacoes: [
           'Press + catch overhead',
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-double-push-press-step-3.png') },
+ imagem: { src: img('step-images/kb-double-push-press-step-3.png'), alt: 'Press + Catch no lockout', caption: 'Press + Catch no lockout' } },
       { numero: 4, titulo: 'Stand + Recovery', descricao: 'Estenda joelhos e quadril. KBs estáveis no lockout. Recovery breve.', duracaoSeg: 14, cues: ['Stand', 'Recovery', 'Próxima rep'],
         sensacoes: [
           'Stand',
@@ -3243,7 +3253,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-double-push-press-step-4.png') },
+ imagem: { src: img('step-images/kb-double-push-press-step-4.png'), alt: 'Stand + Recovery', caption: 'Stand + Recovery' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - Push Press', url: 'https://www.strongfirst.com/the-push-press/', license: 'CC BY-SA' },
@@ -3286,7 +3296,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se a lombar afundar: core não travou',
         ],
- imagen: img('step-images/kb-push-up-step-1.png') },
+ imagem: { src: img('step-images/kb-push-up-step-1.png'), alt: 'Posição de prancha', caption: 'Posição de prancha' } },
       { numero: 2, titulo: 'Descer controladamente', descricao: 'Desça flexionando cotovelos. Tronco permanece rígido. KBs opcionais para desafio extra.', duracaoSeg: 12, cues: ['Cotovelos flexos', 'Tronco rígido', 'Descer'],
         sensacoes: [
           'Desça flexionando cotovelos',
@@ -3295,7 +3305,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-push-up-step-2.png') },
+ imagem: { src: img('step-images/kb-push-up-step-2.png'), alt: 'Descer controladamente', caption: 'Descer controladamente' } },
       { numero: 3, titulo: 'Peito quase no chão', descricao: 'Continue descendo até o peito quase tocar o chão. Cotovelos a ~45° do tronco.', duracaoSeg: 13, cues: ['Peito quase no chão', '45° cotovelos', 'Pronto'],
         sensacoes: [
           'Peito quase no chão',
@@ -3303,7 +3313,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-push-up-step-3.png') },
+ imagem: { src: img('step-images/kb-push-up-step-3.png'), alt: 'Peito quase no chão', caption: 'Peito quase no chão' } },
       { numero: 4, titulo: 'Empurrar de volta ao topo', descricao: 'Empurre com força no chão. Volte à posição de prancha. Corpo reto o tempo todo.', duracaoSeg: 14, cues: ['Empurrar', 'Prancha', 'Reps'],
         sensacoes: [
           'Empurre com força',
@@ -3312,7 +3322,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-push-up-step-4.png') },
+ imagem: { src: img('step-images/kb-push-up-step-4.png'), alt: 'Empurrar de volta ao topo', caption: 'Empurrar de volta ao topo' } },
     ],
     fontesExternas: [
       { name: 'Wikipedia - Push-up', url: 'https://en.wikipedia.org/wiki/Push-up', license: 'CC BY-SA' },
@@ -3349,7 +3359,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-dip-step-1.png') },
+ imagem: { src: img('step-images/kb-dip-step-1.png'), alt: 'Setup: entre 2 KBs', caption: 'Setup: entre 2 KBs' } },
       { numero: 2, titulo: 'Descer', descricao: 'Desça flexionando cotovelos. Tronco levemente à frente. KBs estáveis.', duracaoSeg: 12, cues: ['Flexionar cotovelos', 'Tronco à frente', 'KBs estáveis'],
         sensacoes: [
           'Desça flexionando cotovelos',
@@ -3358,7 +3368,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se ombro doer: pare',
         ],
- imagen: img('step-images/kb-dip-step-2.png') },
+ imagem: { src: img('step-images/kb-dip-step-2.png'), alt: 'Descer', caption: 'Descer' } },
       { numero: 3, titulo: 'Peito na altura dos KBs', descricao: 'Continue até o peito estar na altura dos KBs. Cotovelos a ~45° do tronco.', duracaoSeg: 13, cues: ['Peito nível KBs', '45° cotovelos', 'Pronto'],
         sensacoes: [
           'Peito nível KBs',
@@ -3366,7 +3376,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-dip-step-3.png') },
+ imagem: { src: img('step-images/kb-dip-step-3.png'), alt: 'Peito na altura dos KBs', caption: 'Peito na altura dos KBs' } },
       { numero: 4, titulo: 'Empurrar para cima', descricao: 'Empurre com força para voltar à posição inicial. Braços estendidos.', duracaoSeg: 14, cues: ['Empurrar', 'Topo', 'Reps'],
         sensacoes: [
           'Empurre para cima',
@@ -3374,7 +3384,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-dip-step-4.png') },
+ imagem: { src: img('step-images/kb-dip-step-4.png'), alt: 'Empurrar para cima', caption: 'Empurrar para cima' } },
     ],
     fontesExternas: [
       { name: 'Wikipedia - Dip', url: 'https://en.wikipedia.org/wiki/Dip_(exercise)', license: 'CC BY-SA' },
@@ -3417,7 +3427,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-renegade-row-step-1.png') },
+ imagem: { src: img('step-images/kb-renegade-row-step-1.png'), alt: 'Prancha com 2 KBs', caption: 'Prancha com 2 KBs' } },
       { numero: 2, titulo: 'Puxar 1 KB', descricao: 'Puxe 1 KB para a costela. Cotovelo próximo ao tronco. NÃO rotacionar o quadril.', duracaoSeg: 12, cues: ['Puxar KB', 'Cotovelo próximo', 'Sem rotação'],
         sensacoes: [
           'Puxar 1 KB',
@@ -3427,7 +3437,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se quadril girar: reduza carga',
         ],
- imagen: img('step-images/kb-renegade-row-step-2.png') },
+ imagem: { src: img('step-images/kb-renegade-row-step-2.png'), alt: 'Puxar 1 KB', caption: 'Puxar 1 KB' } },
       { numero: 3, titulo: 'Descer o KB', descricao: 'Desça o KB controladamente. Quadril permanece estável (a prancha é o desafio principal).', duracaoSeg: 13, cues: ['Excêntrico 2s', 'Quadril estável', 'Pronto'],
         sensacoes: [
           'Descer KB',
@@ -3435,7 +3445,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-renegade-row-step-3.png') },
+ imagem: { src: img('step-images/kb-renegade-row-step-3.png'), alt: 'Descer o KB', caption: 'Descer o KB' } },
       { numero: 4, titulo: 'Trocar de lado', descricao: 'Repita com a outra mão. Continue alternando. Core permanece travado o tempo todo.', duracaoSeg: 14, cues: ['Trocar', 'Core travado', 'Reps'],
         sensacoes: [
           'Trocar de lado',
@@ -3443,7 +3453,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-renegade-row-step-4.png') },
+ imagem: { src: img('step-images/kb-renegade-row-step-4.png'), alt: 'Trocar de lado', caption: 'Trocar de lado' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - Renegade Row', url: 'https://www.strongfirst.com/renegade-row/', license: 'CC BY-SA' },
@@ -3485,7 +3495,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-bent-over-row-step-1.png') },
+ imagem: { src: img('step-images/kb-bent-over-row-step-1.png'), alt: 'Hip hinge + pegada', caption: 'Hip hinge + pegada' } },
       { numero: 2, titulo: 'Puxar KB', descricao: 'Puxe o KB para a costela. Cotovelo próximo ao tronco. LATS contraindo.', duracaoSeg: 12, cues: ['Puxar para costela', 'Cotovelo próximo', 'LATS'],
         sensacoes: [
           'Puxar KB para a costela',
@@ -3495,7 +3505,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se lombar arredondar: reduza',
         ],
- imagen: img('step-images/kb-bent-over-row-step-2.png') },
+ imagem: { src: img('step-images/kb-bent-over-row-step-2.png'), alt: 'Puxar KB', caption: 'Puxar KB' } },
       { numero: 3, titulo: 'Squeeze no topo', descricao: 'Pause 1s no topo. Squeeze lats. KB próximo ao tronco.', duracaoSeg: 13, cues: ['Squeeze lats', 'Pause 1s', 'KB próximo'],
         sensacoes: [
           'Squeeze 1s no topo',
@@ -3504,7 +3514,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-bent-over-row-step-3.png') },
+ imagem: { src: img('step-images/kb-bent-over-row-step-3.png'), alt: 'Squeeze no topo', caption: 'Squeeze no topo' } },
       { numero: 4, titulo: 'Excêntrico controlado', descricao: 'Desça o KB controladamente (excêntrico 2-3s). Costas permanecem planas.', duracaoSeg: 14, cues: ['Excêntrico 2-3s', 'Costas planas', 'Reps'],
         sensacoes: [
           'Excêntrico 2-3s',
@@ -3512,7 +3522,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-bent-over-row-step-4.png') },
+ imagem: { src: img('step-images/kb-bent-over-row-step-4.png'), alt: 'Excêntrico controlado', caption: 'Excêntrico controlado' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - Bent-Over Row', url: 'https://www.strongfirst.com/bent-over-row/', license: 'CC BY-SA' },
@@ -3553,7 +3563,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-high-pull-step-1.png') },
+ imagem: { src: img('step-images/kb-high-pull-step-1.png'), alt: 'Hike pass', caption: 'Hike pass' } },
       { numero: 2, titulo: 'Hip drive + pull alto', descricao: 'Snap glúteo explosivo. Puxe o KB ALTO (cotovelo bem alto, acima do ombro).', duracaoSeg: 12, cues: ['Snap glúteo', 'Cotovelo alto', 'Pull alto'],
         sensacoes: [
           'Snap glúteo + pull ALTO',
@@ -3562,7 +3572,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-high-pull-step-2.png') },
+ imagem: { src: img('step-images/kb-high-pull-step-2.png'), alt: 'Hip drive + pull alto', caption: 'Hip drive + pull alto' } },
       { numero: 3, titulo: 'Cotovelos altos', descricao: 'Pausa breve com cotovelos altos. Trapézio contraindo.', duracaoSeg: 13, cues: ['Cotovelos altos', 'Trapézio', 'Pausa'],
         sensacoes: [
           'Cotovelos altos',
@@ -3570,7 +3580,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-high-pull-step-3.png') },
+ imagem: { src: img('step-images/kb-high-pull-step-3.png'), alt: 'Cotovelos altos', caption: 'Cotovelos altos' } },
       { numero: 4, titulo: 'Excêntrico controlado', descricao: 'Desça o KB controladamente. Volta ao hike pass.', duracaoSeg: 14, cues: ['Excêntrico 2s', 'Reps', 'Costas retas'],
         sensacoes: [
           'Excêntrico controlado',
@@ -3578,7 +3588,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-high-pull-step-4.png') },
+ imagem: { src: img('step-images/kb-high-pull-step-4.png'), alt: 'Excêntrico controlado', caption: 'Excêntrico controlado' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - High Pull', url: 'https://www.strongfirst.com/high-pull/', license: 'CC BY-SA' },
@@ -3619,7 +3629,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-single-arm-row-step-1.png') },
+ imagem: { src: img('step-images/kb-single-arm-row-step-1.png'), alt: 'Apoio: mão no banco, KB na outra', caption: 'Apoio: mão no banco, KB na outra' } },
       { numero: 2, titulo: 'Puxar KB', descricao: 'Puxe o KB para a costela. Cotovelo próximo. LATS contraindo.', duracaoSeg: 12, cues: ['Puxar', 'Cotovelo próximo', 'LATS'],
         sensacoes: [
           'Puxar KB',
@@ -3627,7 +3637,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-single-arm-row-step-2.png') },
+ imagem: { src: img('step-images/kb-single-arm-row-step-2.png'), alt: 'Puxar KB', caption: 'Puxar KB' } },
       { numero: 3, titulo: 'Squeeze no topo', descricao: 'Pause 1s no topo. Squeeze lats. KB próximo.', duracaoSeg: 13, cues: ['Squeeze', 'Pausa 1s', 'Próximo'],
         sensacoes: [
           'Squeeze no topo',
@@ -3635,7 +3645,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-single-arm-row-step-3.png') },
+ imagem: { src: img('step-images/kb-single-arm-row-step-3.png'), alt: 'Squeeze no topo', caption: 'Squeeze no topo' } },
       { numero: 4, titulo: 'Excêntrico controlado', descricao: 'Desça o KB controladamente. Costas permanecem planas.', duracaoSeg: 14, cues: ['Excêntrico 2s', 'Costas planas', 'Trocar lado'],
         sensacoes: [
           'Excêntrico 2s',
@@ -3643,7 +3653,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-single-arm-row-step-4.png') },
+ imagem: { src: img('step-images/kb-single-arm-row-step-4.png'), alt: 'Excêntrico controlado', caption: 'Excêntrico controlado' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - Single-Arm Row', url: 'https://www.strongfirst.com/single-arm-row/', license: 'CC BY-SA' },
@@ -3683,7 +3693,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-pullover-step-1.png') },
+ imagem: { src: img('step-images/kb-pullover-step-1.png'), alt: 'Setup: deitado + KB overhead', caption: 'Setup: deitado + KB overhead' } },
       { numero: 2, titulo: 'Flexionar quadril', descricao: 'Flexione levemente o quadril (não muito). Costas superiores no banco. KB sobre a cabeça.', duracaoSeg: 12, cues: ['Hip leve flexão', 'Costas no banco', 'KB atrás'],
         sensacoes: [
           'Flexionar quadril (leve)',
@@ -3693,7 +3703,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se quadril levantar muito: pare',
         ],
- imagen: img('step-images/kb-pullover-step-2.png') },
+ imagem: { src: img('step-images/kb-pullover-step-2.png'), alt: 'Flexionar quadril', caption: 'Flexionar quadril' } },
       { numero: 3, titulo: 'Voltar ao overhead', descricao: 'Volte ao overhead estendendo o cotovelo. Peito contraindo.', duracaoSeg: 13, cues: ['Voltar overhead', 'Peito', 'Cotovelo estendido'],
         sensacoes: [
           'Voltar ao overhead',
@@ -3702,7 +3712,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-pullover-step-3.png') },
+ imagem: { src: img('step-images/kb-pullover-step-3.png'), alt: 'Voltar ao overhead', caption: 'Voltar ao overhead' } },
       { numero: 4, titulo: 'Manter core travado', descricao: 'Core permanece travado o tempo todo. NÃO levantar o quadril excessivamente.', duracaoSeg: 14, cues: ['Core travado', 'Não levantar', 'Reps'],
         sensacoes: [
           'Core travado',
@@ -3710,7 +3720,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-pullover-step-4.png') },
+ imagem: { src: img('step-images/kb-pullover-step-4.png'), alt: 'Manter core travado', caption: 'Manter core travado' } },
     ],
     fontesExternas: [
       { name: 'Wikipedia - Pullover', url: 'https://en.wikipedia.org/wiki/Pullover_(exercise)', license: 'CC BY-SA' },
@@ -3752,7 +3762,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-pull-up-step-1.png') },
+ imagem: { src: img('step-images/kb-pull-up-step-1.png'), alt: 'Setup: pendurado', caption: 'Setup: pendurado' } },
       { numero: 2, titulo: 'Puxar até o queixo', descricao: 'Puxe até o queixo passar da barra. LATS contraindo. Peito aberto.', duracaoSeg: 12, cues: ['Queixo passa', 'LATS', 'Peito aberto'],
         sensacoes: [
           'Puxar até o queixo',
@@ -3762,7 +3772,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se usar balanço: pare',
         ],
- imagen: img('step-images/kb-pull-up-step-2.png') },
+ imagem: { src: img('step-images/kb-pull-up-step-2.png'), alt: 'Puxar até o queixo', caption: 'Puxar até o queixo' } },
       { numero: 3, titulo: 'Chin-up: queixo no topo', descricao: 'Pausa 1s no topo. Cotovelos flexionados. KB permanece fixo nos pés.', duracaoSeg: 13, cues: ['Pausa 1s', 'Cotovelos flexos', 'KB fixo'],
         sensacoes: [
           'Queixo no topo',
@@ -3771,7 +3781,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-pull-up-step-3.png') },
+ imagem: { src: img('step-images/kb-pull-up-step-3.png'), alt: 'Chin-up: queixo no topo', caption: 'Chin-up: queixo no topo' } },
       { numero: 4, titulo: 'Excêntrico controlado', descricao: 'Desça controladamente (excêntrico 2-3s). Braços estendidos no final.', duracaoSeg: 14, cues: ['Excêntrico 2-3s', 'Braços estendidos', 'Reps'],
         sensacoes: [
           'Excêntrico 2-3s',
@@ -3779,7 +3789,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-pull-up-step-4.png') },
+ imagem: { src: img('step-images/kb-pull-up-step-4.png'), alt: 'Excêntrico controlado', caption: 'Excêntrico controlado' } },
     ],
     fontesExternas: [
       { name: 'Wikipedia - Pull-up', url: 'https://en.wikipedia.org/wiki/Pull-up_(exercise)', license: 'CC BY-SA' },
@@ -3817,7 +3827,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-muscle-up-step-1.png') },
+ imagem: { src: img('step-images/kb-muscle-up-step-1.png'), alt: 'Setup: pendurado', caption: 'Setup: pendurado' } },
       { numero: 2, titulo: 'Pull explosivo', descricao: 'Puxar EXPLOSIVAMENTE até o peito passar da barra. LATS + peito.', duracaoSeg: 12, cues: ['Puxar explosivo', 'LATS + peito', 'Pull forte'],
         sensacoes: [
           'Pull EXPLOSIVO',
@@ -3825,7 +3835,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-muscle-up-step-2.png') },
+ imagem: { src: img('step-images/kb-muscle-up-step-2.png'), alt: 'Pull explosivo', caption: 'Pull explosivo' } },
       { numero: 3, titulo: 'Transição (cotovelo sobre barra)', descricao: 'Girar os cotovelos sobre a barra. KB mantém o centro de gravidade no quadril.', duracaoSeg: 13, cues: ['Transição', 'Cotovelos sobre', 'KB no quadril'],
         sensacoes: [
           'Transição',
@@ -3833,14 +3843,14 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-muscle-up-step-3.png') },
+ imagem: { src: img('step-images/kb-muscle-up-step-3.png'), alt: 'Transição (cotovelo sobre barra)', caption: 'Transição (cotovelo sobre barra)' } },
       { numero: 4, titulo: 'Empurrar até lockout', descricao: 'Empurrar até braços estendidos. DIPS no topo. KB estabilizado pelo core.', duracaoSeg: 14, cues: ['Lockout', 'Empurrar', 'Pronto'],
         sensacoes: [
           'Empurrar até lockout',
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-muscle-up-step-4.png') },
+ imagem: { src: img('step-images/kb-muscle-up-step-4.png'), alt: 'Empurrar até lockout', caption: 'Empurrar até lockout' } },
     ],
     fontesExternas: [
       { name: 'Wikipedia - Muscle-up', url: 'https://en.wikipedia.org/wiki/Muscle-up', license: 'CC BY-SA' },
@@ -3880,7 +3890,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-inverted-row-step-1.png') },
+ imagem: { src: img('step-images/kb-inverted-row-step-1.png'), alt: 'Setup: deitado sob a barra', caption: 'Setup: deitado sob a barra' } },
       { numero: 2, titulo: 'Puxar peito até a barra', descricao: 'Puxe o peito até a barra. LATS contraindo. Cotovelos próximos.', duracaoSeg: 12, cues: ['Peito à barra', 'LATS', 'Cotovelos'],
         sensacoes: [
           'Puxar peito à barra',
@@ -3889,7 +3899,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se quadril afundar: core não travou',
         ],
- imagen: img('step-images/kb-inverted-row-step-2.png') },
+ imagem: { src: img('step-images/kb-inverted-row-step-2.png'), alt: 'Puxar peito até a barra', caption: 'Puxar peito até a barra' } },
       { numero: 3, titulo: 'Squeeze no topo', descricao: 'Pausa 1s no topo. Squeeze lats. Peito toca a barra.', duracaoSeg: 13, cues: ['Pausa 1s', 'Squeeze', 'Peito toca'],
         sensacoes: [
           'Squeeze 1s no topo',
@@ -3897,7 +3907,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-inverted-row-step-3.png') },
+ imagem: { src: img('step-images/kb-inverted-row-step-3.png'), alt: 'Squeeze no topo', caption: 'Squeeze no topo' } },
       { numero: 4, titulo: 'Excêntrico controlado', descricao: 'Desça controladamente (excêntrico 2-3s). Corpo permanece reto.', duracaoSeg: 14, cues: ['Excêntrico 2-3s', 'Corpo reto', 'Reps'],
         sensacoes: [
           'Excêntrico 2-3s',
@@ -3905,7 +3915,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-inverted-row-step-4.png') },
+ imagem: { src: img('step-images/kb-inverted-row-step-4.png'), alt: 'Excêntrico controlado', caption: 'Excêntrico controlado' } },
     ],
     fontesExternas: [
       { name: 'Wikipedia - Inverted Row', url: 'https://en.wikipedia.org/wiki/Inverted_row', license: 'CC BY-SA' },
@@ -3945,7 +3955,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-double-row-step-1.png') },
+ imagem: { src: img('step-images/kb-double-row-step-1.png'), alt: 'Hip hinge + 2 KBs', caption: 'Hip hinge + 2 KBs' } },
       { numero: 2, titulo: 'Puxar ambos', descricao: 'Puxe AMBOS KBs simultaneamente. Cotovelos próximos. LATS contraindo.', duracaoSeg: 12, cues: ['Puxar ambos', 'Cotovelos', 'LATS'],
         sensacoes: [
           'Puxar ambos',
@@ -3953,7 +3963,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-double-row-step-2.png') },
+ imagem: { src: img('step-images/kb-double-row-step-2.png'), alt: 'Puxar ambos', caption: 'Puxar ambos' } },
       { numero: 3, titulo: 'Squeeze no topo', descricao: 'Pausa 1s. Squeeze lats. KBs próximos às costelas.', duracaoSeg: 13, cues: ['Pausa 1s', 'Squeeze', 'KBs próximos'],
         sensacoes: [
           'Squeeze 1s',
@@ -3961,7 +3971,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-double-row-step-3.png') },
+ imagem: { src: img('step-images/kb-double-row-step-3.png'), alt: 'Squeeze no topo', caption: 'Squeeze no topo' } },
       { numero: 4, titulo: 'Excêntrico controlado', descricao: 'Desça controladamente. Costas permanecem planas.', duracaoSeg: 14, cues: ['Excêntrico 2-3s', 'Planado', 'Reps'],
         sensacoes: [
           'Excêntrico 2-3s',
@@ -3969,7 +3979,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-double-row-step-4.png') },
+ imagem: { src: img('step-images/kb-double-row-step-4.png'), alt: 'Excêntrico controlado', caption: 'Excêntrico controlado' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - Double Row', url: 'https://www.strongfirst.com/double-row/', license: 'CC BY-SA' },
@@ -4016,7 +4026,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-farmer-carry-step-1.png') },
+ imagem: { src: img('step-images/kb-farmer-carry-step-1.png'), alt: 'Clean 2 KBs', caption: 'Clean 2 KBs' } },
       { numero: 2, titulo: 'Pegada firme', descricao: 'Pegada firme. KBs encostados nas coxas. Ombros para trás (não protruir).', duracaoSeg: 12, cues: ['Pegada forte', 'KBs próximos', 'Ombros para trás'],
         sensacoes: [
           'KBs ENCOSTADOS nas coxas',
@@ -4025,7 +4035,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-farmer-carry-step-2.png') },
+ imagem: { src: img('step-images/kb-farmer-carry-step-2.png'), alt: 'Pegada firme', caption: 'Pegada firme' } },
       { numero: 3, titulo: 'Caminhar', descricao: 'Caminhe em linha reta. Passos estáveis. NÃO oscilar o tronco.', duracaoSeg: 13, cues: ['Linha reta', 'Sem oscilar', 'Passos firmes'],
         sensacoes: [
           'Caminhar em linha reta',
@@ -4035,7 +4045,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se os KBs balançarem: core fraco',
         ],
- imagen: img('step-images/kb-farmer-carry-step-3.png') },
+ imagem: { src: img('step-images/kb-farmer-carry-step-3.png'), alt: 'Caminhar', caption: 'Caminhar' } },
       { numero: 4, titulo: 'Distância programada', descricao: 'Caminhe 10-30m. Core permanece travado. KBs não balançam.', duracaoSeg: 14, cues: ['Distância', 'Core travado', 'KBs estáveis'],
         sensacoes: [
           'Distância programada',
@@ -4044,7 +4054,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-farmer-carry-step-4.png') },
+ imagem: { src: img('step-images/kb-farmer-carry-step-4.png'), alt: 'Distância programada', caption: 'Distância programada' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - Farmer Carry', url: 'https://www.strongfirst.com/farmer-carry/', license: 'CC BY-SA' },
@@ -4085,7 +4095,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-suitcase-carry-step-1.png') },
+ imagem: { src: img('step-images/kb-suitcase-carry-step-1.png'), alt: 'Clean 1 KB', caption: 'Clean 1 KB' } },
       { numero: 2, titulo: 'Brace 360° + Anti-rotação', descricao: 'Brace 360°. Oblíquo do lado do KB contraindo para evitar inclinação lateral do tronco.', duracaoSeg: 12, cues: ['Brace 360', 'Oblíquo ativo', 'Anti-rotação'],
         sensacoes: [
           'Brace 360°',
@@ -4093,7 +4103,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-suitcase-carry-step-2.png') },
+ imagem: { src: img('step-images/kb-suitcase-carry-step-2.png'), alt: 'Brace 360° + Anti-rotação', caption: 'Brace 360° + Anti-rotação' } },
       { numero: 3, titulo: 'Caminhar', descricao: 'Caminhe em linha reta. Tronco permanece VERTICAL (a carga unilateral tende a inclinar).', duracaoSeg: 13, cues: ['Linha reta', 'Tronco vertical', 'Sem inclinar'],
         sensacoes: [
           'Caminhar em linha reta',
@@ -4102,7 +4112,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se tronco inclinar: reduza carga',
         ],
- imagen: img('step-images/kb-suitcase-carry-step-3.png') },
+ imagem: { src: img('step-images/kb-suitcase-carry-step-3.png'), alt: 'Caminhar', caption: 'Caminhar' } },
       { numero: 4, titulo: 'Distância programada', descricao: 'Caminhe 10-30m. Core permanece travado. Troque de mão na próxima round.', duracaoSeg: 14, cues: ['Distância', 'Trocar mão', 'Reps'],
         sensacoes: [
           'Distância programada',
@@ -4110,7 +4120,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-suitcase-carry-step-4.png') },
+ imagem: { src: img('step-images/kb-suitcase-carry-step-4.png'), alt: 'Distância programada', caption: 'Distância programada' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - Suitcase Carry', url: 'https://www.strongfirst.com/suitcase-carry/', license: 'CC BY-SA' },
@@ -4149,7 +4159,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-overhead-carry-step-1.png') },
+ imagem: { src: img('step-images/kb-overhead-carry-step-1.png'), alt: 'Press 1 KB', caption: 'Press 1 KB' } },
       { numero: 2, titulo: 'Brace 360° + Anti-rotação', descricao: 'Brace 360°. KB sobre o ombro (não para frente nem para trás). Mão oposta pode segurar quadril.', duracaoSeg: 12, cues: ['Brace 360', 'KB sobre ombro', 'Estável'],
         sensacoes: [
           'Brace 360°',
@@ -4157,7 +4167,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-overhead-carry-step-2.png') },
+ imagem: { src: img('step-images/kb-overhead-carry-step-2.png'), alt: 'Brace 360° + Anti-rotação', caption: 'Brace 360° + Anti-rotação' } },
       { numero: 3, titulo: 'Caminhar', descricao: 'Caminhe em linha reta. KB NÃO oscila. Tronco não inclina lateralmente.', duracaoSeg: 13, cues: ['Linha reta', 'KB estável', 'Tronco vertical'],
         sensacoes: [
           'Caminhar',
@@ -4165,7 +4175,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-overhead-carry-step-3.png') },
+ imagem: { src: img('step-images/kb-overhead-carry-step-3.png'), alt: 'Caminhar', caption: 'Caminhar' } },
       { numero: 4, titulo: 'Distância programada', descricao: 'Caminhe 10-30m. KB permanece no lockout durante todo o trajeto.', duracaoSeg: 14, cues: ['Distância', 'Lockout mantido', 'Trocar mão'],
         sensacoes: [
           'Distância',
@@ -4173,7 +4183,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-overhead-carry-step-4.png') },
+ imagem: { src: img('step-images/kb-overhead-carry-step-4.png'), alt: 'Distância programada', caption: 'Distância programada' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - Overhead Carry', url: 'https://www.strongfirst.com/overhead-carry/', license: 'CC BY-SA' },
@@ -4212,7 +4222,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-bottoms-up-carry-step-1.png') },
+ imagem: { src: img('step-images/kb-bottoms-up-carry-step-1.png'), alt: 'Carry com KB invertido', caption: 'Carry com KB invertido' } },
       { numero: 2, titulo: 'Grip ativo', descricao: 'Grip é o limitante. NÃO usar strap.', duracaoSeg: 12, cues: ['Sem strap', 'Grip ativo', 'Tomba se falha'],
         sensacoes: [
           'Grip é o limitante',
@@ -4220,7 +4230,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-bottoms-up-carry-step-2.png') },
+ imagem: { src: img('step-images/kb-bottoms-up-carry-step-2.png'), alt: 'Grip ativo', caption: 'Grip ativo' } },
       { numero: 3, titulo: 'Caminhar devagar', descricao: 'Caminhe devagar. KB NÃO pode tombar.', duracaoSeg: 13, cues: ['Devagar', 'Não tombar', 'Controle'],
         sensacoes: [
           'Caminhe devagar',
@@ -4228,7 +4238,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-bottoms-up-carry-step-3.png') },
+ imagem: { src: img('step-images/kb-bottoms-up-carry-step-3.png'), alt: 'Caminhar devagar', caption: 'Caminhar devagar' } },
       { numero: 4, titulo: 'Distância curta', descricao: 'Distância 10-20m. Carga menor que carry normal (grip é limitante).', duracaoSeg: 14, cues: ['Distância menor', 'Carga leve', 'Grip primeiro'],
         sensacoes: [
           'Distância menor',
@@ -4236,7 +4246,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-bottoms-up-carry-step-4.png') },
+ imagem: { src: img('step-images/kb-bottoms-up-carry-step-4.png'), alt: 'Distância curta', caption: 'Distância curta' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - Bottoms-Up Carry', url: 'https://www.strongfirst.com/bottoms-up-carry/', license: 'CC BY-SA' },
@@ -4275,7 +4285,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-rack-carry-step-1.png') },
+ imagem: { src: img('step-images/kb-rack-carry-step-1.png'), alt: 'Clean 1 KB para rack', caption: 'Clean 1 KB para rack' } },
       { numero: 2, titulo: 'Brace 360°', descricao: 'Brace 360°. KB permanece no rack durante todo o trajeto.', duracaoSeg: 12, cues: ['Brace 360', 'KB no rack', 'Estável'],
         sensacoes: [
           'Brace 360°',
@@ -4283,7 +4293,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-rack-carry-step-2.png') },
+ imagem: { src: img('step-images/kb-rack-carry-step-2.png'), alt: 'Brace 360°', caption: 'Brace 360°' } },
       { numero: 3, titulo: 'Caminhar', descricao: 'Caminhe em linha reta. KB não oscila. Cotovelo não cai.', duracaoSeg: 13, cues: ['Linha reta', 'KB estável', 'Cotovelo alto'],
         sensacoes: [
           'Caminhar',
@@ -4291,7 +4301,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-rack-carry-step-3.png') },
+ imagem: { src: img('step-images/kb-rack-carry-step-3.png'), alt: 'Caminhar', caption: 'Caminhar' } },
       { numero: 4, titulo: 'Distância programada', descricao: 'Caminhe 10-30m. KB permanece no rack. Troque de lado.', duracaoSeg: 14, cues: ['Distância', 'Trocar lado', 'Reps'],
         sensacoes: [
           'Distância',
@@ -4299,7 +4309,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-rack-carry-step-4.png') },
+ imagem: { src: img('step-images/kb-rack-carry-step-4.png'), alt: 'Distância programada', caption: 'Distância programada' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - Rack Carry', url: 'https://www.strongfirst.com/rack-carry/', license: 'CC BY-SA' },
@@ -4339,7 +4349,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-cross-body-carry-step-1.png') },
+ imagem: { src: img('step-images/kb-cross-body-carry-step-1.png'), alt: 'Clean 1 KB', caption: 'Clean 1 KB' } },
       { numero: 2, titulo: 'Segurar o KB na diagonal', descricao: 'KB fica no diagonal do corpo, preso entre o peito e o cotovelo.', duracaoSeg: 12, cues: ['Diagonal', 'Peito + cotovelo', 'Firme'],
         sensacoes: [
           'Segurar KB na diagonal',
@@ -4347,7 +4357,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-cross-body-carry-step-2.png') },
+ imagem: { src: img('step-images/kb-cross-body-carry-step-2.png'), alt: 'Segurar o KB na diagonal', caption: 'Segurar o KB na diagonal' } },
       { numero: 3, titulo: 'Caminhar', descricao: 'Caminhe em linha reta. KB permanece na diagonal. Tronco não rotaciona.', duracaoSeg: 13, cues: ['Linha reta', 'Diagonal mantido', 'Sem rotação'],
         sensacoes: [
           'Caminhar',
@@ -4355,7 +4365,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-cross-body-carry-step-3.png') },
+ imagem: { src: img('step-images/kb-cross-body-carry-step-3.png'), alt: 'Caminhar', caption: 'Caminhar' } },
       { numero: 4, titulo: 'Distância programada', descricao: 'Caminhe 10-30m. Troque de lado.', duracaoSeg: 14, cues: ['Distância', 'Trocar lado', 'Reps'],
         sensacoes: [
           'Distância',
@@ -4363,7 +4373,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-cross-body-carry-step-4.png') },
+ imagem: { src: img('step-images/kb-cross-body-carry-step-4.png'), alt: 'Distância programada', caption: 'Distância programada' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - Cross-Body Carry', url: 'https://www.strongfirst.com/cross-body-carry/', license: 'CC BY-SA' },
@@ -4404,7 +4414,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-yoke-walk-step-1.png') },
+ imagem: { src: img('step-images/kb-yoke-walk-step-1.png'), alt: 'Subir no yoke', caption: 'Subir no yoke' } },
       { numero: 2, titulo: 'Pegada ou apoio', descricao: 'Apoiar nos ombros (mais comum) ou segurar com mãos. Core travado.', duracaoSeg: 12, cues: ['Apoio nos ombros', 'Core travado', 'Pronto'],
         sensacoes: [
           'Apoiar nos ombros',
@@ -4412,7 +4422,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-yoke-walk-step-2.png') },
+ imagem: { src: img('step-images/kb-yoke-walk-step-2.png'), alt: 'Pegada ou apoio', caption: 'Pegada ou apoio' } },
       { numero: 3, titulo: 'Caminhar', descricao: 'Caminhe em linha reta. Passos curtos e estáveis. NÃO oscilar.', duracaoSeg: 13, cues: ['Linha reta', 'Passos curtos', 'Estável'],
         sensacoes: [
           'Caminhar',
@@ -4421,7 +4431,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-yoke-walk-step-3.png') },
+ imagem: { src: img('step-images/kb-yoke-walk-step-3.png'), alt: 'Caminhar', caption: 'Caminhar' } },
       { numero: 4, titulo: 'Distância programada', descricao: 'Caminhe 10-30m. Peso do yoke DESAFIA postura.', duracaoSeg: 14, cues: ['Distância', 'Yoke pesado', 'Postura'],
         sensacoes: [
           'Distância',
@@ -4429,7 +4439,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-yoke-walk-step-4.png') },
+ imagem: { src: img('step-images/kb-yoke-walk-step-4.png'), alt: 'Distância programada', caption: 'Distância programada' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - Yoke Walk', url: 'https://www.strongfirst.com/yoke-walk/', license: 'CC BY-SA' },
@@ -4495,7 +4505,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se KB oscilar: comece com carga menor',
         ],
- imagen: img('step-images/kb-tgu-classic-step-1.png') },
+ imagem: { src: img('step-images/kb-tgu-classic-step-1.png'), alt: 'Deitado + Braço Estendido', caption: 'Deitado + Braço Estendido' } },
       { numero: 2, titulo: 'Roll to Elbow (Estágio 1-2)', descricao: 'Empurrar o chão com a perna reta e o cotovelo da perna dobrada — rolar para o lado até apoiar-se no antebraço (cotovelo do mesmo lado do KB). KB permanece vertical, olhar sempre no KB. Cuidado com arquear lombar — use o core para estabilizar.', duracaoSeg: 4, cues: ['Drive the elbow under', 'Pack the shoulder', 'Olho no KB'],
         sensacoes: [
           'Perna flexa faz SWEEP (calcanhar no chão)',
@@ -4506,7 +4516,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se KB descer: core não travou',
         ],
- imagen: img('step-images/kb-tgu-classic-step-2.png') },
+ imagem: { src: img('step-images/kb-tgu-classic-step-2.png'), alt: 'Roll to Elbow (Estágio 1-2)', caption: 'Roll to Elbow (Estágio 1-2)' } },
       { numero: 3, titulo: 'Sit Up to Hand (Estágio 3)', descricao: 'Empurrar o chão e subir para sentar, apoiando a mão livre no chão ao lado do quadril. Pernas agora formam uma posição "escada" (perna dobrada à frente, perna reta atrás). Quadril deve estar estendido (não sentar de novo).', duracaoSeg: 4, cues: ['Quadril estendido', 'Apoiar mão no chão', 'Pernas em escada'],
         sensacoes: [
           'Sweep 2ª perna (joelho no chão)',
@@ -4515,7 +4525,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-tgu-classic-step-3.png') },
+ imagem: { src: img('step-images/kb-tgu-classic-step-3.png'), alt: 'Sit Up to Hand (Estágio 3)', caption: 'Sit Up to Hand (Estágio 3)' } },
       { numero: 4, titulo: 'Hip Hinge (Estágio 4)', descricao: 'Dobrar o joelho de trás (o estendido) e trazer o pé para frente, ficando na posição ajoelhada (3 pontos: ambos joelhos, uma mão no chão). O braço com KB continua extended. Quadril empurrando para frente para "estender o quadril".', duracaoSeg: 4, cues: ['Joelho de trás vem frente', 'Quadril estendido', 'Postura ajoelhada'],
         sensacoes: [
           'PRESS UP + STAND',
@@ -4524,7 +4534,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-tgu-classic-step-4.png') },
+ imagem: { src: img('step-images/kb-tgu-classic-step-4.png'), alt: 'Hip Hinge (Estágio 4)', caption: 'Hip Hinge (Estágio 4)' } },
       { numero: 5, titulo: 'Kneeling Position (Estágio 5)', descricao: 'A partir da posição ajoelhada, erguer o quadril usando a perna da frente (MOST IMPORTANT MOMENT). O quadril deve estar em extensão completa. Olhar SEMPRE no KB. O tronco deve estar em posição vertical (prancha).', duracaoSeg: 6, cues: ['Drive the floor away', 'Quadril estendido', 'Joelho suspenso com quadril travado'],
         sensacoes: [
           'Desfazer TGU (reverso)',
@@ -4534,7 +4544,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-tgu-classic-step-5.png') },
+ imagem: { src: img('step-images/kb-tgu-classic-step-5.png'), alt: 'Kneeling Position (Estágio 5)', caption: 'Kneeling Position (Estágio 5)' } },
       { numero: 6, titulo: 'Standing Through (Estágio 6-7)', descricao: 'Pivot do pé de trás para colocar ambos os pés juntos (a frente). Levantar o corpo com a perna da frente. Finalizar em pé, KB overhead, corpo ereto. Olhar SEMPRE no KB durante todo o movimento. 80% do trabalho está em estabelecer boa posição nos primeiros estágios.', duracaoSeg: 4, cues: ['Pés paralelos', 'Subir sem inclinar', 'Standing final'] },
       { numero: 7, titulo: 'Reverse (Voltar)', descricao: 'Para completar, inverter EXATAMENTE a ordem dos estágios. O caminho de volta é igualmente importante para aprender. Estabilize-se em cada posição. NÃO pule etapas. Terminar deitado de costas com KB ainda vertical.', duracaoSeg: 30, cues: ['Mesma ordem', 'Devagar', 'Não pular'] },
     ],
@@ -4579,7 +4589,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-tgu-2kb-step-1.png') },
+ imagem: { src: img('step-images/kb-tgu-2kb-step-1.png'), alt: 'Setup com 2 KBs', caption: 'Setup com 2 KBs' } },
       { numero: 2, titulo: 'Sweep 1ª perna', descricao: 'Sweep de 1 perna para a posição de agachamento 0° (calcanhar no chão). Core travado.', duracaoSeg: 12, cues: ['Sweep', 'Calcanhar no chão', 'Core travado'],
         sensacoes: [
           'Sweep 1ª perna',
@@ -4588,7 +4598,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-tgu-2kb-step-2.png') },
+ imagem: { src: img('step-images/kb-tgu-2kb-step-2.png'), alt: 'Sweep 1ª perna', caption: 'Sweep 1ª perna' } },
       { numero: 3, titulo: 'Sweep 2ª perna', descricao: 'Sweep da 2ª perna para posição agachamento (calcanhar no chão). Agora está em meia-agachamento.', duracaoSeg: 13, cues: ['Sweep 2ª', 'Meia-agachamento', 'KBs estáveis'],
         sensacoes: [
           'Sweep 2ª perna',
@@ -4597,7 +4607,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-tgu-2kb-step-3.png') },
+ imagem: { src: img('step-images/kb-tgu-2kb-step-3.png'), alt: 'Sweep 2ª perna', caption: 'Sweep 2ª perna' } },
       { numero: 4, titulo: 'Stand-up', descricao: 'Levantar-se em pé. KBs permanecem no lockout (mais difícil que TGU 1KB).', duracaoSeg: 14, cues: ['Stand', 'Lockout', 'Reps'],
         sensacoes: [
           'Stand up',
@@ -4605,7 +4615,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-tgu-2kb-step-4.png') },
+ imagem: { src: img('step-images/kb-tgu-2kb-step-4.png'), alt: 'Stand-up', caption: 'Stand-up' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - Double TGU', url: 'https://www.strongfirst.com/double-tgu/', license: 'CC BY-SA' },
@@ -4647,7 +4657,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-half-get-up-step-1.png') },
+ imagem: { src: img('step-images/kb-half-get-up-step-1.png'), alt: 'Setup: deitado + KB no lockout', caption: 'Setup: deitado + KB no lockout' } },
       { numero: 2, titulo: 'Sweep 1 perna', descricao: 'Sweep da perna flexa para o lado (calcanhar no chão, joelho a 90°).', duracaoSeg: 12, cues: ['Sweep', 'Joelho a 90°', 'Calcanhar no chão'],
         sensacoes: [
           'Sweep perna flexa',
@@ -4656,7 +4666,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-half-get-up-step-2.png') },
+ imagem: { src: img('step-images/kb-half-get-up-step-2.png'), alt: 'Sweep 1 perna', caption: 'Sweep 1 perna' } },
       { numero: 3, titulo: 'Sweep 2ª perna', descricao: 'Sweep da 2ª perna para baixo (joelho no chão). Agora está na posição de "ponte".', duracaoSeg: 13, cues: ['Sweep 2ª', 'Ponte', 'Joelho no chão'],
         sensacoes: [
           'Sweep 2ª perna',
@@ -4665,7 +4675,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-half-get-up-step-3.png') },
+ imagem: { src: img('step-images/kb-half-get-up-step-3.png'), alt: 'Sweep 2ª perna', caption: 'Sweep 2ª perna' } },
       { numero: 4, titulo: 'Voltar à posição inicial', descricao: 'Desfazer o movimento na ordem inversa. KB permanece no lockout.', duracaoSeg: 14, cues: ['Inverter', 'Lockout mantido', 'Reps'],
         sensacoes: [
           'Voltar inverso',
@@ -4673,7 +4683,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-half-get-up-step-4.png') },
+ imagem: { src: img('step-images/kb-half-get-up-step-4.png'), alt: 'Voltar à posição inicial', caption: 'Voltar à posição inicial' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - Half Get-Up', url: 'https://www.strongfirst.com/half-get-up/', license: 'CC BY-SA' },
@@ -4712,14 +4722,14 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-tgu-floor-step-1.png') },
+ imagem: { src: img('step-images/kb-tgu-floor-step-1.png'), alt: 'Setup: deitado', caption: 'Setup: deitado' } },
       { numero: 2, titulo: 'Sweep 1 perna', descricao: 'Sweep para o lado (calcanhar no chão).', duracaoSeg: 12, cues: ['Sweep', 'Estável', 'Pronto'],
         sensacoes: [
           'Sweep 1 perna',
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-tgu-floor-step-2.png') },
+ imagem: { src: img('step-images/kb-tgu-floor-step-2.png'), alt: 'Sweep 1 perna', caption: 'Sweep 1 perna' } },
       { numero: 3, titulo: 'Sweep 2 perna', descricao: '2ª sweep para baixo (joelho no chão).', duracaoSeg: 13, cues: ['Ponte', 'Joelho no chão', 'Estável'],
         sensacoes: [
           'Sweep 2 perna',
@@ -4727,7 +4737,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-tgu-floor-step-3.png') },
+ imagem: { src: img('step-images/kb-tgu-floor-step-3.png'), alt: 'Sweep 2 perna', caption: 'Sweep 2 perna' } },
       { numero: 4, titulo: 'Press up + Voltar', descricao: 'Press up + levantar. Desfazer no caminho inverso. KB no lockout todo o tempo.', duracaoSeg: 14, cues: ['Press up', 'Levantar', 'Voltar'],
         sensacoes: [
           'Press up + stand',
@@ -4736,7 +4746,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-tgu-floor-step-4.png') },
+ imagem: { src: img('step-images/kb-tgu-floor-step-4.png'), alt: 'Press up + Voltar', caption: 'Press up + Voltar' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - TGU Floor', url: 'https://www.strongfirst.com/tgu-floor/', license: 'CC BY-SA' },
@@ -4775,7 +4785,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-tgu-to-ohs-step-1.png') },
+ imagem: { src: img('step-images/kb-tgu-to-ohs-step-1.png'), alt: 'Setup: deitado', caption: 'Setup: deitado' } },
       { numero: 2, titulo: 'TGU completo', descricao: 'TGU padrão até ficar em pé (pernas estendidas).', duracaoSeg: 12, cues: ['TGU', 'Em pé', 'Pronto'],
         sensacoes: [
           'TGU completo',
@@ -4783,7 +4793,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-tgu-to-ohs-step-2.png') },
+ imagem: { src: img('step-images/kb-tgu-to-ohs-step-2.png'), alt: 'TGU completo', caption: 'TGU completo' } },
       { numero: 3, titulo: 'Overhead Squat (1 rep)', descricao: 'Standing: faça 1 OHS (overhead squat) com KB no lockout. Profundidade máxima.', duracaoSeg: 13, cues: ['OHS', 'Profundidade', 'Lockout'],
         sensacoes: [
           'OHS (overhead squat)',
@@ -4791,7 +4801,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-tgu-to-ohs-step-3.png') },
+ imagem: { src: img('step-images/kb-tgu-to-ohs-step-3.png'), alt: 'Overhead Squat (1 rep)', caption: 'Overhead Squat (1 rep)' } },
       { numero: 4, titulo: 'Descer TGU reverso', descricao: 'Desça em TGU reverso (desfazendo os movimentos). KB no lockout todo o tempo.', duracaoSeg: 14, cues: ['TGU reverso', 'Lockout', 'Voltar chão'],
         sensacoes: [
           'TGU reverso',
@@ -4799,7 +4809,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-tgu-to-ohs-step-4.png') },
+ imagem: { src: img('step-images/kb-tgu-to-ohs-step-4.png'), alt: 'Descer TGU reverso', caption: 'Descer TGU reverso' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - TGU + OHS', url: 'https://www.strongfirst.com/tgu-to-ohs/', license: 'CC BY-SA' },
@@ -4840,7 +4850,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-windmill-step-1.png') },
+ imagem: { src: img('step-images/kb-windmill-step-1.png'), alt: 'Setup: KB no lockout', caption: 'Setup: KB no lockout' } },
       { numero: 2, titulo: 'Inclinar lateralmente', descricao: 'Comece a inclinar lateralmente, braço oposto "desliza" pela perna interna. Tronco desce.', duracaoSeg: 12, cues: ['Inclinar lateral', 'Braço desliza', 'Tronco desce'],
         sensacoes: [
           'Inclinar lateralmente',
@@ -4849,7 +4859,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-windmill-step-2.png') },
+ imagem: { src: img('step-images/kb-windmill-step-2.png'), alt: 'Inclinar lateralmente', caption: 'Inclinar lateralmente' } },
       { numero: 3, titulo: 'Tocar o pé', descricao: 'A mão oposta toca o pé (ou chega perto). KB permanece no lockout (braço vertical).', duracaoSeg: 13, cues: ['Tocar pé', 'KB lockout', 'Braço vertical'],
         sensacoes: [
           'Tocar o pé',
@@ -4857,7 +4867,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-windmill-step-3.png') },
+ imagem: { src: img('step-images/kb-windmill-step-3.png'), alt: 'Tocar o pé', caption: 'Tocar o pé' } },
       { numero: 4, titulo: 'Voltar à posição inicial', descricao: 'Contraia o oblíquo oposto para voltar à posição vertical. KB volta ao rack.', duracaoSeg: 14, cues: ['Voltar', 'Oblíquo oposto', 'Reps'],
         sensacoes: [
           'Voltar com oblíquo',
@@ -4866,7 +4876,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-windmill-step-4.png') },
+ imagem: { src: img('step-images/kb-windmill-step-4.png'), alt: 'Voltar à posição inicial', caption: 'Voltar à posição inicial' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - Windmill', url: 'https://www.strongfirst.com/windmill/', license: 'CC BY-SA' },
@@ -4907,7 +4917,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-halo-step-1.png') },
+ imagem: { src: img('step-images/kb-halo-step-1.png'), alt: 'Setup: KB bottom-up no peito', caption: 'Setup: KB bottom-up no peito' } },
       { numero: 2, titulo: 'Movimento circular', descricao: 'KB faz movimento circular ao redor da cabeça (como um halo). Começando pela frente da face, indo para o lado, atrás da cabeça, e voltando.', duracaoSeg: 12, cues: ['Circular', 'Ao redor da cabeça', 'Halo'],
         sensacoes: [
           'KB faz círculo ao redor da cabeça',
@@ -4916,7 +4926,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-halo-step-2.png') },
+ imagem: { src: img('step-images/kb-halo-step-2.png'), alt: 'Movimento circular', caption: 'Movimento circular' } },
       { numero: 3, titulo: 'Sentido reverso', descricao: 'Repita no sentido oposto. Cotovelos flexionados.', duracaoSeg: 13, cues: ['Sentido reverso', 'Cotovelos flexos', 'Controle'],
         sensacoes: [
           'Sentido reverso',
@@ -4924,7 +4934,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-halo-step-3.png') },
+ imagem: { src: img('step-images/kb-halo-step-3.png'), alt: 'Sentido reverso', caption: 'Sentido reverso' } },
       { numero: 4, titulo: 'Manter core travado', descricao: 'Core permanece travado o tempo todo. NÃO oscilar o tronco.', duracaoSeg: 14, cues: ['Core travado', 'Sem oscilar', 'Reps'],
         sensacoes: [
           'Reps',
@@ -4932,7 +4942,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-halo-step-4.png') },
+ imagem: { src: img('step-images/kb-halo-step-4.png'), alt: 'Manter core travado', caption: 'Manter core travado' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - Halo', url: 'https://www.strongfirst.com/halo/', license: 'CC BY-SA' },
@@ -4972,7 +4982,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-side-press-step-1.png') },
+ imagem: { src: img('step-images/kb-side-press-step-1.png'), alt: 'Setup: KB no rack', caption: 'Setup: KB no rack' } },
       { numero: 2, titulo: 'Inclinar lateralmente', descricao: 'Inclinar lateralmente para o lado OPOSTO ao KB. KB fica paralelo ao chão.', duracaoSeg: 12, cues: ['Inclinar oposto', 'KB paralelo', 'Pronto'],
         sensacoes: [
           'Inclinar para lado oposto',
@@ -4980,14 +4990,14 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-side-press-step-2.png') },
+ imagem: { src: img('step-images/kb-side-press-step-2.png'), alt: 'Inclinar lateralmente', caption: 'Inclinar lateralmente' } },
       { numero: 3, titulo: 'Press + Stand', descricao: 'Do KB paralelo, fazer press vertical E levantar-se em pé (movimento coordenado).', duracaoSeg: 13, cues: ['Press + Stand', 'Movimento único', 'Coordenação'],
         sensacoes: [
           'Press + stand (movimento único)',
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-side-press-step-3.png') },
+ imagem: { src: img('step-images/kb-side-press-step-3.png'), alt: 'Press + Stand', caption: 'Press + Stand' } },
       { numero: 4, titulo: 'Lockout + Voltar', descricao: 'Lockout overhead. Descer no caminho inverso. KB volta ao rack.', duracaoSeg: 14, cues: ['Lockout', 'Voltar rack', 'Trocar lado'],
         sensacoes: [
           'Lockout',
@@ -4995,7 +5005,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-side-press-step-4.png') },
+ imagem: { src: img('step-images/kb-side-press-step-4.png'), alt: 'Lockout + Voltar', caption: 'Lockout + Voltar' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - Side Press', url: 'https://www.strongfirst.com/side-press/', license: 'CC BY-SA' },
@@ -5034,16 +5044,14 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-jerk-step-1.png'),
-    steps: [
-      { numero: 1, titulo: 'Clean KB', descricao: 'Clean KB para o rack. Cotovelo próximo. Pés largura dos ombros.', duracaoSeg: 10, cues: ['Clean', 'Rack', 'Pronto'], imagen: img('step-images/kb-jerk-step-1.png') },
+        imagem: { src: img('step-images/kb-jerk-step-1.png'), alt: 'Clean 1 KB', caption: 'Clean 1 KB' } },
       { numero: 2, titulo: 'Dip + Drive', descricao: 'Pequeno dip com joelhos. EM SEGUIDA, drive explosivo com quadril + pernas.', duracaoSeg: 12, cues: ['Dip', 'Drive', 'Explosão'],
         sensacoes: [
           'Dip + drive explosivo',
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-jerk-step-2.png') },
+        imagem: { src: img('step-images/kb-jerk-step-2.png'), alt: 'Dip + Drive', caption: 'Dip + Drive' } },
       { numero: 3, titulo: 'Catch overhead', descricao: 'Catch do KB no lockout. Joelhos levemente flexos absorvem.', duracaoSeg: 13, cues: ['Lockout', 'Catch', 'Absorver'],
         sensacoes: [
           'Catch overhead',
@@ -5051,7 +5059,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-jerk-step-3.png') },
+        imagem: { src: img('step-images/kb-jerk-step-3.png'), alt: 'Catch overhead', caption: 'Catch overhead' } },
       { numero: 4, titulo: 'Stand + Recovery', descricao: 'Estender joelhos e quadril. Recovery.', duracaoSeg: 14, cues: ['Stand', 'Recovery', 'Reps'],
         sensacoes: [
           'Stand',
@@ -5059,12 +5067,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-jerk-step-4.png') },
-    ],
-    fontesExternas: [
-      { name: 'StrongFirst - Jerk', url: 'https://www.strongfirst.com/the-jerk/', license: 'CC BY-SA' },
-    ], titulo: 'Catch overhead (1 KB)', descricao: 'Catch do KB no lockout. Joelhos levemente flexos absorveram.', duracaoSeg: 13, cues: ['Lockout', 'Catch overhead', 'ABSORVER'], imagen: img('step-images/kb-jerk-step-3.png') },
-      { numero: 4, titulo: 'Stand + Recovery', descricao: 'Estenda joelhos e quadril. KB estável no lockout.', duracaoSeg: 14, cues: ['Stand', 'Recovery', 'Reps'], imagen: img('step-images/kb-jerk-step-4.png') },
+        imagem: { src: img('step-images/kb-jerk-step-4.png'), alt: 'Stand + Recovery', caption: 'Stand + Recovery' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - Jerk', url: 'https://www.strongfirst.com/the-jerk/', license: 'CC BY-SA' },
@@ -5103,7 +5106,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-long-cycle-step-1.png') },
+ imagem: { src: img('step-images/kb-long-cycle-step-1.png'), alt: 'Setup: KB no chão', caption: 'Setup: KB no chão' } },
       { numero: 2, titulo: 'Snatch direto (GS style)', descricao: 'Snatch direto do chão para overhead. Sem passar pelo rack. Sem clean intermediário.', duracaoSeg: 12, cues: ['Snatch direto', 'GS style', 'Sem rack'],
         sensacoes: [
           'Snatch DIRETO do chão',
@@ -5111,7 +5114,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-long-cycle-step-2.png') },
+ imagem: { src: img('step-images/kb-long-cycle-step-2.png'), alt: 'Snatch direto (GS style)', caption: 'Snatch direto (GS style)' } },
       { numero: 3, titulo: 'Catch no lockout', descricao: 'Catch no lockout overhead. Mão em posição fixa (hand insertion).', duracaoSeg: 13, cues: ['Lockout', 'Hand insertion', 'Pronto'],
         sensacoes: [
           'Catch overhead',
@@ -5119,7 +5122,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-long-cycle-step-3.png') },
+ imagem: { src: img('step-images/kb-long-cycle-step-3.png'), alt: 'Catch no lockout', caption: 'Catch no lockout' } },
       { numero: 4, titulo: 'Drop + repetir', descricao: 'Soltar KB para o chão e repetir. Sem tentar ser bonito.', duracaoSeg: 14, cues: ['Drop', 'Reps', '10min'],
         sensacoes: [
           'Drop',
@@ -5127,7 +5130,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-long-cycle-step-4.png') },
+ imagem: { src: img('step-images/kb-long-cycle-step-4.png'), alt: 'Drop + repetir', caption: 'Drop + repetir' } },
     ],
     fontesExternas: [
       { name: 'Wikipedia - Girevoy Sport', url: 'https://en.wikipedia.org/wiki/Girevoy_sport', license: 'CC BY-SA' },
@@ -5168,9 +5171,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-flow-sequence-step-1.png'),
-    steps: [
-      { numero: 1, titulo: 'Sequência: Swing → Clean → Press → Squat', descricao: '4 movimentos encadeados sem pausa.', duracaoSeg: 11, cues: ['4 movimentos', 'Sem pausa', 'Didático'], imagen: img('step-images/kb-flow-sequence-step-1.png') },
+        imagem: { src: img('step-images/kb-flow-sequence-step-1.png'), alt: 'Sequência: Swing → Clean → Press → Squat', caption: 'Sequência: Swing → Clean → Press → Squat' } },
       { numero: 2, titulo: 'Swing', descricao: 'Swing 2H. Lockout.', duracaoSeg: 12, cues: ['Swing', 'Lockout', 'Pronto'],
         sensacoes: [
           'Swing',
@@ -5178,7 +5179,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-flow-sequence-step-2.png') },
+        imagem: { src: img('step-images/kb-flow-sequence-step-2.png'), alt: 'Swing', caption: 'Swing' } },
       { numero: 3, titulo: 'Clean', descricao: 'Sem pausa, clean para o rack. Cotovelo próximo.', duracaoSeg: 13, cues: ['Clean', 'Cotovelo próximo', 'Sem pausa'],
         sensacoes: [
           'Clean (sem pausa)',
@@ -5186,7 +5187,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-flow-sequence-step-3.png') },
+        imagem: { src: img('step-images/kb-flow-sequence-step-3.png'), alt: 'Clean', caption: 'Clean' } },
       { numero: 4, titulo: 'Press + Squat', descricao: 'Press do rack para overhead. Squat (mantém KB no rack). Voltar.', duracaoSeg: 14, cues: ['Press + Squat', 'Encadeado', 'Repetir'],
         sensacoes: [
           'Press + squat',
@@ -5194,12 +5195,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-flow-sequence-step-4.png') },
-    ],
-    fontesExternas: [
-      { name: 'StrongFirst - Flow Sequences', url: 'https://www.strongfirst.com/flow-sequences/', license: 'CC BY-SA' },
-    ], titulo: 'Clean', descricao: 'Sem pausa, clean para o rack. Cotovelo próximo.', duracaoSeg: 13, cues: ['Clean', 'Cotovelo próximo', 'Sem pausa'], imagen: img('step-images/kb-flow-sequence-step-3.png') },
-      { numero: 4, titulo: 'Press + Squat', descricao: 'Press do rack para overhead. Squat (mantém KB no rack). Voltar.', duracaoSeg: 14, cues: ['Press + Squat', 'Encadeado', 'Repetir'], imagen: img('step-images/kb-flow-sequence-step-4.png') },
+        imagem: { src: img('step-images/kb-flow-sequence-step-4.png'), alt: 'Press + Squat', caption: 'Press + Squat' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - Flow Sequences', url: 'https://www.strongfirst.com/flow-sequences/', license: 'CC BY-SA' },
@@ -5240,9 +5236,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-arm-bar-step-1.png'),
-    steps: [
-      { numero: 1, titulo: 'Setup: KB no topo', descricao: 'Deitado no chão. KB no lockout overhead com 1 braço. Perna oposta flexa.', duracaoSeg: 10, cues: ['Deitado', 'KB overhead', '1 braço'], imagen: img('step-images/kb-arm-bar-step-1.png') },
+        imagem: { src: img('step-images/kb-arm-bar-step-1.png'), alt: 'Setup: KB no topo', caption: 'Setup: KB no topo' } },
       { numero: 2, titulo: 'Puxar KB para o peito', descricao: 'Puxe o KB de volta para o peito usando LATS. Cotovelo desce para o chão.', duracaoSeg: 12, cues: ['Puxar peito', 'LATS', 'Cotovelo desce'],
         sensacoes: [
           'Puxar KB para o peito',
@@ -5251,7 +5245,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-arm-bar-step-2.png') },
+        imagem: { src: img('step-images/kb-arm-bar-step-2.png'), alt: 'Puxar KB para o peito', caption: 'Puxar KB para o peito' } },
       { numero: 3, titulo: 'Press de volta ao topo', descricao: 'Press de volta ao lockout. KB sobre o ombro. Mova só o braço.', duracaoSeg: 13, cues: ['Press', 'Lockout', 'Tronco fixo'],
         sensacoes: [
           'Press de volta',
@@ -5260,7 +5254,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-arm-bar-step-3.png') },
+        imagem: { src: img('step-images/kb-arm-bar-step-3.png'), alt: 'Press de volta ao topo', caption: 'Press de volta ao topo' } },
       { numero: 4, titulo: 'Repetir', descricao: 'Continue repetindo. KB permanece fixo no plano vertical.', duracaoSeg: 14, cues: ['Reps', 'Sem desviar', 'Pronto'],
         sensacoes: [
           'Repetir',
@@ -5268,12 +5262,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-arm-bar-step-4.png') },
-    ],
-    fontesExternas: [
-      { name: 'StrongFirst - Arm Bar', url: 'https://www.strongfirst.com/the-arm-bar/', license: 'CC BY-SA' },
-    ], titulo: 'Press de volta ao topo', descricao: 'Press de volta ao lockout. KB sobre o ombro. Mova só o braço, não o tronco.', duracaoSeg: 13, cues: ['Press', 'Lockout', 'Tronco fixo'], imagen: img('step-images/kb-arm-bar-step-3.png') },
-      { numero: 4, titulo: 'Repetir', descricao: 'Continue repetindo. KB permanece fixo no plano vertical (não desvia lateral).', duracaoSeg: 14, cues: ['Reps', 'Sem desviar', 'Pronto'], imagen: img('step-images/kb-arm-bar-step-4.png') },
+        imagem: { src: img('step-images/kb-arm-bar-step-4.png'), alt: 'Repetir', caption: 'Repetir' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - Arm Bar', url: 'https://www.strongfirst.com/the-arm-bar/', license: 'CC BY-SA' },
@@ -5314,7 +5303,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-hip-halo-step-1.png') },
+ imagem: { src: img('step-images/kb-hip-halo-step-1.png'), alt: 'Setup: KB invertido entre as pernas', caption: 'Setup: KB invertido entre as pernas' } },
       { numero: 2, titulo: 'Movimento circular no quadril', descricao: 'KB faz movimento circular ao redor do quadril (estilo halo mas no quadril). Sentido: perna direita → frente → esquerda → trás → direita.', duracaoSeg: 12, cues: ['Circular no quadril', 'Sentido: D→F→E→T', 'Devagar'],
         sensacoes: [
           'Movimento circular no quadril',
@@ -5323,7 +5312,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-hip-halo-step-2.png') },
+ imagem: { src: img('step-images/kb-hip-halo-step-2.png'), alt: 'Movimento circular no quadril', caption: 'Movimento circular no quadril' } },
       { numero: 3, titulo: 'Sentido reverso', descricao: 'Inverta o sentido. Repita o número programado de reps.', duracaoSeg: 13, cues: ['Sentido reverso', 'Reps', 'Controle'],
         sensacoes: [
           'Sentido reverso',
@@ -5331,7 +5320,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-hip-halo-step-3.png') },
+ imagem: { src: img('step-images/kb-hip-halo-step-3.png'), alt: 'Sentido reverso', caption: 'Sentido reverso' } },
       { numero: 4, titulo: 'Manter core travado', descricao: 'Core permanece travado. Tronco levemente inclinado para frente (não totalmente ereto).', duracaoSeg: 14, cues: ['Core travado', 'Inclinação leve', 'Sem oscilar'],
         sensacoes: [
           'Tronco levemente inclinado',
@@ -5339,7 +5328,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-hip-halo-step-4.png') },
+ imagem: { src: img('step-images/kb-hip-halo-step-4.png'), alt: 'Manter core travado', caption: 'Manter core travado' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - Hip Halo', url: 'https://www.strongfirst.com/hip-halo/', license: 'CC BY-SA' },
@@ -5382,21 +5371,21 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-burpee-step-1.png') },
+ imagem: { src: img('step-images/kb-burpee-step-1.png'), alt: 'Setup: em pé', caption: 'Setup: em pé' } },
       { numero: 2, titulo: 'Agachar + mãos no chão', descricao: 'Agache e coloque as mãos no chão (ao lado dos KBs).', duracaoSeg: 12, cues: ['Agachar', 'Mãos no chão', 'KBs ao lado'],
         sensacoes: [
           'Agachar + mãos no chão',
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-burpee-step-2.png') },
+ imagem: { src: img('step-images/kb-burpee-step-2.png'), alt: 'Agachar + mãos no chão', caption: 'Agachar + mãos no chão' } },
       { numero: 3, titulo: 'Pular para prancha', descricao: 'Pule para trás para a posição de prancha.', duracaoSeg: 13, cues: ['Prancha', 'Pernas estendidas', 'Pronto'],
         sensacoes: [
           'Pular para prancha',
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-burpee-step-3.png') },
+ imagem: { src: img('step-images/kb-burpee-step-3.png'), alt: 'Pular para prancha', caption: 'Pular para prancha' } },
       { numero: 4, titulo: 'Push-up + Jump forward', descricao: 'Faça 1 push-up. Pule de volta para perto das mãos. Pule para cima em pé.', duracaoSeg: 14, cues: ['Push-up', 'Voltar', 'Pular em pé'],
         sensacoes: [
           'Push-up + pular para cima',
@@ -5404,7 +5393,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-burpee-step-4.png') },
+ imagem: { src: img('step-images/kb-burpee-step-4.png'), alt: 'Push-up + Jump forward', caption: 'Push-up + Jump forward' } },
     ],
     fontesExternas: [
       { name: 'Wikipedia - Burpee', url: 'https://en.wikipedia.org/wiki/Burpee_(exercise)', license: 'CC BY-SA' },
@@ -5444,7 +5433,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-man-maker-step-1.png') },
+ imagem: { src: img('step-images/kb-man-maker-step-1.png'), alt: 'Push-up com KBs', caption: 'Push-up com KBs' } },
       { numero: 2, titulo: 'Renegade row (1 lado)', descricao: 'Puxe 1 KB para a costela (renegade row).', duracaoSeg: 12, cues: ['Puxar 1 KB', 'Costas estáveis', 'Reps'],
         sensacoes: [
           'Puxar 1 KB (renegade)',
@@ -5452,14 +5441,14 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-man-maker-step-2.png') },
+ imagem: { src: img('step-images/kb-man-maker-step-2.png'), alt: 'Renegade row (1 lado)', caption: 'Renegade row (1 lado)' } },
       { numero: 3, titulo: 'Trocar + puxar 2 KB', descricao: 'Troque: puxe o outro KB.', duracaoSeg: 13, cues: ['Trocar', 'Puxar 2 KB', 'Pronto'],
         sensacoes: [
           'Puxar 2 KB',
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-man-maker-step-3.png') },
+ imagem: { src: img('step-images/kb-man-maker-step-3.png'), alt: 'Trocar + puxar 2 KB', caption: 'Trocar + puxar 2 KB' } },
       { numero: 4, titulo: 'Clean 2 KBs + Stand', descricao: 'Clean de ambos KBs. Fique em pé. KBs no rack.', duracaoSeg: 14, cues: ['Clean', 'Stand', 'Pronto'],
         sensacoes: [
           'Clean + stand',
@@ -5467,7 +5456,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-man-maker-step-4.png') },
+ imagem: { src: img('step-images/kb-man-maker-step-4.png'), alt: 'Clean 2 KBs + Stand', caption: 'Clean 2 KBs + Stand' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - Man Maker', url: 'https://www.strongfirst.com/man-maker/', license: 'CC BY-SA' },
@@ -5507,7 +5496,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-around-body-pass-step-1.png') },
+ imagem: { src: img('step-images/kb-around-body-pass-step-1.png'), alt: 'Setup: KB em 1 mão', caption: 'Setup: KB em 1 mão' } },
       { numero: 2, titulo: 'Passar pela frente', descricao: 'Passe o KB pela frente do corpo (mão oposta pega).', duracaoSeg: 12, cues: ['Pela frente', 'Mão oposta', 'Estável'],
         sensacoes: [
           'Passar pela frente',
@@ -5515,7 +5504,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-around-body-pass-step-2.png') },
+ imagem: { src: img('step-images/kb-around-body-pass-step-2.png'), alt: 'Passar pela frente', caption: 'Passar pela frente' } },
       { numero: 3, titulo: 'Passar por trás', descricao: 'Passe o KB por trás do corpo (mesma mão pega).', duracaoSeg: 13, cues: ['Por trás', 'Mesma mão', 'Devagar'],
         sensacoes: [
           'Passar por trás',
@@ -5523,7 +5512,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-around-body-pass-step-3.png') },
+ imagem: { src: img('step-images/kb-around-body-pass-step-3.png'), alt: 'Passar por trás', caption: 'Passar por trás' } },
       { numero: 4, titulo: 'Sentido inverso', descricao: 'Inverta o sentido. Repita o número programado.', duracaoSeg: 14, cues: ['Inverso', 'Reps', 'Core travado'],
         sensacoes: [
           'Sentido inverso',
@@ -5531,7 +5520,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-around-body-pass-step-4.png') },
+ imagem: { src: img('step-images/kb-around-body-pass-step-4.png'), alt: 'Sentido inverso', caption: 'Sentido inverso' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - Around the Body', url: 'https://www.strongfirst.com/around-the-body/', license: 'CC BY-SA' },
@@ -5571,7 +5560,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-figure-8-step-1.png') },
+ imagem: { src: img('step-images/kb-figure-8-step-1.png'), alt: 'Setup: KB em 1 mão', caption: 'Setup: KB em 1 mão' } },
       { numero: 2, titulo: 'Movimento 8 (entre as pernas)', descricao: 'KB passa entre as pernas em movimento de "8". Mão oposta recebe e continua.', duracaoSeg: 12, cues: ['Movimento 8', 'Entre as pernas', 'Mão oposta'],
         sensacoes: [
           'Movimento "8" entre pernas',
@@ -5579,7 +5568,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-figure-8-step-2.png') },
+ imagem: { src: img('step-images/kb-figure-8-step-2.png'), alt: 'Movimento 8 (entre as pernas)', caption: 'Movimento 8 (entre as pernas)' } },
       { numero: 3, titulo: 'Continuar sem parar', descricao: 'Continue alternando. KB faz o número 8 continuamente.', duracaoSeg: 13, cues: ['Sem parar', '8 contínuo', 'Respiração'],
         sensacoes: [
           'Continuar sem parar',
@@ -5587,7 +5576,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-figure-8-step-3.png') },
+ imagem: { src: img('step-images/kb-figure-8-step-3.png'), alt: 'Continuar sem parar', caption: 'Continuar sem parar' } },
       { numero: 4, titulo: 'Sentido reverso', descricao: 'Inverta o sentido. KB faz o 8 no sentido oposto.', duracaoSeg: 14, cues: ['Sentido reverso', 'Reps', 'Equilíbrio'],
         sensacoes: [
           'Sentido reverso',
@@ -5595,7 +5584,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-figure-8-step-4.png') },
+ imagem: { src: img('step-images/kb-figure-8-step-4.png'), alt: 'Sentido reverso', caption: 'Sentido reverso' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - Figure 8', url: 'https://www.strongfirst.com/figure-8/', license: 'CC BY-SA' },
@@ -5635,7 +5624,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-glute-bridge-step-1.png') },
+ imagem: { src: img('step-images/kb-glute-bridge-step-1.png'), alt: 'Setup: deitado + KB no quadril', caption: 'Setup: deitado + KB no quadril' } },
       { numero: 2, titulo: 'Empurrar quadril para cima', descricao: 'Empurre o quadril para cima contraindo glúteos. KB mantém resistência.', duracaoSeg: 12, cues: ['Empurrar quadril', 'Glúteos', 'Contra'],
         sensacoes: [
           'Empurrar quadril para cima',
@@ -5643,7 +5632,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-glute-bridge-step-2.png') },
+ imagem: { src: img('step-images/kb-glute-bridge-step-2.png'), alt: 'Empurrar quadril para cima', caption: 'Empurrar quadril para cima' } },
       { numero: 3, titulo: 'Squeeze no topo', descricao: 'Pause 1-2s no topo. Glúteos MAXIMAMENTE contraídos.', duracaoSeg: 13, cues: ['Squeeze 1-2s', 'Glúteos', 'Topo'],
         sensacoes: [
           'Squeeze 1-2s no topo',
@@ -5653,7 +5642,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se lombar hiperextender: amplitude menor',
         ],
- imagen: img('step-images/kb-glute-bridge-step-3.png') },
+ imagem: { src: img('step-images/kb-glute-bridge-step-3.png'), alt: 'Squeeze no topo', caption: 'Squeeze no topo' } },
       { numero: 4, titulo: 'Excêntrico controlado', descricao: 'Desça controladamente. NÃO deixe o quadril cair de uma vez.', duracaoSeg: 14, cues: ['Excêntrico 2-3s', 'Controle', 'Reps'],
         sensacoes: [
           'Excêntrico controlado',
@@ -5661,7 +5650,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-glute-bridge-step-4.png') },
+ imagem: { src: img('step-images/kb-glute-bridge-step-4.png'), alt: 'Excêntrico controlado', caption: 'Excêntrico controlado' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - Glute Bridge', url: 'https://www.strongfirst.com/glute-bridge/', license: 'CC BY-SA' },
@@ -5700,7 +5689,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-good-morning-step-1.png') },
+ imagem: { src: img('step-images/kb-good-morning-step-1.png'), alt: 'Setup: KB no rack', caption: 'Setup: KB no rack' } },
       { numero: 2, titulo: 'Hip hinge', descricao: 'Hip hinge (dobrar no quadril). Costas permanecem retas. KB no rack.', duracaoSeg: 12, cues: ['Hip hinge', 'Costas retas', 'KB no rack'],
         sensacoes: [
           'Hip hinge',
@@ -5709,7 +5698,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-good-morning-step-2.png') },
+ imagem: { src: img('step-images/kb-good-morning-step-2.png'), alt: 'Hip hinge', caption: 'Hip hinge' } },
       { numero: 3, titulo: 'Descer até paralelo', descricao: 'Continue descendo até o tronco estar paralelo ao chão. KB no rack.', duracaoSeg: 13, cues: ['Paralelo', 'Costas retas', 'Pronto'],
         sensacoes: [
           'Tronco paralelo',
@@ -5717,7 +5706,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-good-morning-step-3.png') },
+ imagem: { src: img('step-images/kb-good-morning-step-3.png'), alt: 'Descer até paralelo', caption: 'Descer até paralelo' } },
       { numero: 4, titulo: 'Voltar à posição inicial', descricao: 'Contraia glúteos e isquiotibiais para voltar à posição em pé.', duracaoSeg: 14, cues: ['Glúteos', 'Voltar em pé', 'Reps'],
         sensacoes: [
           'Glúteo + isquiotibial contraem',
@@ -5725,7 +5714,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-good-morning-step-4.png') },
+ imagem: { src: img('step-images/kb-good-morning-step-4.png'), alt: 'Voltar à posição inicial', caption: 'Voltar à posição inicial' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - Good Morning', url: 'https://www.strongfirst.com/good-morning/', license: 'CC BY-SA' },
@@ -5766,7 +5755,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-single-leg-rdl-step-1.png') },
+ imagem: { src: img('step-images/kb-single-leg-rdl-step-1.png'), alt: 'Setup: 1 perna', caption: 'Setup: 1 perna' } },
       { numero: 2, titulo: 'Hip hinge + perna livre estende', descricao: 'Hip hinge para frente. Perna oposta estende-se para trás (como "bandeira").', duracaoSeg: 12, cues: ['Hip hinge', 'Perna estende', 'Costas retas'],
         sensacoes: [
           'Hip hinge',
@@ -5775,7 +5764,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-single-leg-rdl-step-2.png') },
+ imagem: { src: img('step-images/kb-single-leg-rdl-step-2.png'), alt: 'Hip hinge + perna livre estende', caption: 'Hip hinge + perna livre estende' } },
       { numero: 3, titulo: 'Descer até paralelo', descricao: 'Continue até o tronco estar paralelo ao chão. KB desce próximo à perna de apoio.', duracaoSeg: 13, cues: ['Paralelo', 'Costas retas', 'Equilíbrio'],
         sensacoes: [
           'Tronco paralelo',
@@ -5784,7 +5773,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-single-leg-rdl-step-3.png') },
+ imagem: { src: img('step-images/kb-single-leg-rdl-step-3.png'), alt: 'Descer até paralelo', caption: 'Descer até paralelo' } },
       { numero: 4, titulo: 'Voltar à posição em pé', descricao: 'Empurre com a perna de apoio para voltar. Tronco e perna livre sobem juntos.', duracaoSeg: 14, cues: ['Voltar', 'Hip drive', 'Reps'],
         sensacoes: [
           'Empurrar com perna de apoio',
@@ -5793,7 +5782,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-single-leg-rdl-step-4.png') },
+ imagem: { src: img('step-images/kb-single-leg-rdl-step-4.png'), alt: 'Voltar à posição em pé', caption: 'Voltar à posição em pé' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - Single-Leg RDL', url: 'https://www.strongfirst.com/single-leg-rdl/', license: 'CC BY-SA' },
@@ -5834,7 +5823,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-shrimp-squat-step-1.png') },
+ imagem: { src: img('step-images/kb-shrimp-squat-step-1.png'), alt: 'Setup: 1 perna à frente', caption: 'Setup: 1 perna à frente' } },
       { numero: 2, titulo: 'Descer profundo', descricao: 'Desça flexionando a perna da frente. Joelhos a ~90°. Tronco ereto.', duracaoSeg: 12, cues: ['Profundidade', 'Tronco ereto', 'Equilíbrio'],
         sensacoes: [
           'Desça flexionando perna da frente',
@@ -5843,7 +5832,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-shrimp-squat-step-2.png') },
+ imagem: { src: img('step-images/kb-shrimp-squat-step-2.png'), alt: 'Descer profundo', caption: 'Descer profundo' } },
       { numero: 3, titulo: 'Empurrar de volta', descricao: 'Empurre com a perna da frente de volta à posição em pé. Perna de trás fica parada.', duracaoSeg: 13, cues: ['Empurrar', 'Voltar', 'Reps'],
         sensacoes: [
           'Empurrar de volta',
@@ -5851,14 +5840,14 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-shrimp-squat-step-3.png') },
+ imagem: { src: img('step-images/kb-shrimp-squat-step-3.png'), alt: 'Empurrar de volta', caption: 'Empurrar de volta' } },
       { numero: 4, titulo: 'Reps antes de trocar', descricao: 'Complete reps antes de trocar de lado.', duracaoSeg: 14, cues: ['Reps', 'Trocar depois', 'Respiração'],
         sensacoes: [
           'Reps antes de trocar',
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-shrimp-squat-step-4.png') },
+ imagem: { src: img('step-images/kb-shrimp-squat-step-4.png'), alt: 'Reps antes de trocar', caption: 'Reps antes de trocar' } },
     ],
     fontesExternas: [
       { name: 'Wikipedia - Shrimp Squat', url: 'https://en.wikipedia.org/wiki/Shrimp_squat', license: 'CC BY-SA' },
@@ -5899,7 +5888,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-jumping-squat-step-1.png') },
+ imagem: { src: img('step-images/kb-jumping-squat-step-1.png'), alt: 'Setup: em pé com KBs', caption: 'Setup: em pé com KBs' } },
       { numero: 2, titulo: 'Agachar parcialmente', descricao: 'Agache parcialmente (~45°). Joelhos alinhados. Core travado.', duracaoSeg: 12, cues: ['Agachar', '45°', 'Core travado'],
         sensacoes: [
           'Agachar parcialmente (45°)',
@@ -5907,7 +5896,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-jumping-squat-step-2.png') },
+ imagem: { src: img('step-images/kb-jumping-squat-step-2.png'), alt: 'Agachar parcialmente', caption: 'Agachar parcialmente' } },
       { numero: 3, titulo: 'Pulo + extensão', descricao: 'Pule explosivo. Pés saem do chão. KBs estáveis (se no rack).', duracaoSeg: 13, cues: ['Pulo explosivo', 'Extensão', 'KBs estáveis'],
         sensacoes: [
           'Pulo EXPLOSIVO',
@@ -5916,7 +5905,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-jumping-squat-step-3.png') },
+ imagem: { src: img('step-images/kb-jumping-squat-step-3.png'), alt: 'Pulo + extensão', caption: 'Pulo + extensão' } },
       { numero: 4, titulo: 'Aterrissagem suave', descricao: 'Aterre suavemente. Joelhos flexos para absorver. KBs estáveis.', duracaoSeg: 14, cues: ['Aterrissagem suave', 'Absorver', 'Reps'],
         sensacoes: [
           'Aterrissagem suave',
@@ -5925,7 +5914,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se dor no joelho: pare',
         ],
- imagen: img('step-images/kb-jumping-squat-step-4.png') },
+ imagem: { src: img('step-images/kb-jumping-squat-step-4.png'), alt: 'Aterrissagem suave', caption: 'Aterrissagem suave' } },
     ],
     fontesExternas: [
       { name: 'Wikipedia - Jump Squat', url: 'https://en.wikipedia.org/wiki/Squat#Jump_squat', license: 'CC BY-SA' },
@@ -5965,14 +5954,14 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-viking-push-press-step-1.png') },
+ imagem: { src: img('step-images/kb-viking-push-press-step-1.png'), alt: 'Setup: KB em cada mão, ao lado do corpo', caption: 'Setup: KB em cada mão, ao lado do corpo' } },
       { numero: 2, titulo: 'KBs à altura do ombro (Viking)', descricao: 'Trazer os KBs para o ombro passando por baixo das pernas (Viking-style).', duracaoSeg: 12, cues: ['Viking motion', 'Por baixo', 'Pronto'],
         sensacoes: [
           'KBs ao ombro (passando por baixo das pernas)',
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-viking-push-press-step-2.png') },
+ imagem: { src: img('step-images/kb-viking-push-press-step-2.png'), alt: 'KBs à altura do ombro (Viking)', caption: 'KBs à altura do ombro (Viking)' } },
       { numero: 3, titulo: 'Push Press', descricao: 'Pequeno dip + drive + press. KBs vão ao lockout.', duracaoSeg: 13, cues: ['Push Press', 'Lockout', 'Pronto'],
         sensacoes: [
           'Push press',
@@ -5980,7 +5969,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-viking-push-press-step-3.png') },
+ imagem: { src: img('step-images/kb-viking-push-press-step-3.png'), alt: 'Push Press', caption: 'Push Press' } },
       { numero: 4, titulo: 'Stand + Recovery', descricao: 'KBs estáveis no lockout. Recovery antes da próxima rep.', duracaoSeg: 14, cues: ['Stand', 'Recovery', 'Reps'],
         sensacoes: [
           'Stand',
@@ -5988,7 +5977,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-viking-push-press-step-4.png') },
+ imagem: { src: img('step-images/kb-viking-push-press-step-4.png'), alt: 'Stand + Recovery', caption: 'Stand + Recovery' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - Viking Push Press', url: 'https://www.strongfirst.com/viking-push-press/', license: 'CC BY-SA' },
@@ -6027,7 +6016,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-cuban-press-step-1.png') },
+ imagem: { src: img('step-images/kb-cuban-press-step-1.png'), alt: 'Setup: KB no rack com 2 mãos', caption: 'Setup: KB no rack com 2 mãos' } },
       { numero: 2, titulo: 'Rotação externa', descricao: 'KB sobe em rotação externa (cotovelos a 90°, antebraços paralelos ao chão).', duracaoSeg: 12, cues: ['Rotação externa', 'Cotovelos 90°', 'Antebraços paralelos'],
         sensacoes: [
           'Rotação externa',
@@ -6036,14 +6025,14 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-cuban-press-step-2.png') },
+ imagem: { src: img('step-images/kb-cuban-press-step-2.png'), alt: 'Rotação externa', caption: 'Rotação externa' } },
       { numero: 3, titulo: 'Press overhead', descricao: 'Continue subindo: KB vai ao overhead.', duracaoSeg: 13, cues: ['Press overhead', 'Lockout', 'Pronto'],
         sensacoes: [
           'Press overhead',
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-cuban-press-step-3.png') },
+ imagem: { src: img('step-images/kb-cuban-press-step-3.png'), alt: 'Press overhead', caption: 'Press overhead' } },
       { numero: 4, titulo: 'Voltar inverso', descricao: 'Desça: press → rotação externa → rack. Movimento controlado.', duracaoSeg: 14, cues: ['Inverter', 'Controlado', 'Reps'],
         sensacoes: [
           'Voltar inverso',
@@ -6051,7 +6040,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-cuban-press-step-4.png') },
+ imagem: { src: img('step-images/kb-cuban-press-step-4.png'), alt: 'Voltar inverso', caption: 'Voltar inverso' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - Cuban Press', url: 'https://www.strongfirst.com/cuban-press/', license: 'CC BY-SA' },
@@ -6090,7 +6079,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-around-the-world-step-1.png') },
+ imagem: { src: img('step-images/kb-around-the-world-step-1.png'), alt: 'Setup: KB overhead (2 mãos)', caption: 'Setup: KB overhead (2 mãos)' } },
       { numero: 2, titulo: 'Inclinar lateralmente', descricao: 'Inclinar lateralmente para 1 lado (ombro direito desce, esquerdo sobe).', duracaoSeg: 12, cues: ['Inclinar D', 'Direito desce', 'Pronto'],
         sensacoes: [
           'Inclinar lateral',
@@ -6098,14 +6087,14 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-around-the-world-step-2.png') },
+ imagem: { src: img('step-images/kb-around-the-world-step-2.png'), alt: 'Inclinar lateralmente', caption: 'Inclinar lateralmente' } },
       { numero: 3, titulo: 'Voltar + inclinar outro lado', descricao: 'Voltar ao centro. Inclinar para o outro lado (ombro esquerdo desce).', duracaoSeg: 13, cues: ['Voltar centro', 'Inclinar E', 'Pronto'],
         sensacoes: [
           'Voltar + outro lado',
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-around-the-world-step-3.png') },
+ imagem: { src: img('step-images/kb-around-the-world-step-3.png'), alt: 'Voltar + inclinar outro lado', caption: 'Voltar + inclinar outro lado' } },
       { numero: 4, titulo: 'Repetir', descricao: 'Continue alternando. Movimento deve ser CONTROLADO, não baloiço.', duracaoSeg: 14, cues: ['Controlado', 'Alternar', 'Reps'],
         sensacoes: [
           'Alternar',
@@ -6113,7 +6102,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-around-the-world-step-4.png') },
+ imagem: { src: img('step-images/kb-around-the-world-step-4.png'), alt: 'Repetir', caption: 'Repetir' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - Around the World', url: 'https://www.strongfirst.com/around-the-world/', license: 'CC BY-SA' },
@@ -6153,7 +6142,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-side-plank-kb-step-1.png') },
+ imagem: { src: img('step-images/kb-side-plank-kb-step-1.png'), alt: 'Setup: side plank + KB no chão', caption: 'Setup: side plank + KB no chão' } },
       { numero: 2, titulo: 'Puxar KB para a costela', descricao: 'Puxar o KB para a costela. Oblíquo trabalhando.', duracaoSeg: 12, cues: ['Puxar KB', 'Costas estáveis', 'Oblíquo'],
         sensacoes: [
           'Puxar KB para costela',
@@ -6161,7 +6150,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-side-plank-kb-step-2.png') },
+ imagem: { src: img('step-images/kb-side-plank-kb-step-2.png'), alt: 'Puxar KB para a costela', caption: 'Puxar KB para a costela' } },
       { numero: 3, titulo: 'Descer KB', descricao: 'Descer o KB controladamente. Manter side plank.', duracaoSeg: 13, cues: ['Excêntrico', 'Side plank mantido', 'Pronto'],
         sensacoes: [
           'Descer KB',
@@ -6170,14 +6159,14 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
           'Se quadril cair: pare',
         ],
- imagen: img('step-images/kb-side-plank-kb-step-3.png') },
+ imagem: { src: img('step-images/kb-side-plank-kb-step-3.png'), alt: 'Descer KB', caption: 'Descer KB' } },
       { numero: 4, titulo: 'Reps antes de trocar', descricao: 'Complete reps antes de trocar de lado.', duracaoSeg: 14, cues: ['Reps', 'Trocar lado', 'Respiração'],
         sensacoes: [
           'Reps antes de trocar',
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-side-plank-kb-step-4.png') },
+ imagem: { src: img('step-images/kb-side-plank-kb-step-4.png'), alt: 'Reps antes de trocar', caption: 'Reps antes de trocar' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - Side Plank Row', url: 'https://www.strongfirst.com/side-plank-row/', license: 'CC BY-SA' },
@@ -6218,7 +6207,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-see-saw-press-step-1.png') },
+ imagem: { src: img('step-images/kb-see-saw-press-step-1.png'), alt: 'Setup: KBs no rack (2 KBs)', caption: 'Setup: KBs no rack (2 KBs)' } },
       { numero: 2, titulo: 'Bracing + Anti-rotação', descricao: 'Brace 360°. Oblíquos contraindo (carga é unilateral no aspecto do timing).', duracaoSeg: 12, cues: ['Brace 360', 'Oblíquos', 'Pronto'],
         sensacoes: [
           'Brace 360°',
@@ -6226,14 +6215,14 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-see-saw-press-step-2.png') },
+ imagem: { src: img('step-images/kb-see-saw-press-step-2.png'), alt: 'Bracing + Anti-rotação', caption: 'Bracing + Anti-rotação' } },
       { numero: 3, titulo: 'Press alternado (1 KB sobe, outro desce)', descricao: 'KB 1 sobe (press), KB 2 desce. Puxar o KB de baixo para o rack enquanto o KB de cima vai para o lockout.', duracaoSeg: 13, cues: ['Press + Pull', 'Movimento contínuo', 'Sem parar'],
         sensacoes: [
           'Press + Pull (movimento contínuo)',
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-see-saw-press-step-3.png') },
+ imagem: { src: img('step-images/kb-see-saw-press-step-3.png'), alt: 'Press alternado (1 KB sobe, outro desce)', caption: 'Press alternado (1 KB sobe, outro desce)' } },
       { numero: 4, titulo: 'Continuar alternando', descricao: 'Continue alternando. Movimento de "serra" (see-saw).', duracaoSeg: 14, cues: ['See-saw', 'Reps', 'Core travado'],
         sensacoes: [
           'Continuar alternando',
@@ -6241,7 +6230,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-see-saw-press-step-4.png') },
+ imagem: { src: img('step-images/kb-see-saw-press-step-4.png'), alt: 'Continuar alternando', caption: 'Continuar alternando' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - See-Saw Press', url: 'https://www.strongfirst.com/see-saw-press/', license: 'CC BY-SA' },
@@ -6280,21 +6269,21 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-around-the-body-step-1.png') },
+ imagem: { src: img('step-images/kb-around-the-body-step-1.png'), alt: 'Setup: 2 KBs', caption: 'Setup: 2 KBs' } },
       { numero: 2, titulo: 'Passar pela frente', descricao: 'KBs passam pela frente do corpo em direções opostas (X-cross).', duracaoSeg: 12, cues: ['X-cross', 'Pela frente', 'Braços estendidos'],
         sensacoes: [
           'X-cross pela frente',
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-around-the-body-step-2.png') },
+ imagem: { src: img('step-images/kb-around-the-body-step-2.png'), alt: 'Passar pela frente', caption: 'Passar pela frente' } },
       { numero: 3, titulo: 'Passar por trás', descricao: 'KBs passam por trás do corpo em direções opostas (X-cross atrás).', duracaoSeg: 13, cues: ['X-cross atrás', 'Por trás', 'Equilíbrio'],
         sensacoes: [
           'X-cross atrás',
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-around-the-body-step-3.png') },
+ imagem: { src: img('step-images/kb-around-the-body-step-3.png'), alt: 'Passar por trás', caption: 'Passar por trás' } },
       { numero: 4, titulo: 'Sentido inverso', descricao: 'Inverta o sentido. KBs fazem o X em ambos os lados.', duracaoSeg: 14, cues: ['Inverso', 'Reps', 'Coordenação'],
         sensacoes: [
           'Inverso',
@@ -6302,7 +6291,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-around-the-body-step-4.png') },
+ imagem: { src: img('step-images/kb-around-the-body-step-4.png'), alt: 'Sentido inverso', caption: 'Sentido inverso' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - Around the Body 2KB', url: 'https://www.strongfirst.com/around-the-body-2kb/', license: 'CC BY-SA' },
@@ -6342,7 +6331,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-deep-six-step-1.png') },
+ imagem: { src: img('step-images/kb-deep-six-step-1.png'), alt: 'Setup: KB halo', caption: 'Setup: KB halo' } },
       { numero: 2, titulo: 'Halo + Squat', descricao: 'Halo do KB (cabeça) + agachar (squat). Movimento sincronizado.', duracaoSeg: 12, cues: ['Halo+Squat', 'Sincronizado', 'Mobilidade'],
         sensacoes: [
           'Halo + squat',
@@ -6350,7 +6339,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-deep-six-step-2.png') },
+ imagem: { src: img('step-images/kb-deep-six-step-2.png'), alt: 'Halo + Squat', caption: 'Halo + Squat' } },
       { numero: 3, titulo: 'Continuar', descricao: 'Continue alternando halo e squat. Respiração ritmada.', duracaoSeg: 13, cues: ['Continuar', 'Respiração', 'Core'],
         sensacoes: [
           'Continuar',
@@ -6358,7 +6347,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-deep-six-step-3.png') },
+ imagem: { src: img('step-images/kb-deep-six-step-3.png'), alt: 'Continuar', caption: 'Continuar' } },
       { numero: 4, titulo: 'Reps', descricao: 'Reps conforme programado. Movimento contínuo.', duracaoSeg: 14, cues: ['Reps', 'Contínuo', 'Core travado'],
         sensacoes: [
           'Reps',
@@ -6366,7 +6355,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         alertasMusculares: [
         ],
- imagen: img('step-images/kb-deep-six-step-4.png') },
+ imagem: { src: img('step-images/kb-deep-six-step-4.png'), alt: 'Reps', caption: 'Reps' } },
     ],
     fontesExternas: [
       { name: 'StrongFirst - Deep Six', url: 'https://www.strongfirst.com/deep-six/', license: 'CC BY-SA' },

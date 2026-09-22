@@ -128,7 +128,7 @@ export default function MuscleTracker() {
           {/* HEATMAP MUSCULAR */}
           <Card>
             <CardContent className="p-4">
-              <MuscleHeatmap sessoes={sessoes} dias={84} />
+              <MuscleHeatmap sessoes={(sessoes || []).map((s) => ({ data: s.data, exercicios: s.exercicios || [] }))} dias={84} />
             </CardContent>
           </Card>
 

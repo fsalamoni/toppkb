@@ -58,13 +58,13 @@ export function ChatPage() {
       // SPRINT 40: Enriquece o system prompt com cues musculares se houver exercícios KB mencionados
       const coachCtx = buildCoachContext({
         message: text,
-        agente: agentePreferido || 'general',
+        agente: agentePreferido === 'auto' ? 'general' : (agentePreferido || 'general'),
       });
 
       const response = await sendMessage({
         message: text,
         conversaId: conversaIdAtual || undefined,
-        agente: agentePreferido,
+        agente: agentePreferido === 'auto' ? undefined : agentePreferido,
         contextoExtra: coachCtx.enrichedCount > 0 ? coachCtx.contextBlock : undefined,
       });
       // Adiciona resposta
