@@ -158,6 +158,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     errors: ['Forçar tensão no topo (gasta ATP)', 'Backswing muito curto', 'Respirar errado (apneia)'],
     alerta50mais: 'Use como zone 2 cardio (60-70% HR max). 5 min on / 1 min off × 5 rounds é excelente base.',
     evidencia: 'Maeda 2022: KB snatch e swing têm gasto metabólico similar ao correr 8 km/h, sem impacto articular.',
+    imageUrl: img('01-swing-bottom.jpg'),
     videoUrl: vid('01-swing.mp4'),
   },
   {
@@ -237,6 +238,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     contraIndicacoes: ['Lesão no punho', 'Lesão no ombro', 'Hérnia discal lombar aguda'],
     alerta50mais: 'Importante para séries longas. Use carga submáxima (8-12kg homens, 6-8kg mulheres). Não ser pressa — clean técnico serve como base para snatch depois.',
     evidencia: 'Contraplantal supplementation. O clean ativa 100% do core durante a fase de encaixe (EMG studies).',
+    imageUrl: img('12-clean-rack.jpg'),
     videoUrl: vid('05-clean.mp4'),
     galleryImages: [
       { src: img('12-clean-rack.jpg'), alt: 'Clean - KB no rack position (ombro), cotovelo próximo ao corpo', caption: '1. Lockout (rack): KB apoiado no antebraço, cotovelo junto ao tronco, bíceps perto da costela', source: 'local+strongfirst-clean' },
@@ -268,6 +270,8 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     dicas: ['Aprender antes do clean balístico', 'Focar no encaixe do cotovelo'],
     cues: ['2 tempos', 'Sem pressa', 'Encaixar cotovelo'],
     errors: ['Pular etapa (fazer clean direto sem dominar o dead clean)'],
+    imageUrl: img('12-clean-rack.jpg'),
+    videoUrl: vid('05-clean.mp4'),
     alerta50mais: 'Ótimo exercício pra começar. Idosos aprendem rápido.',
   },
   {
@@ -287,6 +291,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     alerta50mais: 'Excelente para densidade mineral óssea (Watson LIFTMOR 2018: +2.9% DMO lombar em 8 meses).',
     evidencia: 'Watson LIFTMOR 2018: high-intensity resistance training com deadlift, squat, overhead press → +2.9% BMD lombar em 8 meses (PMID 28929619).',
     referencias: ['PMID:28929619'],
+    imageUrl: img('33-deadlift-kb.jpg'),
     videoUrl: vid('16-deadlift.mp4'),
   },
   {
@@ -303,6 +308,8 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     dicas: ['Mãos no quadril como dobradiça', 'Projete o quadril para trás', 'Sinta alongamento no posterior'],
     cues: ['Hips back', 'Dobradiça no quadril', 'Joelhos levemente flexos'],
     errors: ['Flexionar joelhos demais (vira squat)', 'Arredondar lombar'],
+    imageUrl: img('33-deadlift-kb.jpg'),
+    videoUrl: vid('16-deadlift.mp4'),
     alerta50mais: 'Excelente mobilidade para aquecimento diário.',
   },
   {
@@ -319,6 +326,8 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     dicas: ['Mantém cadência constante', 'Não acelerar trocas', 'Bracing constante'],
     cues: ['Cadência', 'Anti-rotação', 'Bracing'],
     errors: ['Perder cadência', 'Tropeçar no KB'],
+    imageUrl: img('01-swing-bottom.jpg'),
+    videoUrl: vid('01-swing.mp4'),
     alerta50mais: 'Menos carga que 1H puro — comece 30% abaixo.',
   },
   {
@@ -335,6 +344,8 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     dicas: ['Pausa ativa (não relaxar)', 'Glúteos contraídos', 'Respirar na pausa'],
     cues: ['Hold!', 'Pause', 'Active lockout'],
     errors: ['Pausa passiva (relaxar)', 'Perder posição neutra'],
+    imageUrl: img('01-swing-bottom.jpg'),
+    videoUrl: vid('01-swing.mp4'),
     alerta50mais: 'Use carga leve pra focar no controle.',
   },
   {
@@ -351,6 +362,8 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     dicas: ['Squeeze no handle (imagine espremer limão)', 'Punho neutro', 'Carga 50% menor que swing normal'],
     cues: ['Bottoms up!', 'Squeeze handle', 'Punho forte'],
     errors: ['KB tomba (sinal de grip insuficiente)', 'Carga alta demais'],
+    imageUrl: img('12-clean-rack.jpg'),
+    videoUrl: vid('12-bottoms-up.mp4'),
     alerta50mais: 'Excelente para reabilitação de ombro e prevenção de lesão.',
   },
   {
@@ -368,6 +381,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     cues: ['Brace 360', 'Encaixar', 'Pressão intra-abdominal'],
     errors: ['Cotovelos abrem', 'Lombar arquear'],
     alerta50mais: 'Indicador de "está pronto pra mais carga". Cuidado com lombar.',
+    imageUrl: img('43-hip-hinge.jpg'),
     videoUrl: vid('41-double-kb-clean.mp4'),
   },
   {
@@ -385,6 +399,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     cues: ['Sync lockout', 'Breathe', 'Hip drive'],
     errors: ['Assimetria (uma mão mais alta)', 'Arquear lombar'],
     alerta50mais: 'Use carga submáxima (60-70% do snatch 1H).',
+    imageUrl: img('09-snatch-lockout.jpg'),
     videoUrl: vid('44-double-kb-snatch.mp4'),
   },
   {
@@ -401,6 +416,8 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     dicas: ['Troca de mão no backswing do snatch', 'Respirar entre componentes', 'Volume baixo (5-10 ciclos)'],
     cues: ['Sem largar', 'Respiração ritmada', 'Cadência'],
     errors: ['Soltar o KB entre trocas', 'Pressa demais'],
+    imageUrl: img('01-swing-bottom.jpg'),
+    videoUrl: vid('08-swing-snatch.mp4'),
     alerta50mais: 'Excelente para densidade mineral óssea e VO2max simultaneamente.',
   },
   {
@@ -418,7 +435,8 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     cues: ['Fluido', 'Sem parar', 'Respiração nasal'],
     errors: ['Carga alta demais', 'Parar entre exercícios'],
     alerta50mais: 'Excelente para hipertrofia em master athletes.',
-    videoUrl: vid('71-armor-building.mp4'),
+    imageUrl: img('12-clean-rack.jpg'),
+    videoUrl: vid('41-double-kb-clean.mp4'),
   },
   {
     id: 'kb-the-giant-pavel',
@@ -435,7 +453,8 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     cues: ['Foco técnico', 'GIANT cadence'],
     errors: ['Soltar antes de completar o ciclo'],
     alerta50mais: 'Base do programa "The Quick and the Dead".',
-    videoUrl: vid('72-the-giant.mp4'),
+    imageUrl: img('13-push-press.jpg'),
+    videoUrl: vid('42-double-kb-press.mp4'),
   },
   {
     id: 'kb-half-snatch',
@@ -452,7 +471,8 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     cues: ['Punch through', 'Float'],
     errors: ['Confundir com press'],
     alerta50mais: 'Use para volume alto.',
-    videoUrl: vid('77-half-snatch.mp4'),
+    imageUrl: img('77-half-snatch.jpg'),
+    videoUrl: vid('04-snatch.mp4'),
   },
 
   // ====================== SQUAT (16) ======================
@@ -517,6 +537,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     cues: ['Cotovelos altos', 'Torácica up', 'Senta'],
     errors: ['Cotovelos caem (perde rack)', 'Tombar pra frente'],
     alerta50mais: 'Cuidado se tiver mobilidade limitada de ombro.',
+    imageUrl: img('16-front-squat.jpg'),
     videoUrl: vid('43-double-kb-front-squat.mp4'),
   },
   {
@@ -534,6 +555,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     cues: ['Counterweight', 'Perna esticada', 'Slow down'],
     errors: ['Calcanhar sai do chão', 'Joelho colapsa'],
     alerta50mais: 'Use TRX ou porta como assistência.',
+    imageUrl: img('17-pistol-squat.jpg'),
     videoUrl: vid('18-pistol-squat.mp4'),
   },
   {
@@ -551,6 +573,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     cues: ['Cotovelos altos', 'Press up', 'Peito ereto'],
     errors: ['Cotovelos caem no fundo', 'Não atingir paralelo'],
     alerta50mais: 'Pré-requisito: agachamento profundo confortável.',
+    imageUrl: img('46-sots-press.jpg'),
     videoUrl: vid('57-sots-press.mp4'),
   },
   {
@@ -568,6 +591,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     cues: ['Joelho no pé', 'Descer até coxa paralela'],
     errors: ['Pé de trás muito perto (vira agachamento normal)', 'Joelho colapsa'],
     alerta50mais: 'Excelente para assimetrias e estabilidade.',
+    imageUrl: img('35-bulgarian-split-squat.jpg'),
     videoUrl: vid('39-bulgarian-split-squat.mp4'),
   },
   {
@@ -585,6 +609,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     cues: ['Senta pra trás', 'Perna esticada', 'Amplitude máxima'],
     errors: ['Não atinge amplitude (calcanhar sobe)'],
     alerta50mais: 'Ótimo para mobilidade. 5 cada lado = aquecimento completo.',
+    imageUrl: img('45-cossack-squat.jpg'),
     videoUrl: vid('61-cossack-squat.mp4'),
   },
   {
@@ -602,7 +627,8 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     cues: ['Descer reta', 'Joelho no pé', 'Tronco ereto'],
     errors: ['Joelho colapsa', 'Tronco tomba pra frente'],
     alerta50mais: 'Excelente para funcionalidade.',
-    videoUrl: vid('49-forward-lunge.mp4'),
+    imageUrl: img('49-forward-lunge.jpg'),
+    videoUrl: vid('19-reverse-lunge.mp4'),
   },
   {
     id: 'kb-walking-lunge',
@@ -618,7 +644,8 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     dicas: ['Cadência constante', 'Passos não muito longos'],
     cues: ['Caminha', 'Descer', 'Passos médios'],
     errors: ['Pressa, perder cadência'],
-    videoUrl: vid('50-walking-lunge.mp4'),
+    imageUrl: img('50-walking-lunge.jpg'),
+    videoUrl: vid('19-reverse-lunge.mp4'),
   },
   {
     id: 'kb-reverse-lunge',
@@ -635,7 +662,8 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     cues: ['Pra trás', 'Descer', 'Joelho no chão'],
     errors: ['Tronco cai pra frente'],
     alerta50mais: '**PREMIUM para 50+** — preferido sobre forward lunge por proteger joelho.',
-    videoUrl: vid('53-reverse-lunge.mp4'),
+    imageUrl: img('53-reverse-lunge.jpg'),
+    videoUrl: vid('19-reverse-lunge.mp4'),
   },
   {
     id: 'kb-curtsy-lunge',
@@ -651,7 +679,8 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     dicas: ['Pé de trás cruza atrás', 'Foco em glúteo médio'],
     cues: ['Cross back', 'Glúteo médio'],
     errors: ['Joelho colapsa'],
-    videoUrl: vid('51-curtsy-lunge.mp4'),
+    imageUrl: img('51-curtsy-lunge.jpg'),
+    videoUrl: vid('19-reverse-lunge.mp4'),
   },
   {
     id: 'kb-lateral-lunge',
@@ -667,7 +696,8 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     dicas: ['Perna de apoio fletida', 'Pera esticada com calcanhar no chão'],
     cues: ['Lateral', 'Amplitude', 'Calcanhar no chão'],
     errors: ['Amplitude limitada sem trabalho'],
-    videoUrl: vid('52-lateral-lunge.mp4'),
+    imageUrl: img('52-lateral-lunge.jpg'),
+    videoUrl: vid('19-reverse-lunge.mp4'),
   },
   {
     id: 'kb-step-up',
@@ -683,7 +713,8 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     dicas: ['Altura do step: joelho a 90°', 'Empurrar pelo calcanhar'],
     cues: ['Step up', 'Heel drive', 'Tronco ereto'],
     errors: ['Step muito alto (encurta amplitude)'],
-    videoUrl: vid('54-step-up.mp4'),
+    imageUrl: img('54-step-up.jpg'),
+    videoUrl: vid('64-step-up.mp4'),
   },
   {
     id: 'kb-reverse-step-up',
@@ -699,7 +730,8 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     dicas: ['Puxar com posterior', 'Manter quadril alinhado'],
     cues: ['Hip drive', 'Glúteos'],
     errors: ['Empurrar com quadríceps (vira step-up normal)'],
-    videoUrl: vid('55-reverse-step-up.mp4'),
+    imageUrl: img('55-reverse-step-up.jpg'),
+    videoUrl: vid('64-step-up.mp4'),
   },
   {
     id: 'kb-jumping-lunge',
@@ -715,6 +747,8 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     dicas: ['Aterrissagem suave', 'Tropeçar na transição é comum'],
     cues: ['Switch', 'Soft landing'],
     errors: ['Aterrissagem dura (risco de joelho)'],
+    imageUrl: img('49-forward-lunge.jpg'),
+    videoUrl: vid('19-reverse-lunge.mp4'),
     alerta50mais: 'Não recomendado — usar reverse lunge.',
   },
   {
@@ -731,6 +765,9 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     dicas: ['Aterrissagem suave', 'Step down, não jump down'],
     cues: ['Jump', 'Stick'],
     errors: ['Saltar pra baixo (risco de lesão)'],
+    imageUrl: img('57-box-jump.jpg'),
+    imageUrl: img('17-pistol-squat.jpg'),
+    videoUrl: vid('63-jumping-squat.mp4'),
     alerta50mais: 'Opcional — step-up é mais seguro para 50+.',
   },
   {
@@ -747,6 +784,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     dicas: ['Bracing 360°', 'Respiração no fundo'],
     cues: ['Heavy load', 'Brace', 'Drive up'],
     errors: ['Cotovelos caem'],
+    imageUrl: img('56-jumping-lunge.jpg'),
     videoUrl: vid('43-double-kb-front-squat.mp4'),
   },
 
@@ -766,6 +804,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     cues: ['Tight glutes', 'Stack', 'Vertical press'],
     errors: ['Arquear lombar', 'Inclinar tronco', 'Empurrar pra frente'],
     alerta50mais: 'Excelente para densidade mineral óssea.',
+    imageUrl: img('04-strict-press.jpg'),
     videoUrl: vid('06-press.mp4'),
     imageUrl: img('04-strict-press.jpg'),
   },
@@ -783,6 +822,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     dicas: ['Dip leve (10cm)', 'Drive explosivo de pernas', 'Lockout rápido'],
     cues: ['Dip, drive, press', 'Lockout rápido'],
     errors: ['Dip muito profundo', 'Não terminar lockout'],
+    imageUrl: img('13-push-press.jpg'),
     videoUrl: vid('13-push-press.mp4'),
   },
   {
@@ -800,6 +840,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     cues: ['45° elbows', 'Lockout'],
     errors: ['Cotovelos abertos 90°'],
     alerta50mais: 'Seguro para 50+ (lombar protegida).',
+    imageUrl: img('14-floor-press.jpg'),
     videoUrl: vid('14-floor-press.mp4'),
   },
   {
@@ -816,6 +857,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     dicas: ['Mão livre no chão', 'Rotação controlada'],
     cues: ['Hip escape', 'Press'],
     errors: ['Tentar com carga alta demais (risco lombar)'],
+    imageUrl: img('36-bent-press.jpg'),
     videoUrl: vid('49b-bent-press.mp4'),
   },
   {
@@ -833,6 +875,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     cues: ['Bottoms up', 'Squeeze', 'No tumble'],
     errors: ['Carga alta demais (KB tomba)'],
     alerta50mais: 'Reabilitação de ombro + prevenção.',
+    imageUrl: img('21-bottoms-up-press.jpg'),
     videoUrl: vid('21b-bottoms-up-press.mp4'),
   },
   {
@@ -849,6 +892,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     dicas: ['Braço esticado', 'Não inclinar tronco', 'Caminhar lento'],
     cues: ['Tray up', 'Walk'],
     errors: ['Inclinar para o lado oposto (compensação)'],
+    imageUrl: img('36-waiter-walk.jpg'),
     videoUrl: vid('40-waiter-walk.mp4'),
   },
   {
@@ -865,6 +909,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     dicas: ['Bracing contralateral', 'Não rotacionar tronco'],
     cues: ['Brace', 'Press', 'Anti-tilt'],
     errors: ['Tilt lateral'],
+    imageUrl: img('47-single-arm-press.jpg'),
     videoUrl: vid('06-press.mp4'),
   },
   {
@@ -881,6 +926,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     dicas: ['Re-dip curto', 'Lockout estável'],
     cues: ['Jerk', 'Lockout', 'Re-dip'],
     errors: ['Re-dip muito profundo'],
+    imageUrl: img('13-push-press.jpg'),
     videoUrl: vid('42-double-kb-press.mp4'),
   },
   {
@@ -897,7 +943,8 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     dicas: ['Sincronizar braços', 'Drive único'],
     cues: ['Sync', 'Drive', 'Press'],
     errors: ['Assimetria'],
-    videoUrl: vid('68-double-kb-push-press.mp4'),
+    imageUrl: img('13-push-press.jpg'),
+    videoUrl: vid('13-push-press.mp4'),
   },
   {
     id: 'kb-push-up',
@@ -913,7 +960,8 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     dicas: ['KBs afastados na largura dos ombros', 'Core contraído'],
     cues: ['Prancha', 'Descer até o peito'],
     errors: ['Não travar core'],
-    videoUrl: vid('60-kb-push-up.mp4'),
+    imageUrl: img('60-kb-push-up.jpg'),
+    videoUrl: vid('31-kb-burpee.mp4'),
   },
   {
     id: 'kb-dip',
@@ -946,6 +994,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     dicas: ['Quadril estável (não rotacionar)', 'Puxar com costas, não braço'],
     cues: ['Plank tight', 'Row'],
     errors: ['Quadril rotaciona (falta core)'],
+    imageUrl: img('63-kb-dip.jpg'),
     videoUrl: vid('11-renegade-row.mp4'),
   },
   {
@@ -962,6 +1011,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     dicas: ['Apoiar mão e joelho em banco', 'Puxar cotovelo para trás'],
     cues: ['Plank tight', 'Puxar cotovelo'],
     errors: ['Arredondar lombar'],
+    imageUrl: img('37-bent-over-row.jpg'),
     videoUrl: vid('15-bent-over-row.mp4'),
   },
   {
@@ -978,6 +1028,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     dicas: ['Cotovelos altos e para fora', 'Hip drive explosivo'],
     cues: ['High pull', 'Cotovelos altos'],
     errors: ['Não usar quadril', 'Cotovelos baixos'],
+    imageUrl: img('38-high-pull.jpg'),
     videoUrl: vid('18b-high-pull.mp4'),
   },
   {
@@ -994,6 +1045,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     dicas: ['Apoio em banco', 'Puxar para o quadril'],
     cues: ['Plank', 'Puxar'],
     errors: ['Rotação de tronco'],
+    imageUrl: img('25-single-arm-row.jpg'),
     videoUrl: vid('34-single-arm-row.mp4'),
   },
   {
@@ -1010,6 +1062,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     dicas: ['Cotovelos levemente flexos', 'Sentir alongamento no latíssimo'],
     cues: ['Stretch and squeeze'],
     errors: ['Arquear lombar'],
+    imageUrl: img('26-kb-pullover.jpg'),
     videoUrl: vid('35-kb-pullover.mp4'),
   },
   {
@@ -1026,7 +1079,8 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     dicas: ['Engage lats antes de puxar', 'Core ativo para não balançar'],
     cues: ['Engage lats', 'Pull'],
     errors: ['Balançar corpo (kipping não intencional)'],
-    videoUrl: vid('61-kb-pull-up.mp4'),
+    imageUrl: img('61-kb-pull-up.jpg'),
+    videoUrl: vid('34-single-arm-row.mp4'),
   },
   {
     id: 'kb-muscle-up',
@@ -1057,7 +1111,8 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     dicas: ['Corpo em prancha', 'Puxar peito até mesa'],
     cues: ['Plank', 'Puxar peito'],
     errors: ['Quadril cai'],
-    videoUrl: vid('64-kb-inverted-row.mp4'),
+    imageUrl: img('62-kb-muscle-up.jpg'),
+    videoUrl: vid('34-single-arm-row.mp4'),
   },
   {
     id: 'kb-double-row',
@@ -1073,6 +1128,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     dicas: ['Quadril estável', 'Sincronizar puxadas'],
     cues: ['Plank', 'Pull sync'],
     errors: ['Rotação'],
+    imageUrl: img('37-bent-over-row.jpg'),
     videoUrl: vid('46-double-kb-row.mp4'),
   },
 
@@ -1093,6 +1149,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     errors: ['Inclinar para o lado da carga mais pesada'],
     alerta50mais: 'Excelente para postura, grip e densidade mineral.',
     evidencia: 'Watson LIFTMOR 2018: protocolo com farmer walk + deadlift + overhead → +2.9% DMO lombar.',
+    imageUrl: img('08-farmer-carry.jpg'),
     videoUrl: vid('07-farmer-carry.mp4'),
     imageUrl: img('08-farmer-carry.jpg'),
   },
@@ -1111,6 +1168,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     cues: ['Stand tall', 'Brace'],
     errors: ['Inclinar compensando'],
     alerta50mais: 'Excelente para estabilidade lombar.',
+    imageUrl: img('21-suitcase-carry.jpg'),
     videoUrl: vid('22-suitcase-carry.mp4'),
   },
   {
@@ -1127,6 +1185,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     dicas: ['Lockout estável', 'Não inclinar tronco'],
     cues: ['Lockout', 'Walk tall'],
     errors: ['Arquear lombar'],
+    imageUrl: img('23-overhead-carry.jpg'),
     videoUrl: vid('23-overhead-carry.mp4'),
   },
   {
@@ -1143,7 +1202,8 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     dicas: ['Squeeze handle', 'Carga baixa'],
     cues: ['Bottoms up', 'Walk'],
     errors: ['KB tomba'],
-    videoUrl: vid('24-bottoms-up-carry.mp4'),
+    imageUrl: img('24-bottoms-up-carry.jpg'),
+    videoUrl: vid('22-suitcase-carry.mp4'),
   },
   {
     id: 'kb-rack-carry',
@@ -1159,6 +1219,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     dicas: ['Cotovelo encaixado', 'Não arredondar tronco'],
     cues: ['Rack tight', 'Walk'],
     errors: ['KB sai do rack'],
+    imageUrl: img('39-rack-carry.jpg'),
     videoUrl: vid('24-rack-carry.mp4'),
   },
   {
@@ -1175,7 +1236,8 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     dicas: ['Squeeze tight', 'Não rotacionar tronco'],
     cues: ['Hug', 'Walk'],
     errors: ['Rotação compensatória'],
-    videoUrl: vid('27-cross-body-carry.mp4'),
+    imageUrl: img('28-cross-body-carry.jpg'),
+    videoUrl: vid('37-cross-body-carry.mp4'),
   },
   {
     id: 'kb-yoke-walk',
@@ -1191,6 +1253,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     dicas: ['Mãos nas alças ou segurando KB', 'Caminhar com peito aberto'],
     cues: ['Yoke', 'Walk'],
     errors: ['Inclinar tronco'],
+    imageUrl: img('27-yoke-walk.jpg'),
     videoUrl: vid('36-yoke-walk.mp4'),
   },
 
@@ -1260,7 +1323,8 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     dicas: ['Manter ambos KBs alinhados', 'Progressão: começar com carga leve'],
     cues: ['Symmetric', 'Eye on both bells'],
     errors: ['Assimetria'],
-    videoUrl: vid('73-tgu-2kb.mp4'),
+    imageUrl: img('05-tgu-lying.jpg'),
+    videoUrl: vid('02-tgu.mp4'),
   },
   {
     id: 'kb-half-get-up',
@@ -1276,7 +1340,8 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     dicas: ['Drill técnico', 'Volume maior'],
     cues: ['Half up', 'Control'],
     errors: ['Pular para TGU sem dominar half'],
-    videoUrl: vid('74-half-get-up.mp4'),
+    imageUrl: img('05-tgu-lying.jpg'),
+    videoUrl: vid('02-tgu.mp4'),
   },
   {
     id: 'kb-tgu-floor',
@@ -1292,7 +1357,8 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     dicas: ['Foco em bridge e swing through'],
     cues: ['Bridge up', 'Hips high'],
     errors: ['Não travar quadril'],
-    videoUrl: vid('75-tgu-floor.mp4'),
+    imageUrl: img('05-tgu-lying.jpg'),
+    videoUrl: vid('02-tgu.mp4'),
   },
   {
     id: 'kb-tgu-to-ohs',
@@ -1308,7 +1374,8 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     dicas: ['OHS com KB leve', 'Transição controlada'],
     cues: ['TGU to OHS'],
     errors: ['Perder KB no OHS'],
-    videoUrl: vid('76-tgu-to-ohs.mp4'),
+    imageUrl: img('07-tgu-standing.jpg'),
+    videoUrl: vid('17-overhead-squat.mp4'),
   },
   {
     id: 'kb-windmill',
@@ -1358,7 +1425,8 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     dicas: ['Hip escape para o lado oposto', 'Cotovelo próximo ao corpo'],
     cues: ['Side bend', 'Press'],
     errors: ['Arquear lombar (em vez de inclinar)'],
-    videoUrl: vid('40-side-press.mp4'),
+    imageUrl: img('40-side-press.jpg'),
+    videoUrl: vid('40b-waiter-walk-alt.mp4'),
   },
   {
     id: 'kb-jerk',
@@ -1374,7 +1442,8 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     dicas: ['Re-dip rápido', 'Lockout estável'],
     cues: ['Jerk', 'Re-dip'],
     errors: ['Re-dip muito profundo'],
-    videoUrl: vid('41-jerk.mp4'),
+    imageUrl: img('13-push-press.jpg'),
+    videoUrl: vid('13-push-press.mp4'),
   },
   {
     id: 'kb-long-cycle',
@@ -1405,7 +1474,8 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     dicas: ['Transições suaves', 'Respiração continua'],
     cues: ['Flow', 'Smooth'],
     errors: ['Pressa'],
-    videoUrl: vid('42-flow-sequence.mp4'),
+    imageUrl: img('01-swing-bottom.jpg'),
+    videoUrl: vid('08-swing-snatch.mp4'),
   },
   {
     id: 'kb-arm-bar',
@@ -1421,6 +1491,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     dicas: ['Puxar com mão oposta', 'Manter KB vertical'],
     cues: ['Roll', 'Pull'],
     errors: ['KB cair'],
+    imageUrl: img('29-arm-bar.jpg'),
     videoUrl: vid('25-arm-bar.mp4'),
   },
   {
@@ -1437,6 +1508,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     dicas: ['Agachamento leve', 'Mobilidade ativa'],
     cues: ['Hip circle'],
     errors: ['Não manter agachamento'],
+    imageUrl: img('30-hip-halo.jpg'),
     videoUrl: vid('28-hip-halo.mp4'),
   },
 
@@ -1456,6 +1528,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     cues: ['Plank', 'Jump'],
     errors: ['Lombar afundar'],
     alerta50mais: 'Substituir por KB burpee step-back (sem salto).',
+    imageUrl: img('18-kb-burpee.jpg'),
     videoUrl: vid('31-kb-burpee.mp4'),
   },
   {
@@ -1472,6 +1545,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     dicas: ['Volume baixo (3-5 rounds)', 'Cadência controlada'],
     cues: ['Plank', 'Row', 'Plank', 'Row', 'Jump'],
     errors: ['Pressa compromete forma'],
+    imageUrl: img('19-kb-man-maker.jpg'),
     videoUrl: vid('32-kb-man-maker.mp4'),
   },
   {
@@ -1488,6 +1562,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     dicas: ['Manter KB próximo ao corpo', 'Respiração ritmada'],
     cues: ['Around'],
     errors: ['Afastar KB do corpo'],
+    imageUrl: img('31-around-body-pass.jpg'),
     videoUrl: vid('33-around-body-pass.mp4'),
   },
   {
@@ -1504,6 +1579,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     dicas: ['Agachamento parcial', 'Tocar o chão com KB'],
     cues: ['Figure 8', 'Smooth'],
     errors: ['KB cair'],
+    imageUrl: img('32-figure-8.jpg'),
     videoUrl: vid('26-figure-8.mp4'),
   },
   {
@@ -1520,6 +1596,8 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     dicas: ['Apertar glúteos no topo', 'Não arquear lombar'],
     cues: ['Squeeze glutes', 'Top'],
     errors: ['Lombar hiperestender'],
+    imageUrl: img('17-front-squat.jpg'),
+    imageUrl: img('16-front-squat.jpg'),
     videoUrl: vid('68-glute-bridge.mp4'),
   },
   {
@@ -1536,6 +1614,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     dicas: ['Lombar neutra', 'Hips back'],
     cues: ['Hinge'],
     errors: ['Arredondar lombar'],
+    imageUrl: img('16-front-squat.jpg'),
     videoUrl: vid('70-good-morning.mp4'),
   },
   {
@@ -1552,6 +1631,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     dicas: ['KB na mão oposta à perna de apoio', 'Quadril paralelo'],
     cues: ['Hinge', 'Balance'],
     errors: ['Perder equilíbrio'],
+    imageUrl: img('34-single-leg-rdl.jpg'),
     videoUrl: vid('38-single-leg-rdl.mp4'),
   },
   {
@@ -1568,6 +1648,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     dicas: ['Mão oposta à frente', 'Amplitude completa'],
     cues: ['Touch and go'],
     errors: ['Joelho colapsar'],
+    imageUrl: img('17-pistol-squat.jpg'),
     videoUrl: vid('62-shrimp-squat.mp4'),
   },
   {
@@ -1584,6 +1665,8 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     dicas: ['Aterrissagem suave', 'Carga baixa ou nula'],
     cues: ['Jump', 'Land soft'],
     errors: ['Impacto alto (risco de joelho)'],
+    imageUrl: img('17-pistol-squat.jpg'),
+    videoUrl: vid('63-jumping-squat.mp4'),
     alerta50mais: 'Não recomendado.',
   },
   {
@@ -1600,6 +1683,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     dicas: ['Mão livre para estabilizar', 'Lockout vertical'],
     cues: ['Valhalla', 'Press'],
     errors: ['Arquear lombar'],
+    imageUrl: img('13-push-press.jpg'),
     videoUrl: vid('58-viking-press.mp4'),
   },
   {
@@ -1616,6 +1700,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     dicas: ['Carga leve', 'Foco em mobilidade'],
     cues: ['Up, rotate, press, rotate down'],
     errors: ['Carga alta demais'],
+    imageUrl: img('13-push-press.jpg'),
     videoUrl: vid('59-cuban-press.mp4'),
   },
   {
@@ -1632,6 +1717,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     dicas: ['Manter core ativo', 'Não curvar lombar'],
     cues: ['Around'],
     errors: ['Tronco curvar'],
+    imageUrl: img('10-halo.jpg'),
     videoUrl: vid('27-around-the-world.mp4'),
   },
   {
@@ -1648,6 +1734,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     dicas: ['Quadril alto', 'Não cair'],
     cues: ['Hip up'],
     errors: ['Quadril cair'],
+    imageUrl: img('28-cross-body-carry.jpg'),
     videoUrl: vid('29-side-plank-kb.mp4'),
   },
   {
@@ -1664,6 +1751,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     dicas: ['Cadência constante', 'Anti-rotação ativa'],
     cues: ['See-saw'],
     errors: ['Pressa demais'],
+    imageUrl: img('13-push-press.jpg'),
     videoUrl: vid('30-see-saw-press.mp4'),
   },
   {
