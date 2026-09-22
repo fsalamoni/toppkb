@@ -7,7 +7,7 @@
  * Extraído do TreinamentoMeuPrograma.tsx em Sprint 3 (~140 linhas).
  */
 import { useEffect, useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {

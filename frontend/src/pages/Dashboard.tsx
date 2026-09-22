@@ -16,7 +16,7 @@
  */
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
-import { Card, CardContent, CardDescription } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/common/LoadingScreen';
 import { EmptyState } from '@/components/common/EmptyState';
