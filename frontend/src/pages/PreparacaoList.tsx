@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Spinner, EmptyState } from '@/components/common/LoadingScreen';
 import { toast } from '@/components/ui/toaster';
 import { Plus, Trash2, ChevronRight, Clock } from 'lucide-react';
+import { ExerciseBadge, useExerciseModal } from '@/components/common/ExerciseBadge';
 
 function tsToDate(ts: any): Date | null {
   if (!ts) return null;
@@ -43,6 +44,7 @@ export function PreparacaoList() {
   const { user } = useAuth();
   const qc = useQueryClient();
   const [filtroTipo, setFiltroTipo] = useState<string>('todas');
+  const { showExercise, ModalRoot } = useExerciseModal();
 
   const { data, isLoading } = useQuery({
     queryKey: ['preparacao', user?.uid],
@@ -108,6 +110,7 @@ export function PreparacaoList() {
           <KPI label="RPE médio" value={rpeMedio > 0 ? rpeMedio.toFixed(1) : '—'} />
         </div>
       )}
+      {ModalRoot}
 
       {/* Filtro por tipo */}
       <div className="flex flex-wrap gap-1.5">
@@ -206,9 +209,12 @@ export function PreparacaoList() {
                     {s.exercicios && s.exercicios.length > 0 && (
                       <div className="mt-2 flex flex-wrap gap-1">
                         {s.exercicios.slice(0, 5).map((e: string, i: number) => (
-                          <span key={i} className="text-xs px-2 py-0.5 rounded-md bg-primary/10 text-primary">
-                            {e}
-                          </span>
+                          <ExerciseBadge
+                            key={i}
+                            id={e}
+                            variant="compact"
+                            onShow={showExercise}
+                          />
                         ))}
                         {s.exercicios.length > 5 && (
                           <span className="text-xs px-2 py-0.5 rounded-md bg-muted text-muted-foreground">

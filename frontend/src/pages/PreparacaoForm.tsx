@@ -13,6 +13,7 @@ import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/common/LoadingScreen';
 import { toast } from '@/components/ui/toaster';
 import { ChevronLeft, Save, AlertTriangle, Info } from 'lucide-react';
+import { useExerciseModal } from '@/components/common/ExerciseBadge';
 import { EXERCICIOS, GRUPOS_MUSCULARES, ALERTAS_50_MAIS_GERAIS } from '@/data/seed/exercicios';
 import { cn } from '@/lib/utils';
 
@@ -61,6 +62,7 @@ export function PreparacaoForm() {
   const { id } = useParams<{ id?: string }>();
   const qc = useQueryClient();
   const [exGrupoFiltro, setExGrupoFiltro] = useState<string>('todos');
+  const { showExercise, ModalRoot } = useExerciseModal();
 
   const { data: sessaoExistente, isLoading: loading } = useQuery({
     queryKey: ['preparacao-sessao', id],
@@ -320,17 +322,20 @@ export function PreparacaoForm() {
               {exerciciosFiltrados.map((ex) => {
                 const checked = exerciciosMarcados.includes(ex.nome);
                 return (
-                  <button
+                  <div
                     key={ex.id}
-                    type="button"
-                    onClick={() => toggleExercicio(ex.nome)}
                     className={cn(
-                      "w-full text-left p-3 rounded-lg border transition",
+                      "w-full text-left p-3 rounded-lg border transition relative",
                       checked
                         ? 'border-primary bg-primary/5'
                         : 'border-border hover:border-primary/30'
                     )}
                   >
+                    <button
+                      type="button"
+                      onClick={() => toggleExercicio(ex.nome)}
+                      className="w-full text-left"
+                    >
                     <div className="flex items-start gap-2">
                       <div className={cn(
                         "mt-0.5 h-4 w-4 rounded border-2 flex items-center justify-center flex-shrink-0",
@@ -364,7 +369,31 @@ export function PreparacaoForm() {
                         )}
                       </div>
                     </div>
-                  </button>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        // Cria um wrapper compatível com ExercicioKettlebell
+                        // para abrir no modal detalhado
+                        const exAsKb = {
+                          ...ex,
+                          padraoKb: 'COND' as const,
+                          cues: ex.dicas ?? [],
+                          errors: [],
+                          group: undefined,
+                          imageUrl: undefined,
+                          videoUrl: undefined,
+                        };
+                        showExercise(exAsKb as any);
+                      }}
+                      className="absolute top-2 right-2 p-1 rounded-md hover:bg-muted text-xs text-primary hover:text-primary/80"
+                      title="Ver detalhes do exercício"
+                    >
+                      <Info className="h-3 w-3" />
+                    </button>
+                  </div>
                 );
               })}
             </div>
@@ -418,6 +447,7 @@ export function PreparacaoForm() {
           </Button>
         </div>
       </form>
+      {ModalRoot}
     </div>
   );
 }

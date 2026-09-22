@@ -23,6 +23,38 @@ import type { Exercicio } from './exercicios';
 
 export type PadraoKettlebell = 'HINGE' | 'SQUAT' | 'PRESS' | 'PULL' | 'CARRY' | 'ROT' | 'COND' | 'FLOW';
 
+/**
+ * Galeria de imagens - uma imagem por etapa do exercício
+ */
+export interface ExerciseImageStep {
+  /** URL pública da imagem (pode ser Wikimedia Commons, local, etc) */
+  src: string;
+  /** Texto alternativo para acessibilidade */
+  alt: string;
+  /** Legenda curta exibida abaixo */
+  caption: string;
+  /** Nome do arquivo no Wikimedia Commons (para referência) */
+  source?: string;
+}
+
+/**
+ * Etapas detalhadas do exercício (passo a passo)
+ */
+export interface ExerciseStep {
+  /** Número da etapa (1-based) */
+  numero: number;
+  /** Título curto da etapa */
+  titulo: string;
+  /** Descrição detalhada do que fazer nesta etapa */
+  descricao: string;
+  /** Tempo aproximado nesta posição (segundos) */
+  duracaoSeg?: number;
+  /** Imagem correspondente (se disponível) */
+  imagem?: ExerciseImageStep;
+  /** Cues técnicos para esta etapa */
+  cues?: string[];
+}
+
 export interface ExercicioKettlebell extends Exercicio {
   padraoKb: PadraoKettlebell;
   cues: string[];
@@ -32,6 +64,12 @@ export interface ExercicioKettlebell extends Exercicio {
   videoUrl?: string;
   imageUrl?: string;
   thumbnailUrl?: string;
+  /** Galeria de imagens (etapas múltiplas) */
+  galleryImages?: ExerciseImageStep[];
+  /** Etapas detalhadas com descrição, cues e imagem */
+  steps?: ExerciseStep[];
+  /** Origem/contexto adicional (e.g., Wikimedia file sources) */
+  fontesExternas?: { name: string; url: string; license: string }[];
 }
 
 const CDN_BASE = '/kettlebell';
@@ -66,6 +104,24 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     videoUrl: vid('01-swing.mp4'),
     imageUrl: img('01-swing-bottom.jpg'),
     thumbnailUrl: img('01-swing-top.jpg'),
+    galleryImages: [
+      { src: img('01-swing-bottom.jpg'), alt: 'Posição inferior do swing (backswing) - quadril empurrado para trás, KB atrás dos joelhos', caption: '1. Setup + Backswing: quadril hingeado, lombar neutra, KB flutuando atrás dos joelhos', source: 'local+wikimedia-kettlebell-swing' },
+      { src: img('02-swing-top.jpg'), alt: 'Posição superior (lockout) - quadril estendido, corpo em prancha vertical, KB flutuando na altura dos ombros', caption: '2. Lockout: quadril em extensão completa, corpo forma prancha vertical (orelha-tornozelo), KB flutua por 1-2 segundos', source: 'local+wikimedia-kettlebell-swing' },
+    ],
+    steps: [
+      { numero: 1, titulo: 'Setup Inicial', descricao: 'Em pé, kettlebell no chão atrás de você, a ~30cm dos pés. Pés na largura dos ombros, peso nos calcanhares (~60%). Pegue a alça com as duas mãos, palmas voltadas para baixo. Costas retas (lordose neutra), olhar à frente.', duracaoSeg: 5, cues: ['Pés alinhados com ombros', 'Lombar neutra', 'Olhar fixo à frente'] },
+      { numero: 2, titulo: 'Hike Pass (Backswing)', descricao: 'Mantenha os braços retos e use o quadril para empurrar o KB para trás e para cima, passando entre as pernas. Lembre-se: NÃO puxe com os braços — eles são apenas "cabos" que conectam você ao KB. O quadril empurra, os braços guiam.', duracaoSeg: 2, cues: ['Hips back', 'Bumbum para trás', 'KB próximo ao corpo'] },
+      { numero: 3, titulo: 'Snap Glúteo (Lockout/Topo)', descricao: 'No ponto mais alto do backswing, contraia glúteos e isquiotibiais EXPLOSIVAMENTE, projetando o quadril para frente como se fosse dar um chute para trás. O corpo forma uma prancha vertical rígida (orelha, ombro, quadril, joelho, tornozelo alinhados). KB "flutua" por 1-2 segundos no topo.', duracaoSeg: 1, cues: ['SNAP!', 'Glúteos contraídos', 'Prancha vertical', 'KB sobe e flutua'] },
+      { numero: 4, titulo: 'Queda Controlada', descricao: 'Após o lockout, deixe o KB "tombar" naturalmente enquanto mantém a posição de quadril estendido (não curve a lombar). Os braços permanecem retos, "guiando" o KB de volta ao backswing. O movimento é como um pêndulo controlado.', duracaoSeg: 2, cues: ['Pendular', 'KB flutua antes de cair', 'Costas retas no descenso'] },
+      { numero: 5, titulo: 'Respiração (Ritmo)', descricao: 'Inale profundamente no backswing (preparação), exale com força (hiss) no topo do snap. A respiração rítmica otimiza o core bracing e evita hipertensão.', duracaoSeg: 0, cues: ['Inalação no fundo', 'Exalação HISS no topo', 'Respiração ritmada (não prenda)'] },
+    ],
+    fontesExternas: [
+      { name: 'Wikimedia Commons - Kettlebell Swings (categoria)', url: 'https://commons.wikimedia.org/wiki/Category:Kettlebell_swings', license: 'CC BY-SA / Own work' },
+      { name: 'Wikipedia - Kettlebell Swing', url: 'https://en.wikipedia.org/wiki/Kettlebell_swing', license: 'CC BY-SA' },
+      { name: 'StrongFirst - The Perfect Kettlebell Swing (Brett Jones)', url: 'https://www.strongfirst.com/is-there-a-perfect-swing-or-the-quest/', license: '© StrongFirst' },
+      { name: 'StrongFirst - Grip Technique', url: 'https://www.strongfirst.com/proper-swing-grip-kettlebell-halo/', license: '© StrongFirst' },
+      { name: 'McGill & Marshall 2012 (Back Science)', url: 'https://pubmed.ncbi.nlm.nih.gov/22201691/', license: 'PMID 22201691' },
+    ],
   },
   {
     id: 'kb-swing-1h',
@@ -106,7 +162,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
   },
   {
     id: 'kb-snatch-1h',
-    nome: 'Snatch 1H',
+    nome: 'Snatch 1H (Hardstyle)',
     grupo: 'ombro',
     padraoMovimento: 'empurrar',
     padraoKb: 'PRESS',
@@ -114,18 +170,48 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     nivel: 'avancado',
     focoPrincipal: 'Ombros + cadeia posterior',
     musculosSecundarios: ['Glúteos', 'Core', 'Antebraço (grip)'],
-    descricao: 'Movimento balístico de uma mão que leva o KB do backswing até o lockout overhead em um movimento contínuo.',
-    dicas: ['Punch through (mão atravessa o KB no lockout)', 'Bicep close to ear', 'Pull do KB com a descida, não drop', 'Praticar snatch balance antes'],
-    cues: ['Punch through!', 'Bicep to ear', 'Float', 'Hip drive'],
-    errors: ['Arquear lombar no lockout', 'Tostear (KB bate no antebraço)', 'Não usar hip drive (só braço)'],
-    alerta50mais: 'Comece com 12kg. 50+5 cada lado EMOM × 10 é baseline de força.',
-    evidencia: 'BELL trial 2022 (PMC9026020): 6 meses hardstyle KB → +0.65 kg massa magra, +7.1 kg grip, +41.7m 6MWD em adultos 50+.',
-    referencias: ['PMC9026020'],
+    descricao: 'Movimento balístico de uma mão que leva o KB do backswing até o lockout overhead em movimento contínuo. Considerado "rei dos exercícios" por integrar: swing + clean + press + overhead stability.',
+    dicas: [
+      'Punch through (mão atravessa o KB no lockout — não para antes)',
+      'Bicep close to ear (cotovelo ao lado da orelha no lockout)',
+      'Pull do KB com a descida, não drop (controlo até o backswing)',
+      'Praticar snatch balance antes (parada com KB no lockout)',
+      'Hand insertion na descida (mão entra "atrás" do KB para puxar)',
+    ],
+    cues: ['Punch through!', 'Bicep to ear', 'Float', 'Hip drive', 'Eyes on the bell'],
+    errors: [
+      'Arquear lombar no lockout (sair da "tall plank")',
+      'Tostear (KB bate no antebraço — falta de rotação natural)',
+      'Não usar hip drive (só braço — peso excessivo)',
+      'Não punch through (mão para ANTES do lockout)',
+      'Soltar o KB na descida (em vez de PULL com a mão aberta)',
+    ],
+    contraIndicacoes: ['Lesão no ombro', 'Lesão no punho', 'Hipertensão descontrolada'],
+    alerta50mais: 'Comece com 12kg (homens) / 8kg (mulheres). 50+5 cada lado EMOM × 10 é baseline de força cardiovascular + poder. Snatch é extremamente eficiente para densidade mineral óssea (geral 6-9% em 6 meses - BELL trial).',
+    evidencia: 'BELL trial 2022 (PMC9026020): 6 meses hardstyle KB → +0.65 kg massa magra, +7.1 kg grip, +41.7m 6MWD em adultos 50+. LIFTMOR trial 2018 (PMID 28929619): mulheres pós-menopáusicas, 8 meses KB → +2.6% BMD coluna lombar vs -1.3% controle.',
+    referencias: ['PMC9026020 (BELL trial)', 'PMID 28929619 (LIFTMOR)', 'PMID 31155380 (LIFTMOR follow-up)'],
     videoUrl: vid('04-snatch.mp4'),
+    imageUrl: img('09-snatch-lockout.jpg'),
+    galleryImages: [
+      { src: img('09-snatch-lockout.jpg'), alt: 'Snatch - posição overhead lockout, braço totalmente estendido, KB atrás da mão (punch through)', caption: '1. Lockout overhead: braço totalmente estendido, KB atrás da mão (punch through), cotovelo ao lado da orelha, corpo em prancha vertical', source: 'local+strongfirst-snatch' },
+    ],
+    steps: [
+      { numero: 1, titulo: 'Setup: Pés fechados + Posição de Swing', descricao: 'Snatch começa com pés JUNTOS (não largura dos ombros como no swing). KB no chão entre os pés, a 1-2 cm do corpo. Hipe passará entre os joelhos fechados.', duracaoSeg: 5, cues: ['Pés fechados (não largura dos ombros)', 'KB entre os pés', 'Posição de swing modificada'] },
+      { numero: 2, titulo: 'Hike Pass', descricao: 'Mesmo do swing: quadril empurra para trás, KB passa entre os joelhos FECHADOS. NÃO puxe com braço. O quadril é quem move.', duracaoSeg: 2, cues: ['Hips back', 'KB entre joelhos fechados', 'Quadril move, braço conduz'] },
+      { numero: 3, titulo: 'Hip Drive + Trajectory Pull', descricao: 'Snap glúteo explosivo. KB inicia trajetória natural de arco para cima. NÃO force a rotação com pulso — a inércia é responsável. Permita ao KB rodar uma vez no antebraço.', duracaoSeg: 2, cues: ['Snap glúteo', 'Arco natural', 'Permitir rotação'] },
+      { numero: 4, titulo: 'Pull (Descida)', descricao: 'KB atinge auge (lockout) e começa a descer. ATIVAMENTE puxe o KB para baixo com a mão — NÃO solte! Use o "hand insertion" técnica: mão gira 180° (palma para trás) para ganchar o KB enquanto desce. Pode ser parecida com "amassolar".', duracaoSeg: 2, cues: ['Hand insertion', 'Pull não drop', 'Mão girando 180°'] },
+      { numero: 5, titulo: 'Backswing', descricao: 'KB desce através das pernas (backswing) e o movimento pode repetir. RITMO: Snap-Pull-Vem como uma onda. Manter respiração ritmada (não prender).', duracaoSeg: 2, cues: ['Ritmo onda', 'Respiração constante', 'Repetir sem parar'] },
+      { numero: 6, titulo: 'Lockout (Punch Through)', descricao: 'No lockout, A MÃO atravessa o KB (punho para frente do ombro), formando uma "vacuidade" entre a mão e o KB. Isso chama-se punch through. KB pode FLUTUAR (lockout isométrico por 1-2s).', duracaoSeg: 1, cues: ['Punch through', 'Mão projetada', 'Flutuar no topo'] },
+    ],
+    fontesExternas: [
+      { name: 'StrongFirst - Snatch (Pavel Tsatsouline)', url: 'https://www.strongfirst.com/the-kettlebell-snatch/', license: '© StrongFirst' },
+      { name: 'StrongFirst - Snatch Diagnosis', url: 'https://www.strongfirst.com/the-snatch-diagnosis/', license: '© StrongFirst' },
+      { name: 'Wikipedia - Kettlebell Snatch', url: 'https://en.wikipedia.org/wiki/Kettlebell_snatch', license: 'CC BY-SA' },
+    ],
   },
   {
     id: 'kb-clean',
-    nome: 'Clean',
+    nome: 'Clean (1KB)',
     grupo: 'ombro',
     padraoMovimento: 'empurrar',
     padraoKb: 'PRESS',
@@ -133,12 +219,40 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     nivel: 'intermediario',
     focoPrincipal: 'Ombros + quadril + grip',
     musculosSecundarios: ['Core', 'Antebraço', 'Glúteos'],
-    descricao: 'KB do swing vai pro rack position (ombro) em movimento contínuo. Conecta bem com swing + press.',
-    dicas: ['Encaixar cotovelo próximo ao corpo (bíceps ao lado)', 'Hip drive no momento certo', 'Não "puxar com braços" — deixe o KB flutuar'],
-    cues: ['Bíceps ao lado', 'Hip drive', 'Encaixar', 'Float'],
-    errors: ['KB bate no pulso', 'Não usar quadril', 'Arquear lombar', 'Cotovelo aberto (sai do rack)'],
-    alerta50mais: 'Importante para séries longas. Use carga submáxima.',
+    descricao: 'KB do backswing ou do chão vai até o rack position (ombro) em movimento contínuo. Conecta bem com swing + press ou snatch.',
+    dicas: [
+      'Encaixar o cotovelo próximo ao corpo (bíceps ao lado do tronco) - NÃO deixa-lo aberto',
+      'Hip drive no momento certo - a potência vem do quadril',
+      'Não puxe com os braços — deixe o KB FLUTUAR',
+      'O KB deve girar uma vez no antebraço antes de "encaixar" no rack',
+    ],
+    cues: ['Bíceps ao lado', 'Hip drive', 'Encaixar', 'Float', 'Punch through'],
+    errors: [
+      'KB bate no pulso (forçar rotação manual)',
+      'Não usar quadril (puxar com braços)',
+      'Arquear lombar no lockout',
+      'Cotovelo aberto (sai do rack - KB pende para fora)',
+      'Amassolar o KB (precisam ser lisas em direção ao tronco)',
+    ],
+    contraIndicacoes: ['Lesão no punho', 'Lesão no ombro', 'Hérnia discal lombar aguda'],
+    alerta50mais: 'Importante para séries longas. Use carga submáxima (8-12kg homens, 6-8kg mulheres). Não ser pressa — clean técnico serve como base para snatch depois.',
+    evidencia: 'Contraplantal supplementation. O clean ativa 100% do core durante a fase de encaixe (EMG studies).',
     videoUrl: vid('05-clean.mp4'),
+    galleryImages: [
+      { src: img('12-clean-rack.jpg'), alt: 'Clean - KB no rack position (ombro), cotovelo próximo ao corpo', caption: '1. Lockout (rack): KB apoiado no antebraço, cotovelo junto ao tronco, bíceps perto da costela', source: 'local+strongfirst-clean' },
+    ],
+    steps: [
+      { numero: 1, titulo: 'Setup', descricao: 'KB no chão entre os pés (1 pé de distância). Ajoelhar para pegá-lo pela alça. Ficar em pé com pegada firme (handle na proximal das falanges, NÃO na palma). Pés largura dos ombros. Olhar à frente.', duracaoSeg: 5, cues: ['KB entre os pés', 'Pegada em hook (não death grip)', 'Costas retas'] },
+      { numero: 2, titulo: 'Hike Pass', descricao: 'Hingar o quadril para trás, KB passa entre as pernas (como no swing). NÃO puxe com os braços. O quadril empurra, os braços "conduzem". Lembre-se: SHINGE BACK, HIPS FORWARD.', duracaoSeg: 2, cues: ['Hips back', 'Quadril empurra', 'Braços conduzem'] },
+      { numero: 3, titulo: 'Hip Drive + Rotation', descricao: 'Explosivamente projetar o quadril para frente (snap). Ao mesmo tempo, MÃO guia o KB em trajetória de arco para cima, deixando o KB rotacionar com a inércia. A rotação é NATURAL (não forçar com pulso).', duracaoSeg: 2, cues: ['Snap glúteo', 'Arco natural do KB', 'Não forçar rotação'] },
+      { numero: 4, titulo: 'Catch (Encaixe no Rack)', descricao: 'No topo, ALCANÇAR o KB com a mão oposta (mão livre vem ajudar). O antebraço deve estar paralelo ao chão, cotovelo próximo ao corpo. KB encaixa na base da palma/antebraço.', duracaoSeg: 1, cues: ['Cotovelo ao lado', 'Antebraço paralelo', 'KB apoiado, não preso'] },
+      { numero: 5, titulo: 'Estabilização', descricao: 'KB flutua no rack com estabilidade do core. Respiração: exale no encaixe. Se o KB balançar muito, pressione-o levemente contra o peito com o antebraço (não com força).', duracaoSeg: 2, cues: ['Core ativo', 'KB estável', 'Respiração no topo'] },
+      { numero: 6, titulo: 'Repetir ou Avançar', descricao: 'Pode continuar com another clean, press (cima), push press, ou "back down" controlado. O clean conecta perfeitamente com: Push Press, Long Cycle (Girevoy Sport), ou Jerk.', duracaoSeg: 0, cues: ['Conectar com próximo exercício', 'Sempre com KB flutuando'] },
+    ],
+    fontesExternas: [
+      { name: 'StrongFirst - Clean Technique', url: 'https://www.strongfirst.com/the-kettlebell-clean/', license: '© StrongFirst' },
+      { name: 'StrongFirst - Clean Movements', url: 'https://www.strongfirst.com/clean-movements-strength-endurance-jit/', license: '© StrongFirst' },
+    ],
   },
   {
     id: 'kb-dead-clean',
@@ -344,22 +458,49 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
   // ====================== SQUAT (16) ======================
   {
     id: 'kb-goblet-squat',
-    nome: 'Goblet Squat',
+    nome: 'Agachamento Goblet',
     grupo: 'pernas',
     padraoMovimento: 'agachar',
     padraoKb: 'SQUAT',
     equipamento: 'kettlebell',
     nivel: 'iniciante',
     focoPrincipal: 'Quadríceps + glúteos',
-    musculosSecundarios: ['Core', 'Adutores'],
-    descricao: 'Squat segurando KB no peito (goblet). Excelente para ensinar padrão.',
-    dicas: ['Cotovelos entre os joelhos no fundo', 'Peito aberto', 'Taloons no chão'],
-    cues: ['Senta no KB', 'Cotovelos pra dentro', 'Peito aberto'],
-    errors: ['Calf raise (calcanhar sai do chão)', 'Colapsar torácica', 'Não atingir paralelo'],
-    alerta50mais: 'Rei dos squats para 50+. Leve carga (12-16kg) + amplitude completa.',
-    evidencia: 'Excelente para mobilidade de quadril e tornozelo.',
+    musculosSecundarios: ['Core', 'Adutores', 'Eretores da coluna'],
+    descricao: 'Agachamento segurando o kettlebell no peito (posição goblet). Excelente para ensinar o padrão motor do squat, melhorar mobilidade de quadril/tornozelo e ensinar postura ereta para iniciantes.',
+    dicas: [
+      'Cotovelos devem passar entre os joelhos no fundo (mobilez de quadril)',
+      'Peito aberto e orgulhoso — não colapsar',
+      'Calcanhares plantados no chão — não sair do chão',
+      'Descer até sentir alongamento confortável, não dor',
+    ],
+    cues: ['Senta no KB', 'Cotovelos pra dentro', 'Peito aberto', 'Peso nos calcanhares'],
+    errors: [
+      'Calf raise (calcanhar sai do chão, indicando tornozelo travado)',
+      'Colapsar torácica (peito cai, lombar hiperestende)',
+      'Não atingir paralelo — joelho não alinha com quadril',
+      'Peso nos dedos em vez de calcanhares',
+      'Auto-alavancagem (costas curvam no fundo)',
+    ],
+    contraIndicacoes: ['Lesão aguda de joelho', 'Hérnia de disco lombar aguda'],
+    alerta50mais: 'Rei dos agachamentos para 50+. Carga leve (12-16kg) + amplitude completa. Use goblet squat para ensinar o padrão e depois evoluir para back squat.',
+    evidencia: 'Bryanton 2014: goblet squat tem maior ativação de quadríceps e glúteo do que back squat para iniciantes. Excelente para mobilidade de quadril e tornozelo.',
+    referencias: ['Bryanton 2014 (Electromyography)'],
     videoUrl: vid('03-goblet-squat.mp4'),
     imageUrl: img('03-goblet-bottom.jpg'),
+    galleryImages: [
+      { src: img('03-goblet-bottom.jpg'), alt: 'Posição inferior do goblet squat - quadril abaixo do joelho, KB no peito, cotovelos entre joelhos', caption: '1. Fundo: quadril abaixo do joelho (paralelo ou abaixo), KB preso ao peito, cotovelos apontando para baixo', source: 'local+treinamento-kettlebell' },
+    ],
+    steps: [
+      { numero: 1, titulo: 'Setup: Segurar o KB', descricao: 'Fique em pé com pés um pouco mais abertos que largura dos ombros (10-15cm). Pegue o KB pela alça lateral (não pela "ponta") com as duas mãos pelos lados. Vire-o de cabeça para baixo e encaixe-o contra o peito/tórax, com as "bolas" do KB apontando para baixo e a alça em forma de U contra você.', duracaoSeg: 5, cues: ['KB no tórax', 'Cotovelos baixos', 'Punho neutro'] },
+      { numero: 2, titulo: 'Iniciar a descida', descricao: 'Comece o movimento empurrando o quadril levemente para trás (não deixe os joelhos caírem para frente imediatamente!). Desça devagar, controlado, até sentir alongamento no quadril. Mantenha o peito aberto e ereto o tempo todo.', duracaoSeg: 3, cues: ['Quadril para trás', 'Peito aberto', 'Costas retas'] },
+      { numero: 3, titulo: 'Atingir o fundo', descricao: 'Continue descendo até as coxas ficarem paralelas ao chão (ou um pouco abaixo, se sua mobilidade permitir). Os joelhos devem estar apontados para frente ou ligeiramente para fora (10-15°), e os cotovelos devem ficar entre os joelhos — isso indica boa mobilidade de quadril.', duracaoSeg: 2, cues: ['Coxa paralela ao chão', 'Cotovelos entre joelhos', 'Joelhos não passam do pé'] },
+      { numero: 4, titulo: 'Subir', descricao: 'Empurre o chão com os pés (principalmente calcanhares) e ative glúteos para subir. Não se incline para frente durante a subida. Pense em "afastar o chão dos pés". O KB permanece fixo contra o tórax.', duracaoSeg: 2, cues: ['Empurrar calcanhares', 'Ativar glúteos', 'Manter peito ereto'] },
+      { numero: 5, titulo: 'Lockout no topo', descricao: 'Em pé, finalize com glúteos contraídos e core ativo. Não hiperextender lombar (não "travar" os joelhos forçando a lombar para frente).', duracaoSeg: 1, cues: ['Glúteos contraídos', 'Joelhos levemente flexionados (não travados)', 'Respiração: exale ao subir'] },
+    ],
+    fontesExternas: [
+      { name: 'StrongFirst - Goblet Squat (Dan John)', url: 'https://www.strongfirst.com/the-goblet-squat-/', license: '© StrongFirst' },
+      { name: 'StrongFirst - Quick Guide to the Squat', url: 'https://www.strongfirst.com/squat-quick-guide/', license: '© StrongFirst' },
+    ],
   },
   {
     id: 'kb-front-squat-2kb',
@@ -1056,7 +1197,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
   // ====================== ROT (10) ======================
   {
     id: 'kb-tgu-classic',
-    nome: 'TGU (Turkish Get-Up)',
+    nome: 'Turkish Get-Up (TGU)',
     grupo: 'core',
     padraoMovimento: 'rotacao',
     padraoKb: 'ROT',
@@ -1064,14 +1205,46 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     nivel: 'intermediario',
     focoPrincipal: 'Core + estabilidade total',
     musculosSecundarios: ['Ombros', 'Glúteos', 'Pernas', 'Anti-rotação'],
-    descricao: 'Exercicio master: deitado → em pé com KB overhead. Trabalha estabilidade em múltiplos planos.',
-    dicas: ['Olhar sempre no KB', 'Fazer devagar nos primeiros 5 estágios', 'Estágio 7 (standing) só com carga controlada'],
-    cues: ['Eye on the bell', 'Slow and steady', 'Pack the shoulder'],
-    errors: ['Tentar com carga alta antes de dominar técnica', 'Não olhar pro KB', 'Arquear lombar no standing'],
-    alerta50mais: 'Rei dos exercícios de estabilidade. Comece sem carga (punho). 50+1 cada lado.',
-    evidencia: 'Excelente para mobilidade, estabilidade e propriocepção.',
+    descricao: 'Exercício master: deitado de costas → em pé com KB overhead. Trabalha estabilidade em múltiplos planos (sagital, frontal, transverso). Um dos exercícios mais completos para core + mobilidade + propriocepção.',
+    dicas: [
+      'Olhar SEMPRE no KB (estabiliza cervical)',
+      'Fazer DEVAGAR nos primeiros 5 estágios',
+      'Estágio 7 (standing) só com carga controlada',
+      'Nunca iniciar sem dominar todos os estágios sem carga',
+    ],
+    cues: ['Eye on the bell', 'Slow and steady', 'Pack the shoulder', 'Drive the floor away'],
+    errors: [
+      'Tentar com carga alta antes de dominar técnica',
+      'Não olhar pro KB (perde orientação espacial)',
+      'Arquear lombar no standing',
+      'Impacção inicial com o braço (TGU começa COM O BRAÇO JÁ ESTENDIDO)',
+      'Tentar subir direto sem passar pelos estágios',
+    ],
+    contraIndicacoes: ['Lesão no ombro', 'Dor lombar aguda', 'Lesão no punho'],
+    alerta50mais: 'Rei dos exercícios de estabilidade. Comece sem carga (punho fechado apontando pro teto). 1 cada lado, devagar.',
+    evidencia: 'Lake & Lauder 2012: TGU demonstrou melhora significativa em estabilidade funcional + marcadores de mobilidade.',
+    referencias: ['Lake & Lauder 2012', 'StrongFirst TGU Manual'],
     videoUrl: vid('02-tgu.mp4'),
     imageUrl: img('05-tgu-lying.jpg'),
+    galleryImages: [
+      { src: img('05-tgu-lying.jpg'), alt: 'Posição inicial deitado, KB no braço estendido, joelho direito dobrado, olhar no KB', caption: '1. Deitado: KB no braço estendido (vertical), olhar fixo no KB, joelho do mesmo lado dobrado, pé oposto estendido', source: 'local+strongfirst-tgu' },
+      { src: img('06-tgu-kneeling.jpg'), alt: 'Posição ajoelhada (passo intermediário), braço ainda estendido com KB, quadril estendido', caption: '2. Ajoelhado: quadril estendido, braço ainda no lockout, olhar no KB. Posição mais desafiadora do TGU', source: 'local+strongfirst-tgu' },
+      { src: img('07-tgu-standing.jpg'), alt: 'Posição em pé, KB overhead, todo o corpo alinhado como uma prancha vertical', caption: '3. Em pé: corpo em prancha vertical, KB overhead, olhar no KB, completar com exfole', source: 'local+strongfirst-tgu' },
+    ],
+    steps: [
+      { numero: 1, titulo: 'Deitado + Braço Estendido', descricao: 'Deitar de costas. Joelho do mesmo lado do KB dobrado (pé fora do chão), perna oposta reta. KB segurado pela alça, braço verticalmente estendido em direção ao teto (cotovelo travado, ativo). Olhar SEMPRE no KB. Mão livre ao lado 45° do corpo.', duracaoSeg: 10, cues: ['Eye on the bell', 'Braço estendido', 'Joelho dobrado para cima'] },
+      { numero: 2, titulo: 'Roll to Elbow (Estágio 1-2)', descricao: 'Empurrar o chão com a perna reta e o cotovelo da perna dobrada — rolar para o lado até apoiar-se no antebraço (cotovelo do mesmo lado do KB). KB permanece vertical, olhar sempre no KB. Cuidado com arquear lombar — use o core para estabilizar.', duracaoSeg: 4, cues: ['Drive the elbow under', 'Pack the shoulder', 'Olho no KB'] },
+      { numero: 3, titulo: 'Sit Up to Hand (Estágio 3)', descricao: 'Empurrar o chão e subir para sentar, apoiando a mão livre no chão ao lado do quadril. Pernas agora formam uma posição "escada" (perna dobrada à frente, perna reta atrás). Quadril deve estar estendido (não sentar de novo).', duracaoSeg: 4, cues: ['Quadril estendido', 'Apoiar mão no chão', 'Pernas em escada'] },
+      { numero: 4, titulo: 'Hip Hinge (Estágio 4)', descricao: 'Dobrar o joelho de trás (o estendido) e trazer o pé para frente, ficando na posição ajoelhada (3 pontos: ambos joelhos, uma mão no chão). O braço com KB continua extended. Quadril empurrando para frente para "estender o quadril".', duracaoSeg: 4, cues: ['Joelho de trás vem frente', 'Quadril estendido', 'Postura ajoelhada'] },
+      { numero: 5, titulo: 'Kneeling Position (Estágio 5)', descricao: 'A partir da posição ajoelhada, erguer o quadril usando a perna da frente (MOST IMPORTANT MOMENT). O quadril deve estar em extensão completa. Olhar SEMPRE no KB. O tronco deve estar em posição vertical (prancha).', duracaoSeg: 6, cues: ['Drive the floor away', 'Quadril estendido', 'Joelho suspenso com quadril travado'] },
+      { numero: 6, titulo: 'Standing Through (Estágio 6-7)', descricao: 'Pivot do pé de trás para colocar ambos os pés juntos (a frente). Levantar o corpo com a perna da frente. Finalizar em pé, KB overhead, corpo ereto. Olhar SEMPRE no KB durante todo o movimento. 80% do trabalho está em estabelecer boa posição nos primeiros estágios.', duracaoSeg: 4, cues: ['Pés paralelos', 'Subir sem inclinar', 'Standing final'] },
+      { numero: 7, titulo: 'Reverse (Voltar)', descricao: 'Para completar, inverter EXATAMENTE a ordem dos estágios. O caminho de volta é igualmente importante para aprender. Estabilize-se em cada posição. NÃO pule etapas. Terminar deitado de costas com KB ainda vertical.', duracaoSeg: 30, cues: ['Mesma ordem', 'Devagar', 'Não pular'] },
+    ],
+    fontesExternas: [
+      { name: 'StrongFirst - TGU Manual (Pavel Tsatsouline)', url: 'https://www.strongfirst.com/everything-turkish-get-up/', license: '© StrongFirst' },
+      { name: 'StrongFirst - TGU Teaching Methods', url: 'https://www.strongfirst.com/methods-teaching-turkish-get-up/', license: '© StrongFirst' },
+      { name: 'Wikipedia - Turkish Get-Up', url: 'https://en.wikipedia.org/wiki/Turkish_get-up', license: 'CC BY-SA' },
+    ],
   },
   {
     id: 'kb-tgu-2kb',

@@ -2,7 +2,6 @@ import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Search, ChevronRight, X, BookOpen, Activity, Flame,
-  Heart, Brain,
 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -14,6 +13,7 @@ import {
   type ExercicioKettlebell,
   type PadraoKettlebell,
 } from '@/data/seed/exercicios-kettlebell';
+import { ExerciseDetailModal } from '@/components/common/ExerciseDetailModal';
 
 const NIVEL_CORES: Record<string, string> = {
   iniciante: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
@@ -191,7 +191,7 @@ export function Exercicios() {
 
       {/* DETALHE EM MODAL */}
       {selecionado && (
-        <ExerciseDetail
+        <ExerciseDetailModal
           exercicio={selecionado}
           onClose={() => setSelecionado(null)}
         />
@@ -244,192 +244,5 @@ function ExerciseCard({ exercicio, onClick }: { exercicio: ExercicioKettlebell; 
         </div>
       </CardContent>
     </Card>
-  );
-}
-
-function ExerciseDetail({ exercicio, onClose }: { exercicio: ExercicioKettlebell; onClose: () => void }) {
-  const padrao = KETTLEBELL_PATTERNS[exercicio.padraoKb];
-  return (
-    <div
-      className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto"
-      onClick={onClose}
-    >
-      <div
-        className="bg-card border border-border rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* HEADER COM VÍDEO */}
-        {exercicio.videoUrl ? (
-          <div className="aspect-video bg-black relative">
-            <video
-              src={exercicio.videoUrl}
-              controls
-              className="w-full h-full"
-              poster={exercicio.thumbnailUrl || exercicio.imageUrl}
-            />
-            <button
-              onClick={onClose}
-              className="absolute top-2 right-2 p-2 bg-black/70 hover:bg-black/90 rounded-full"
-            >
-              <X className="h-4 w-4 text-white" />
-            </button>
-          </div>
-        ) : (
-          <div className="aspect-video bg-gradient-to-br from-emerald-500/30 to-slate-900 flex items-center justify-center relative">
-            <span className="text-8xl">{padrao.icone}</span>
-            <button
-              onClick={onClose}
-              className="absolute top-2 right-2 p-2 bg-black/70 hover:bg-black/90 rounded-full"
-            >
-              <X className="h-4 w-4 text-white" />
-            </button>
-          </div>
-        )}
-
-        <div className="p-6 space-y-5">
-          {/* TÍTULO + BADGES */}
-          <div>
-            <div className="flex items-center gap-2 mb-2 flex-wrap">
-              <Badge className={`${NIVEL_CORES[exercicio.nivel]}`}>
-                {exercicio.nivel}
-              </Badge>
-              <Badge className="bg-card text-foreground border border-border">
-                {padrao.icone} {padrao.nome}
-              </Badge>
-              <Badge variant="outline">
-                🎯 {exercicio.equipamento}
-              </Badge>
-            </div>
-            <h2 className="text-2xl font-bold">{exercicio.nome}</h2>
-            <p className="text-sm text-emerald-400 mt-1">
-              Foco: {exercicio.focoPrincipal}
-            </p>
-            {exercicio.musculosSecundarios.length > 0 && (
-              <p className="text-xs text-muted-foreground">
-                Auxiliares: {exercicio.musculosSecundarios.join(', ')}
-              </p>
-            )}
-          </div>
-
-          {/* DESCRIÇÃO */}
-          <div>
-            <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide mb-1">
-              Descrição
-            </h3>
-            <p className="text-sm leading-relaxed">{exercicio.descricao}</p>
-          </div>
-
-          {/* CUES */}
-          {exercicio.cues && exercicio.cues.length > 0 && (
-            <div>
-              <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide mb-2">
-                💬 Cues Técnicos
-              </h3>
-              <div className="flex flex-wrap gap-2">
-                {exercicio.cues.map((cue, i) => (
-                  <Badge key={i} className="bg-emerald-500/10 text-emerald-400 border-emerald-500/30">
-                    "{cue}"
-                  </Badge>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* DICAS (do schema original) */}
-          {exercicio.dicas && exercicio.dicas.length > 0 && (
-            <div>
-              <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide mb-2">
-                ✅ Dicas
-              </h3>
-              <ul className="space-y-1 text-sm">
-                {exercicio.dicas.map((d, i) => (
-                  <li key={i} className="flex gap-2">
-                    <span className="text-emerald-400">→</span>
-                    <span>{d}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {/* ERROS COMUNS */}
-          {exercicio.errors && exercicio.errors.length > 0 && (
-            <div>
-              <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide mb-2">
-                ❌ Erros Comuns
-              </h3>
-              <ul className="space-y-1 text-sm">
-                {exercicio.errors.map((e, i) => (
-                  <li key={i} className="flex gap-2">
-                    <span className="text-rose-400">✗</span>
-                    <span>{e}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {/* ALERTA 50+ */}
-          {exercicio.alerta50mais && (
-            <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-3">
-              <h3 className="font-semibold text-sm text-amber-400 mb-1 flex items-center gap-1">
-                <Heart className="h-4 w-4" />
-                Atenção 50+
-              </h3>
-              <p className="text-sm">{exercicio.alerta50mais}</p>
-            </div>
-          )}
-
-          {/* CONTRAINDICAÇÕES */}
-          {exercicio.contraIndicacoes && exercicio.contraIndicacoes.length > 0 && (
-            <div>
-              <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide mb-2">
-                🚫 Contraindicações
-              </h3>
-              <ul className="space-y-1 text-sm">
-                {exercicio.contraIndicacoes.map((c, i) => (
-                  <li key={i} className="flex gap-2">
-                    <span className="text-rose-400">⚠</span>
-                    <span>{c}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {/* EVIDÊNCIA CIENTÍFICA */}
-          {exercicio.evidencia && (
-            <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-3">
-              <h3 className="font-semibold text-sm text-blue-400 mb-1 flex items-center gap-1">
-                <Brain className="h-4 w-4" />
-                Evidência Científica
-              </h3>
-              <p className="text-sm">{exercicio.evidencia}</p>
-              {exercicio.referencias && exercicio.referencias.length > 0 && (
-                <p className="text-xs text-muted-foreground mt-2">
-                  Refs: {exercicio.referencias.join(' · ')}
-                </p>
-              )}
-            </div>
-          )}
-
-          {/* CTA */}
-          <div className="flex gap-2 pt-2">
-            <Button asChild variant="outline" className="flex-1">
-              <Link to="/app/preparacao/nova" state={{ exercicioSelecionado: exercicio.id }}>
-                <Flame className="h-4 w-4 mr-1" />
-                Usar em Sessão
-              </Link>
-            </Button>
-            <Button asChild className="flex-1">
-              <Link to="/app/periodizacao">
-                <Activity className="h-4 w-4 mr-1" />
-                Ver Periodização
-              </Link>
-            </Button>
-          </div>
-        </div>
-      </div>
-    </div>
   );
 }
