@@ -236,3 +236,126 @@ getTopMusculaturas(id: string, n?: number): string[]
 - **Sprint 38**: Expansão avatares SVG para todos os exercícios + animação
 - **Sprint 39**: A11y completa das dicas musculares (aria-describedby)
 - **Sprint 40**: Coach IA usando mapaMuscularLeigo nas respostas
+
+---
+
+## 🎭 Sprint 38 — Avatares SVG COMPLETOS (89 exercícios × 4 steps média)
+
+### Templates SVG parametrizados
+9 templates para diferentes posições corporais:
+- `svg_stand` — Em pé (geral)
+- `svg_hinge` — Hip hinge (quadril para trás)
+- `svg_squat_top` — Squat em pé
+- `svg_squat_bottom` — Squat paralelo
+- `svg_press_rack` — Press rack (ombro)
+- `svg_press_overhead` — Press lockout
+- `svg_lying` — Deitado (TGU/floor/pullover)
+- `svg_carry` — Caminhando com KBs
+- `svg_plank` — Prancha (push-up/row/plank)
+
+### Geração automática
+- **371 avatares SVG** gerados (1 por step de cada exercício)
+- Decisão de template por **padrão KB + número do step**
+- Cores por padrão KB (verde/laranja/roxo/azul/vermelho/ciano/rosa)
+- Stick figure didático com posição do KB marcada
+- Texto curto embaixo descrevendo o ponto-chave
+
+### Componente `ExerciseAvatar.tsx`
+- Renderiza SVG como `<object type="image/svg+xml">`
+- 3 sizes: sm/md/lg
+- Fallback para User icon se SVG não carregar
+- Integração no `ExerciseDetailModal`: cada step agora mostra:
+  - Avatar (stick figure 96×144)
+  - Descrição completa
+  - Cues técnicos (chips)
+
+---
+
+## ♿ Sprint 39 — A11y das Dicas Musculares
+
+### Mudanças ARIA no `MuscleHint`
+- `role="group"` com `aria-label="Dicas musculares"` no variant="inline"
+- `role="region"` com `aria-label="Dicas musculares detalhadas"` no variant="card"
+- `role="alert"` no bloco de erro muscular (leitores de tela anunciam)
+- `role="img"` no variant="badge"
+- `aria-hidden="true"` nos ícones decorativos (Lucide icons)
+- Texto alternativo nos alertas
+
+### Benefícios
+- NVDA/JAWS anunciam corretamente os avisos musculares
+- VoiceOver anuncia "Erro muscular comum" antes da mensagem
+- Usuários cegos agora têm acesso ao mapa muscular leigo
+
+---
+
+## 🤖 Sprint 40 — Coach IA usa `mapaMuscularLeigo`
+
+### Novo arquivo `lib/coach-context.ts`
+- **`buildCoachContext(input)`**: monta bloco enriquecido com mapa muscular leigo
+- **Detecção automática** de exercícios KB mencionados (busca por nome e ID)
+- **FormatExerciseContext()**: formata exercício com mapa muscular + sensações + erros + analogias + carga 50+
+- **getQuickContext(exId)**: versão curta para citações rápidas
+
+### Integração com ChatPage
+- `ChatRequest` agora aceita `contextoExtra`
+- `ChatPage` chama `buildCoachContext()` ANTES de enviar mensagem
+- Bloco formatado é enviado ao backend para concatenar com system prompt
+
+### Backend prompt enrichment
+O backend (Cloud Function api/chat/message) pode usar `req.body.contextoExtra` para:
+- Adicionar bloco ao system prompt
+- Coach IA responde com nomenclatura leiga do usuário
+- Indica ONDE SENTIR, ERRO MUSCULAR, ANALOGIAS
+- Considera CARGA INICIAL 50+
+
+### Exemplo de resposta do coach
+```
+Usuário: "Estou sentindo a lombar doer no swing"
+Coach IA (com contexto muscular):
+  "Pode ser que o quadril não esteja travando no topo. 
+  Tente focar em 'esmagar uma noz' entre as nádegas no topo.
+  Se a lombar continuar queimando, reduza 2kg do KB."
+```
+
+### Validação
+- typecheck: 0 erros
+- lint: 0 erros
+- 432+ testes passando
+
+---
+
+## 📊 Resumo Final Sprints 34-40
+
+| Sprint | Foco | Entregas |
+|---|---|---|
+| 34 | Schema + dados | 89/89 exercícios com sensações PT-BR leigas |
+| 35 | Integração | MuscleHint em 5+ páginas |
+| 36 | Imagens | 371 imagens com overlay ONDE/COMO SENTIR |
+| 37 | Avatares v1 | 11 avatares SVG essenciais |
+| 38 | Avatares v2 | 371 avatares SVG parametrizados |
+| 39 | A11y | ARIA completo nas dicas musculares |
+| 40 | Coach IA | Coach enriquecido com mapa muscular |
+
+### Estatísticas Consolidadas
+- **89/89** exercícios com mapa muscular leigo (100%)
+- **89/89** com sensação principal (100%)
+- **89/89** com erro muscular (100%)
+- **89/89** com analogia inicial (100%)
+- **89/89** com carga inicial 50+ (100%)
+- **363** steps com sensações
+- **371** imagens didáticas regeneradas (overlay ONDE/COMO)
+- **371** avatares SVG demonstrativos
+- **4+ páginas** com dicas musculares integradas
+- **5+ componentes** reutilizáveis (MuscleHint/ExerciseBadge/ExerciseCardFull/ExerciseAvatar/CoachContext)
+
+### Pontos de Exposição das Cues Musculares
+1. ExerciseDetailModal (5 seções + avatars por step)
+2. ExerciseBadge variant="detailed" (preview inline)
+3. MuscleHint (4 variants)
+4. ExerciseCardFull (picker completo)
+5. Exercicios.tsx (cards de listagem)
+6. PreparacaoForm (selecionados)
+7. TreinamentoSessoesForm
+8. Imagens PNG didáticas (overlay)
+9. Avatares SVG (stick figures por step)
+10. Coach IA (system prompt enrichment)

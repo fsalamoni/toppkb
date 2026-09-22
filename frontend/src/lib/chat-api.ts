@@ -28,6 +28,11 @@ export interface ChatRequest {
   message: string;
   conversaId?: string;
   agente?: ChatAgent | 'auto';
+  /**
+   * Contexto extra (Sprint 40): bloco enriquecido com cues musculares.
+   * O backend pode concatenar este bloco ao system prompt.
+   */
+  contextoExtra?: string;
 }
 
 export interface ChatResponse {

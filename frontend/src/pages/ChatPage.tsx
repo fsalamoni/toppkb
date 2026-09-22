@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ChatMessages, ChatInput } from '@/components/chat/ChatMessage';
 import { sendMessage, listMensagens, listConversas, saveFeedback, ChatAgent } from '@/lib/chat-api';
+import { buildCoachContext } from '@/lib/coach-context';
 import { useChatStore } from '@/stores/chatStore';
 import { useAuth } from '@/hooks/useAuth';
 import { useUIStore } from '@/stores/uiStore';
@@ -54,10 +55,17 @@ export function ChatPage() {
     addMessage(userMsg);
 
     try {
+      // SPRINT 40: Enriquece o system prompt com cues musculares se houver exercícios KB mencionados
+      const coachCtx = buildCoachContext({
+        message: text,
+        agente: agentePreferido || 'general',
+      });
+
       const response = await sendMessage({
         message: text,
         conversaId: conversaIdAtual || undefined,
         agente: agentePreferido,
+        contextoExtra: coachCtx.enrichedCount > 0 ? coachCtx.contextBlock : undefined,
       });
       // Adiciona resposta
       addMessage({

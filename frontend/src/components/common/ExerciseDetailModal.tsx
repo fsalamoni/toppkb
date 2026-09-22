@@ -28,6 +28,7 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
 import type { ExercicioKettlebell } from '@/data/seed/exercicios-kettlebell';
+import { ExerciseAvatar } from './ExerciseAvatar';
 
 interface ExerciseDetailModalProps {
   exercicio: ExercicioKettlebell | null;
@@ -186,7 +187,7 @@ function ExerciseBody({ exercicio }: { exercicio: ExercicioKettlebell }) {
 
       {/* STEPS (passo a passo) */}
       {steps.length > 0 && (
-        <ExerciseSteps steps={steps} />
+        <ExerciseSteps steps={steps} exerciseId={exercicio.id} />
       )}
 
       {/* CUES TÉCNICOS */}
@@ -337,8 +338,10 @@ function ExerciseGallery({
 
 function ExerciseSteps({
   steps,
+  exerciseId,
 }: {
   steps: NonNullable<ExercicioKettlebell['steps']>;
+  exerciseId: string;
 }) {
   return (
     <div>
@@ -363,19 +366,30 @@ function ExerciseSteps({
                 </span>
               )}
             </div>
-            <p className="text-sm leading-relaxed pl-8">{step.descricao}</p>
-            {step.cues && step.cues.length > 0 && (
-              <div className="pl-8 pt-1 flex flex-wrap gap-1">
-                {step.cues.map((cue, i) => (
-                  <span
-                    key={i}
-                    className="inline-block text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30"
-                  >
-                    "{cue}"
-                  </span>
-                ))}
+            <div className="flex gap-3 pl-8">
+              {/* AVATAR DEMONSTRATIVO (stick figure) */}
+              <ExerciseAvatar
+                exerciseId={exerciseId}
+                stepNum={step.numero}
+                size="sm"
+                className="shrink-0"
+              />
+              <div className="flex-1 min-w-0">
+                <p className="text-sm leading-relaxed">{step.descricao}</p>
+                {step.cues && step.cues.length > 0 && (
+                  <div className="pt-1 flex flex-wrap gap-1">
+                    {step.cues.map((cue, i) => (
+                      <span
+                        key={i}
+                        className="inline-block text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30"
+                      >
+                        "{cue}"
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
-            )}
+            </div>
             {step.sensacoes && step.sensacoes.length > 0 && (
               <details className="pl-8 pt-1">
                 <summary className="text-xs cursor-pointer text-blue-400 hover:text-blue-300">
