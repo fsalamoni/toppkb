@@ -150,7 +150,7 @@ export function MiniBarChart({
   if (!data || data.length === 0) return null;
   const maxV = Math.max(...data.map((d) => d.value), 1);
   return (
-    <div className={cn('flex items-end gap-2 h-16', className)}>
+    <div className={cn('flex items-end gap-2 h-16', className)} data-testid="minibar">
       {data.map((d, i) => {
         const h = Math.max(2, (d.value / maxV) * 100);
         return (

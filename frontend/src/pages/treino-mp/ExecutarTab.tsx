@@ -8,11 +8,12 @@
  * Extraído do TreinamentoMeuPrograma.tsx em Sprint 3 (~225 linhas).
  */
 import { useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {
-  Check, Play, Activity,
+  AlertCircle, Trophy, Check, Play, Activity,
 } from 'lucide-react';
 import type { Plano, SessaoPlano } from '@/lib/geradorPlano';
 

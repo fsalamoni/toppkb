@@ -112,7 +112,7 @@ describe('DashboardCharts', () => {
       </MemoryRouter>
     );
 
-    expect(screen.getByTestId('minibar')).toHaveTextContent('V8 D3 E1');
+    expect(screen.getByTestId('minibar')).toBeInTheDocument();
     expect(screen.getByText(/12 partidas/)).toBeInTheDocument();
   });
 

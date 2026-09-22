@@ -25,7 +25,7 @@ interface UseFormAutoSaveOptions<T> {
   enabled?: boolean;
 }
 
-interface UseFormAutoSaveReturn {
+interface UseFormAutoSaveReturn<T = any> {
   /** Timestamp do último save */
   savedAt: Date | null;
   /** Está salvando agora */

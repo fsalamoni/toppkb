@@ -116,8 +116,8 @@ export function GlobalSearch(_props: GlobalSearchProps) {
   const items = useMemo(() => {
     const all: SearchItem[] = [...PAGES];
 
-    const tryRead = (key: string, map: (d: any) => SearchItem | null) => {
-      const data: any = qc.getQueryData(key);
+    const tryRead = (keyName: string, map: (d: any) => SearchItem | null) => {
+      const data: any = qc.getQueryData([keyName]);
       if (Array.isArray(data)) {
         for (const d of data) {
           const item = map(d);
@@ -126,7 +126,7 @@ export function GlobalSearch(_props: GlobalSearchProps) {
       }
     };
 
-    tryRead(['treinos'], (t) => ({
+    tryRead('treinos', (t) => ({
       type: 'treino',
       titulo: t.tipo || 'Treino',
       subtitulo: t.observacoes || `${t.duracaoMin || 0}min`,
@@ -134,7 +134,7 @@ export function GlobalSearch(_props: GlobalSearchProps) {
       icon: ICON_BY_TYPE.treino,
       data: t.data?.toDate?.()?.getTime() || Date.now(),
     }));
-    tryRead(['partidas'], (p) => ({
+    tryRead('partidas', (p) => ({
       type: 'partida',
       titulo: `vs ${p.adversario || '—'}`,
       subtitulo: p.resultado || '—',
@@ -142,7 +142,7 @@ export function GlobalSearch(_props: GlobalSearchProps) {
       icon: ICON_BY_TYPE.partida,
       data: p.data?.toDate?.()?.getTime() || Date.now(),
     }));
-    tryRead(['dores'], (d) => ({
+    tryRead('dores', (d) => ({
       type: 'dor',
       titulo: d.regiao || 'Dor',
       subtitulo: `Intensidade ${d.intensidade}/10`,
@@ -150,7 +150,7 @@ export function GlobalSearch(_props: GlobalSearchProps) {
       icon: ICON_BY_TYPE.dor,
       data: d.data?.toDate?.()?.getTime() || Date.now(),
     }));
-    tryRead(['torneios'], (t) => ({
+    tryRead('torneios', (t) => ({
       type: 'torneio',
       titulo: t.nome || 'Torneio',
       subtitulo: t.local || '',

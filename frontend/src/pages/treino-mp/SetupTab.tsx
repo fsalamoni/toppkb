@@ -19,7 +19,7 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
-  ChevronRight, Sparkles, Dumbbell, Target,
+  ChevronRight, Sparkles, Dumbbell, Target, Check, Clock,
 } from 'lucide-react';
 import {
   gerarPlano, OBJETIVOS_LABEL, OBJETIVOS_ICONE,

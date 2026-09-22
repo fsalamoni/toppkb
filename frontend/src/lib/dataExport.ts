@@ -94,7 +94,7 @@ export async function exportAllUserData(uid: string): Promise<ExportData> {
   const colecoes: Record<string, any[]> = {};
   let totalDocumentos = 0;
   for (const [name, items] of results) {
-    colecoes[name] = items;
+    colecoes[name] = items as any[];
     totalDocumentos += items.length;
   }
 

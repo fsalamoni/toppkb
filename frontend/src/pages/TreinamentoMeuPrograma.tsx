@@ -37,6 +37,11 @@ import { safeSetDoc, safeAddDoc } from '@/lib/firestoreWithAuth';
 import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { TrendingUp } from 'lucide-react';
+import {
+  OBJETIVOS_LABEL, OBJETIVOS_ICONE,
+} from '@/lib/geradorPlano';
+import type { SessaoPlano } from '@/lib/geradorPlano';
 import { toast } from '@/components/ui/toaster';
 import { Confetti } from '@/components/Confetti';
 import { useConfirm } from '@/hooks/useConfirm';

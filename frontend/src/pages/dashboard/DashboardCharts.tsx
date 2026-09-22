@@ -104,7 +104,14 @@ export function DashboardCharts({
           </div>
         </CardHeader>
         <CardContent>
-          <MiniBarChart data={vitoriaDerrota30d} className="h-[70px]" />
+          <MiniBarChart
+            data={[
+              { label: 'V', value: vitoriaDerrota30d.v, color: 'green' },
+              { label: 'D', value: vitoriaDerrota30d.d, color: 'red' },
+              { label: 'E', value: vitoriaDerrota30d.e, color: 'gray' },
+            ]}
+            className="h-[70px]"
+          />
           <div className="text-center text-xs text-muted-foreground mt-2">
             {vitoriaDerrota30d.v + vitoriaDerrota30d.d + vitoriaDerrota30d.e} partidas
           </div>

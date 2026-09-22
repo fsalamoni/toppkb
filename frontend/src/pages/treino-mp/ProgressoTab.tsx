@@ -11,7 +11,8 @@
  */
 import { useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Activity, Trophy } from 'lucide-react';
+import { Activity, Trophy, Check, Flame, AlertCircle, Target } from 'lucide-react';
+import { Kpi } from '@/components/common/Kpi';
 import type { Plano } from '@/lib/geradorPlano';
 
 interface ProgressoTabProps {

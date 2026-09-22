@@ -60,7 +60,6 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         <App />
         {/* React Query Devtools — só em dev */}
         {import.meta.env.DEV && (
-          // @ts-expect-error dev dependency não tem tipos
           <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-left" />
         )}
       </BrowserRouter>
