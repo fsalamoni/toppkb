@@ -3198,3 +3198,54 @@ export interface ExercicioKettlebell extends Exercicio {
 2. Enriquecer mais 10-20 exercícios com base no que funciona
 3. Adicionar filtro "Exercícios com vídeo" em `Exercicios.tsx`
 4. Lazy-load de imagens de galeria para performance com 100+ exercícios
+
+---
+
+## Sprint 34-37: Cues Musculares (Linguagem Leiga)
+
+Data: 2026-09-22
+
+### Mudanças
+- **89/89** exercícios com mapa muscular leigo + sensação principal + erro muscular + analogia + carga inicial 50+
+- **363 steps** com sensações + alertas musculares
+- **371 imagens didáticas** regeneradas com overlay sensorial (ONDE/COMO SENTIR)
+- **11 avatares SVG** com stick figures demonstrativos
+- **Componente MuscleHint** reutilizável em 4 variants
+- **ExerciseDetailModal** com 5 novas seções dedicadas
+
+### Schema expandido
+```typescript
+ExercicioKettlebell: {
+  + mapaMuscularLeigo: string[]      // ONDE SENTIR
+  + sensacaoPrincipal: string       // COMO SENTIR
+  + erroMuscular: string            // O QUE FAZER ERRADO
+  + analogiaInicial: string         // METÁFORA
+  + cargaInicial50mais: string      // RECOMENDAÇÃO
+}
+ExerciseStep: {
+  + sensacoes: string[]
+  + alertasMusculares: string[]
+}
+```
+
+### Linguagem
+- Sem jargão anatômico ("bumbum", "parte de trás da coxa", "barriga")
+- Comandos sensoriais ("sinta", "force o calcanhar", "ative")
+- ERROS como sinal claro de compensação ("Se sentir a lombar doendo...")
+
+### Cobertura
+- Modal detalhado
+- ExerciseBadge variant="detailed"
+- ExerciseCardFull (picker)
+- Exercicios.tsx (preview nos cards)
+- PreparacaoForm (selecionados)
+- TreinamentoSessoesForm
+- Imagens didáticas overlay
+- Avatares SVG (stick figures)
+
+### Validação
+- typecheck: 0 erros
+- lint: 0 erros
+- 14 testes ExerciseDetailModal
+- bundle: 250KB gzip 72KB
+- deploy: 3 commits (ddf30b2, ba9b9e7, a9423d7) — todos success

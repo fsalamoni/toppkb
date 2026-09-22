@@ -147,3 +147,92 @@ Todas as 371 imagens didáticas dos steps foram **regeneradas** com:
 
 ### Benefício
 O usuário **vê exatamente o que deve sentir ANTES de abrir o modal**.
+
+---
+
+## 🎨 Sprint 37 — Avatares SVG Demonstrativos
+
+### Implementação
+11 SVGs estáticos com stick figures para os principais padrões KB:
+
+- **HINGE**: swing (3 etapas), clean (1 etapa), deadlift-ready
+- **SQUAT**: goblet squat (2 etapas), front squat-ready
+- **PRESS**: strict press (2 etapas)
+- **CARRY**: farmer carry (1 etapa)
+- **ROT**: TGU etapa 1
+
+Cada SVG mostra:
+- Stick figure em escala humana (400x600px)
+- Posição do corpo + KB
+- Cores por padrão KB (verde=hinge, laranja=squat, roxo=press, azul=carry, vermelho=rot)
+- Texto curto embaixo descrevendo o ponto-chave
+
+### Localização
+`frontend/public/kettlebell/avatars/*.svg`
+
+### Próxima evolução
+- Expandir para os 89 exercícios
+- Adicionar animação (stroke-dashoffset)
+- Combinar com áudio (opcional futuro)
+
+---
+
+## 📊 Resumo Final Sprints 34-37
+
+### Estatísticas Consolidadas
+- **89/89** exercícios com mapa muscular leigo (100%)
+- **89/89** com sensação principal (100%)
+- **89/89** com erro muscular (100%)
+- **89/89** com analogia inicial (100%)
+- **89/89** com carga inicial 50+ (100%)
+- **363** steps com sensações (passo a passo sensorial)
+- **363** alertas musculares distribuídos
+- **371** imagens didáticas regeneradas (overlay ONDE/COMO SENTIR)
+- **11** avatares SVG demonstrativos
+
+### Pontos de Exposição das Cues Musculares
+1. **ExerciseDetailModal** — modal detalhado com 5 seções dedicadas
+2. **ExerciseBadge** (variant detailed) — dica inline visível
+3. **MuscleHint** componente reutilizável em 4 variants
+4. **ExerciseCardFull** — card completo para pickers
+5. **Exercicios.tsx** — listagem com preview da dica
+6. **PreparacaoForm** — quando selecionado
+7. **TreinamentoSessoesForm** — variant detailed
+8. **Imagens PNG didáticas** — overlay visual
+9. **Avatares SVG** — demonstração visual estática
+
+### Mudanças de Schema
+```typescript
+ExercicioKettlebell: {
+  + mapaMuscularLeigo: string[]
+  + sensacaoPrincipal: string
+  + erroMuscular: string
+  + analogiaInicial: string
+  + cargaInicial50mais: string
+}
+
+ExerciseStep: {
+  + sensacoes: string[]
+  + alertasMusculares: string[]
+}
+```
+
+### Helpers Adicionados
+```typescript
+getDicaMuscularCurta(id: string): string | null
+getErroMuscularCurto(id: string): string | null
+getPrincipalMusculatura(id: string): string | null
+getTopMusculaturas(id: string, n?: number): string[]
+```
+
+### Validação
+- typecheck: 0 erros
+- lint: 0 erros
+- 14 testes ExerciseDetailModal passing
+- build: OK (bundle 250KB gzip 72KB)
+- Deploy success (commits: ddf30b2 + ba9b9e7 + a9423d7)
+
+### Próximas Fases
+- **Sprint 38**: Expansão avatares SVG para todos os exercícios + animação
+- **Sprint 39**: A11y completa das dicas musculares (aria-describedby)
+- **Sprint 40**: Coach IA usando mapaMuscularLeigo nas respostas
