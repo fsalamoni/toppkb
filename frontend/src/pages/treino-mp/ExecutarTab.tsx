@@ -16,6 +16,8 @@ import {
   AlertCircle, Trophy, Check, Play, Activity,
 } from 'lucide-react';
 import type { Plano, SessaoPlano } from '@/lib/geradorPlano';
+import { ExerciseBadge, useExerciseModal } from '@/components/common/ExerciseBadge';
+import { KETTLEBELL_EXERCICIOS } from '@/data/seed/exercicios-kettlebell';
 
 interface ExecutarTabProps {
   plano: Plano;
@@ -27,6 +29,7 @@ interface ExecutarTabProps {
 
 export function ExecutarTab({ plano, sessoesFeitas, onExecutar, onMarcarFeita, marcando }: ExecutarTabProps) {
   const hoje = new Date();
+  const { showExercise, ModalRoot } = useExerciseModal();
   const inicioPlano = useMemo(() => {
     try {
       if (!plano.criadoEm) return new Date();
@@ -117,7 +120,14 @@ export function ExecutarTab({ plano, sessoesFeitas, onExecutar, onMarcarFeita, m
       </Card>
 
       {/* PRÓXIMA SESSÃO EM DESTAQUE */}
-      {proxima && (
+      {proxima && (() => {
+        // preview visual do primeiro exercício (se for do catálogo)
+        const primeiroEx = proxima.exercicios[0];
+        const previewEx = primeiroEx
+          ? KETTLEBELL_EXERCICIOS.find((e) => e.id === primeiroEx.id) ??
+            KETTLEBELL_EXERCICIOS.find((e) => e.nome === primeiroEx.nome)
+          : null;
+        return (
         <Card className="border-2 border-amber-500/50 bg-gradient-to-br from-amber-500/10 to-transparent shadow-lg shadow-amber-500/10">
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
@@ -128,13 +138,43 @@ export function ExecutarTab({ plano, sessoesFeitas, onExecutar, onMarcarFeita, m
             <CardDescription>{proxima.foco} · ~{proxima.duracaoMin}min</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
+            {previewEx && previewEx.imageUrl && (
+              <button
+                type="button"
+                onClick={() => showExercise(previewEx)}
+                className="block w-full rounded-lg overflow-hidden border border-amber-500/30 hover:border-amber-500/60 transition-all text-left group"
+              >
+                <div className="relative aspect-video bg-muted">
+                  <img
+                    src={previewEx.imageUrl}
+                    alt={previewEx.nome}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                    loading="lazy"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-3">
+                    <div>
+                      <div className="text-xs text-amber-300 font-semibold uppercase tracking-wide">
+                        ▶ Como executar (preview)
+                      </div>
+                      <div className="text-base font-bold text-white">{previewEx.nome}</div>
+                    </div>
+                  </div>
+                </div>
+              </button>
+            )}
             <div className="bg-muted/30 rounded p-3">
-              <div className="text-xs font-semibold mb-2 text-muted-foreground uppercase">Exercícios programados</div>
+              <div className="text-xs font-semibold mb-2 text-muted-foreground uppercase">
+                Exercícios programados — clique para ver detalhes
+              </div>
               <div className="space-y-1.5">
                 {proxima.exercicios.map((ex, i) => (
                   <div key={i} className="text-sm flex items-center gap-2">
                     <span className="text-muted-foreground text-xs w-5 text-right">{i + 1}.</span>
-                    <span className="flex-1">{ex.nome}</span>
+                    <ExerciseBadge
+                      id={ex.id ?? ex.nome}
+                      onShow={showExercise}
+                      className="flex-1 justify-start"
+                    />
                     <Badge variant="outline" className="text-xs">{ex.series}×{ex.reps}</Badge>
                     <Badge variant="outline" className="text-xs">{ex.carga}</Badge>
                   </div>
@@ -162,7 +202,8 @@ export function ExecutarTab({ plano, sessoesFeitas, onExecutar, onMarcarFeita, m
             </div>
           </CardContent>
         </Card>
-      )}
+        );
+      })()}
 
       {/* OUTRAS SESSÕES PENDENTES */}
       {sessoesPendentesMemo.length > 1 && (
@@ -240,6 +281,7 @@ export function ExecutarTab({ plano, sessoesFeitas, onExecutar, onMarcarFeita, m
           </CardContent>
         </Card>
       )}
+      {ModalRoot}
     </div>
   );
 }

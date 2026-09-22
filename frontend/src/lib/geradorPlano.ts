@@ -34,6 +34,7 @@ export interface SessaoPlano {
   foco: string; // descrição curta
   exercicios: {
     nome: string;
+    id?: string; // ID do exercício na biblioteca (para abrir modal de detalhes)
     series: number;
     reps: string; // "8-10", "AMRAP", "30s"
     carga: string; // "16kg", "BW", "moderado"
@@ -258,7 +259,7 @@ function volumeParaSemana(nivel: Nivel, semanaIdx: number) {
 //   Picker de exercício por padrão
 // ─────────────────────────────────────────────────────────────
 
-function pegarExerciciosPorPadrao(padroes: string[], quantidade: number, equipamento: Equipamento, nivel: Nivel): string[] {
+function pegarExerciciosPorPadrao(padroes: string[], quantidade: number, equipamento: Equipamento, nivel: Nivel): { id: string; nome: string }[] {
   const candidatos = KETTLEBELL_EXERCICIOS.filter((ex: any) => {
     if (equipamento === 'peso_corporal' && ex.equipamento !== 'peso_corporal') return false;
     if (equipamento === 'kb_leve' && ex.carga === 'pesado') return false;
@@ -271,18 +272,18 @@ function pegarExerciciosPorPadrao(padroes: string[], quantidade: number, equipam
     return KETTLEBELL_EXERCICIOS
       .filter((ex: any) => padroes.includes((ex as any).padraoKb))
       .slice(0, quantidade)
-      .map((ex: any) => ex.nome);
+      .map((ex: any) => ({ id: ex.id, nome: ex.nome }));
   }
 
   // Embaralhar levemente (mas deterministicamente pelo seed = idx)
-  const resultado: string[] = [];
+  const resultado: { id: string; nome: string }[] = [];
   const usados = new Set<number>();
   let padraoIdx = 0;
   for (let i = 0; i < quantidade && i < candidatos.length; i++) {
     const idx = (i + padraoIdx) % candidatos.length;
     if (!usados.has(idx)) {
       usados.add(idx);
-      resultado.push((candidatos[idx] as any).nome);
+      resultado.push({ id: candidatos[idx].id, nome: candidatos[idx].nome });
     }
     padraoIdx++;
   }
@@ -290,7 +291,7 @@ function pegarExerciciosPorPadrao(padroes: string[], quantidade: number, equipam
   // Preencher com swing se faltar
   while (resultado.length < quantidade) {
     const swing = KETTLEBELL_EXERCICIOS.find((ex: any) => ex.nome.toLowerCase().includes('swing'));
-    if (swing) resultado.push((swing as any).nome);
+    if (swing) resultado.push({ id: swing.id, nome: swing.nome });
     else break;
   }
 
@@ -332,7 +333,8 @@ export function gerarPlano(input: PlanoInput): Plano {
         nome: tipo.nome,
         duracaoMin: input.duracaoSessaoMin,
         foco: tipo.foco,
-        exercicios: exNames.map((nome) => ({
+        exercicios: exNames.map(({ id, nome }) => ({
+          id,
           nome,
           series: vol.series,
           reps: vol.reps,

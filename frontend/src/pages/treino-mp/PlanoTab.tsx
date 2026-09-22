@@ -14,6 +14,7 @@ import {
   Check, Play,
 } from 'lucide-react';
 import type { Plano, SessaoPlano } from '@/lib/geradorPlano';
+import { ExerciseBadge, useExerciseModal } from '@/components/common/ExerciseBadge';
 
 interface PlanoTabProps {
   plano: Plano;
@@ -25,6 +26,7 @@ interface PlanoTabProps {
 
 export function PlanoTab({ plano, sessoesFeitas, onExecutar, onMarcarFeita, marcando }: PlanoTabProps) {
   const [semanaAtual, setSemanaAtual] = useState(0);
+  const { showExercise, ModalRoot } = useExerciseModal();
 
   // Auto-posiciona na semana atual baseado em dias
   useEffect(() => {
@@ -119,7 +121,12 @@ export function PlanoTab({ plano, sessoesFeitas, onExecutar, onMarcarFeita, marc
                   {s.exercicios.slice(0, 4).map((ex, i) => (
                     <div key={i} className="text-xs flex items-center gap-1">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                      <span className="flex-1 truncate">{ex.nome}</span>
+                      <ExerciseBadge
+                        id={ex.id ?? ex.nome}
+                        onShow={showExercise}
+                        variant="compact"
+                        className="flex-1 text-xs h-auto px-1.5 py-0"
+                      />
                       <span className="text-muted-foreground">{ex.series}×{ex.reps}</span>
                     </div>
                   ))}
@@ -155,6 +162,7 @@ export function PlanoTab({ plano, sessoesFeitas, onExecutar, onMarcarFeita, marc
           );
         })}
       </div>
+      {ModalRoot}
     </div>
   );
 }

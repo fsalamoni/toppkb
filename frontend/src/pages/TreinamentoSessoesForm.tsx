@@ -18,6 +18,7 @@ import { useNavigate, useParams, Link } from 'react-router-dom';
 import {
   getDoc, serverTimestamp,
 } from 'firebase/firestore';
+import { ExerciseBadge, useExerciseModal } from '@/components/common/ExerciseBadge';
 import { db } from '@/lib/firebase';
 import { safeSetDoc, safeAddDoc, ensureFreshToken } from '@/lib/firestoreWithAuth';
 import { useAuth } from '@/hooks/useAuth';
@@ -118,6 +119,7 @@ export function TreinamentoSessoesForm() {
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(!!id);
   const [planoSessaoId, setPlanoSessaoId] = useState<string | null>(null);
+  const { showExercise, ModalRoot } = useExerciseModal();
 
   // Plano ID vindo da URL (?planoId=xxx)
   const planoIdFromUrl = useMemo(() => {
@@ -600,7 +602,12 @@ export function TreinamentoSessoesForm() {
                     {ex.isCustom && (
                       <Badge variant="outline" className="text-xs">Custom</Badge>
                     )}
-                    <div className="font-medium text-sm truncate">{ex.nome}</div>
+                    <ExerciseBadge
+                        id={ex.exercicioId}
+                        onShow={showExercise}
+                        variant="compact"
+                        className="font-medium"
+                      />
                   </div>
                   <div className="flex items-center gap-1">
                     <Button
@@ -738,6 +745,7 @@ export function TreinamentoSessoesForm() {
           {saving ? 'Salvando...' : id ? 'Atualizar' : 'Registrar Sessão'}
         </Button>
       </div>
+      {ModalRoot}
     </div>
   );
 }

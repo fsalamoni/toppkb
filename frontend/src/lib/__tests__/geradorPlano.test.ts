@@ -48,6 +48,8 @@ describe('geradorPlano', () => {
         expect(s.exercicios.length).toBeGreaterThanOrEqual(3);
         s.exercicios.forEach((ex) => {
           expect(ex.nome).toBeTruthy();
+          expect(ex.id).toBeTruthy();
+          expect(ex.id).toMatch(/^kb-/);
           expect(ex.series).toBeGreaterThanOrEqual(1);
           expect(ex.reps).toBeTruthy();
         });
