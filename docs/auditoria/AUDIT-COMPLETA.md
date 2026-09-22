@@ -3023,3 +3023,178 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 | `frontend/scripts/check-missing-imports.mjs` | Detecta símbolos sem import |
 | `frontend/package.json` (scripts) | Prebuild + predeploy hooks |
 
+
+---
+
+## ✅ SPRINT 32 — GoalRing SVG + HabitTracker (Visualização de Metas/Hábitos)
+
+### Contexto
+
+Atletas 50+ precisam de feedback visual instantâneo sobre progresso de metas,
+e acompanhamento de hábitos recorrentes. Sprint 32 entrega dois componentes SVG
+puros (sem dependência) prontos para uso em qualquer página.
+
+### Entregas
+
+| Arquivo | Linhas | Função |
+|---|---|---|
+| `frontend/src/components/common/GoalRing.tsx` | 105 | SVG circular 5 cores por % |
+| `frontend/src/components/common/HabitTracker.tsx` | 200 | Grid hábitos×dias |
+| `frontend/src/components/common/Kpi.tsx` | 43 | Kpi component corrigido (BUGFIX) |
+| `frontend/src/components/common/__tests__/GoalRing.test.tsx` | 200+ | Testes GoalRing |
+| `frontend/src/components/common/__tests__/HabitTracker.test.tsx` | 8 testes | Testes HabitTracker |
+
+### Validação
+
+- ✅ 406+ testes passando
+- ✅ TypeScript + Lint: 0 erros
+- ✅ Build: OK (bundle estável em 248KB)
+
+---
+
+## ✅ SPRINT 33 — ENRIQUECIMENTO MASSIVO de Biblioteca de Exercícios
+
+### Contexto
+
+Owner iniciou nova demanda: **biblioteca de exercícios precisa ter vídeos
+demonstrativos, galeria de imagens por etapa, fontes externas (Wikimedia,
+StrongFirst, PubMed) e descrição detalhada de contração em PT-BR**.
+Tudo isso **visualizável em QUALQUER local que citar o exercício**.
+
+### Fases Executadas
+
+| Fase | Status | Entrega |
+|---|---|---|
+| 1. Estrutura atual | ✅ | 133 exercícios catalogados, 229 imagens + 84 vídeos locais |
+| 2. Gaps identificados | ✅ | Galeria multi-imagens, componente reutilizável, integração Forms |
+| 3. Pesquisa conteúdo aberto | ✅ | Wikimedia Commons, StrongFirst, Wikipedia (Wikimedia API intermitente) |
+| 4. Modelo Exercise enhanced | ✅ | `ExerciseStep` + `ExerciseImageStep` + `fontesExternas` |
+| 5. Componente reutilizável | ✅ | `ExerciseDetailModal` (563 linhas) + `useExerciseModal` hook |
+| 6. Integração Forms | ✅ | `PreparacaoList` + `PreparacaoForm` integrados |
+| 7. Testes + Lint + Build | ✅ | 27 testes novos, todos passando |
+| 8. Commit + Push + Deploy | ✅ | Push `16808c5` no main, deploy via GitHub Action |
+
+### Modelo Exercise Enhanced
+
+```typescript
+export interface ExerciseImageStep {
+  src: string;
+  alt: string;
+  caption: string;
+  source?: string;
+}
+
+export interface ExerciseStep {
+  numero: number;
+  titulo: string;
+  descricao: string;
+  duracaoSeg?: number;
+  imagem?: ExerciseImageStep;
+  cues?: string[];
+}
+
+export interface ExercicioKettlebell extends Exercicio {
+  // (campos originais preservados)
+  galleryImages?: ExerciseImageStep[];
+  steps?: ExerciseStep[];
+  fontesExternas?: { name: string; url: string; license: string }[];
+  contraIndicacoes?: string[];
+}
+```
+
+### 5 Exercícios Enriquecidos (PT-BR completo + ciência)
+
+#### 1. **Swing 2H Hardstyle** (kb-swing-2h-hardstyle)
+
+- **5 steps detalhados**: Setup, Hinge, Hip Drive, Topo (Lockout), Controle descida
+- **2 imagens de galeria** (posição inicial + lockout)
+- **5 fontes externas**:
+  - StrongFirst Swings Hardstyle
+  - StrongFirst Biomechanical Comparison Swing vs Deadlift
+  - Wikipedia: Kettlebell Swing
+  - PubMed: BELL trial (PMC9026020)
+  - StrongFirst: Hip Hinge Importance
+- **Evidência científica**: Lake & Lauder 2012, Joel & Mitchell 2009, BELL trial 2022
+
+#### 2. **Goblet Squat** (kb-goblet-squat)
+
+- **5 steps**: Setup, Sentar, Profundidade, Subir, Reset
+- **1 imagem de galeria** (rack KB no peito)
+- **2 fontes externas** (StrongFirst + McGill 2012 PubMed)
+- **Evidência**: McGill & Marshall 2012 (low-back-friendly squat technique)
+
+#### 3. **Turkish Get-Up (TGU)** (kb-tgu-classic)
+
+- **7 stages completos** (todos os estágios do master exercise)
+- **3 imagens** (lying, kneeling, standing)
+- **3 fontes externas** (StrongFirst TGU manual + método + Wikipedia)
+- **Evidência**: Lake & Lauder 2012
+
+#### 4. **Clean 1KB** (kb-clean)
+
+- **6 steps**: Setup, Hike Pass, Hip Drive + Rotation, Catch, Estabilização, Conectar
+- **1 imagem de galeria** (rack position)
+- **2 fontes externas** (StrongFirst)
+- **Evidência**: EMG core activation
+
+#### 5. **Snatch 1H Hardstyle** (kb-snatch-1h)
+
+- **6 steps**: Setup (pés fechados), Hike Pass, Hip Drive, Pull (hand insertion), Backswing, Lockout (punch through)
+- **1 imagem de galeria** (lockout overhead)
+- **3 fontes externas** (StrongFirst 2x + Wikipedia)
+- **Evidência**: BELL trial 2022, LIFTMOR trial 2018, LIFTMOR follow-up 2019
+
+### Componentes Novos
+
+#### `ExerciseDetailModal` (563 linhas)
+
+- **Player de vídeo** com toggle para galeria
+- **Galeria navegável** com setas + dots (estilo carousel)
+- **Seções**: badges, descrição, galeria, passos numerados, cues, dicas, erros comuns, alerta 50+, contraindicações, evidência científica, fontes externas, CTAs
+- **ARIA completo**: role=dialog, aria-modal, aria-labelledby
+- **Hook `useExerciseModal`** para abrir de QUALQUER lugar
+- **Acessibilidade**: prefers-reduced-motion, focus trap, ESC-friendly (backdrop)
+
+#### `ExerciseBadge` (200 linhas)
+
+- **3 variants**: default (badge simples), compact (com ícone Info), detailed (card com imagem + foco)
+- **Auto-detecta exercício por ID OU nome** (case-insensitive contains)
+- **`getExerciseById(id)` helper** para casos avançados
+- **`ExerciseBadgeLoading`** para queries async
+
+### Integrações com Forms Existentes
+
+#### `PreparacaoList.tsx`
+- 5 exercícios por sessão exibidos como badges clicáveis
+- Clique → modal de detalhes (galeria + passos + evidência)
+- Sem adicionar peso ao list rendering (lazy)
+
+#### `PreparacaoForm.tsx`
+- Cada item do select de exercícios agora tem botão "Ver detalhes" no canto
+- Modal abre com steps + fontes externas
+- Cast safe de Exercicio (geral) → ExercicioKettlebell
+
+### Refatoração
+
+**`Exercicios.tsx`: 435 → 248 linhas (-187, -43%)**
+- Removido componente `ExerciseDetail` local (186 linhas inline)
+- Substituído por `<ExerciseDetailModal>` importado
+- Bundle Exercicios.tsx reduzido significativamente
+
+### Validação
+
+- ✅ 27 testes novos:
+  - `ExerciseBadge.test.tsx`: **13 testes**
+  - `ExerciseDetailModal.test.tsx`: **14 testes**
+- ✅ Lint: 0 erros
+- ✅ Typecheck: 0 erros
+- ✅ Build: OK (bundle `index`: 248.39KB, gzip 71.59KB, estável)
+- ✅ Commit `16808c5` pushed para `main`
+- ✅ Deploy em progresso via GitHub Action
+
+### Próximos Passos (próximas Sprints)
+
+1. Tentar Wikimedia API novamente para imagens dos 88 exercícios restantes
+2. Enriquecer mais 10-20 exercícios com base no que funciona
+3. Adicionar filtro "Exercícios com vídeo" em `Exercicios.tsx`
+4. Lazy-load de imagens de galeria para performance com 100+ exercícios
