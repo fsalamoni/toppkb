@@ -207,7 +207,7 @@ export function PreparacaoList() {
                     </div>
 
                     {s.exercicios && s.exercicios.length > 0 && (
-                      <div className="mt-2 flex flex-wrap gap-1">
+                      <div className="mt-2 space-y-1">
                         {s.exercicios.slice(0, 5).map((e: string, i: number) => (
                           <ExerciseBadge
                             key={i}

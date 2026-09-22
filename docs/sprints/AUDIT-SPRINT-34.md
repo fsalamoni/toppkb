@@ -127,3 +127,23 @@ alertasMusculares: [
 ## 🚀 Próximo Sprint
 **Sprint 35:** Imagens didáticas atualizadas com cues musculares (overlay textual)
 **Sprint 36:** Avatares demonstrativos (vídeos simplificados)
+
+---
+
+## 📦 Sprint 36 — Imagens V4 com Overlay Sensorial
+
+### Mudança visual
+Todas as 371 imagens didáticas dos steps foram **regeneradas** com:
+- Header colorido (mesmo padrão KB da imagem v1)
+- Título do step em destaque
+- Descrição completa em PT-BR
+- 📦 **CUES TÉCNICOS** (verde) - "o que fazer"
+- 📘 **ONDE SENTIR (músculo)** (azul) - "qual músculo"
+- 🟢 **COMO SENTIR (sensação)** (verde escuro) - "como sentir"
+
+### Exemplo: kb-swing-2h-hardstyle step 3 (Snap Glúteo)
+- ONDE: Glúteo máximo, quadril, isquiotibiais, ...
+- COMO: "No topo do movimento (lockout), você DEVE sentir os glúteos muito contraídos — quase queimando. A coxa (parte de trás) também trava por 1 segundo."
+
+### Benefício
+O usuário **vê exatamente o que deve sentir ANTES de abrir o modal**.

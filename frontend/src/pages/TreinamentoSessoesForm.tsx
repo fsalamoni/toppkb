@@ -605,7 +605,7 @@ export function TreinamentoSessoesForm() {
                     <ExerciseBadge
                         id={ex.exercicioId}
                         onShow={showExercise}
-                        variant="compact"
+                        variant="detailed"
                         className="font-medium"
                       />
                   </div>

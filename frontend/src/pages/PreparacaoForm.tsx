@@ -16,6 +16,7 @@ import { ChevronLeft, Save, AlertTriangle, Info } from 'lucide-react';
 import { useExerciseModal } from '@/components/common/ExerciseBadge';
 import { EXERCICIOS, GRUPOS_MUSCULARES, ALERTAS_50_MAIS_GERAIS } from '@/data/seed/exercicios';
 import { cn } from '@/lib/utils';
+import { MuscleHint } from '@/components/common/MuscleHint';
 
 type FormData = {
   data: string;
@@ -358,6 +359,10 @@ export function PreparacaoForm() {
                             <AlertTriangle className="h-3 w-3 flex-shrink-0 mt-0.5" />
                             {ex.alerta50mais}
                           </p>
+                        )}
+                        {/* DICA MUSCULAR (Sprint 34) */}
+                        {checked && (ex.id.startsWith('kb-') || ex.equipamento === 'kettlebell') && (
+                          <MuscleHint exerciseId={ex.id} variant="inline" className="mt-1" />
                         )}
                         {checked && ex.dicas.length > 0 && (
                           <details className="mt-1">
