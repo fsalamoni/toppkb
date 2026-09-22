@@ -14,6 +14,7 @@ import {
   type PadraoKettlebell,
 } from '@/data/seed/exercicios-kettlebell';
 import { ExerciseDetailModal } from '@/components/common/ExerciseDetailModal';
+import { MuscleHint } from '@/components/common/MuscleHint';
 
 const NIVEL_CORES: Record<string, string> = {
   iniciante: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
@@ -241,6 +242,10 @@ function ExerciseCard({ exercicio, onClick }: { exercicio: ExercicioKettlebell; 
         <div className="flex items-center justify-between mt-3 text-xs">
           <span className="text-emerald-400 font-medium">{exercicio.focoPrincipal}</span>
           <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+        </div>
+        {/* SPRINT 34: DICAS MUSCULARES (preview no card antes de clicar) */}
+        <div className="mt-2 pt-2 border-t border-border/50">
+          <MuscleHint exerciseId={exercicio.id} variant="inline" />
         </div>
       </CardContent>
     </Card>
