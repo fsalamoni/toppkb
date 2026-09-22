@@ -160,7 +160,21 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     evidencia: 'Maeda 2022: KB snatch e swing têm gasto metabólico similar ao correr 8 km/h, sem impacto articular.',
     imageUrl: img('01-swing-bottom.jpg'),
     videoUrl: vid('01-swing.mp4'),
-  },
+  
+    galleryImages: [
+      { src: img('01-swing-bottom.jpg'), alt: 'Swing 1H — posição bottom com KB em uma mão', caption: '1. Hike pass (1H): KB entre as pernas com uma mão, quadril projetado para trás', source: 'local' },
+      { src: img('02-swing-top.jpg'), alt: 'Swing 1H — lockout com KB overhead em uma mão, anti-rotação ativa', caption: '2. Lockout (1H): KB overhead, braço estendido, oblíquos contraindo (anti-rotação)', source: 'local' },
+    ],
+    steps: [
+      { numero: 1, titulo: 'Setup 1H', descricao: 'KB no chão entre os pés. Pega com mão dominante. Pés na largura dos ombros. Mão livre fica em standby.', duracaoSeg: 15, cues: ['Pegada 1H', 'Mão livre ao lado', 'Pés alinhados'] },
+      { numero: 2, titulo: 'Hike Pass 1H', descricao: 'Hipe o quadril para trás, KB passa entre as pernas. Joelhos levemente flexos. KB próximo ao corpo.', duracaoSeg: 2, cues: ['Hips back', 'Hike pass', 'KB próximo'] },
+      { numero: 3, titulo: 'Hip Drive + Lockout', descricao: 'Snap glúteo explosivo. KB sobe até o lockout overhead (1H). OBLÍQUOS contraindo para evitar rotação lateral. Pés firmes.', duracaoSeg: 2, cues: ['Snap glúteo', 'Anti-rotação', 'Pés firmes'] },
+      { numero: 4, titulo: 'Descida controlada', descricao: 'Excêntrico controlado. KB desce em arco. Mão livre continua em standby.', duracaoSeg: 2, cues: ['Excêntrico controlado', 'Arco do KB', 'Mão livre pronta'] },
+    ],
+    fontesExternas: [
+      { name: 'StrongFirst - One-Arm Swing', url: 'https://www.strongfirst.com/the-one-arm-swing/', license: '© StrongFirst' },
+    ],
+},
   {
     id: 'kb-snatch-1h',
     nome: 'Snatch 1H (Hardstyle)',
@@ -273,7 +287,20 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     imageUrl: img('12-clean-rack.jpg'),
     videoUrl: vid('05-clean.mp4'),
     alerta50mais: 'Ótimo exercício pra começar. Idosos aprendem rápido.',
-  },
+  
+    galleryImages: [
+      { src: img('12-clean-rack.jpg'), alt: 'Clean — posição rack com KB no ombro, cotovelo próximo ao corpo', caption: '1. Posição final (rack): KB apoiado no ombro, cotovelo próximo ao tronco', source: 'local' },
+    ],
+    steps: [
+      { numero: 1, titulo: 'Setup (sem balanço)', descricao: 'KB no chão entre os pés. Postura de deadlift (quadril para trás, costas retas).', duracaoSeg: 15, cues: ['Setup deadlift', 'Costas retas', 'KB no chão'] },
+      { numero: 2, titulo: 'Levantar até o rack', descricao: 'Sem balanço (sem hip drive explosivo), simplesmente LEVANTA o KB controlando até a posição rack no ombro. Joelhos podem ajudar mas sem extensão explosiva.', duracaoSeg: 4, cues: ['Sem balanço', 'Controle total', 'Joelhos ajudam'] },
+      { numero: 3, titulo: 'Encaixar no rack', descricao: 'No ombro, cotovelo PRÓXIMO ao tronco. Bíceps ao lado da costela. KB apoiado, não preso.', duracaoSeg: 2, cues: ['Cotovelo próximo', 'Bíceps ao lado', 'KB apoiado'] },
+      { numero: 4, titulo: 'Descer controlado', descricao: 'KB desce de volta ao rack. Pode usar deadlift pattern reverso (quadril primeiro).', duracaoSeg: 3, cues: ['Excêntrico controlado', 'Quadril primeiro', 'Sem drop'] },
+    ],
+    fontesExternas: [
+      { name: 'StrongFirst - Dead Clean', url: 'https://www.strongfirst.com/the-dead-clean/', license: '© StrongFirst' },
+    ],
+},
   {
     id: 'kb-deadlift',
     nome: 'Deadlift com KB',
@@ -293,7 +320,25 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     referencias: ['PMID:28929619'],
     imageUrl: img('33-deadlift-kb.jpg'),
     videoUrl: vid('16-deadlift.mp4'),
-  },
+  
+    galleryImages: [
+      { src: img('43-hip-hinge.jpg'), alt: 'Posição de setup do hinge (sem carga) — quadril projetado para trás, lombar neutra', caption: '1. Setup do Hinge: quadril para trás, joelhos levemente flexos, lombar neutra. SEM carga, foque no padrão.', source: 'local' },
+      { src: img('33-deadlift-kb.jpg'), alt: 'Posição de pull — descendo com KB próximo ao corpo, costas retas', caption: '2. Puxada: KB desce próximo ao corpo, costas mantêm-se retas, lombar neutra. Joelhos não avançam.', source: 'local' },
+    ],
+    steps: [
+      { numero: 1, titulo: 'Setup (sem carga)', descricao: 'Em pé, pés na largura dos ombros. KB no chão entre os pés. Hipe o quadril para trás como se fosse fechar uma porta com o bumbum. Joelhos levemente flexos. Lombar neutra — NÃO arredondar. Mãos podem tocar o quadril como dobradiça.', duracaoSeg: 30, cues: ['Hips back', 'Dobradiça no quadril', 'Lombar neutra'] },
+      { numero: 2, titulo: 'Pegada no KB', descricao: 'Com o quadril na posição hinge, dobre os joelhos um pouco mais até alcançar as alças do KB. Não flexionar demais — quadril PARA TRÁS, não PARA BAIXO. Pegada firme mas sem death grip (palmas curvadas em hook grip).', duracaoSeg: 10, cues: ['Hook grip', 'Alinhamento de escápulas', 'Lombar mantida'] },
+      { numero: 3, titulo: 'Pull (subida)', descricao: 'Imagine empurrar o chão com os pés. Quadril e ombros sobem JUNTOS (não quadril primeiro, nem ombros primeiro). KB sobe próximo ao corpo, sem balançar pra frente. Joelhos se estendem naturalmente. Costas retas.', duracaoSeg: 4, cues: ['Drive the floor', 'Quadril + ombros juntos', 'KB próximo ao corpo'] },
+      { numero: 4, titulo: 'Lockout (topo)', descricao: 'Em pé, KB pendurado. Contraia GLÚTEOS no topo (squeeze). Ombros para trás e para baixo (não arredondar). Respiração: exale no topo. Pause por 1 segundo antes de descer.', duracaoSeg: 5, cues: ['Glúteos contraídos', 'Lockout firme', 'Exale no topo'] },
+      { numero: 5, titulo: 'Descida controlada', descricao: 'Inverta a ordem: quadril para TRÁS primeiro (mantendo lombar neutra), depois joelhos flexionam. KB controlado de volta ao chão. NÃO deixar cair — controle excêntrico é metade do trabalho.', duracaoSeg: 4, cues: ['Hinge primeiro', 'Excêntrico controlado', 'Não arredondar'] },
+    ],
+    fontesExternas: [
+      { name: 'StrongFirst - Deadlift Technique', url: 'https://www.strongfirst.com/deadlift/', license: '© StrongFirst' },
+      { name: 'StrongFirst - Hardstyle Hip Hinge', url: 'https://www.strongfirst.com/the-hip-hinge/', license: '© StrongFirst' },
+      { name: 'PubMed - LIFTMOR Trial (Watson 2018)', url: 'https://pubmed.ncbi.nlm.nih.gov/28929619/', license: 'Public Domain' },
+      { name: 'Wikipedia - Deadlift', url: 'https://en.wikipedia.org/wiki/Deadlift', license: 'CC BY-SA' },
+    ],
+},
   {
     id: 'kb-hip-hinge',
     nome: 'Hip Hinge (sem carga)',
@@ -311,7 +356,20 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     imageUrl: img('33-deadlift-kb.jpg'),
     videoUrl: vid('16-deadlift.mp4'),
     alerta50mais: 'Excelente mobilidade para aquecimento diário.',
-  },
+  
+    galleryImages: [
+      { src: img('43-hip-hinge.jpg'), alt: 'Hip hinge sem carga — quadril projetado para trás, mãos no quadril, joelhos levemente flexos', caption: '1. Setup (sem carga): quadril para trás, joelhos levemente flexos, lombar neutra.', source: 'local' },
+    ],
+    steps: [
+      { numero: 1, titulo: 'Setup', descricao: 'Em pé, pés na largura dos ombros. Mãos no quadril como dobradiça. Olhar à frente.', duracaoSeg: 15, cues: ['Mãos no quadril', 'Pés alinhados', 'Olhar à frente'] },
+      { numero: 2, titulo: 'Hinge', descricao: 'Projete o quadril PARA TRÁS (como fechar uma porta com o bumbum). Joelhos levemente flexos (NÃO agachar). Lombar neutra.', duracaoSeg: 5, cues: ['Hips back', 'Lombar neutra', 'Não agachar'] },
+      { numero: 3, titulo: 'Sentir alongamento', descricao: 'Vai sentir alongamento nos isquiotibiais (posterior de coxa). Esta é a sensação alvo. Mantenha 3-5 segundos.', duracaoSeg: 5, cues: ['Alongamento no posterior', 'Segurar 3-5s', 'Lombar neutra mantida'] },
+      { numero: 4, titulo: 'Volta', descricao: 'Contraia glúteos para voltar à posição em pé. Quadril passa POR BAIXO dos ombros.', duracaoSeg: 3, cues: ['Glúteos contraem', 'Quadril por baixo', 'Em pé'] },
+    ],
+    fontesExternas: [
+      { name: 'StrongFirst - Hip Hinge', url: 'https://www.strongfirst.com/the-hip-hinge/', license: '© StrongFirst' },
+    ],
+},
   {
     id: 'kb-alternating-swing',
     nome: 'Alternating Swing',
@@ -329,7 +387,23 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     imageUrl: img('01-swing-bottom.jpg'),
     videoUrl: vid('01-swing.mp4'),
     alerta50mais: 'Menos carga que 1H puro — comece 30% abaixo.',
-  },
+  
+    galleryImages: [
+      { src: img('01-swing-bottom.jpg'), alt: 'Swing 1H — posição bottom (entre as pernas) com KB, quadril para trás', caption: '1. Hike pass (1ª posição): KB entre as pernas, quadril projetado para trás, lombar neutra', source: 'local' },
+      { src: img('02-swing-top.jpg'), alt: 'Lockout do swing — KB overhead no topo, postura ereta, glúteos contraídos', caption: '2. Topo (lockout): KB no topo (1H), corpo ereto, glúteos contraídos. TROCA acontece aqui', source: 'local' },
+    ],
+    steps: [
+      { numero: 1, titulo: 'Setup inicial (1H)', descricao: 'Em pé, KB no chão entre os pés. Pega o KB com a mão dominante (ex: direita). Pés na largura dos ombros. Mão livre fica esperando no quadril.', duracaoSeg: 15, cues: ['Pegada firme', 'Mão livre no quadril', 'Pés alinhados'] },
+      { numero: 2, titulo: 'Hike Pass (1ª repetição)', descricao: 'Hipe o quadril para trás, KB passa entre as pernas. Mesma técnica do swing 1H padrão. Joelhos levemente flexos.', duracaoSeg: 2, cues: ['Hips back', 'Hike pass', 'Lombar neutra'] },
+      { numero: 3, titulo: 'Lockout + PRIMEIRA TROCA', descricao: 'Snap glúteo explosivo → KB vai ao topo (lockout 1H). No TOPO do lockout, ANTES de começar a descida: transfira o KB da mão direita para a esquerda. KB flutua no topo durante 1s.', duracaoSeg: 2, cues: ['Lockout firme', 'Troca no topo', 'Mão livre pronta'] },
+      { numero: 4, titulo: 'Descida controlada (agora com mão ESQUERDA)', descricao: 'Desce o KB com a mão esquerda controlando o excêntrico. KB passa entre as pernas novamente.', duracaoSeg: 2, cues: ['Excêntrico controlado', 'Mão ESQUERDA guiando', 'Anti-rotação ativa'] },
+      { numero: 5, titulo: 'Repetir e alternar', descricao: 'Lockout com mão esquerda + transfere de volta para direita. Continua alternando. Cadência deve ser constante.', duracaoSeg: 0, cues: ['Cadência constante', 'Bracing 360', 'Exale no topo'] },
+    ],
+    fontesExternas: [
+      { name: 'StrongFirst - Alternating Swing', url: 'https://www.strongfirst.com/kettlebell-swing-variations/', license: '© StrongFirst' },
+      { name: 'Wikipedia - Kettlebell Swing', url: 'https://en.wikipedia.org/wiki/Kettlebell_swing', license: 'CC BY-SA' },
+    ],
+},
   {
     id: 'kb-single-arm-swing-pausa',
     nome: 'Single-Arm Swing com pausa',
@@ -453,7 +527,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     cues: ['Foco técnico', 'GIANT cadence'],
     errors: ['Soltar antes de completar o ciclo'],
     alerta50mais: 'Base do programa "The Quick and the Dead".',
-    imageUrl: img('13-push-press.jpg'),
+    imageUrl: img('06-press.jpg'),
     videoUrl: vid('42-double-kb-press.mp4'),
   },
   {
@@ -539,7 +613,21 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     alerta50mais: 'Cuidado se tiver mobilidade limitada de ombro.',
     imageUrl: img('16-front-squat.jpg'),
     videoUrl: vid('43-double-kb-front-squat.mp4'),
-  },
+  
+    galleryImages: [
+      { src: img('16-front-squat.jpg'), alt: 'Front squat 2KB — bottom position, KBs em rack, profundidade', caption: '1. Bottom position: KBs no rack, cotovelos altos, quadril abaixo do paralelo', source: 'local' },
+    ],
+    steps: [
+      { numero: 1, titulo: 'Rack Position (2 KB)', descricao: 'KBs em rack nos ombros. Cotovelos ALTOS (não caem!). Tronco ereto.', duracaoSeg: 15, cues: ['Cotovelos altos', 'KBs no rack', 'Tronco ereto'] },
+      { numero: 2, titulo: 'Bracing 360°', descricao: 'Core travado. Glúteos contraídos. Front squat exige mais estabilidade do core que back squat.', duracaoSeg: 5, cues: ['Brace 360', 'Glúteos contraídos', 'Estabilidade'] },
+      { numero: 3, titulo: 'Descer (squat)', descricao: 'Joelhos flexionam primeiro, quadril desce PARA TRÁS e PARA BAIXO. Profundidade: quadril abaixo do joelho. Cotovelos continuam altos.', duracaoSeg: 4, cues: ['Joelhos primeiro', 'Profundidade abaixo do parallel', 'Cotovelos altos'] },
+      { numero: 4, titulo: 'Bottom position', descricao: 'Pausa de 1s no fundo. KBs equilibrados no rack. Joelhos alinhados aos pés.', duracaoSeg: 1, cues: ['Pausa no fundo', 'KBs equilibrados', 'Joelhos alinhados'] },
+      { numero: 5, titulo: 'Subir', descricao: 'Empurre o chão com os pés. Quadril e ombros sobem JUNTOS. Cotovelos permanecem altos.', duracaoSeg: 4, cues: ['Drive the floor', 'Cotovelos altos', 'Lockout em pé'] },
+    ],
+    fontesExternas: [
+      { name: 'StrongFirst - Front Squat', url: 'https://www.strongfirst.com/the-kettlebell-front-squat/', license: '© StrongFirst' },
+    ],
+},
   {
     id: 'kb-pistol-squat',
     nome: 'Pistol Squat (assistido)',
@@ -822,9 +910,23 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     dicas: ['Dip leve (10cm)', 'Drive explosivo de pernas', 'Lockout rápido'],
     cues: ['Dip, drive, press', 'Lockout rápido'],
     errors: ['Dip muito profundo', 'Não terminar lockout'],
-    imageUrl: img('13-push-press.jpg'),
-    videoUrl: vid('13-push-press.mp4'),
-  },
+    imageUrl: img('06-press.jpg'),
+    videoUrl: vid('06-press.mp4'),
+  
+    galleryImages: [
+      { src: img('13-push-press.jpg'), alt: 'Push press — posição rack com KB no ombro, preparo para dip', caption: '1. Posição rack: KB no ombro, cotovelo próximo, preparo para dip+drive', source: 'local' },
+    ],
+    steps: [
+      { numero: 1, titulo: 'Posição Rack', descricao: 'KB no rack position. Joelhos levemente flexionados. Pés firmes no chão. Glúteos contraídos.', duracaoSeg: 10, cues: ['Rack firm', 'Pés no chão', 'Glúteos travados'] },
+      { numero: 2, titulo: 'Dip (flexão leve)', descricao: 'Joelhos flexionam ~10cm (NÃO agachada profunda). É só um amortecer para armazenar energia. Tronco fica vertical.', duracaoSeg: 2, cues: ['Dip leve 10cm', 'Tronco vertical', 'Sem agachar'] },
+      { numero: 3, titulo: 'Drive de pernas (explosivo)', descricao: 'PERNAS explodem pra cima e pra fora. Quadril e joelhos estendem juntos. A potência das pernas transfere pro KB.', duracaoSeg: 1, cues: ['Drive explosivo', 'Pernas primeiro', 'Quadril + joelhos'] },
+      { numero: 4, titulo: 'Press + Lockout', descricao: 'Quando KB começa a subir (pela perna), braços GUIA até o lockout. Lockout rápido: braço estendido, KB sobre ombro, core travado.', duracaoSeg: 1, cues: ['Braços guia', 'Lockout rápido', 'KB sobre ombro'] },
+      { numero: 5, titulo: 'Descida', descricao: 'Excêntrico controlado de volta ao rack. Joelhos absorvem novamente (mini dip reverso).', duracaoSeg: 2, cues: ['Excêntrico 2s', 'Absorver com joelhos', 'Pronto pra próxima rep'] },
+    ],
+    fontesExternas: [
+      { name: 'StrongFirst - Push Press', url: 'https://www.strongfirst.com/the-push-press/', license: '© StrongFirst' },
+    ],
+},
   {
     id: 'kb-floor-press',
     nome: 'Floor Press',
@@ -842,7 +944,21 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     alerta50mais: 'Seguro para 50+ (lombar protegida).',
     imageUrl: img('14-floor-press.jpg'),
     videoUrl: vid('14-floor-press.mp4'),
-  },
+  
+    galleryImages: [
+      { src: img('14-floor-press.jpg'), alt: 'Floor press — deitado no chão, KBs no lockout acima do peito', caption: '1. Lockout: deitado no chão, KBs no lockout acima do peito, cotovelos estendidos', source: 'local' },
+    ],
+    steps: [
+      { numero: 1, titulo: 'Setup (deitado)', descricao: 'Deitado de costas no chão. Joelhos dobrados, pés no chão (próximos ao glúteo). KBs nas mãos em posição rack (ombro). Cotovelos no chão a ~45° do corpo.', duracaoSeg: 15, cues: ['Costas no chão', 'KBs no rack', 'Cotovelos a 45°'] },
+      { numero: 2, titulo: 'Bracing + Pegada', descricao: 'Core bracing 360°. Pés firmes no chão. Pegada firme mas sem death grip.', duracaoSeg: 5, cues: ['Brace 360', 'Pés firmes', 'Hook grip'] },
+      { numero: 3, titulo: 'Press', descricao: 'Empurre os KBs diretamente pra cima (vertical). Os cotovelos se estendem. KBs devem passar acima do peito, alinhados com ombros.', duracaoSeg: 3, cues: ['Vertical press', 'KBs sobre peito', 'Cotovelos estendendo'] },
+      { numero: 4, titulo: 'Lockout', descricao: 'Braços totalmente estendidos. KBs acima do peito, alinhados verticalmente. Pause 1 segundo no topo.', duracaoSeg: 2, cues: ['Lockout total', 'KBs alinhados', 'Não tocar'] },
+      { numero: 5, titulo: 'Descida controlada', descricao: 'Excêntrico 3 segundos. Cotovelos descem até tocar o chão de leve. KBs voltam à posição rack.', duracaoSeg: 3, cues: ['Excêntrico 3s', 'Toque leve', 'Volta ao rack'] },
+    ],
+    fontesExternas: [
+      { name: 'StrongFirst - Floor Press', url: 'https://www.strongfirst.com/the-floor-press/', license: '© StrongFirst' },
+    ],
+},
   {
     id: 'kb-bent-press',
     nome: 'Bent Press',
@@ -926,7 +1042,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     dicas: ['Re-dip curto', 'Lockout estável'],
     cues: ['Jerk', 'Lockout', 'Re-dip'],
     errors: ['Re-dip muito profundo'],
-    imageUrl: img('13-push-press.jpg'),
+    imageUrl: img('06-press.jpg'),
     videoUrl: vid('42-double-kb-press.mp4'),
   },
   {
@@ -943,8 +1059,8 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     dicas: ['Sincronizar braços', 'Drive único'],
     cues: ['Sync', 'Drive', 'Press'],
     errors: ['Assimetria'],
-    imageUrl: img('13-push-press.jpg'),
-    videoUrl: vid('13-push-press.mp4'),
+    imageUrl: img('06-press.jpg'),
+    videoUrl: vid('06-press.mp4'),
   },
   {
     id: 'kb-push-up',
@@ -1442,8 +1558,8 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     dicas: ['Re-dip rápido', 'Lockout estável'],
     cues: ['Jerk', 'Re-dip'],
     errors: ['Re-dip muito profundo'],
-    imageUrl: img('13-push-press.jpg'),
-    videoUrl: vid('13-push-press.mp4'),
+    imageUrl: img('06-press.jpg'),
+    videoUrl: vid('06-press.mp4'),
   },
   {
     id: 'kb-long-cycle',
@@ -1683,7 +1799,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     dicas: ['Mão livre para estabilizar', 'Lockout vertical'],
     cues: ['Valhalla', 'Press'],
     errors: ['Arquear lombar'],
-    imageUrl: img('13-push-press.jpg'),
+    imageUrl: img('06-press.jpg'),
     videoUrl: vid('58-viking-press.mp4'),
   },
   {
@@ -1700,7 +1816,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     dicas: ['Carga leve', 'Foco em mobilidade'],
     cues: ['Up, rotate, press, rotate down'],
     errors: ['Carga alta demais'],
-    imageUrl: img('13-push-press.jpg'),
+    imageUrl: img('06-press.jpg'),
     videoUrl: vid('59-cuban-press.mp4'),
   },
   {
@@ -1751,7 +1867,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     dicas: ['Cadência constante', 'Anti-rotação ativa'],
     cues: ['See-saw'],
     errors: ['Pressa demais'],
-    imageUrl: img('13-push-press.jpg'),
+    imageUrl: img('06-press.jpg'),
     videoUrl: vid('30-see-saw-press.mp4'),
   },
   {
