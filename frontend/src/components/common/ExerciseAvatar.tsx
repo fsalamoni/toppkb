@@ -5,7 +5,7 @@
 import * as LucideIcons from 'lucide-react';
 const { User } = LucideIcons;
 
-import { useMemo } from 'react';
+import { useMemo, useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 
 interface ExerciseAvatarProps {
@@ -13,12 +13,19 @@ interface ExerciseAvatarProps {
   stepNum: number;
   className?: string;
   size?: 'sm' | 'md' | 'lg';
+  animated?: boolean;
 }
 
-export function ExerciseAvatar({ exerciseId, stepNum, className, size = 'md' }: ExerciseAvatarProps) {
+export function ExerciseAvatar({ exerciseId, stepNum, className, size = 'md', animated = true }: ExerciseAvatarProps) {
   const src = useMemo(() => {
     return `/kettlebell/avatars/${exerciseId}-step-${stepNum}.svg`;
   }, [exerciseId, stepNum]);
+
+  // Animação ao trocar step
+  const [animKey, setAnimKey] = useState(0);
+  useEffect(() => {
+    if (animated) setAnimKey((k) => k + 1);
+  }, [stepNum, animated]);
 
   const sizeClass = {
     sm: 'w-24 h-36',
@@ -29,9 +36,14 @@ export function ExerciseAvatar({ exerciseId, stepNum, className, size = 'md' }: 
   return (
     <div className={cn('flex flex-col items-center gap-2', className)}>
       <object
+        key={animKey}
         type="image/svg+xml"
         data={src}
-        className={cn('rounded-lg border border-border bg-slate-900', sizeClass)}
+        className={cn(
+          'rounded-lg border border-border bg-slate-900',
+          sizeClass,
+          animated && 'avatar-enter',
+        )}
         aria-label={`Avatar demonstrativo do exercício ${exerciseId} step ${stepNum}`}
       >
         <div className="flex items-center justify-center w-full h-full text-muted-foreground">

@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import type { Plano, SessaoPlano } from '@/lib/geradorPlano';
 import { ExerciseBadge, useExerciseModal } from '@/components/common/ExerciseBadge';
+import { WorkoutFocusCard } from '@/components/common/WorkoutFocusCard';
 import { KETTLEBELL_EXERCICIOS } from '@/data/seed/exercicios-kettlebell';
 
 interface ExecutarTabProps {
@@ -118,6 +119,22 @@ export function ExecutarTab({ plano, sessoesFeitas, onExecutar, onMarcarFeita, m
           </div>
         </CardContent>
       </Card>
+
+      {/* FOCO MUSCULAR PREVISTO (Sprint 46) */}
+      {proxima && (
+        <WorkoutFocusCard
+          nome={proxima.nome}
+          exercicios={proxima.exercicios.map((e) => ({
+            id: e.id,
+            nome: e.nome,
+            series: e.series,
+            reps: e.reps,
+            carga: e.carga,
+          }))}
+          variant="programado"
+          className="mb-2"
+        />
+      )}
 
       {/* PRÓXIMA SESSÃO EM DESTAQUE */}
       {proxima && (() => {

@@ -18,6 +18,7 @@ import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/common/LoadingScreen';
 import { analyzeMuscleFrequency, findNeglectedMuscles, recommendExercisesForMuscle } from '@/lib/muscle-tracker';
 import { ExerciseBadge } from '@/components/common/ExerciseBadge';
+import { MuscleHeatmap } from '@/components/common/MuscleHeatmap';
 
 export default function MuscleTracker() {
   const navigate = useNavigate();
@@ -123,6 +124,13 @@ export default function MuscleTracker() {
               color={neglected.length > 0 ? 'amber' : 'muted'}
             />
           </div>
+
+          {/* HEATMAP MUSCULAR */}
+          <Card>
+            <CardContent className="p-4">
+              <MuscleHeatmap sessoes={sessoes} dias={84} />
+            </CardContent>
+          </Card>
 
           {/* FREQUÊNCIA MUSCULAR (TOP 12) */}
           <Card>

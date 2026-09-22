@@ -22,9 +22,10 @@
 import {
   X, ChevronLeft, ChevronRight, ExternalLink, Info, AlertTriangle,
   Award, Video, Image as ImageIcon, BookOpen, Target,
-  Heart, Brain, Activity,
+  Heart, Brain, Activity, Play,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { PracticeMode } from './PracticeMode';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
 import type { ExercicioKettlebell } from '@/data/seed/exercicios-kettlebell';
@@ -229,7 +230,7 @@ function ExerciseBody({ exercicio }: { exercicio: ExercicioKettlebell }) {
       )}
 
       {/* CTAs */}
-      <ExerciseCTAs />
+      <ExerciseCTAs exercicio={exercicio} />
     </div>
   );
 }
@@ -631,22 +632,39 @@ function ExerciseFontesExternas({
   );
 }
 
-function ExerciseCTAs() {
+function ExerciseCTAs({ exercicio }: { exercicio: ExercicioKettlebell }) {
+  const [practicing, setPracticing] = useState(false);
+  const hasSteps = (exercicio.steps?.length ?? 0) > 0;
+
   return (
-    <div className="flex gap-2 pt-2">
-      <Button asChild variant="outline" className="flex-1">
-        <a href="/app/preparacao/nova">
-          <Activity className="h-4 w-4 mr-1" />
-          Usar em Sessão
-        </a>
-      </Button>
-      <Button asChild className="flex-1">
-        <a href="/app/periodizacao">
-          <Award className="h-4 w-4 mr-1" />
-          Ver Periodização
-        </a>
-      </Button>
-    </div>
+    <>
+      <div className="flex gap-2 pt-2 flex-wrap">
+        {hasSteps && (
+          <Button
+            onClick={() => setPracticing(true)}
+            className="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white"
+          >
+            <Play className="h-4 w-4 mr-1" />
+            Praticar ({exercicio.steps?.length} etapas)
+          </Button>
+        )}
+        <Button asChild variant="outline" className="flex-1">
+          <a href="/app/preparacao/nova">
+            <Activity className="h-4 w-4 mr-1" />
+            Usar em Sessão
+          </a>
+        </Button>
+        <Button asChild variant="outline" className="flex-1">
+          <a href="/app/periodizacao">
+            <Award className="h-4 w-4 mr-1" />
+            Ver Periodização
+          </a>
+        </Button>
+      </div>
+      {practicing && (
+        <PracticeMode exercicio={exercicio} onClose={() => setPracticing(false)} />
+      )}
+    </>
   );
 }
 

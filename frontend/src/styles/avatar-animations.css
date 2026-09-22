@@ -1,0 +1,45 @@
+/**
+ * Animações para os avatares SVG de exercícios KB.
+ * Aplicadas quando step muda.
+ */
+
+@keyframes avatar-enter {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes avatar-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+}
+
+@keyframes kb-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+.avatar-enter {
+  animation: avatar-enter 0.4s ease-out;
+}
+
+.avatar-pulse {
+  animation: avatar-pulse 2s ease-in-out infinite;
+}
+
+.kb-bounce {
+  animation: kb-bounce 1.5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .avatar-enter,
+  .avatar-pulse,
+  .kb-bounce {
+    animation: none;
+  }
+}

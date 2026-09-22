@@ -437,3 +437,70 @@ Componente `PracticeLauncher` para abrir PracticeMode diretamente de qualquer lu
 - Coach IA enriquecido
 - **Modo prática guiado** com cronômetro
 - **Dashboard de músculos** com recomendações
+
+---
+
+## 🎨 Sprint 43-46 — Visuais + Integração + Foco do Treino
+
+### Sprint 43: MuscleHeatmap (calendário GitHub-like)
+- **Novo componente `MuscleHeatmap.tsx`**
+- Grid de 84 dias (12 semanas)
+- Cada célula = 1 dia, cor = intensidade (4 níveis)
+- Cores: emerald (fraco → forte)
+- Label de meses no topo
+- Label de dias da semana (D/S/T/Q/Q/S/S)
+- Tooltip com músculos + sessões + data
+- Highlight do dia atual (ring)
+- Modo reduced-motion respeitado
+- **Integrado em `/app/muscles`** — primeiro card após o resumo
+
+### Sprint 44: PracticeLauncher integrado no Modal
+- **ExerciseDetailModal** agora tem botão "Praticar (N etapas)" no header
+- Estado interno `practicing` que abre `<PracticeMode>` como overlay
+- Substitui o botão "Usar em Sessão" + "Ver Periodização" por 3 botões
+- Funciona com qualquer exercício KB com steps
+
+### Sprint 45: Animações nos Avatares SVG
+- **`styles/avatar-animations.css`** com keyframes:
+  - `avatar-enter`: fade-in + slide-up + scale ao trocar step
+  - `avatar-pulse`: respiração lenta (stick figure "vive")
+  - `kb-bounce`: kettlebell balança levemente
+- **ExerciseAvatar** com `animated={true}` por padrão
+- `useEffect` muda `animKey` quando step muda → React força re-render com animação
+- Respeita `prefers-reduced-motion`
+
+### Sprint 46: WorkoutFocusCard (foco do treino)
+- **Novo componente `WorkoutFocusCard.tsx`**
+- Mostra **quais grupos musculares** o treino vai trabalhar
+- Color-coded badges (verde=glúteo, laranja=quadríceps, roxo=deltóide, etc)
+- Cada grupo tem:
+  - Nome do músculo
+  - Contagem de séries
+  - Lista de exercícios
+  - **"Onde sentir"** (do mapa muscular leigo)
+- Total de grupos + séries programadas
+- Variants: `programado` (azul, foco previsto) vs `realizado` (verde, músculos trabalhados)
+- **Integrado em `ExecutarTab.tsx`** — aparece ANTES do card "Próxima sessão"
+- Ao clicar no card, abre detalhes (callback `onClick`)
+
+### Benefício Prático para 50+
+- Antes do treino: **vê os músculos que vai trabalhar** (expectativa)
+- Durante o treino: lembra **onde sentir** cada músculo (cada badge)
+- Após treino: confirma que trabalhou o que precisava (dashboard)
+- **Previne desequilíbrio muscular** e lesões por compensação
+
+### Validação
+- typecheck: 0 erros
+- lint: 0 erros
+- build: OK
+- bundle: 250KB gzip 72KB (estável)
+
+### Arquivos Novos Sprint 43-46
+- `components/common/MuscleHeatmap.tsx` (140 linhas)
+- `components/common/WorkoutFocusCard.tsx` (170 linhas)
+- `styles/avatar-animations.css` (40 linhas)
+- Modificado: `pages/MuscleTracker.tsx` (+heatmap)
+- Modificado: `components/common/ExerciseDetailModal.tsx` (+practice button)
+- Modificado: `components/common/ExerciseAvatar.tsx` (+animated prop)
+- Modificado: `pages/treino-mp/ExecutarTab.tsx` (+WorkoutFocusCard)
+- Modificado: `main.tsx` (+CSS import)
