@@ -14,6 +14,7 @@ import { InstallPWA } from './components/pwa/InstallPWA';
 import { Card, CardContent } from './components/ui/card';
 import { Button } from './components/ui/button';
 import { ErrorBoundary } from './components/common/ErrorBoundary';
+import { BuildVersionBanner } from './components/common/BuildVersionBanner';
 import { Login } from './pages/Login';
 import { Landing } from './pages/Landing';
 const ComponentCatalog = lazyWithRetry(() =>
@@ -200,6 +201,8 @@ function AppShell() {
       <Sidebar />
       <div className="flex-1 flex flex-col overflow-hidden">
         <Topbar />
+        {/* Banner de versão - força reload se detectar versão antiga em cache */}
+        <BuildVersionBanner />
         <main id="app-main" tabIndex={-1} className="flex-1 overflow-y-auto p-6 focus:outline-none">
           <ErrorBoundary>
             <Suspense fallback={<PageLoader />}>
