@@ -2957,3 +2957,69 @@ function TreinosPage() {
 }
 ```
 
+
+---
+
+## 🚨 BUGFIX CRÍTICO — CardHeader is not defined
+
+**Reportado por:** Owner (print do erro)
+**Data:** 2026-09-21
+**Commit:** `7de15d4` (fix) + `44b7205` (prevenção)
+
+### Sintomas:
+
+- ❌ Dashboard.tsx crashava com "CardHeader is not defined"
+- ❌ PlanoTab.tsx crashava com "CardDescription is not defined"
+- ❌ Várias páginas inacessíveis
+
+### Root Cause:
+
+Ao longo dos sprints (especialmente Sprints 2-13), novos usos de CardHeader/CardDescription foram adicionados sem atualizar os imports:
+
+```tsx
+// Dashboard.tsx (ANTES):
+import { Card, CardContent, CardDescription } from '@/components/ui/card';
+// ↑ CardHeader usado mas NÃO importado
+
+// Dashboard.tsx (DEPOIS):
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+```
+
+### Por Que o Lint Não Pegou:
+
+- `CardHeader` é um componente JSX válido
+- ESLint não pega uso sem import para símbolos JSX
+- TypeScript só pega se o símbolo NÃO existir (mas existe!)
+- O build compila, mas runtime quebra
+
+### Correção:
+
+1. **Dashboard.tsx**: adicionado `CardHeader, CardTitle` ao import
+2. **PlanoTab.tsx**: adicionado `CardDescription` ao import
+3. **Script de prevenção**: `scripts/check-missing-imports.mjs`
+   - Detecta 30+ símbolos UI comuns sem import
+   - Lista arquivo + símbolo + número de usos
+   - Exit code 1 se encontrar problemas
+4. **Prebuild hook**: `npm run build` agora roda `check:imports` antes
+5. **Predeploy hook**: mesma proteção antes do deploy
+
+### Validação:
+
+- ✅ 406 testes passando
+- ✅ npm run build: PASSOU (prebuild hook OK)
+- ✅ check:imports: APROVADO
+- ✅ Bug 100% corrigido
+- ✅ Deploy em produção
+
+### Lição Aprendida:
+
+> "Nunca confie apenas em lint para detectar símbolos sem import.
+> Sempre rode check-missing-imports antes do build."
+
+### Arquivos de Prevenção:
+
+| Arquivo | Função |
+|---|---|
+| `frontend/scripts/check-missing-imports.mjs` | Detecta símbolos sem import |
+| `frontend/package.json` (scripts) | Prebuild + predeploy hooks |
+
