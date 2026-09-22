@@ -2,12 +2,12 @@
  * Service Worker · TopPKB PWA
  *
  * Cache-first para assets estáticos (incluindo TODOS os 229 fotos KB + 84 vídeos KB);
- * network-first para HTML. v18.0.0 — 2026-09-20 — + Caderno de Kettlebell integrado
+ * network-first para HTML. v20.0.0 — 2026-09-22 — Badges clicáveis + preview visual em Meu Programa — + Badges clicáveis em Treinamento, preview visual do primeiro exercício
  * (82 exercícios autocompletos, self-contained em /kettlebell/).
  */
 
-const CACHE_NAME = 'toppkb-v19';
-const RUNTIME = 'toppkb-runtime-v18';
+const CACHE_NAME = 'toppkb-v20';
+const RUNTIME = 'toppkb-runtime-v19';
 
 // Build da PRECACHE_URLS dinamicamente: na inicialização, faz fetch de /kettlebell-index.json
 // que lista TODOS os assets.
