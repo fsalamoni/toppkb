@@ -154,6 +154,31 @@ function ExerciseBody({ exercicio }: { exercicio: ExercicioKettlebell }) {
         <p className="text-sm leading-relaxed">{exercicio.descricao}</p>
       </div>
 
+      {/* MAPA MUSCULAR LEIGO (ONDE SENTIR) */}
+      {exercicio.mapaMuscularLeigo && exercicio.mapaMuscularLeigo.length > 0 && (
+        <ExerciseMapaMuscular mapa={exercicio.mapaMuscularLeigo} />
+      )}
+
+      {/* SENSAÇÃO PRINCIPAL (linguagem leiga) */}
+      {exercicio.sensacaoPrincipal && (
+        <ExerciseSensacaoPrincipal texto={exercicio.sensacaoPrincipal} />
+      )}
+
+      {/* ANALOGIA INICIAL (linguagem leiga) */}
+      {exercicio.analogiaInicial && (
+        <ExerciseAnalogiaInicial texto={exercicio.analogiaInicial} />
+      )}
+
+      {/* ERRO MUSCULAR (o que acontece se fizer errado) */}
+      {exercicio.erroMuscular && (
+        <ExerciseErroMuscular texto={exercicio.erroMuscular} />
+      )}
+
+      {/* CARGA INICIAL 50+ */}
+      {exercicio.cargaInicial50mais && (
+        <ExerciseCargaInicial texto={exercicio.cargaInicial50mais} />
+      )}
+
       {/* GALERIA DE IMAGENS (etapas visuais) */}
       {gallery.length > 0 && (
         <ExerciseGallery gallery={gallery} />
@@ -351,6 +376,34 @@ function ExerciseSteps({
                 ))}
               </div>
             )}
+            {step.sensacoes && step.sensacoes.length > 0 && (
+              <details className="pl-8 pt-1">
+                <summary className="text-xs cursor-pointer text-blue-400 hover:text-blue-300">
+                  💪 Onde e como sentir ({step.sensacoes.length} sensações)
+                </summary>
+                <ul className="mt-1 space-y-0.5">
+                  {step.sensacoes.map((s, i) => (
+                    <li key={i} className="text-xs text-blue-300 leading-snug">
+                      • {s}
+                    </li>
+                  ))}
+                </ul>
+              </details>
+            )}
+            {step.alertasMusculares && step.alertasMusculares.length > 0 && (
+              <details className="pl-8 pt-1">
+                <summary className="text-xs cursor-pointer text-amber-400 hover:text-amber-300">
+                  ⚠️ Atenção muscular ({step.alertasMusculares.length} alertas)
+                </summary>
+                <ul className="mt-1 space-y-0.5">
+                  {step.alertasMusculares.map((a, i) => (
+                    <li key={i} className="text-xs text-amber-300 leading-snug">
+                      ⚠ {a}
+                    </li>
+                  ))}
+                </ul>
+              </details>
+            )}
           </li>
         ))}
       </ol>
@@ -464,6 +517,67 @@ function ExerciseEvidencia({
           Refs: {referencias.join(' · ')}
         </p>
       )}
+    </div>
+  );
+}
+
+function ExerciseMapaMuscular({ mapa }: { mapa: string[] }) {
+  return (
+    <div className="bg-blue-500/5 border border-blue-500/20 rounded-lg p-3">
+      <h3 className="font-semibold text-sm text-blue-400 mb-2 flex items-center gap-1">
+        💪 ONDE SENTIR (Mapa Muscular)
+      </h3>
+      <ul className="space-y-1">
+        {mapa.map((item, i) => (
+          <li key={i} className="text-sm text-blue-200 leading-snug">
+            • {item}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function ExerciseSensacaoPrincipal({ texto }: { texto: string }) {
+  return (
+    <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-lg p-3">
+      <h3 className="font-semibold text-sm text-emerald-400 mb-1 flex items-center gap-1">
+        ✨ SENSACÃO PRINCIPAL
+      </h3>
+      <p className="text-sm text-emerald-100 leading-relaxed">{texto}</p>
+    </div>
+  );
+}
+
+function ExerciseAnalogiaInicial({ texto }: { texto: string }) {
+  return (
+    <div className="bg-purple-500/10 border border-purple-500/30 rounded-lg p-3">
+      <h3 className="font-semibold text-sm text-purple-400 mb-1 flex items-center gap-1">
+        🪑 PENSE ASSIM (Analogia)
+      </h3>
+      <p className="text-sm text-purple-100 leading-relaxed italic">{texto}</p>
+    </div>
+  );
+}
+
+function ExerciseErroMuscular({ texto }: { texto: string }) {
+  return (
+    <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-3">
+      <h3 className="font-semibold text-sm text-amber-400 mb-1 flex items-center gap-1">
+        ⚠️ ERRO MUSCULAR COMUM
+      </h3>
+      <p className="text-sm text-amber-100 leading-relaxed">{texto}</p>
+    </div>
+  );
+}
+
+function ExerciseCargaInicial({ texto }: { texto: string }) {
+  return (
+    <div className="bg-cyan-500/10 border border-cyan-500/30 rounded-lg p-3">
+      <h3 className="font-semibold text-sm text-cyan-400 mb-1 flex items-center gap-1">
+        🏋️ CARGA INICIAL (50+)
+      </h3>
+      <p className="text-sm text-cyan-100 leading-relaxed">{texto}</p>
     </div>
   );
 }

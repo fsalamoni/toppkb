@@ -25,6 +25,7 @@ import {
   type ExercicioKettlebell,
 } from '@/data/seed/exercicios-kettlebell';
 import { EXERCICIOS } from '@/data/seed/exercicios';
+import { MuscleHint } from './MuscleHint';
 
 interface ExerciseBadgeProps {
   /** ID do exercício (preferencial) */
@@ -119,7 +120,7 @@ export function ExerciseBadge({
         type="button"
         onClick={handleClick}
         className={cn(
-          'group flex items-center gap-3 px-3 py-2 rounded-lg border bg-card hover:border-emerald-500/50 transition-all text-left w-full',
+          'group flex items-start gap-3 px-3 py-2 rounded-lg border bg-card hover:border-emerald-500/50 transition-all text-left w-full',
           className,
         )}
       >
@@ -131,15 +132,17 @@ export function ExerciseBadge({
             loading="lazy"
           />
         )}
-        <div className="flex-1 min-w-0">
+        <div className="flex-1 min-w-0 space-y-1">
           <div className="font-medium text-sm">{displayName}</div>
           {exercise.focoPrincipal && (
             <div className="text-xs text-muted-foreground">
               {exercise.focoPrincipal}
             </div>
           )}
+          {/* DICA MUSCULAR (sempre visível em variant="detailed") */}
+          <MuscleHint exerciseId={exercise.id} variant="inline" />
         </div>
-        <Info className="h-4 w-4 text-muted-foreground group-hover:text-emerald-400 transition-colors flex-shrink-0" />
+        <Info className="h-4 w-4 text-muted-foreground group-hover:text-emerald-400 transition-colors flex-shrink-0 mt-1" />
       </button>
     );
   }
