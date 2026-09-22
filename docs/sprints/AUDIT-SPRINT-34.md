@@ -359,3 +359,81 @@ Coach IA (com contexto muscular):
 8. Imagens PNG didáticas (overlay)
 9. Avatares SVG (stick figures por step)
 10. Coach IA (system prompt enrichment)
+
+---
+
+## 🎬 Sprint 41 — Modo Prática Guiado
+
+### Novo componente `PracticeMode.tsx`
+Modal full-screen para praticar exercício passo a passo com:
+- **Avatar SVG grande** centralizado à esquerda
+- **Descrição + cues técnicos + sensações + alertas** à direita
+- **Cronômetro** com target da duração da etapa (start/pause/reset)
+- **Progress bar** no topo (X de N etapas)
+- **Indicadores** entre passos (verde = feito, cinza = pendente)
+- **Navegação**: Anterior / Próximo / Concluir
+- **Teclado**: ESC = sair, ←/→ = navegar, Espaço = play/pause
+- **Acessibilidade**: role="dialog", aria-modal, aria-label
+
+### Componente `ExerciseViewerModal.tsx`
+Wrapper que combina DetailModal + PracticeMode.
+Componente `PracticeLauncher` para abrir PracticeMode diretamente de qualquer lugar.
+
+### Benefícios para o usuário
+- Praticar SEM precisar ler o modal inteiro
+- Cronômetro avisa quando o tempo da etapa acabou
+- Marca etapas concluídas
+- Navegação por teclado para mãos livres
+
+---
+
+## 💪 Sprint 42 — Dashboard Músculos Trabalhados
+
+### Novo arquivo `lib/muscle-tracker.ts`
+- `analyzeMuscleFrequency(sessoes, options)` — analisa frequência muscular nos últimos X dias
+- `findNeglectedMuscles(sessoes, options)` — identifica músculos não trabalhados há 5+ dias
+- `recommendExercisesForMuscle(muscle, max)` — recomenda exercícios para um músculo
+
+### Nova página `/app/muscles`
+**`MuscleTracker.tsx`** com 4 seções:
+1. **Resumo** — Cards com estatísticas (sessões/músculos/frequente/negligenciados)
+2. **Frequência Muscular** — Top 12 com barras de progresso (últimos 30 dias)
+3. **Músculos Negligenciados** — Lista com ExerciseBadge de recomendações
+4. **Top Exercícios** — Mais usados com agrupamento muscular
+
+### Adicionado ao GlobalSearch
+"Músculos Trabalhados" como item de busca (link rápido para o dashboard).
+
+### Benefícios
+- Owner vê quais grupos musculares NÃO tem trabalhado
+- Recebe recomendação automática de exercícios
+- Visualização clara do equilíbrio muscular
+- **Previne desequilíbrio muscular** (uma das principais causas de lesão em 50+)
+
+---
+
+## 📦 Resumo Final Sprints 34-42
+
+| Sprint | Foco |
+|--------|------|
+| 34 | Schema + dados (89/89 exercícios com sensações PT-BR leigas) |
+| 35 | Integração MuscleHint em 5+ páginas |
+| 36 | 371 imagens didáticas com overlay ONDE/COMO SENTIR |
+| 37 | 11 avatares SVG essenciais |
+| 38 | 371 avatares SVG completos (parametrizados) |
+| 39 | A11y completa (ARIA roles) |
+| 40 | Coach IA enriquecido com mapa muscular |
+| **41** | **Modo prática guiado (passo a passo)** |
+| **42** | **Dashboard músculos trabalhados** |
+
+### Estatísticas Consolidadas (89 exercícios KB)
+- 89/89 com mapaMuscularLeigo + sensacaoPrincipal + erroMuscular + analogia + carga 50+
+- 363 steps com sensações + alertas
+- 371 imagens didáticas (overlay)
+- 371 avatares SVG (stick figures)
+- 11+ páginas com cues musculares integradas
+- 5+ componentes reutilizáveis
+- A11y completa (ARIA roles)
+- Coach IA enriquecido
+- **Modo prática guiado** com cronômetro
+- **Dashboard de músculos** com recomendações

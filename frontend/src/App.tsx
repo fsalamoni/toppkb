@@ -59,6 +59,7 @@ const Preparacao = lazyWithRetry(() => import('./pages/Preparacao').then((m) => 
 const PreparacaoForm = lazyWithRetry(() => import('./pages/PreparacaoForm').then((m) => ({ default: m.PreparacaoForm })));
 const Exercicios = lazyWithRetry(() => import('./pages/Exercicios').then((m) => ({ default: m.Exercicios })));
 const Periodizacao = lazyWithRetry(() => import('./pages/Periodizacao').then((m) => ({ default: m.Periodizacao })));
+const MuscleTracker = lazyWithRetry(() => import('./pages/MuscleTracker').then((m) => ({ default: m.default })));
 const TreinamentoDashboard = lazyWithRetry(() => import('./pages/TreinamentoDashboard').then((m) => ({ default: m.TreinamentoDashboard })));
 const TreinamentoSessoes = lazyWithRetry(() => import('./pages/TreinamentoSessoes').then((m) => ({ default: m.TreinamentoSessoes })));
 const TreinamentoSessoesForm = lazyWithRetry(() => import('./pages/TreinamentoSessoesForm').then((m) => ({ default: m.TreinamentoSessoesForm })));
@@ -219,6 +220,7 @@ function AppShell() {
               <Route path="preparacao/nova" element={<PrivateRoute><PreparacaoForm /></PrivateRoute>} />
               <Route path="preparacao/:id" element={<PrivateRoute><PreparacaoForm /></PrivateRoute>} />
               <Route path="exercicios" element={<PrivateRoute><Exercicios /></PrivateRoute>} />
+              <Route path="muscles" element={<PrivateRoute><MuscleTracker /></PrivateRoute>} />
               <Route path="periodizacao" element={<PrivateRoute><Periodizacao /></PrivateRoute>} />
               <Route path="treinamento" element={<PrivateRoute><TreinamentoDashboard /></PrivateRoute>} />
               <Route path="treinamento/sessoes" element={<PrivateRoute><TreinamentoSessoes /></PrivateRoute>} />

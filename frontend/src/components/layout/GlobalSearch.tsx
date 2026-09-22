@@ -45,6 +45,7 @@ const PAGES: SearchItem[] = [
   { type: 'pagina', titulo: 'Treinos', to: '/app/treinos', icon: '💪' },
   { type: 'pagina', titulo: 'Partidas', to: '/app/partidas', icon: '🏆' },
   { type: 'pagina', titulo: 'Preparação Física', to: '/app/preparacao', icon: '🏋️' },
+  { type: 'pagina', titulo: 'Músculos Trabalhados', to: '/app/muscles', icon: '💪' },
   { type: 'pagina', titulo: 'Nutrição', to: '/app/nutricao', icon: '🥗' },
   { type: 'pagina', titulo: 'Sono', to: '/app/sono', icon: '😴' },
   { type: 'pagina', titulo: 'Peso', to: '/app/peso', icon: '⚖️' },
