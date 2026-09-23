@@ -150,7 +150,8 @@ describe('computeHeatmap', () => {
     const days = computeHeatmap(
       [
         { data: hoje.toISOString(), exercicios: ['kb-swing-2h-hardstyle'] },
-        { data: new Date(hoje.getTime() + 3600000).toISOString(), exercicios: ['kb-swing-2h-hardstyle'] },
+        // 1 minuto depois (definitivamente mesmo dia, independente do timezone)
+        { data: new Date(hoje.getTime() + 60000).toISOString(), exercicios: ['kb-swing-2h-hardstyle'] },
       ],
       28,
     );
