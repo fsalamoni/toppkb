@@ -8,11 +8,7 @@ const { Activity, Target, Sparkles, ChevronRight } = LucideIcons;
 import { useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
-import { 
-  KETTLEBELL_EXERCICIOS,
-  getTopMusculaturas,
-  getDicaMuscularCurta,
-} from '@/data/seed/exercicios-kettlebell';
+import { computeWorkoutFocus } from '@/lib/workout-focus';
 
 export interface WorkoutExercise {
   id?: string;
@@ -34,33 +30,6 @@ interface WorkoutFocusCardProps {
   className?: string;
 }
 
-interface GroupedMuscle {
-  name: string;
-  count: number;
-  exercises: string[];
-  exemplo?: string;
-  onde_sentir?: string;
-  color: string;
-}
-
-const COLOR_MAP: Record<string, string> = {
-  'glúteo': '#10b981',
-  'isquiotibial': '#10b981',
-  'quadríceps': '#f59e0b',
-  'deltóide': '#a855f7',
-  'peitoral': '#06b6d4',
-  'latíssimo': '#06b6d4',
-  'trapézio': '#a855f7',
-  'core': '#ec4899',
-  'abdômen': '#ec4899',
-  'oblíquo': '#ec4899',
-  'tríceps': '#06b6d4',
-  'bíceps': '#06b6d4',
-  'lombar': '#ec4899',
-  'antebraço': '#06b6d4',
-  'panturrilha': '#f59e0b',
-};
-
 export function WorkoutFocusCard({ 
   nome, 
   exercicios, 
@@ -68,51 +37,14 @@ export function WorkoutFocusCard({
   onClick,
   className,
 }: WorkoutFocusCardProps) {
-  // Agrupa músculos pelos exercícios do treino
-  const grupos = useMemo(() => {
-    const grouped: Record<string, GroupedMuscle> = {};
-
-    for (const ex of exercicios) {
-      const kbEx = KETTLEBELL_EXERCICIOS.find(
-        (e) => e.id === ex.id || e.id === `kb-${ex.id}` || e.nome === ex.nome,
-      );
-      if (!kbEx) continue;
-
-      const muscles = getTopMusculaturas(kbEx.id, 2);
-      for (const m of muscles) {
-        // Extrair nome principal (antes do "—")
-        const mainName = m.split('—')[0].trim();
-        const lower = mainName.toLowerCase();
-        // Match com color map
-        const colorKey = Object.keys(COLOR_MAP).find((k) => lower.includes(k)) ?? 'default';
-        const color = COLOR_MAP[colorKey] ?? '#94a3b8';
-        const key = colorKey === 'default' ? mainName.toLowerCase() : colorKey;
-
-        if (!grouped[key]) {
-          grouped[key] = {
-            name: mainName,
-            count: 0,
-            exercises: [],
-            exemplo: kbEx.nome,
-            onde_sentir: getDicaMuscularCurta(kbEx.id) ?? undefined,
-            color,
-          };
-        }
-        grouped[key].count += ex.series; // Peso por séries
-        if (!grouped[key].exercises.includes(kbEx.nome)) {
-          grouped[key].exercises.push(kbEx.nome);
-        }
-      }
-    }
-
-    // Ordenar por count decrescente
-    return Object.values(grouped).sort((a, b) => b.count - a.count);
-  }, [exercicios]);
+  // Agrupa músculos pelos exercícios do treino (lógica pura extraída para teste)
+  const focus = useMemo(() => computeWorkoutFocus(exercicios), [exercicios]);
+  const grupos = focus.grupos;
 
   if (grupos.length === 0) return null;
 
-  const totalSeries = exercicios.reduce((sum, e) => sum + e.series, 0);
-  const totalMuscles = grupos.length;
+  const totalSeries = focus.totalSeries;
+  const totalMuscles = focus.totalGrupos;
 
   return (
     <Card 
