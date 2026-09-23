@@ -7,6 +7,7 @@ import {
   KETTLEBELL_EXERCICIOS,
   getTopMusculaturas,
   getDicaMuscularCurta,
+  getErroMuscularCurto,
 } from '@/data/seed/exercicios-kettlebell';
 
 export interface WorkoutExercise {
@@ -23,6 +24,7 @@ export interface GroupedMuscle {
   exercises: string[];
   exemplo?: string;
   onde_sentir?: string;
+  erro_muscular?: string; // Sprint 65.4: sintoma → causa
   color: string;
 }
 
@@ -116,6 +118,7 @@ export function computeWorkoutFocus(exercicios: WorkoutExercise[]): WorkoutFocus
           exercises: [],
           exemplo: kbEx.nome,
           onde_sentir: getDicaMuscularCurta(kbEx.id) ?? undefined,
+          erro_muscular: getErroMuscularCurto(kbEx.id) ?? undefined, // Sprint 65.4
           color,
         };
       }

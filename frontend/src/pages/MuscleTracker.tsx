@@ -18,6 +18,7 @@ import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/common/LoadingScreen';
 import { analyzeMuscleFrequency, findNeglectedMuscles, recommendExercisesForMuscle } from '@/lib/muscle-tracker';
 import { ExerciseBadge } from '@/components/common/ExerciseBadge';
+import { MuscleHint } from '@/components/common/MuscleHint';
 import { MuscleHeatmap } from '@/components/common/MuscleHeatmap';
 
 export default function MuscleTracker() {
@@ -206,6 +207,14 @@ export default function MuscleTracker() {
                           />
                         ))}
                       </div>
+                      {/* Sprint 65.5: dica muscular do primeiro exercício recomendado */}
+                      {recs[0] && (
+                        <MuscleHint
+                          exerciseId={recs[0].id}
+                          variant="inline"
+                          className="mt-2"
+                        />
+                      )}
                     </div>
                   );
                 })}

@@ -23,6 +23,7 @@ import { cn } from '@/lib/utils';
 import {
   KETTLEBELL_EXERCICIOS,
   type ExercicioKettlebell,
+  getDicaMuscularCurta,
 } from '@/data/seed/exercicios-kettlebell';
 import { EXERCICIOS } from '@/data/seed/exercicios';
 import { MuscleHint } from './MuscleHint';
@@ -98,6 +99,11 @@ export function ExerciseBadge({
   }
 
   if (variant === 'compact') {
+    // Sprint 65.2: compact agora mostra dica muscular no tooltip do navegador
+    const dicaCurta = exercise.id ? getDicaMuscularCurta(exercise.id) : '';
+    const tooltip = dicaCurta
+      ? `💪 ${dicaCurta} — clique para detalhes`
+      : 'Clique para ver detalhes completos';
     return (
       <button
         type="button"
@@ -106,7 +112,8 @@ export function ExerciseBadge({
           'inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-md bg-primary/10 text-primary hover:bg-primary/20 transition-colors',
           className,
         )}
-        title="Clique para ver detalhes completos"
+        title={tooltip}
+        aria-label={`${displayName} — ${dicaCurta || 'clique para detalhes'}`}
       >
         <Info className="h-3 w-3" />
         <span>{displayName}</span>

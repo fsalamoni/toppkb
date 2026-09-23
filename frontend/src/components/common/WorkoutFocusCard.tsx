@@ -3,7 +3,7 @@
  * Mostra quais grupos musculares serão/serão trabalhados + onde sentir.
  */
 import * as LucideIcons from 'lucide-react';
-const { Activity, Target, Sparkles, ChevronRight } = LucideIcons;
+const { Activity, Target, Sparkles, ChevronRight, AlertTriangle } = LucideIcons;
 
 import { useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -122,6 +122,29 @@ export function WorkoutFocusCard({
             </div>
           ))}
         </div>
+
+        {/* Erro muscular (top 2) — Sprint 65.4 */}
+        {grupos.some((g) => g.erro_muscular) && (
+          <div className="space-y-2 pt-1 border-t border-border/50">
+            <div className="text-xs font-semibold text-amber-400 flex items-center gap-1">
+              <AlertTriangle className="h-3 w-3" />
+              Sinais de erro muscular
+            </div>
+            {grupos
+              .filter((g) => g.erro_muscular)
+              .slice(0, 2)
+              .map((g, i) => (
+                <div key={i} className="text-xs">
+                  <span className="font-semibold capitalize" style={{ color: g.color }}>
+                    {g.name}:
+                  </span>{' '}
+                  <span className="text-amber-200/80">
+                    {g.erro_muscular!.slice(0, 100) + (g.erro_muscular!.length > 100 ? '...' : '')}
+                  </span>
+                </div>
+              ))}
+          </div>
+        )}
       </CardContent>
     </Card>
   );

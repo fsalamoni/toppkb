@@ -215,12 +215,23 @@ export function PracticeMode({ exercicio, onClose }: PracticeModeProps) {
 
           {/* DICA MUSCULAR PRINCIPAL (sensação) */}
           {exercicio.sensacaoPrincipal && (
-            <div className="mt-auto rounded-lg border border-emerald-500/30 bg-emerald-500/5 p-3">
+            <div className="rounded-lg border border-emerald-500/30 bg-emerald-500/5 p-3">
               <h4 className="text-xs font-semibold text-emerald-400 mb-1 flex items-center gap-1">
                 <Sparkles className="h-3.5 w-3.5" />
                 ✨ Sensação geral
               </h4>
               <p className="text-xs text-emerald-100 leading-snug">{exercicio.sensacaoPrincipal}</p>
+            </div>
+          )}
+
+          {/* ERRO MUSCULAR (sintoma → causa) — Sprint 65.6 */}
+          {exercicio.erroMuscular && (
+            <div className="mt-3 rounded-lg border border-red-500/30 bg-red-500/5 p-3">
+              <h4 className="text-xs font-semibold text-red-400 mb-1 flex items-center gap-1">
+                <AlertTriangle className="h-3.5 w-3.5" />
+                🩺 Se algo doer / falhar
+              </h4>
+              <p className="text-xs text-red-100 leading-snug">{exercicio.erroMuscular}</p>
             </div>
           )}
         </section>

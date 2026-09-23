@@ -146,4 +146,24 @@ describe('computeWorkoutFocus', () => {
     const gluteo = result.grupos.find((g) => g.name.toLowerCase().includes('glúteo'));
     expect(gluteo?.exemplo).toBe('Swing 2H (Hardstyle)');
   });
+
+  // Sprint 65.4: erro muscular (sintoma → causa) por grupo muscular
+  it('preenche erro_muscular com texto do primeiro exercício', () => {
+    const result = computeWorkoutFocus([
+      { id: 'kb-swing-2h-hardstyle', nome: 'Swing 2H', series: 3, reps: '10' },
+    ]);
+    const gluteo = result.grupos.find((g) => g.name.toLowerCase().includes('glúteo'));
+    expect(gluteo?.erro_muscular).toBeDefined();
+    expect(gluteo?.erro_muscular?.length).toBeGreaterThan(20);
+  });
+
+  it('erro_muscular é consistente entre exercícios do mesmo grupo', () => {
+    // Swing + Deadlift ambos ativam glúteo, deve ter mesmo erro_muscular (do primeiro)
+    const result = computeWorkoutFocus([
+      { id: 'kb-swing-2h-hardstyle', nome: 'Swing 2H', series: 3, reps: '10' },
+      { id: 'kb-deadlift', nome: 'Deadlift', series: 3, reps: '8' },
+    ]);
+    const gluteo = result.grupos.find((g) => g.name.toLowerCase().includes('glúteo'));
+    expect(gluteo?.erro_muscular).toBeDefined();
+  });
 });
