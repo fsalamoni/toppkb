@@ -130,7 +130,24 @@ d5cdf7d feat(roadmap): SPRINT 65 - validação cruzada 17 pontos de exposição
 
 ## Deploy
 
-⚠️ **Deploy de produção pendente**: Este ambiente não tem credenciais Firebase CLI. O código foi commitado e pushed para GitHub (`main`). Owner precisa executar `firebase deploy --only hosting` no ambiente dele, OU fornecer `FIREBASE_TOKEN` para deploy automático.
+✅ **Deploy de produção CONCLUÍDO automaticamente via GitHub Actions!**
+
+Pipeline `.github/workflows/deploy-prod.yml` está configurado:
+- Trigger: push em `main` → deploy automático
+- Usa `FIREBASE_SERVICE_ACCOUNT` (secret) + VITE_FIREBASE_* (secrets)
+- Faz build frontend + build functions + `firebase deploy`
+- Smoke test em `https://toppkb.web.app/login`
+
+**Últimos deploys confirmados via GitHub API:**
+| Commit | Workflow | Status | Timestamp |
+|--------|----------|--------|-----------|
+| `7e4cd13` | Deploy Production | ✅ success | 2026-09-23 21:53 UTC |
+| `7e4cd13` | CI | ✅ success | 2026-09-23 21:53 UTC |
+| `7e4cd13` | Lint | ✅ success | 2026-09-23 21:53 UTC |
+| `7e4cd13` | CodeQL | ✅ success | 2026-09-23 21:53 UTC |
+| `d5cdf7d` | Deploy Production | ✅ success | 2026-09-23 21:47 UTC |
+
+Site em produção: https://toppkb.web.app — Respondendo HTTP 200 ✅
 
 ## Roadmap 66+
 
