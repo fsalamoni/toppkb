@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Search, ChevronRight, X, BookOpen, Activity, Flame,
+  ChevronDown, Sparkles, Dumbbell,
 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -28,9 +29,30 @@ export function Exercicios() {
   const [filtroPadrao, setFiltroPadrao] = useState<PadraoKettlebell | 'todos'>('todos');
   const [filtroNivel, setFiltroNivel] = useState<string>('todos');
   const [filtroMusculo, setFiltroMusculo] = useState<string | null>(null);
+  const [musculoBusca, setMusculoBusca] = useState('');
+  const [mostrarTodos, setMostrarTodos] = useState(false);
   const [selecionado, setSelecionado] = useState<ExercicioKettlebell | null>(null);
 
   const muscleStats = useMemo(() => getMuscleStats(), []);
+
+  // Músculos filtrados pela busca (para encontrar rápido)
+  const muscleStatsFiltrados = useMemo(() => {
+    if (!musculoBusca.trim()) return muscleStats;
+    const lower = musculoBusca.toLowerCase();
+    return muscleStats.filter(
+      (m) =>
+        m.nome.toLowerCase().includes(lower) ||
+        m.display.toLowerCase().includes(lower)
+    );
+  }, [muscleStats, musculoBusca]);
+
+  // TOP 12 (mais usados) ou todos se busca ativa
+  const muscleStatsVisiveis = useMemo(() => {
+    if (musculoBusca.trim() || mostrarTodos) return muscleStatsFiltrados;
+    return muscleStatsFiltrados.slice(0, 12);
+  }, [muscleStatsFiltrados, mostrarTodos, musculoBusca]);
+
+  const temMais = !musculoBusca.trim() && muscleStatsFiltrados.length > 12;
 
   const exerciciosFiltrados = useMemo(() => {
     // Se há músculo selecionado, começa pela lista filtrada por músculo
@@ -118,50 +140,114 @@ export function Exercicios() {
         ))}
       </div>
 
-      {/* SPRINT 52: FILTRO POR MÚSCULO (clique para filtrar) */}
+      {/* SPRINT 52: FILTRO POR MÚSCULO (Sprint 57: busca + expandir) */}
       <Card className="bg-card/40 border-border/50">
         <CardContent className="p-4 space-y-3">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-sm font-semibold flex items-center gap-2">
-                💪 Filtrar por músculo
+          <div className="flex items-center justify-between gap-3 flex-wrap">
+            <div className="flex items-center gap-2">
+              <Dumbbell className="h-4 w-4 text-emerald-400" aria-hidden="true" />
+              <h3 className="text-sm font-semibold">
+                Filtrar por músculo
+                <span className="text-muted-foreground ml-1 font-normal">
+                  ({muscleStats.length} grupos musculares)
+                </span>
               </h3>
-              <p className="text-xs text-muted-foreground">
-                Clique no músculo para ver exercícios que o trabalham.
-              </p>
             </div>
-            {filtroMusculo && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setFiltroMusculo(null)}
-                aria-label="Limpar filtro de músculo"
-              >
-                <X className="h-4 w-4 mr-1" />
-                Limpar ({filtroMusculo})
-              </Button>
-            )}
+            <div className="flex items-center gap-2 flex-1 min-w-[200px] justify-end">
+              {/* BUSCA dentro de músculos */}
+              {muscleStats.length > 6 && (
+                <div className="relative">
+                  <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground pointer-events-none" />
+                  <Input
+                    type="search"
+                    inputMode="search"
+                    placeholder="Buscar músculo..."
+                    value={musculoBusca}
+                    onChange={(e) => setMusculoBusca(e.target.value)}
+                    className="h-8 pl-7 text-xs w-40"
+                    aria-label="Buscar músculo"
+                  />
+                </div>
+              )}
+              {filtroMusculo && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setFiltroMusculo(null)}
+                  aria-label={`Remover filtro: ${filtroMusculo}`}
+                  className="h-8"
+                >
+                  <X className="h-3.5 w-3.5 mr-1" />
+                  <span className="text-xs">Limpar ({filtroMusculo})</span>
+                </Button>
+              )}
+            </div>
           </div>
-          <div className="flex flex-wrap gap-2">
-            {muscleStats.map((m) => (
-              <button
-                key={m.nome}
-                onClick={() => setFiltroMusculo(filtroMusculo === m.nome ? null : m.nome)}
-                className={`px-3 py-1.5 rounded-full border text-xs font-medium transition-all flex items-center gap-1.5 ${
-                  filtroMusculo === m.nome
-                    ? `${m.cor} ring-2 ring-offset-1 ring-offset-background ring-current`
-                    : `${m.cor} opacity-60 hover:opacity-100`
-                }`}
-                aria-pressed={filtroMusculo === m.nome}
-                aria-label={`Filtrar por ${m.display}: ${m.count} exercícios`}
-                title={`${m.display}: ${m.count} exercícios`}
-              >
-                <span aria-hidden="true">{m.icone}</span>
-                <span>{m.display}</span>
-                <span className="opacity-70">({m.count})</span>
-              </button>
-            ))}
-          </div>
+          <p className="text-xs text-muted-foreground">
+            Clique no músculo para ver exercícios que o trabalham.
+          </p>
+
+          {muscleStatsFiltrados.length === 0 ? (
+            <div className="text-center py-6 text-sm text-muted-foreground">
+              <Search className="h-8 w-8 mx-auto mb-2 opacity-50" />
+              Nenhum músculo encontrado com "{musculoBusca}"
+            </div>
+          ) : (
+            <>
+              <div className="flex flex-wrap gap-2">
+                {muscleStatsVisiveis.map((m, idx) => (
+                  <button
+                    key={m.nome}
+                    onClick={() => setFiltroMusculo(filtroMusculo === m.nome ? null : m.nome)}
+                    className={`px-3 py-1.5 rounded-full border text-xs font-medium transition-all flex items-center gap-1.5 animate-in fade-in slide-in-from-bottom-1 duration-300 ${
+                      filtroMusculo === m.nome
+                        ? `${m.cor} ring-2 ring-offset-1 ring-offset-background ring-current scale-105`
+                        : `${m.cor} opacity-60 hover:opacity-100 hover:scale-105`
+                    }`}
+                    style={{ animationDelay: `${Math.min(idx * 20, 200)}ms` }}
+                    aria-pressed={filtroMusculo === m.nome}
+                    aria-label={`Filtrar por ${m.display}: ${m.count} exercícios`}
+                    title={`${m.display}: ${m.count} exercícios`}
+                  >
+                    <span aria-hidden="true">{m.icone}</span>
+                    <span>{m.display}</span>
+                    <span className="opacity-70 font-mono">({m.count})</span>
+                  </button>
+                ))}
+              </div>
+              {temMais && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setMostrarTodos(true)}
+                  className="text-xs text-muted-foreground hover:text-foreground"
+                >
+                  <ChevronDown className="h-3.5 w-3.5 mr-1" />
+                  Ver todos os {muscleStatsFiltrados.length} músculos
+                </Button>
+              )}
+              {mostrarTodos && !musculoBusca && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setMostrarTodos(false)}
+                  className="text-xs text-muted-foreground hover:text-foreground"
+                >
+                  Mostrar apenas top 12
+                </Button>
+              )}
+              {/* Dica contextual quando músculo selecionado */}
+              {filtroMusculo && (
+                <div className="mt-2 p-2 rounded-md bg-emerald-500/5 border border-emerald-500/20 text-xs flex items-center gap-2">
+                  <Sparkles className="h-3.5 w-3.5 text-emerald-400 flex-shrink-0" />
+                  <span>
+                    Mostrando <strong>{exerciciosFiltrados.length}</strong> exercícios que trabalham{' '}
+                    <strong>{filtroMusculo}</strong>. Combine com padrão/nível/busca.
+                  </span>
+                </div>
+              )}
+            </>
+          )}
         </CardContent>
       </Card>
 
