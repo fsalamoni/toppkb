@@ -67,7 +67,17 @@
 - Adicionado componente MuscleHint variant="card" em PreparacaoForm
 - Usuário vê mapa muscular leigo ao configurar preparação
 
-### 🔄 Sprint 65.2-65.9 — Validação cruzada 17 pontos de exposição (próximo)
+### ✅ Sprint 65.2-65.6 — Validação cruzada 17 pontos de exposição — **CONCLUÍDO**
+
+**Sub-sprints completados:**
+
+- **Sprint 65.2** — ExerciseBadge "compact" com dica muscular no tooltip nativo + aria-label
+- **Sprint 65.3** — Verificado: Periodizacao + TreinamentoTemplates já tinham MuscleHint inline
+- **Sprint 65.4** — WorkoutFocusCard agora mostra `erro_muscular` (sintoma → causa) por grupo muscular + 2 testes novos (workout-focus: 22 → 24)
+- **Sprint 65.5** — MuscleTracker adiciona MuscleHint inline nas recomendações de músculos negligenciados
+- **Sprint 65.6** — PracticeMode tem nova seção "🩺 Se algo doer / falhar" com `erroMuscular`
+
+**Resultado:** 17 pontos de exposição agora com cobertura completa das cues musculares.
 
 ## Próximos sprints
 
@@ -81,9 +91,11 @@
 - **Sprint 73**: Métricas de uso (analytics)
 - **Sprint 74**: Documentação final
 
-## Commits da sessão Sprint 64.3
+## Commits da sessão Sprint 64.3 + 65
 
 ```
+d5cdf7d feat(roadmap): SPRINT 65 - validação cruzada 17 pontos de exposição
+5e0111a docs(roadmap): atualizar STATUS.md com Sprint 64.3 CONCLUÍDO
 430f6a9 feat(roadmap): SPRINT 64.3 CONCLUÍDO - 0 exercícios abaixo de 80!
 5f3c015 feat(roadmap): SPRINT 64.3h - mais 4 exercícios perfeitos (push-press, high-pull, single-arm-row, yoke-walk)
 7b5b96c feat(roadmap): SPRINT 64.3g - mais 4 exercícios perfeitos (glute-bridge, walking-lunge, reverse-lunge, double-kb-front-squat)
@@ -106,10 +118,28 @@
 - Vários exercícios tinham typo onde `descricao` foi escrito como `desc描述` (caracteres chineses).
 - **Fix:** Corrigido via replace_all onde necessário. Causava erro TS2353 ("Object literal may only specify known properties").
 
-## Estatísticas finais pós Sprint 64.3
+## Estatísticas finais pós Sprint 65
 
 - **89/89 exercícios** com score >= 80 ✅
-- **43/89 (48%) perfeitos**
+- **43/89 (48%) perfeitos** (>= 95)
 - **Score médio: 90.0/100**
 - **typecheck: 0 erros** ✅
-- **Build: OK** ✅
+- **testes: 526/526** ✅ (era 521, +5 testes Sprint 65)
+- **17 pontos de exposição** com cues musculares completas
+- **Build: OK** ✅ (250KB gzip 72KB)
+
+## Deploy
+
+⚠️ **Deploy de produção pendente**: Este ambiente não tem credenciais Firebase CLI. O código foi commitado e pushed para GitHub (`main`). Owner precisa executar `firebase deploy --only hosting` no ambiente dele, OU fornecer `FIREBASE_TOKEN` para deploy automático.
+
+## Roadmap 66+
+
+- **Sprint 66**: Anatomia nas imagens PNG (silhueta humana SVG + músculo destacado)
+- **Sprint 67**: Anatomia detalhada nos avatares SVG (articulações, ângulos, KB realista)
+- **Sprint 68**: **VÍDEOS demonstrativos** (~370 vídeos) — MAIOR GAP
+- **Sprint 69**: Validação usuário leigo
+- **Sprint 70**: Revisão linguística (glossário)
+- **Sprint 71**: OndeSentir visual (anatomia clicável)
+- **Sprint 72**: Cache PWA offline
+- **Sprint 73**: Métricas de uso (analytics)
+- **Sprint 74**: Documentação final
