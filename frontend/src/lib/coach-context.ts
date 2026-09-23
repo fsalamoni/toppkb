@@ -41,21 +41,36 @@ export interface CoachContextOutput {
  */
 function detectMentionedExercises(message: string): string[] {
   const found = new Set<string>();
-  const msgLower = message.toLowerCase();
-  
+  const msgLower = message.toLowerCase().trim();
+  if (!msgLower) return [];
+
   for (const ex of KETTLEBELL_EXERCICIOS) {
-    // Match exato do nome
-    if (msgLower.includes(ex.nome.toLowerCase())) {
+    const nomeLower = ex.nome.toLowerCase();
+    // Match 1: nome completo do exercício aparece na mensagem
+    if (msgLower.includes(nomeLower)) {
       found.add(ex.id);
       continue;
     }
-    // Match ID (sem o prefixo kb-)
-    if (msgLower.includes(ex.id.replace('kb-', '').replace(/-/g, ' '))) {
+    // Match 2: nome sem parênteses (ex: "Swing 2H (Hardstyle)" → "Swing 2H")
+    const nomeSemParenteses = nomeLower.replace(/\s*\([^)]*\)\s*/g, '').trim();
+    if (nomeSemParenteses && nomeSemParenteses.length >= 4 && msgLower.includes(nomeSemParenteses)) {
+      found.add(ex.id);
+      continue;
+    }
+    // Match 3: ID sem prefixo kb- e sem hífens (ex: "swing 2h hardstyle")
+    const idPlain = ex.id.replace('kb-', '').replace(/-/g, ' ').toLowerCase();
+    if (idPlain.length >= 4 && msgLower.includes(idPlain)) {
+      found.add(ex.id);
+      continue;
+    }
+    // Match 4: palavras-chave significativas do nome (ex: "goblet squat")
+    const keywords = nomeLower.split(/\s+/).filter((w) => w.length >= 4);
+    if (keywords.length >= 2 && keywords.every((kw) => msgLower.includes(kw))) {
       found.add(ex.id);
       continue;
     }
   }
-  
+
   return Array.from(found);
 }
 

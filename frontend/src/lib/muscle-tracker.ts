@@ -38,6 +38,10 @@ export function analyzeMuscleFrequency(
     const sessaoDate = new Date(sessao.data);
     if (sessaoDate < cutoff) continue;
 
+    // dedupe: mesmo exercício só conta 1x por sessão
+    const seenExercises = new Set<string>();
+    const seenMusclesInSession = new Set<string>();
+
     for (const exId of sessao.exercicios) {
       // Encontrar exercício por ID ou nome
       const ex = KETTLEBELL_EXERCICIOS.find(
@@ -45,10 +49,19 @@ export function analyzeMuscleFrequency(
       );
       if (!ex) continue;
 
+      // Pular se já vimos este exercício nesta sessão
+      if (seenExercises.has(ex.id)) continue;
+      seenExercises.add(ex.id);
+
       // Pegar mapa muscular leigo
       const muscles = getTopMusculaturas(ex.id, 3);
       for (const m of muscles) {
         const key = m.split('—')[0].trim().toLowerCase();
+        // dedupe dentro da sessão: músculo do mesmo exercício conta 1x
+        const muscleKey = `${ex.id}::${key}`;
+        if (seenMusclesInSession.has(muscleKey)) continue;
+        seenMusclesInSession.add(muscleKey);
+
         if (!grupos[key]) {
           grupos[key] = { muscle: key, count: 0, exercises: [] };
         }
