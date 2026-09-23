@@ -347,6 +347,7 @@ export function PreparacaoForm() {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between gap-2">
                           <span className="font-medium text-sm">{ex.nome}</span>
+                          <MuscleHint exerciseId={ex.id} variant="inline" className="text-xs flex-shrink-0" />
                           <span className="text-xs text-muted-foreground">
                             {ex.nivel}
                           </span>
