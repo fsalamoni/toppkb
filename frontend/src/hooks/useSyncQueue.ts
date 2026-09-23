@@ -75,7 +75,7 @@ export function useSyncQueue(options: UseSyncQueueOptions = {}) {
   }, [online, state.pending.length, state.syncing]);
 
   const enqueue = useCallback(
-    async (m: Omit<SyncMutation, 'id' | 'createdAt' | 'attempts'>) => {
+    async (m: any) => {
       const id = await syncQueue.enqueue(m);
       return id;
     },

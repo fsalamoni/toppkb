@@ -17,7 +17,7 @@ interface DashboardAlertsProps {
   dorAtiva?: {
     regiao?: string;
     intensidade: number;
-    data: any;
+    data?: any;
   } | null;
   streak: number;
   streakType?: 'V' | 'D' | null;

@@ -28,6 +28,10 @@ const QUEUE_KEY = 'sync_queue_v1';
 const MAX_ATTEMPTS = 3;
 const BACKOFF_BASE_MS = 1000; // 1s, 2s, 4s, 8s, ...
 
+type SetMutation = Extract<SyncMutation, { type: 'set' }>;
+type AddMutation = Extract<SyncMutation, { type: 'add' }>;
+type UpdateMutation = Extract<SyncMutation, { type: 'update' }>;
+type DeleteMutation = Extract<SyncMutation, { type: 'delete' }>;
 export type SyncMutation =
   | {
       id: string;
@@ -101,7 +105,7 @@ class SyncQueueManager {
     this.notify();
   }
 
-  async enqueue(mutation: Omit<SyncMutation, 'id' | 'createdAt' | 'attempts'>): Promise<string> {
+  async enqueue(mutation: Omit<SetMutation, 'id' | 'createdAt' | 'attempts'> | Omit<AddMutation, 'id' | 'createdAt' | 'attempts'> | Omit<UpdateMutation, 'id' | 'createdAt' | 'attempts'> | Omit<DeleteMutation, 'id' | 'createdAt' | 'attempts'>): Promise<string> {
     await this.load();
     const id = `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
     const m: SyncMutation = {

@@ -115,7 +115,7 @@ describe('useOfflineWrite', () => {
     const { setDoc } = await import('firebase/firestore');
     let resolveFirestore: () => void;
     (setDoc as any).mockImplementation(
-      () => new Promise((r) => { resolveFirestore = r; })
+      () => new Promise<void>((r) => { resolveFirestore = r; })
     );
 
     const { result } = renderHook(() =>

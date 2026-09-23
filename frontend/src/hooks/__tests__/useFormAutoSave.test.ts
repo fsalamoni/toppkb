@@ -107,9 +107,9 @@ describe('useFormAutoSave', () => {
   it('debounce: salva apenas 1 vez após múltiplas mudanças rápidas', async () => {
     let writeCount = 0;
     const originalSetItem = localStorage.setItem.bind(localStorage);
-    localStorage.setItem = vi.fn((...args) => {
+    localStorage.setItem = vi.fn((key: string, value: string) => {
       writeCount++;
-      return originalSetItem(...args);
+      return originalSetItem(key, value);
     });
 
     const { rerender } = renderHook(

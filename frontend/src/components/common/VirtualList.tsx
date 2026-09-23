@@ -32,8 +32,14 @@ interface VirtualListProps<T> {
   className?: string;
   /** Mensagem quando items está vazio */
   emptyMessage?: ReactNode;
+  /** Alias de emptyMessage (compat) */
+  emptyState?: ReactNode;
   /** Loading state */
   loading?: boolean;
+  /** Loading custom (compat) */
+  loadingState?: ReactNode;
+  /** Get key (compat) */
+  getKey?: (item: T, index: number) => string | number;
 }
 
 export function VirtualList<T>({

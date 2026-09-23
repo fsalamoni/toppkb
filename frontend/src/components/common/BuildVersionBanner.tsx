@@ -11,7 +11,7 @@ import { useEffect, useState } from 'react';
 // ID do build é injetado em tempo de build via VITE_BUILD_ID
 const CURRENT_BUILD: string = (() => {
   try {
-    // @ts-expect-error - Vite injeta em build
+    // Vite injeta VITE_BUILD_ID em build (vite.config.ts definePlugin)
     const id = import.meta.env.VITE_BUILD_ID;
     if (id && typeof id === 'string' && id.length > 0) return id;
     return 'dev-unknown';

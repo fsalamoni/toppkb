@@ -146,7 +146,7 @@ describe('validators', () => {
       );
       // null passa required mas falha minLength
       // (mas validateRequired também retorna erro para null)
-      expect(composed('', {})).toBeTruthy();
+      expect(composed('', {} as any)).toBeTruthy();
     });
 
     it('aceita valor válido para todos', () => {
@@ -154,7 +154,7 @@ describe('validators', () => {
         validateRequired,
         validateMinLength(3, 'Nome'),
       );
-      expect(composed('João', {})).toBeNull();
+      expect(composed('João', {} as any)).toBeNull();
     });
   });
 
@@ -183,8 +183,8 @@ describe('validators', () => {
 
   describe('isValid', () => {
     it('true quando todos são null/undefined', () => {
-      expect(isValid({})).toBe(true);
-      expect(isValid({ a: null, b: undefined })).toBe(true);
+      expect(isValid({} as any)).toBe(true);
+      expect(isValid({ a: null, b: undefined } as any)).toBe(true);
     });
     it('false quando há erros', () => {
       expect(isValid({ a: 'erro' })).toBe(false);

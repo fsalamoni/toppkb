@@ -15,6 +15,7 @@ import {
 } from '@/data/seed/exercicios-kettlebell';
 import { ExerciseDetailModal } from '@/components/common/ExerciseDetailModal';
 import { MuscleHint } from '@/components/common/MuscleHint';
+import { getMuscleStats, filterByMuscle } from '@/lib/muscle-stats';
 
 const NIVEL_CORES: Record<string, string> = {
   iniciante: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
@@ -26,11 +27,16 @@ export function Exercicios() {
   const [busca, setBusca] = useState('');
   const [filtroPadrao, setFiltroPadrao] = useState<PadraoKettlebell | 'todos'>('todos');
   const [filtroNivel, setFiltroNivel] = useState<string>('todos');
+  const [filtroMusculo, setFiltroMusculo] = useState<string | null>(null);
   const [selecionado, setSelecionado] = useState<ExercicioKettlebell | null>(null);
 
+  const muscleStats = useMemo(() => getMuscleStats(), []);
+
   const exerciciosFiltrados = useMemo(() => {
+    // Se há músculo selecionado, começa pela lista filtrada por músculo
+    const base = filtroMusculo ? filterByMuscle(filtroMusculo) : KETTLEBELL_EXERCICIOS;
     const buscaLower = busca.toLowerCase();
-    return KETTLEBELL_EXERCICIOS.filter((ex) => {
+    return base.filter((ex) => {
       const matchBusca = !busca ||
         ex.nome.toLowerCase().includes(buscaLower) ||
         ex.descricao.toLowerCase().includes(buscaLower) ||
@@ -40,7 +46,7 @@ export function Exercicios() {
       const matchNivel = filtroNivel === 'todos' || ex.nivel === filtroNivel;
       return matchBusca && matchPadrao && matchNivel;
     });
-  }, [busca, filtroPadrao, filtroNivel]);
+  }, [busca, filtroPadrao, filtroNivel, filtroMusculo]);
 
   const contadores = useMemo(() => {
     const stats: Record<string, number> = { total: KETTLEBELL_EXERCICIOS.length };
@@ -112,6 +118,53 @@ export function Exercicios() {
         ))}
       </div>
 
+      {/* SPRINT 52: FILTRO POR MÚSCULO (clique para filtrar) */}
+      <Card className="bg-card/40 border-border/50">
+        <CardContent className="p-4 space-y-3">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-sm font-semibold flex items-center gap-2">
+                💪 Filtrar por músculo
+              </h3>
+              <p className="text-xs text-muted-foreground">
+                Clique no músculo para ver exercícios que o trabalham.
+              </p>
+            </div>
+            {filtroMusculo && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setFiltroMusculo(null)}
+                aria-label="Limpar filtro de músculo"
+              >
+                <X className="h-4 w-4 mr-1" />
+                Limpar ({filtroMusculo})
+              </Button>
+            )}
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {muscleStats.map((m) => (
+              <button
+                key={m.nome}
+                onClick={() => setFiltroMusculo(filtroMusculo === m.nome ? null : m.nome)}
+                className={`px-3 py-1.5 rounded-full border text-xs font-medium transition-all flex items-center gap-1.5 ${
+                  filtroMusculo === m.nome
+                    ? `${m.cor} ring-2 ring-offset-1 ring-offset-background ring-current`
+                    : `${m.cor} opacity-60 hover:opacity-100`
+                }`}
+                aria-pressed={filtroMusculo === m.nome}
+                aria-label={`Filtrar por ${m.display}: ${m.count} exercícios`}
+                title={`${m.display}: ${m.count} exercícios`}
+              >
+                <span aria-hidden="true">{m.icone}</span>
+                <span>{m.display}</span>
+                <span className="opacity-70">({m.count})</span>
+              </button>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
       {/* FILTROS */}
       <div className="flex gap-3 items-center flex-wrap">
         <div className="relative flex-1 min-w-[240px]">
@@ -168,6 +221,7 @@ export function Exercicios() {
         {exerciciosFiltrados.length} de {KETTLEBELL_EXERCICIOS.length} exercícios
         {filtroPadrao !== 'todos' && ` · Padrão: ${KETTLEBELL_PATTERNS[filtroPadrao].nome}`}
         {filtroNivel !== 'todos' && ` · Nível: ${filtroNivel}`}
+        {filtroMusculo && ` · Músculo: ${filtroMusculo}`}
       </div>
 
       {/* GRID DE EXERCÍCIOS */}

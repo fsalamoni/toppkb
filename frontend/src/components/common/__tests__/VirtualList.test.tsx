@@ -10,6 +10,8 @@ describe.skip('VirtualList', () => {
     render(
       <VirtualList
         items={[]}
+        itemHeight={40}
+        height={200}
         renderItem={() => null}
         emptyState={<div data-testid="empty">Vazio</div>}
       />
@@ -82,6 +84,8 @@ describe.skip('VirtualList', () => {
     render(
       <VirtualList
         items={[]}
+        itemHeight={40}
+        height={200}
         renderItem={() => null}
         loadingState={<div data-testid="loading">Carregando...</div>}
       />

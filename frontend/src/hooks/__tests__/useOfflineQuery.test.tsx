@@ -34,7 +34,7 @@ describe('useOfflineQuery', () => {
     const fetcher = vi.fn().mockResolvedValue({ id: 1, name: 'A' });
 
     const { result } = renderHook(() =>
-      useOfflineQuery({ cacheKey: 'test1', fetcher, ttl: 3600 }),
+      useOfflineQuery<{ id: number; name: string }>({ cacheKey: 'test1', fetcher, ttl: 3600 }),
     );
 
     await waitFor(() => expect(result.current.data).toEqual({ id: 1, name: 'A' }));
@@ -51,7 +51,7 @@ describe('useOfflineQuery', () => {
       return { val: count };
     });
     const { result } = renderHook(() =>
-      useOfflineQuery({ cacheKey: 'test2', fetcher, ttl: 3600 }),
+      useOfflineQuery<{val?: number, old?: boolean}>({ cacheKey: 'test2', fetcher, ttl: 3600 }),
     );
 
     // Espera ambos os estágios: cache antigo, depois fresh
@@ -71,7 +71,7 @@ describe('useOfflineQuery', () => {
 
   it('cache é escrito quando fetch sucede', async () => {
     const fetcher = vi.fn().mockResolvedValue({ id: 'cached-data' });
-    renderHook(() => useOfflineQuery({ cacheKey: 'test3', fetcher, ttl: 3600 }));
+    renderHook(() => useOfflineQuery<{val?: number, old?: boolean}>({ cacheKey: 'test3', fetcher, ttl: 3600 }));
 
     await waitFor(() => {
       expect(fetcher).toHaveBeenCalled();
@@ -95,7 +95,7 @@ describe('useOfflineQuery', () => {
 
     const fetcher = vi.fn();
     const { result } = renderHook(() =>
-      useOfflineQuery({ cacheKey: 'test4', fetcher, ttl: 3600 }),
+      useOfflineQuery<{val?: number, old?: boolean}>({ cacheKey: 'test4', fetcher, ttl: 3600 }),
     );
 
     await waitFor(() => expect(result.current.data).toEqual({ cached: true }));
@@ -109,7 +109,7 @@ describe('useOfflineQuery', () => {
     await idbSet('test5', { data: 'cached' }, { ttl: 3600 });
 
     const { result } = renderHook(() =>
-      useOfflineQuery({
+      useOfflineQuery<{val?: number, old?: boolean}>({
         cacheKey: 'test5',
         fetcher: () => new Promise(() => {}), // nunca resolve
         ttl: 3600,
@@ -127,7 +127,7 @@ describe('useOfflineQuery', () => {
     const fetcher = vi.fn().mockImplementation(async () => ({ count: ++count }));
 
     const { result } = renderHook(() =>
-      useOfflineQuery({ cacheKey: 'test6-refetch-v2', fetcher, ttl: 1 }),
+      useOfflineQuery<{val?: number, old?: boolean}>({ cacheKey: 'test6-refetch-v2', fetcher, ttl: 1 }),
     );
 
     // Espera primeiro fetch completar (data.count === 1)
