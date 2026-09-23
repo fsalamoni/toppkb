@@ -20,7 +20,7 @@ export interface MuscleStat {
 function normalizeMuscleName(s: string): string {
   return s
     .toLowerCase()
-    .replace(/máximo|mínimo|medial|lateral|anterior|posterior/g, '')
+    .replace(/máximo|mínimo|média|médios|médio|medial|lateral|anterior|posterior/g, '')
     .replace(/\s+/g, ' ')
     .trim()
     .replace(/glúteos|glúteo/g, 'glúteo')
@@ -119,13 +119,14 @@ export function getMuscleStats(): MuscleStat[] {
  * Match exato no nome normalizado.
  */
 export function filterByMuscle(muscleKey: string): ExercicioKettlebell[] {
+  const targetKey = normalizeMuscleName(muscleKey);
   const seen = new Set<string>();
   return KETTLEBELL_EXERCICIOS.filter((ex) => {
     if (!ex.mapaMuscularLeigo) return false;
     for (const line of ex.mapaMuscularLeigo) {
       const display = line.split('—')[0].trim();
       const key = normalizeMuscleName(display);
-      if (key === muscleKey && !seen.has(ex.id)) {
+      if (key === targetKey && !seen.has(ex.id)) {
         seen.add(ex.id);
         return true;
       }
