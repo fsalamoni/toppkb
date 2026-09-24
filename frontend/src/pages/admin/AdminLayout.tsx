@@ -1,5 +1,5 @@
 import { Outlet, NavLink, Link } from 'react-router-dom';
-import { ArrowLeft, Database, Brain, Users, BarChart3, Settings as SettingsIcon } from 'lucide-react';
+import { ArrowLeft, Database, Brain, Users, BarChart3, Settings as SettingsIcon, Activity } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const TABS = [
@@ -9,6 +9,7 @@ const TABS = [
   { to: '/app/admin/agents', label: 'Agentes', icon: Brain },
   { to: '/app/admin/users', label: 'Usuários', icon: Users },
   { to: '/app/admin/stats', label: 'Estatísticas', icon: BarChart3 },
+  { to: '/app/admin/analytics', label: 'Analytics (uso)', icon: Activity },
 ];
 
 export function AdminLayout() {

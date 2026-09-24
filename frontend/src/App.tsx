@@ -112,6 +112,7 @@ const AdminLLMConfig = lazyWithRetry(() => import('./pages/admin/AdminLLMConfig'
 const AdminAgents = lazyWithRetry(() => import('./pages/admin/AdminAgents').then((m) => ({ default: m.AdminAgents })));
 const AdminUsers = lazyWithRetry(() => import('./pages/admin/AdminUsers').then((m) => ({ default: m.AdminUsers })));
 const AdminStats = lazyWithRetry(() => import('./pages/admin/AdminStats').then((m) => ({ default: m.AdminStats })));
+const AdminAnalytics = lazyWithRetry(() => import('./pages/admin/AdminAnalytics').then((m) => ({ default: m.AdminAnalytics })));
 const ChatPage = lazyWithRetry(() => import('./pages/ChatPage').then((m) => ({ default: m.default })));
 
 const queryClient = new QueryClient({
@@ -286,6 +287,7 @@ function AppShell() {
                 <Route path="agents" element={<AdminAgents />} />
                 <Route path="users" element={<AdminUsers />} />
                 <Route path="stats" element={<AdminStats />} />
+                <Route path="analytics" element={<AdminAnalytics />} />
               </Route>
               <Route path="*" element={<NotFoundRedirectInner />} />
             </Routes>
