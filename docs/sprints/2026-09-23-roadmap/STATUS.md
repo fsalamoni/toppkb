@@ -2,7 +2,7 @@
 
 **Roadmap:** [00-ROADMAP-PRINCIPAL.md](./00-ROADMAP-PRINCIPAL.md)
 
-## Sprint atual: **SPRINT 65** (validação cruzada de exposição)
+## Sprint atual: **SPRINT 67** (Anatomia detalhada nos avatares SVG)
 
 ## Progresso
 
@@ -79,10 +79,35 @@
 
 **Resultado:** 17 pontos de exposição agora com cobertura completa das cues musculares.
 
+### ✅ Sprint 66 — Anatomia nas PNGs (silhueta + músculo destacado) — **CONCLUÍDO**
+
+**Layout v6 das imagens (substitui v5):**
+- Lado ESQUERDO: silhueta humana neutra com músculo destacado em cor
+- Lado DIREITO: texto didático (título, descrição, cues técnicos, onde sentir)
+- Label do músculo próximo ao destaque ('GLÚTEO MÁXIMO (bumbum)', 'DELTÓIDE (ombro)', etc)
+- Cada step destaca um músculo diferente do mesmo padrão KB
+
+**Entregas:**
+- ✅ Silhueta humana SVG (frente + costas) implementada em `scripts/silhueta_humana.py`
+- ✅ Mapeamento `PADRAO_MUSCULOS` (HINGE→glúteo+isquio, SQUAT→quadríceps+glúteo, etc)
+- ✅ `regen_step_images.py` modificado (split silhueta/texto)
+- ✅ 372 PNGs regeneradas com anatomia destacada
+- ✅ Tamanho médio: 60KB por PNG (era 100KB)
+
+**Validação visual:**
+- Swing HINGE → glúteo destacado em verde ✅
+- Goblet Squat → glúteo destacado em verde ✅
+- Push Press → deltóide destacado em roxo ✅
+- Windmill → deltóide destacado em pink ✅
+
+**Bonus:**
+- Bug encontrado: teste flaky `computeHeatmap > sessionCount reflete...` (quebrava perto de meia-noite UTC)
+- Fix: usar `+1min` em vez de `+1h` (sempre fica no mesmo dia)
+- CI fix: `timeout-minutes: 15` para test-frontend + step typecheck antes do test
+
 ## Próximos sprints
 
-- **Sprint 66**: Anatomia nas imagens PNG (silhueta)
-- **Sprint 67**: Anatomia detalhada nos avatares SVG
+- **Sprint 67**: Anatomia detalhada nos avatares SVG (articulações, ângulos, KB realista)
 - **Sprint 68**: Vídeos demonstrativos (avatares animados)
 - **Sprint 69**: Validação de usuário (5-10 exercícios como leigo)
 - **Sprint 70**: Revisão linguística (glossário leigo)
@@ -91,20 +116,16 @@
 - **Sprint 73**: Métricas de uso (analytics)
 - **Sprint 74**: Documentação final
 
-## Commits da sessão Sprint 64.3 + 65
+## Commits da sessão Sprint 64.3 + 65 + 66
 
 ```
+6aa88ed ci: adicionar timeout-minutes e step typecheck
+f593013 feat(roadmap): SPRINT 66 - silhueta humana + músculo destacado nas PNGs
+947cacb test(heatmap): corrige teste flaky que falhava perto de meia-noite UTC
+7e4cd13 docs(roadmap): STATUS.md com Sprint 65 CONCLUÍDO + nota sobre deploy
 d5cdf7d feat(roadmap): SPRINT 65 - validação cruzada 17 pontos de exposição
 5e0111a docs(roadmap): atualizar STATUS.md com Sprint 64.3 CONCLUÍDO
 430f6a9 feat(roadmap): SPRINT 64.3 CONCLUÍDO - 0 exercícios abaixo de 80!
-5f3c015 feat(roadmap): SPRINT 64.3h - mais 4 exercícios perfeitos (push-press, high-pull, single-arm-row, yoke-walk)
-7b5b96c feat(roadmap): SPRINT 64.3g - mais 4 exercícios perfeitos (glute-bridge, walking-lunge, reverse-lunge, double-kb-front-squat)
-3502a17 feat(roadmap): SPRINT 64.3f - mais 4 exercícios perfeitos (floor-press, cross-body-carry, good-morning)
-90d3d7a feat(roadmap): SPRINT 64.3e - mais 5 exercícios perfeitos (flow-sequence, burpee, step-up, reverse-step-up)
-2ccd5bf feat(roadmap): SPRINT 64.3d - mais 5 exercícios perfeitos (rack-carry, viking-push-press, bottoms-up-swing, side-press)
-900f493 feat(roadmap): SPRINT 64.3c - mais 5 exercícios perfeitos (double-push-press, muscle-up, bottoms-up-carry, see-saw-press, curtsy-lunge)
-9fc175e feat(roadmap): SPRINT 64.3b - mais 5 exercícios perfeitos (tgu-floor, tgu-to-ohs, shrimp-squat, around-the-world, side-plank-kb)
-1aaa89b feat(roadmap): SPRINT 64.3 - reescrever 5 exercícios com score < 80 (waiter-walk, jerk, cuban-press, around-the-body, man-maker, lateral-lunge, overhead-carry)
 ```
 
 ## Bugs corrigidos nesta sessão
