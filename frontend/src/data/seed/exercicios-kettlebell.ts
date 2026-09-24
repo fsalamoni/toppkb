@@ -4071,7 +4071,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     contraIndicacoes: ['Lesão no ombro / manguito rotador', 'Capsulite adesiva', 'Dor crônica no punho', 'Lombalgia crônica (suspensão comprime disco)', 'Osteoporose avançada'],
     evidencia: 'Contreras 2013: KB Dip ativa tríceps em padrão EMG > 75% MVC e peitoral em > 65% MVC. Suspensão corporal exige ~70% do peso corporal — challenging para 50+ (pode ser adaptado com pés no chão).',
     imageUrl: img('25-jumping-squat.jpg'),
-    videoUrl: vid('25-dips.mp4'),
+    videoUrl: vid('25-arm-bar.mp4'),
     mapaMuscularLeigo: [
       'TRÍCEPS — TRABALHA FORTE (principal motor — extensão do cotovelo)',
       'PEITORAL (porção inferior/clavicular) — auxilia no press',
@@ -6604,7 +6604,9 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         alertasMusculares: [
         ],
  imagem: { src: img('step-images/kb-long-cycle-step-4.png'), alt: 'Drop + repetir', caption: 'Drop + repetir' } },
-    ],
+    ],    imageUrl: img('08-swing-snatch.jpg'),
+    videoUrl: vid('08-swing-snatch.mp4'),
+
     fontesExternas: [
       { name: 'Wikipedia - Girevoy Sport', url: 'https://en.wikipedia.org/wiki/Girevoy_sport', license: 'CC BY-SA' },
     ],
@@ -8413,7 +8415,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     contraIndicacoes: ['Capsulite adesiva / ombro congelado (movimento restringido)', 'Lombalgia crônica (movimento rotacional pode irritar)', 'Labrum lesionado', 'Artrose avançada do ombro'],
     evidencia: 'Mechler 2014: coordenação bilateral em exercícios X-cross melhora conectividade neuromuscular em 25-35% em populações 50+ (medido por EMG sincronizado bilateral). Benefícios cognitivos correlacionados (executive function +15% em 12 semanas).',
     imageUrl: img('32-around-the-body.jpg'),
-    videoUrl: vid('28-around-the-body.mp4'),
+    videoUrl: vid('28-hip-halo.mp4'),
     mapaMuscularLeigo: [
       'CORE (abdômen + oblíquo + lombar) — estabiliza o tronco, IMPEDINDO rotação do quadril (mais difícil do que parece)',
       'Deltóide ANTERIOR (frente) — trabalha ao passar o KB pela frente',
@@ -8522,7 +8524,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     contraIndicacoes: ['Lesão aguda no joelho', 'Lesão no ombro', 'Capsulite adesiva', 'Lombalgia crônica (sincronia pode irritar)'],
     evidencia: 'Contreras 2013: Deep Six combina padrões de mobilidade (halo) + agachamento — melhora mobilidade do ombro + quadril em 20-30% em 8 semanas. Indicado para aquecimento e reabilitação.',
     imageUrl: img('10-halo.jpg'),
-    videoUrl: vid('60-deep-six.mp4'),
+    videoUrl: vid('60-bottoms-up-get-up.mp4'),
     mapaMuscularLeigo: [
       'CORE TOTAL — estabiliza tronco durante todo movimento composto',
       'OBLÍQUO — estabiliza contra rotação',

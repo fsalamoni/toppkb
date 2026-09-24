@@ -111,9 +111,12 @@ describe('ExerciseDetailModal', () => {
         onClose={() => {}}
       />,
     );
-    expect(screen.getByText(/Passo a Passo/i)).toBeInTheDocument();
-    // Steps são list items com numero prefixo
-    expect(screen.getByText(/#1/i)).toBeInTheDocument();
+    // Pode aparecer "Passo a Passo" ou "Passo a passo animado"
+    const passoMatch = screen.getAllByText(/passo a passo/i);
+    expect(passoMatch.length).toBeGreaterThan(0);
+    // Steps são list items com numero prefixo (podem aparecer múltiplos #1 com animator)
+    const numberOne = screen.getAllByText(/#1/i);
+    expect(numberOne.length).toBeGreaterThan(0);
   });
 
   it('chama onClose ao clicar fora (backdrop)', () => {
