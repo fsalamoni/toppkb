@@ -9,6 +9,7 @@ on:
 jobs:
   test-frontend:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -20,6 +21,9 @@ jobs:
       - name: Lint
         working-directory: ./frontend
         run: npm run lint
+      - name: Typecheck
+        working-directory: ./frontend
+        run: npm run typecheck
       - name: Test
         working-directory: ./frontend
         run: npm test -- --run
@@ -29,6 +33,7 @@ jobs:
 
   test-functions:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
