@@ -6,7 +6,7 @@
 <text x="20" y="25" font-size="14" font-weight="bold" fill="#0f172a" font-family="sans-serif">PUSH PRESS</text>
 <text x="20" y="48" font-size="10" fill="#0f172a" opacity="0.7" font-family="sans-serif">push-press-step-2</text>
 
-<!-- Step circle -->
+<!-- Step number -->
 <circle cx="370" cy="30" r="22" fill="#0f172a"/>
 <text x="370" y="37" font-size="22" font-weight="bold" fill="#a855f7" text-anchor="middle" font-family="sans-serif">2</text>
 
@@ -15,33 +15,39 @@
 <text x="60" y="94" font-size="10" font-weight="bold" fill="#a855f7" text-anchor="middle" font-family="sans-serif">VISTA FRONTAL</text>
 <text x="115" y="95" font-size="14" font-weight="bold" fill="#cbd5e1" font-family="sans-serif">Dip LEVE (~10cm)</text>
 
-<!-- Corpo + animação -->
+<!-- Corpo -->
 <g transform="translate(0, 50)">
-<line x1="200" y1="130" x2="200" y2="530" stroke="#475569" stroke-width="1" stroke-dasharray="6,4" opacity="0.6"/><circle cx="200" cy="230" r="22" fill="#cbd5e1" stroke="#0f172a" stroke-width="1.5"/><line x1="200" y1="252" x2="200" y2="410" stroke="#cbd5e1" stroke-width="14" stroke-linecap="round"/><circle cx="200" cy="420" r="8" fill="#0f172a" stroke="#fbbf24" stroke-width="2.5"/><circle cx="200" cy="420" r="5.5" fill="#fbbf24" opacity="0.7"/><line x1="202" y1="260" x2="225" y2="260" stroke="#cbd5e1" stroke-width="8" stroke-linecap="round"/><line x1="225" y1="260" x2="225" y2="215" stroke="#cbd5e1" stroke-width="8" stroke-linecap="round"/><circle cx="225" cy="260" r="5" fill="#0f172a" stroke="#fbbf24" stroke-width="2.5"/><circle cx="225" cy="260" r="2.5" fill="#fbbf24" opacity="0.7"/><circle cx="225" cy="180" r="17.099999999999998" fill="#a8a29e" stroke="#1c1917" stroke-width="1.5"/><path d="M 213.6 165.75 Q 225 151.5 236.4 165.75" fill="none" stroke="#57534e" stroke-width="2.375"/><rect x="216.45" y="156.25" width="17.099999999999998" height="11.399999999999999" rx="3.8" fill="none" stroke="#57534e" stroke-width="1.4249999999999998"/><circle cx="219.3" cy="174.3" r="2.8499999999999996" fill="#fbbf24" opacity="0.6"/><line x1="198" y1="260" x2="180" y2="320" stroke="#cbd5e1" stroke-width="7" stroke-linecap="round"/><line x1="180" y1="320" x2="180" y2="380" stroke="#cbd5e1" stroke-width="7" stroke-linecap="round"/><circle cx="180" cy="320" r="5" fill="#0f172a" stroke="#fbbf24" stroke-width="2.5"/><circle cx="180" cy="320" r="2.5" fill="#fbbf24" opacity="0.7"/><circle cx="180" cy="380" r="5" fill="#0f172a" stroke="#fbbf24" stroke-width="2.5"/><circle cx="180" cy="380" r="2.5" fill="#fbbf24" opacity="0.7"/><line x1="175" y1="420" x2="170" y2="490" stroke="#cbd5e1" stroke-width="10" stroke-linecap="round"/><line x1="225" y1="420" x2="230" y2="490" stroke="#cbd5e1" stroke-width="10" stroke-linecap="round"/><circle cx="170" cy="490" r="6" fill="#0f172a" stroke="#fbbf24" stroke-width="2.5"/><circle cx="170" cy="490" r="3.5" fill="#fbbf24" opacity="0.7"/><circle cx="230" cy="490" r="6" fill="#0f172a" stroke="#fbbf24" stroke-width="2.5"/><circle cx="230" cy="490" r="3.5" fill="#fbbf24" opacity="0.7"/><line x1="170" y1="490" x2="170" y2="555" stroke="#cbd5e1" stroke-width="9" stroke-linecap="round"/><line x1="230" y1="490" x2="230" y2="555" stroke="#cbd5e1" stroke-width="9" stroke-linecap="round"/><circle cx="170" cy="555" r="5" fill="#0f172a" stroke="#fbbf24" stroke-width="2.5"/><circle cx="170" cy="555" r="2.5" fill="#fbbf24" opacity="0.7"/><circle cx="230" cy="555" r="5" fill="#0f172a" stroke="#fbbf24" stroke-width="2.5"/><circle cx="230" cy="555" r="2.5" fill="#fbbf24" opacity="0.7"/><line x1="150" y1="565" x2="250" y2="565" stroke="#cbd5e1" stroke-width="3" stroke-linecap="round"/><rect x="152.65" y="131" width="94.7" height="15" rx="4" fill="#1e293b" opacity="0.95"/><text x="200" y="143" font-size="11" fill="#a855f7" text-anchor="middle" font-family="sans-serif" font-weight="500">LOCKOUT — 180°</text><line x1="225" y1="280" x2="225" y2="210" stroke="#a855f7" stroke-width="1.5" stroke-dasharray="4,3"/>
-<!-- Indicador de movimento animado no canto inferior -->
-<g opacity="0.7">
-<text x="40" y="540" font-size="40" fill="#a855f7" font-weight="bold" font-family="sans-serif">
-{TEM ANIMAÇÃO}
-<animate attributeName="opacity" values="0.9;0.4;0.9" dur="6s" repeatCount="indefinite"/>
-</text>
+<line x1="200" y1="130" x2="200" y2="530" stroke="#475569" stroke-width="1" stroke-dasharray="6,4" opacity="0.6"/><circle cx="200" cy="200" r="22" fill="#cbd5e1" stroke="#0f172a" stroke-width="1.5"/><line x1="200" y1="222" x2="200" y2="400" stroke="#cbd5e1" stroke-width="14" stroke-linecap="round"/><circle cx="200" cy="400" r="8" fill="#0f172a" stroke="#fbbf24" stroke-width="2.5"/><circle cx="200" cy="400" r="5.5" fill="#fbbf24" opacity="0.7"/>
+<g>
+  <animateTransform attributeName="transform" type="rotate"
+    values="0 202 230; -30 202 230; -90 202 230; -150 202 230; -180 202 230; -180 202 230; -150 202 230; -90 202 230; -30 202 230; 0 202 230"
+    keyTimes="0;0.1;0.2;0.3;0.4;0.5;0.6;0.7;0.8;0.9;1"
+    dur="4s" repeatCount="indefinite"/>
+  <line x1="202" y1="230" x2="225" y2="230" stroke="#cbd5e1" stroke-width="8" stroke-linecap="round"/>
+  <line x1="225" y1="230" x2="225" y2="230" stroke="#cbd5e1" stroke-width="8" stroke-linecap="round"/>
+  <circle cx="225" cy="230" r="5" fill="#0f172a" stroke="#fbbf24" stroke-width="2.5"/>
+  <circle cx="225" cy="230" r="2.5" fill="#fbbf24" opacity="0.7"/>
 </g>
+
+<g>
+  <animateTransform attributeName="transform" type="rotate"
+    values="0 202 230; -30 202 230; -90 202 230; -150 202 230; -180 202 230; -180 202 230; -150 202 230; -90 202 230; -30 202 230; 0 202 230"
+    keyTimes="0;0.1;0.2;0.3;0.4;0.5;0.6;0.7;0.8;0.9;1"
+    dur="4s" repeatCount="indefinite"/>
+  <line x1="225" y1="230" x2="225" y2="170" stroke="#cbd5e1" stroke-width="8" stroke-linecap="round"/>
+  <circle cx="225" cy="135" r="16.2" fill="#a8a29e" stroke="#1c1917" stroke-width="1.5"/><path d="M 214.2 121.5 Q 225 108.0 235.8 121.5" fill="none" stroke="#57534e" stroke-width="2.25"/><rect x="216.9" y="112.5" width="16.2" height="10.8" rx="3.6" fill="none" stroke="#57534e" stroke-width="1.35"/><circle cx="219.6" cy="129.6" r="2.7" fill="#fbbf24" opacity="0.6"/>
+</g>
+<line x1="175" y1="400" x2="170" y2="470" stroke="#cbd5e1" stroke-width="10" stroke-linecap="round"/><line x1="225" y1="400" x2="230" y2="470" stroke="#cbd5e1" stroke-width="10" stroke-linecap="round"/><circle cx="170" cy="470" r="6" fill="#0f172a" stroke="#fbbf24" stroke-width="2.5"/><circle cx="170" cy="470" r="3.5" fill="#fbbf24" opacity="0.7"/><circle cx="230" cy="470" r="6" fill="#0f172a" stroke="#fbbf24" stroke-width="2.5"/><circle cx="230" cy="470" r="3.5" fill="#fbbf24" opacity="0.7"/><line x1="170" y1="470" x2="170" y2="535" stroke="#cbd5e1" stroke-width="9" stroke-linecap="round"/><line x1="230" y1="470" x2="230" y2="535" stroke="#cbd5e1" stroke-width="9" stroke-linecap="round"/><circle cx="170" cy="535" r="5" fill="#0f172a" stroke="#fbbf24" stroke-width="2.5"/><circle cx="170" cy="535" r="2.5" fill="#fbbf24" opacity="0.7"/><circle cx="230" cy="535" r="5" fill="#0f172a" stroke="#fbbf24" stroke-width="2.5"/><circle cx="230" cy="535" r="2.5" fill="#fbbf24" opacity="0.7"/><line x1="150" y1="545" x2="250" y2="545" stroke="#cbd5e1" stroke-width="3" stroke-linecap="round"/><path d="M 200.0 230.0 A 25 25 0 0 1 225.0 205.0" fill="none" stroke="#10b981" stroke-width="2"/><rect x="225.7" y="174" width="38.6" height="17" rx="4" fill="#1e293b" opacity="0.95"/><text x="245" y="188" font-size="13" fill="#a855f7" text-anchor="middle" font-family="sans-serif" font-weight="500">180°</text><text x="320" y="250" font-size="40" fill="#a855f7" opacity="0.4" font-weight="bold">↑</text>
 </g>
 
 <!-- Footer -->
 <rect x="0" y="560" width="400" height="40" fill="#a855f7" opacity="0.15"/>
-<text x="20" y="578" font-size="11" font-weight="bold" fill="#a855f7" font-family="sans-serif">▶ Animação (6s loop)</text>
-<text x="20" y="592" font-size="10" fill="#94a3b8" font-family="sans-serif">• Pose inicial → final → inicial • Loop contínuo</text>
+<text x="20" y="578" font-size="11" font-weight="bold" fill="#a855f7" font-family="sans-serif">▶ Animação (4s loop)</text>
+<text x="20" y="592" font-size="10" fill="#94a3b8" font-family="sans-serif">• Movimento físico real • Loop contínuo</text>
 
 <!-- Tag PASSO N -->
 <g transform="translate(330, 80)">
 <rect x="0" y="0" width="50" height="22" rx="11" fill="#a855f7"/>
 <text x="25" y="15" font-size="11" font-weight="bold" fill="#0f172a" text-anchor="middle" font-family="sans-serif">PASSO 2</text>
-</g>
-
-<!-- Seta animada (movimento ↕) -->
-<g transform="translate(50, 480)">
-<text font-size="30" fill="#a855f7" font-weight="bold" font-family="sans-serif" opacity="0.7">↻
-<animateTransform attributeName="transform" type="rotate" from="0 15 15" to="360 15 15" dur="6s" repeatCount="indefinite"/>
-</text>
 </g>
 </svg>
