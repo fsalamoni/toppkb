@@ -1,34 +1,35 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600" width="400" height="600">
 <rect width="400" height="600" fill="#0f172a"/>
-<rect x="0" y="475" width="400" height="125" fill="#1e293b" opacity="0.3"/>
-<line x1="50" y1="520" x2="350" y2="520" stroke="#475569" stroke-width="2"/>
-<rect id="header-rect" x="0" y="0" width="400" height="110" fill="#ef4444"/>
-<text x="40" y="40" font-size="22" font-weight="bold" fill="#0f172a" font-family="sans-serif">ARM BAR</text>
-<text x="40" y="68" font-size="12" fill="#0f172a" opacity="0.8" font-family="sans-serif">kb-arm-bar</text>
-<circle cx="350" cy="55" r="40" fill="#0f172a"/>
-<text x="350" y="68" font-size="36" font-weight="bold" fill="#ef4444" text-anchor="middle" font-family="sans-serif">3</text>
-<text x="40" y="155" font-size="20" font-weight="bold" fill="#cbd5e1" font-family="sans-serif">Press de volta ao topo</text>
-<text x="40" y="180" font-size="11" fill="#94a3b8" font-family="sans-serif">Press de volta ao lockout. KB sobre o ombro. Mova só o braço.</text>
-<!-- Cabeça -->
-<circle cx="80" cy="450" r="20" fill="none" stroke="#cbd5e1" stroke-width="6"/>
-<line x1="100" y1="450" x2="280" y2="450" stroke="#cbd5e1" stroke-width="12" stroke-linecap="round"/>
-<!-- Braço com KB -->
-<line x1="280" y1="450" x2="350" y2="380" stroke="#cbd5e1" stroke-width="9" stroke-linecap="round"/>
-<circle cx="360" cy="370" r="22" fill="#ef4444"/>
-<rect x="348" y="355" width="24" height="32" fill="none" stroke="#7f1d1d" stroke-width="2"/>
-<!-- Perna flexa -->
-<line x1="200" y1="450" x2="270" y2="490" stroke="#cbd5e1" stroke-width="10" stroke-linecap="round"/>
-<line x1="270" y1="490" x2="310" y2="475" stroke="#cbd5e1" stroke-width="10" stroke-linecap="round"/>
-<!-- CORE TRAVA -->
-<rect x="120" y="445" width="160" height="14" fill="#ec4899" opacity="0.3" rx="5"/>
-<text x="200" y="438" font-size="11" fill="#ec4899" font-weight="bold" text-anchor="middle" font-family="sans-serif">CORE TRAVA NO CHÃO</text>
-<!-- Deltóide trava -->
-<line x1="280" y1="450" x2="350" y2="380" stroke="#ef4444" stroke-width="3" opacity="0.7"/>
-<text x="290" y="440" font-size="11" fill="#ef4444" font-weight="bold" font-family="sans-serif">DELTÓIDE</text>
-<text x="290" y="455" font-size="11" fill="#ef4444" font-weight="bold" font-family="sans-serif">TRAVA</text>
-<rect x="0" y="555" width="400" height="45" fill="#ef4444" opacity="0.15"/>
-<text x="40" y="575" font-size="12" font-weight="bold" fill="#ef4444" font-family="sans-serif">▶ Onde/como sentir</text>
-<text x="40" y="592" font-size="10" fill="#94a3b8" font-family="sans-serif">Detalhes completos no app</text>
 
-<animate attributeName="opacity" values="1;0.85;1" dur="3s" repeatCount="indefinite" xlink:href="#header-rect"/>
+<!-- Header (cor do padrão) -->
+<rect x="0" y="0" width="400" height="60" fill="#ec4899"/>
+<text x="20" y="25" font-size="14" font-weight="bold" fill="#0f172a" font-family="sans-serif">ARM BAR</text>
+<text x="20" y="48" font-size="10" fill="#0f172a" opacity="0.7" font-family="sans-serif">arm-bar-step-3</text>
+
+<!-- Step label -->
+<circle cx="370" cy="30" r="22" fill="#0f172a"/>
+<text x="370" y="37" font-size="22" font-weight="bold" fill="#ec4899" text-anchor="middle" font-family="sans-serif">3</text>
+
+<!-- Vista label -->
+<rect x="20" y="80" width="80" height="20" rx="4" fill="#1e293b" stroke="#ec4899" stroke-width="1"/>
+<text x="60" y="94" font-size="10" font-weight="bold" fill="#ec4899" text-anchor="middle" font-family="sans-serif">FRONTAL</text>
+
+<!-- Title do step -->
+<text x="115" y="95" font-size="14" font-weight="bold" fill="#cbd5e1" font-family="sans-serif">Press de volta ao topo</text>
+
+<!-- Corpo do avatar -->
+<g transform="translate(0, 50)">
+<line x1="200" y1="130" x2="200" y2="530" stroke="#475569" stroke-width="1" stroke-dasharray="6,4" opacity="0.6"/><circle cx="200" cy="170" r="12" fill="#0f172a" stroke="#fbbf24" stroke-width="2.5"/><circle cx="200" cy="170" r="9.5" fill="#fbbf24" opacity="0.7"/><circle cx="200" cy="170" r="22" fill="#cbd5e1" stroke="#0f172a" stroke-width="1.5"/><line x1="200" y1="192" x2="200" y2="365" stroke="#cbd5e1" stroke-width="14" stroke-linecap="round"/><circle cx="200" cy="380" r="8" fill="#0f172a" stroke="#ef4444" stroke-width="2.5"/><circle cx="200" cy="380" r="5.5" fill="#ef4444" opacity="0.7"/><line x1="198" y1="200" x2="175" y2="230" stroke="#cbd5e1" stroke-width="7" stroke-linecap="round"/><line x1="202" y1="200" x2="225" y2="230" stroke="#cbd5e1" stroke-width="7" stroke-linecap="round"/><line x1="175" y1="230" x2="175" y2="260" stroke="#cbd5e1" stroke-width="7" stroke-linecap="round"/><line x1="225" y1="230" x2="225" y2="260" stroke="#cbd5e1" stroke-width="7" stroke-linecap="round"/><circle cx="200" cy="265" r="15.299999999999999" fill="#a8a29e" stroke="#1c1917" stroke-width="1.5"/><path d="M 189.8 252.25 Q 200 239.5 210.2 252.25" fill="none" stroke="#57534e" stroke-width="2.125"/><rect x="192.35" y="243.75" width="15.299999999999999" height="10.2" rx="3.4" fill="none" stroke="#57534e" stroke-width="1.275"/><circle cx="175" cy="260" r="5" fill="#0f172a" stroke="#fbbf24" stroke-width="2.5"/><circle cx="175" cy="260" r="2.5" fill="#fbbf24" opacity="0.7"/><circle cx="225" cy="260" r="5" fill="#0f172a" stroke="#fbbf24" stroke-width="2.5"/><circle cx="225" cy="260" r="2.5" fill="#fbbf24" opacity="0.7"/><line x1="170" y1="380" x2="165" y2="450" stroke="#cbd5e1" stroke-width="10" stroke-linecap="round"/><line x1="230" y1="380" x2="235" y2="450" stroke="#cbd5e1" stroke-width="10" stroke-linecap="round"/><circle cx="165" cy="450" r="6" fill="#0f172a" stroke="#ef4444" stroke-width="2.5"/><circle cx="165" cy="450" r="3.5" fill="#ef4444" opacity="0.7"/><circle cx="235" cy="450" r="6" fill="#0f172a" stroke="#ef4444" stroke-width="2.5"/><circle cx="235" cy="450" r="3.5" fill="#ef4444" opacity="0.7"/><line x1="165" y1="450" x2="165" y2="515" stroke="#cbd5e1" stroke-width="9" stroke-linecap="round"/><line x1="235" y1="450" x2="235" y2="515" stroke="#cbd5e1" stroke-width="9" stroke-linecap="round"/><circle cx="165" cy="515" r="5" fill="#0f172a" stroke="#fbbf24" stroke-width="2.5"/><circle cx="165" cy="515" r="2.5" fill="#fbbf24" opacity="0.7"/><circle cx="235" cy="515" r="5" fill="#0f172a" stroke="#fbbf24" stroke-width="2.5"/><circle cx="235" cy="515" r="2.5" fill="#fbbf24" opacity="0.7"/><line x1="150" y1="525" x2="250" y2="525" stroke="#cbd5e1" stroke-width="3" stroke-linecap="round"/><rect x="259.875" y="161" width="40.25" height="15" rx="4" fill="#1e293b" opacity="0.95"/><text x="280" y="173" font-size="11" fill="#ec4899" text-anchor="middle" font-family="sans-serif" font-weight="500">EM PÉ</text>
+</g>
+
+<!-- Footer label -->
+<rect x="0" y="560" width="400" height="40" fill="#ec4899" opacity="0.15"/>
+<text x="20" y="578" font-size="11" font-weight="bold" fill="#ec4899" font-family="sans-serif">▶ Anatomia</text>
+<text x="20" y="592" font-size="10" fill="#94a3b8" font-family="sans-serif">• Articulações em amarelo • KB com alça • Vista FRONTAL</text>
+
+<!-- Tag PASSO N no canto -->
+<g transform="translate(330, 80)">
+<rect x="0" y="0" width="50" height="22" rx="11" fill="#ec4899"/>
+<text x="25" y="15" font-size="11" font-weight="bold" fill="#0f172a" text-anchor="middle" font-family="sans-serif">PASSO 3</text>
+</g>
 </svg>

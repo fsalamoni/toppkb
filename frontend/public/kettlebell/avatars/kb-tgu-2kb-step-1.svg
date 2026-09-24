@@ -1,34 +1,35 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600" width="400" height="600">
 <rect width="400" height="600" fill="#0f172a"/>
-<rect x="0" y="475" width="400" height="125" fill="#1e293b" opacity="0.3"/>
-<line x1="50" y1="520" x2="350" y2="520" stroke="#475569" stroke-width="2"/>
-<rect id="header-rect" x="0" y="0" width="400" height="110" fill="#ef4444"/>
-<text x="40" y="40" font-size="22" font-weight="bold" fill="#0f172a" font-family="sans-serif">TGU 2 KB</text>
-<text x="40" y="68" font-size="12" fill="#0f172a" opacity="0.8" font-family="sans-serif">kb-tgu-2kb</text>
-<circle cx="350" cy="55" r="40" fill="#0f172a"/>
-<text x="350" y="68" font-size="36" font-weight="bold" fill="#ef4444" text-anchor="middle" font-family="sans-serif">1</text>
-<text x="40" y="155" font-size="20" font-weight="bold" fill="#cbd5e1" font-family="sans-serif">Setup com 2 KBs</text>
-<text x="40" y="180" font-size="11" fill="#94a3b8" font-family="sans-serif">Deitado no chão. 2 KBs nos lockouts (overhead) com ambos braços. Joelhos flexos.</text>
-<!-- Cabeça -->
-<circle cx="80" cy="450" r="20" fill="none" stroke="#cbd5e1" stroke-width="6"/>
-<line x1="100" y1="450" x2="280" y2="450" stroke="#cbd5e1" stroke-width="12" stroke-linecap="round"/>
-<!-- Braço com KB -->
-<line x1="280" y1="450" x2="350" y2="380" stroke="#cbd5e1" stroke-width="9" stroke-linecap="round"/>
-<circle cx="360" cy="370" r="22" fill="#ef4444"/>
-<rect x="348" y="355" width="24" height="32" fill="none" stroke="#7f1d1d" stroke-width="2"/>
-<!-- Perna flexa -->
-<line x1="200" y1="450" x2="270" y2="490" stroke="#cbd5e1" stroke-width="10" stroke-linecap="round"/>
-<line x1="270" y1="490" x2="310" y2="475" stroke="#cbd5e1" stroke-width="10" stroke-linecap="round"/>
-<!-- CORE TRAVA -->
-<rect x="120" y="445" width="160" height="14" fill="#ec4899" opacity="0.3" rx="5"/>
-<text x="200" y="438" font-size="11" fill="#ec4899" font-weight="bold" text-anchor="middle" font-family="sans-serif">CORE TRAVA NO CHÃO</text>
-<!-- Deltóide trava -->
-<line x1="280" y1="450" x2="350" y2="380" stroke="#ef4444" stroke-width="3" opacity="0.7"/>
-<text x="290" y="440" font-size="11" fill="#ef4444" font-weight="bold" font-family="sans-serif">DELTÓIDE</text>
-<text x="290" y="455" font-size="11" fill="#ef4444" font-weight="bold" font-family="sans-serif">TRAVA</text>
-<rect x="0" y="555" width="400" height="45" fill="#ef4444" opacity="0.15"/>
-<text x="40" y="575" font-size="12" font-weight="bold" fill="#ef4444" font-family="sans-serif">▶ Onde/como sentir</text>
-<text x="40" y="592" font-size="10" fill="#94a3b8" font-family="sans-serif">Detalhes completos no app</text>
 
-<animate attributeName="opacity" values="1;0.85;1" dur="3s" repeatCount="indefinite" xlink:href="#header-rect"/>
+<!-- Header (cor do padrão) -->
+<rect x="0" y="0" width="400" height="60" fill="#ec4899"/>
+<text x="20" y="25" font-size="14" font-weight="bold" fill="#0f172a" font-family="sans-serif">TGU 2 KB</text>
+<text x="20" y="48" font-size="10" fill="#0f172a" opacity="0.7" font-family="sans-serif">tgu-2kb-step-1</text>
+
+<!-- Step label -->
+<circle cx="370" cy="30" r="22" fill="#0f172a"/>
+<text x="370" y="37" font-size="22" font-weight="bold" fill="#ec4899" text-anchor="middle" font-family="sans-serif">1</text>
+
+<!-- Vista label -->
+<rect x="20" y="80" width="80" height="20" rx="4" fill="#1e293b" stroke="#ec4899" stroke-width="1"/>
+<text x="60" y="94" font-size="10" font-weight="bold" fill="#ec4899" text-anchor="middle" font-family="sans-serif">FRONTAL</text>
+
+<!-- Title do step -->
+<text x="115" y="95" font-size="14" font-weight="bold" fill="#cbd5e1" font-family="sans-serif">Setup com 2 KBs</text>
+
+<!-- Corpo do avatar -->
+<g transform="translate(0, 50)">
+<line x1="30" y1="380" x2="380" y2="380" stroke="#475569" stroke-width="1" stroke-dasharray="6,4" opacity="0.6"/><line x1="200" y1="140" x2="200" y2="480" stroke="#475569" stroke-width="1" stroke-dasharray="6,4" opacity="0.6"/><circle cx="90" cy="380" r="22" fill="#cbd5e1" stroke="#0f172a" stroke-width="1.5"/><line x1="112" y1="380" x2="310" y2="380" stroke="#cbd5e1" stroke-width="14" stroke-linecap="round"/><circle cx="180" cy="380" r="8" fill="#0f172a" stroke="#fbbf24" stroke-width="2.5"/><circle cx="180" cy="380" r="5.5" fill="#fbbf24" opacity="0.7"/><line x1="230" y1="380" x2="230" y2="285" stroke="#cbd5e1" stroke-width="8" stroke-linecap="round"/><line x1="235" y1="380" x2="235" y2="285" stroke="#cbd5e1" stroke-width="8" stroke-linecap="round"/><circle cx="230" cy="380" r="5" fill="#0f172a" stroke="#fbbf24" stroke-width="2.5"/><circle cx="230" cy="380" r="2.5" fill="#fbbf24" opacity="0.7"/><circle cx="230" cy="285" r="5" fill="#0f172a" stroke="#fbbf24" stroke-width="2.5"/><circle cx="230" cy="285" r="2.5" fill="#fbbf24" opacity="0.7"/><circle cx="232" cy="250" r="17.099999999999998" fill="#a8a29e" stroke="#1c1917" stroke-width="1.5"/><path d="M 220.6 235.75 Q 232 221.5 243.4 235.75" fill="none" stroke="#57534e" stroke-width="2.375"/><rect x="223.45" y="226.25" width="17.099999999999998" height="11.399999999999999" rx="3.8" fill="none" stroke="#57534e" stroke-width="1.4249999999999998"/><circle cx="226.3" cy="244.3" r="2.8499999999999996" fill="#fbbf24" opacity="0.6"/><line x1="180" y1="372" x2="160" y2="355" stroke="#cbd5e1" stroke-width="8" stroke-linecap="round"/><line x1="160" y1="355" x2="120" y2="365" stroke="#cbd5e1" stroke-width="8" stroke-linecap="round"/><circle cx="160" cy="355" r="5" fill="#0f172a" stroke="#fbbf24" stroke-width="2.5"/><circle cx="160" cy="355" r="2.5" fill="#fbbf24" opacity="0.7"/><line x1="180" y1="388" x2="170" y2="410" stroke="#cbd5e1" stroke-width="8" stroke-linecap="round"/><line x1="170" y1="410" x2="120" y2="395" stroke="#cbd5e1" stroke-width="8" stroke-linecap="round"/><circle cx="170" cy="410" r="5" fill="#0f172a" stroke="#fbbf24" stroke-width="2.5"/><circle cx="170" cy="410" r="2.5" fill="#fbbf24" opacity="0.7"/><line x1="180" y1="380" x2="280" y2="380" stroke="#cbd5e1" stroke-width="10" stroke-linecap="round"/><line x1="280" y1="380" x2="310" y2="400" stroke="#cbd5e1" stroke-width="10" stroke-linecap="round"/><circle cx="280" cy="380" r="6" fill="#0f172a" stroke="#fbbf24" stroke-width="2.5"/><circle cx="280" cy="380" r="3.5" fill="#fbbf24" opacity="0.7"/><circle cx="310" cy="400" r="5" fill="#0f172a" stroke="#fbbf24" stroke-width="2.5"/><circle cx="310" cy="400" r="2.5" fill="#fbbf24" opacity="0.7"/><line x1="50" y1="430" x2="350" y2="430" stroke="#cbd5e1" stroke-width="3" stroke-linecap="round"/><rect x="137.525" y="211" width="124.95" height="15" rx="4" fill="#1e293b" opacity="0.95"/><text x="200" y="223" font-size="11" fill="#ec4899" text-anchor="middle" font-family="sans-serif" font-weight="500">DEITADO — Setup TGU</text><text x="185" y="270" font-size="14" fill="#ec4899" font-weight="bold">↑ lockout</text>
+</g>
+
+<!-- Footer label -->
+<rect x="0" y="560" width="400" height="40" fill="#ec4899" opacity="0.15"/>
+<text x="20" y="578" font-size="11" font-weight="bold" fill="#ec4899" font-family="sans-serif">▶ Anatomia</text>
+<text x="20" y="592" font-size="10" fill="#94a3b8" font-family="sans-serif">• Articulações em amarelo • KB com alça • Vista FRONTAL</text>
+
+<!-- Tag PASSO N no canto -->
+<g transform="translate(330, 80)">
+<rect x="0" y="0" width="50" height="22" rx="11" fill="#ec4899"/>
+<text x="25" y="15" font-size="11" font-weight="bold" fill="#0f172a" text-anchor="middle" font-family="sans-serif">PASSO 1</text>
+</g>
 </svg>
