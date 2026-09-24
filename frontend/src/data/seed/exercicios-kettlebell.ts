@@ -294,6 +294,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
  imagem: { src: img('step-images/kb-swing-1h-step-4.png'), alt: 'Descida controlada', caption: 'Descida controlada' } },
     ],
+    contraIndicacoes: ['Lesão lombar aguda', 'Hérnia de disco sintomática', 'Estenose espinhal', 'Cirurgia lombar recente (< 6 meses)'],
     fontesExternas: [
       { name: 'StrongFirst - One-Arm Swing', url: 'https://www.strongfirst.com/the-one-arm-swing/', license: 'CC BY-SA' },
       { name: 'Wikipedia - Kettlebell Swing', url: 'https://en.wikipedia.org/wiki/Kettlebell_swing', license: 'CC BY-SA' },
@@ -372,6 +373,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
  imagem: { src: img('step-images/kb-swing-sport-step-4.png'), alt: 'Descida controlada', caption: 'Descida controlada' } },
     ],
+    contraIndicacoes: ['Lesão lombar aguda', 'Hérnia de disco sintomática', 'Estenose espinhal', 'Cirurgia lombar recente (< 6 meses)'],
     fontesExternas: [
       { name: 'StrongFirst - One-Arm Swing', url: 'https://www.strongfirst.com/the-one-arm-swing/', license: '© StrongFirst' },
     ],
@@ -648,6 +650,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
  imagem: { src: img('step-images/kb-dead-clean-step-4.png'), alt: 'Descer controlado', caption: 'Descer controlado' } },
     ],
+    contraIndicacoes: ['Capsulite adesiva', 'Lesão do manguito rotador', 'Dor crônica no ombro', 'Lesão no pescoço'],
     fontesExternas: [
       { name: 'StrongFirst - Dead Clean', url: 'https://www.strongfirst.com/the-dead-clean/', license: '© StrongFirst' },
     ],
@@ -755,6 +758,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
  imagem: { src: img('step-images/kb-deadlift-step-5.png'), alt: 'Descida controlada', caption: 'Descida controlada' } },
     ],
+    contraIndicacoes: ['Lesão lombar aguda', 'Hérnia de disco sintomática', 'Estenose espinhal', 'Cirurgia lombar recente (< 6 meses)'],
     fontesExternas: [
       { name: 'StrongFirst - Deadlift Technique', url: 'https://www.strongfirst.com/deadlift/', license: '© StrongFirst' },
       { name: 'StrongFirst - Hardstyle Hip Hinge', url: 'https://www.strongfirst.com/the-hip-hinge/', license: '© StrongFirst' },
@@ -836,6 +840,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
  imagem: { src: img('step-images/kb-hip-hinge-step-4.png'), alt: 'Volta', caption: 'Volta' } },
     ],
+    contraIndicacoes: ['Lesão lombar aguda', 'Hérnia de disco sintomática', 'Estenose espinhal', 'Cirurgia lombar recente (< 6 meses)'],
     fontesExternas: [
       { name: 'StrongFirst - Hip Hinge', url: 'https://www.strongfirst.com/the-hip-hinge/', license: '© StrongFirst' },
     ],
@@ -998,6 +1003,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
  imagem: { src: img('step-images/kb-single-arm-swing-pausa-step-4.png'), alt: 'Descida controlada', caption: 'Descida controlada' } },
     ],
+    contraIndicacoes: ['Lesão lombar aguda', 'Hérnia de disco sintomática', 'Estenose espinhal', 'Cirurgia lombar recente (< 6 meses)'],
     fontesExternas: [
       { name: 'StrongFirst - Kettlebell Swing Pauses', url: 'https://www.strongfirst.com/the-kettlebell-swing-pause/', license: 'CC BY-SA' },
     ],
@@ -1197,6 +1203,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
  imagem: { src: img('step-images/kb-double-clean-step-4.png'), alt: 'Descida', caption: 'Descida' } },
     ],
+    contraIndicacoes: ['Capsulite adesiva', 'Lesão do manguito rotador', 'Dor crônica no ombro', 'Lesão no pescoço'],
     fontesExternas: [
       { name: 'StrongFirst - Double Clean', url: 'https://www.strongfirst.com/the-double-clean/', license: 'CC BY-SA' },
     ],
@@ -1270,6 +1277,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
  imagem: { src: img('step-images/kb-double-snatch-step-4.png'), alt: 'Pull (descida)', caption: 'Pull (descida)' } },
     ],
+    contraIndicacoes: ['Capsulite adesiva', 'Lesão do manguito rotador', 'Dor crônica no ombro', 'Lesão no pescoço'],
     fontesExternas: [
       { name: 'StrongFirst - Double Snatch', url: 'https://www.strongfirst.com/the-double-snatch/', license: 'CC BY-SA' },
     ],
@@ -1341,6 +1349,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
  imagem: { src: img('step-images/kb-simple-complex-pavel-step-4.png'), alt: 'Press do rack', caption: 'Press do rack' } },
     ],
+    contraIndicacoes: ['Qualquer contraindicação dos componentes individuais', 'Iniciante absoluto (aprender isolados antes)'],
     fontesExternas: [
       { name: 'StrongFirst - Simple Complex', url: 'https://www.strongfirst.com/the-simple-complex/', license: 'CC BY-SA' },
     ],
@@ -1408,6 +1417,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
  imagem: { src: img('step-images/kb-armor-building-complex-step-4.png'), alt: 'Squat', caption: 'Squat' } },
     ],
+    contraIndicacoes: ['Qualquer contraindicação dos componentes individuais', 'Iniciante absoluto (aprender isolados antes)'],
     fontesExternas: [
       { name: 'StrongFirst - Armor Building Complex', url: 'https://www.strongfirst.com/armor-building-complex/', license: 'CC BY-SA' },
     ],
@@ -1476,6 +1486,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
  imagem: { src: img('step-images/kb-the-giant-pavel-step-4.png'), alt: 'Press + Squat 2', caption: 'Press + Squat 2' } },
     ],
+    contraIndicacoes: ['Qualquer contraindicação dos componentes individuais', 'Iniciante absoluto (aprender isolados antes)'],
     fontesExternas: [
       { name: 'StrongFirst - The Giant', url: 'https://www.strongfirst.com/the-giant-1-2-3/', license: 'CC BY-SA' },
     ],
@@ -1546,6 +1557,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
  imagem: { src: img('step-images/kb-half-snatch-step-4.png'), alt: 'Continuar sem parar', caption: 'Continuar sem parar' } },
     ],
+    contraIndicacoes: ['Capsulite adesiva', 'Lesão do manguito rotador', 'Dor crônica no ombro', 'Lesão no pescoço'],
     fontesExternas: [
       { name: 'StrongFirst - Half Snatch', url: 'https://www.strongfirst.com/half-snatch/', license: 'CC BY-SA' },
     ],
@@ -1740,6 +1752,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
  imagem: { src: img('step-images/kb-front-squat-2kb-step-5.png'), alt: 'Subir', caption: 'Subir' } },
     ],
+    contraIndicacoes: ['Artrose avançada de joelho', 'Prótese de joelho', 'Lesão de menisco', 'Dor patelofemoral crônica'],
     fontesExternas: [
       { name: 'StrongFirst - Front Squat', url: 'https://www.strongfirst.com/the-kettlebell-front-squat/', license: '© StrongFirst' },
     ],
@@ -1818,6 +1831,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
  imagem: { src: img('step-images/kb-pistol-squat-step-4.png'), alt: 'Repetir sem trocar', caption: 'Repetir sem trocar' } },
     ],
     galleryImages: [],
+    contraIndicacoes: ['Artrose avançada de joelho', 'Prótese de joelho', 'Lesão de menisco', 'Dor patelofemoral crônica'],
     fontesExternas: [
       { name: 'StrongFirst - Pistol', url: 'https://www.strongfirst.com/the-pistol/', license: 'CC BY-SA' },
     ],
@@ -1894,6 +1908,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
  imagem: { src: img('step-images/kb-sots-press-step-4.png'), alt: 'Stand com KB overhead', caption: 'Stand com KB overhead' } },
     ],
+    contraIndicacoes: ['Artrose avançada de joelho', 'Prótese de joelho', 'Lesão de menisco', 'Dor patelofemoral crônica'],
     fontesExternas: [
       { name: 'StrongFirst - Sots Press', url: 'https://www.strongfirst.com/the-sots-press/', license: 'CC BY-SA' },
     ],
@@ -1967,6 +1982,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
  imagem: { src: img('step-images/kb-bulgarian-split-squat-step-4.png'), alt: 'Repetir antes de trocar', caption: 'Repetir antes de trocar' } },
     ],
+    contraIndicacoes: ['Artrose avançada de joelho', 'Prótese de joelho', 'Lesão de menisco', 'Dor patelofemoral crônica'],
     fontesExternas: [
       { name: 'StrongFirst - Bulgarian Split Squat', url: 'https://www.strongfirst.com/the-bulgarian-split-squat/', license: 'CC BY-SA' },
     ],
@@ -2039,6 +2055,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
  imagem: { src: img('step-images/kb-cossack-squat-step-4.png'), alt: 'Alternar lados', caption: 'Alternar lados' } },
     ],
+    contraIndicacoes: ['Artrose avançada de joelho', 'Prótese de joelho', 'Lesão de menisco', 'Dor patelofemoral crônica'],
     fontesExternas: [
       { name: 'Wikipedia - Cossack Squat', url: 'https://en.wikipedia.org/wiki/Cossack_squat', license: 'CC BY-SA' },
     ],
@@ -2109,6 +2126,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
  imagem: { src: img('step-images/kb-forward-lunge-step-4.png'), alt: 'Voltar à posição inicial', caption: 'Voltar à posição inicial' } },
     ],
+    contraIndicacoes: ['Artrose avançada de joelho', 'Prótese de joelho', 'Lesão de menisco', 'Dor patelofemoral crônica'],
     fontesExternas: [
       { name: 'StrongFirst - Lunge Variations', url: 'https://www.strongfirst.com/the-lunge/', license: 'CC BY-SA' },
     ],
@@ -2912,6 +2930,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
  imagem: { src: img('step-images/kb-jumping-lunge-step-4.png'), alt: 'Repetir', caption: 'Repetir' } },
     ],
+    contraIndicacoes: ['Artrose avançada de joelho', 'Prótese de joelho', 'Lesão de menisco', 'Dor patelofemoral crônica'],
     fontesExternas: [
       { name: 'StrongFirst - Jumping Lunge', url: 'https://www.strongfirst.com/jumping-lunge/', license: 'CC BY-SA' },
     ],
@@ -2985,6 +3004,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
  imagem: { src: img('step-images/kb-box-jump-step-5.png'), alt: 'Descer de costas', caption: 'Descer de costas' } },
     ],
+    contraIndicacoes: ['Cardiopatia descompensada', 'Hipertensão não controlada', 'Obesidade mórbida', 'Artrose severa'],
     fontesExternas: [
       { name: 'Wikipedia - Box Jump', url: 'https://en.wikipedia.org/wiki/Box_jump', license: 'CC BY-SA' },
     ],
@@ -3190,6 +3210,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
  imagem: { src: img('step-images/kb-strict-press-step-4.png'), alt: 'Lockout + Descida', caption: 'Lockout + Descida' } },
     ],
+    contraIndicacoes: ['Capsulite adesiva', 'Lesão do manguito rotador', 'Dor crônica no ombro', 'Lesão no pescoço'],
     fontesExternas: [
       { name: 'StrongFirst - Strict Press', url: 'https://www.strongfirst.com/the-strict-press/', license: 'CC BY-SA' },
     ],
@@ -3548,6 +3569,8 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
  imagem: { src: img('step-images/kb-bent-press-step-4.png'), alt: 'Voltar à posição inicial', caption: 'Voltar à posição inicial' } },
     ],
+    alerta50mais: '⚠️ 50+: Movimentos rotacionais (TGU, Windmill) exigem mobilidade. Se tiver limitação no quadril ou ombro: limitar amplitude. Carga inicial: 8 kg.',
+    contraIndicacoes: ['Lesão no quadril', 'Capsulite adesiva', 'Hérnia lombar', 'Limitação severa de mobilidade'],
     fontesExternas: [
       { name: 'StrongFirst - Bent Press', url: 'https://www.strongfirst.com/the-bent-press/', license: 'CC BY-SA' },
     ],
@@ -3618,6 +3641,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
  imagem: { src: img('step-images/kb-bottoms-up-press-step-4.png'), alt: 'Lockout + Descida', caption: 'Lockout + Descida' } },
     ],
+    contraIndicacoes: ['Capsulite adesiva', 'Lesão do manguito rotador', 'Dor crônica no ombro', 'Lesão no pescoço'],
     fontesExternas: [
       { name: 'StrongFirst - Bottoms-Up Press', url: 'https://www.strongfirst.com/bottoms-up-kettlebell-press/', license: 'CC BY-SA' },
     ],
@@ -3798,6 +3822,8 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
  imagem: { src: img('step-images/kb-single-arm-press-step-4.png'), alt: 'Lockout + Descida', caption: 'Lockout + Descida' } },
     ],
+    alerta50mais: '⚠️ 50+: Press exige ombro saudável. Se tiver lesão no manguito rotador: substitua por Floor Press. Carga inicial: 8 kg, máximo 12 kg até dominar 4 semanas.',
+    contraIndicacoes: ['Capsulite adesiva', 'Lesão do manguito rotador', 'Dor crônica no ombro', 'Lesão no pescoço'],
     fontesExternas: [
       { name: 'StrongFirst - Single-Arm Press', url: 'https://www.strongfirst.com/single-arm-press/', license: 'CC BY-SA' },
     ],
@@ -3862,6 +3888,8 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
  imagem: { src: img('step-images/kb-double-jerk-step-4.png'), alt: 'Stand + Recovery', caption: 'Stand + Recovery' } },
     ],
+    alerta50mais: '⚠️ 50+: Press exige ombro saudável. Se tiver lesão no manguito rotador: substitua por Floor Press. Carga inicial: 8 kg, máximo 12 kg até dominar 4 semanas.',
+    contraIndicacoes: ['Capsulite adesiva', 'Lesão do manguito rotador', 'Dor crônica no ombro', 'Lesão no pescoço'],
     fontesExternas: [
       { name: 'StrongFirst - Jerk', url: 'https://www.strongfirst.com/the-jerk/', license: 'CC BY-SA' },
     ],
@@ -4049,6 +4077,8 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
  imagem: { src: img('step-images/kb-push-up-step-4.png'), alt: 'Empurrar de volta ao topo', caption: 'Empurrar de volta ao topo' } },
     ],
+    alerta50mais: '⚠️ 50+: Condicionamento é progressivo. Comece com 3 rounds, não 5. Recuperar frequência cardíaca em 60s. Se tiver pressão alta: substitua por caminhada rápida.',
+    contraIndicacoes: ['Cardiopatia descompensada', 'Hipertensão não controlada', 'Obesidade mórbida', 'Artrose severa'],
     fontesExternas: [
       { name: 'Wikipedia - Push-up', url: 'https://en.wikipedia.org/wiki/Push-up', license: 'CC BY-SA' },
     ],
@@ -4248,6 +4278,8 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
  imagem: { src: img('step-images/kb-renegade-row-step-4.png'), alt: 'Trocar de lado', caption: 'Trocar de lado' } },
     ],
+    alerta50mais: '⚠️ 50+: Row é mais seguro que Pull-up para iniciantes. Se tiver hérnia cervical: NÃO use carga, apenas bodyweight. Para coluna: manter core travado SEMPRE.',
+    contraIndicacoes: ['Hérnia cervical', 'Lesão no punho / túnel do carpo', 'Tendinite crônica', 'Cirurgia no ombro recente'],
     fontesExternas: [
       { name: 'StrongFirst - Renegade Row', url: 'https://www.strongfirst.com/renegade-row/', license: 'CC BY-SA' },
     ],
@@ -4317,6 +4349,8 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
  imagem: { src: img('step-images/kb-bent-over-row-step-4.png'), alt: 'Excêntrico controlado', caption: 'Excêntrico controlado' } },
     ],
+    alerta50mais: '⚠️ 50+: Row é mais seguro que Pull-up para iniciantes. Se tiver hérnia cervical: NÃO use carga, apenas bodyweight. Para coluna: manter core travado SEMPRE.',
+    contraIndicacoes: ['Hérnia cervical', 'Lesão no punho / túnel do carpo', 'Tendinite crônica', 'Cirurgia no ombro recente'],
     fontesExternas: [
       { name: 'StrongFirst - Bent-Over Row', url: 'https://www.strongfirst.com/bent-over-row/', license: 'CC BY-SA' },
     ],
@@ -4638,6 +4672,8 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
  imagem: { src: img('step-images/kb-pullover-step-4.png'), alt: 'Manter core travado', caption: 'Manter core travado' } },
     ],
+    alerta50mais: '⚠️ 50+: Row é mais seguro que Pull-up para iniciantes. Se tiver hérnia cervical: NÃO use carga, apenas bodyweight. Para coluna: manter core travado SEMPRE.',
+    contraIndicacoes: ['Hérnia cervical', 'Lesão no punho / túnel do carpo', 'Tendinite crônica', 'Cirurgia no ombro recente'],
     fontesExternas: [
       { name: 'Wikipedia - Pullover', url: 'https://en.wikipedia.org/wiki/Pullover_(exercise)', license: 'CC BY-SA' },
     ],
@@ -4707,6 +4743,8 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
  imagem: { src: img('step-images/kb-pull-up-step-4.png'), alt: 'Excêntrico controlado', caption: 'Excêntrico controlado' } },
     ],
+    alerta50mais: '⚠️ 50+: Row é mais seguro que Pull-up para iniciantes. Se tiver hérnia cervical: NÃO use carga, apenas bodyweight. Para coluna: manter core travado SEMPRE.',
+    contraIndicacoes: ['Hérnia cervical', 'Lesão no punho / túnel do carpo', 'Tendinite crônica', 'Cirurgia no ombro recente'],
     fontesExternas: [
       { name: 'Wikipedia - Pull-up', url: 'https://en.wikipedia.org/wiki/Pull-up_(exercise)', license: 'CC BY-SA' },
     ],
@@ -4892,6 +4930,8 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
  imagem: { src: img('step-images/kb-inverted-row-step-4.png'), alt: 'Excêntrico controlado', caption: 'Excêntrico controlado' } },
     ],
+    alerta50mais: '⚠️ 50+: Row é mais seguro que Pull-up para iniciantes. Se tiver hérnia cervical: NÃO use carga, apenas bodyweight. Para coluna: manter core travado SEMPRE.',
+    contraIndicacoes: ['Hérnia cervical', 'Lesão no punho / túnel do carpo', 'Tendinite crônica', 'Cirurgia no ombro recente'],
     fontesExternas: [
       { name: 'Wikipedia - Inverted Row', url: 'https://en.wikipedia.org/wiki/Inverted_row', license: 'CC BY-SA' },
     ],
@@ -4956,6 +4996,8 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
  imagem: { src: img('step-images/kb-double-row-step-4.png'), alt: 'Excêntrico controlado', caption: 'Excêntrico controlado' } },
     ],
+    alerta50mais: '⚠️ 50+: Row é mais seguro que Pull-up para iniciantes. Se tiver hérnia cervical: NÃO use carga, apenas bodyweight. Para coluna: manter core travado SEMPRE.',
+    contraIndicacoes: ['Hérnia cervical', 'Lesão no punho / túnel do carpo', 'Tendinite crônica', 'Cirurgia no ombro recente'],
     fontesExternas: [
       { name: 'StrongFirst - Double Row', url: 'https://www.strongfirst.com/double-row/', license: 'CC BY-SA' },
     ],
@@ -5031,6 +5073,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
  imagem: { src: img('step-images/kb-farmer-carry-step-4.png'), alt: 'Distância programada', caption: 'Distância programada' } },
     ],
+    contraIndicacoes: ['Tendinite crônica no antebraço', 'Lesão no ombro', 'Problema na cervical', 'Fratura recente no punho'],
     fontesExternas: [
       { name: 'StrongFirst - Farmer Carry', url: 'https://www.strongfirst.com/farmer-carry/', license: 'CC BY-SA' },
     ],
@@ -5097,6 +5140,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
  imagem: { src: img('step-images/kb-suitcase-carry-step-4.png'), alt: 'Distância programada', caption: 'Distância programada' } },
     ],
+    contraIndicacoes: ['Tendinite crônica no antebraço', 'Lesão no ombro', 'Problema na cervical', 'Fratura recente no punho'],
     fontesExternas: [
       { name: 'StrongFirst - Suitcase Carry', url: 'https://www.strongfirst.com/suitcase-carry/', license: 'CC BY-SA' },
     ],
@@ -5875,6 +5919,8 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
  imagem: { src: img('step-images/kb-tgu-2kb-step-4.png'), alt: 'Stand-up', caption: 'Stand-up' } },
     ],
+    alerta50mais: '⚠️ 50+: Movimentos rotacionais (TGU, Windmill) exigem mobilidade. Se tiver limitação no quadril ou ombro: limitar amplitude. Carga inicial: 8 kg.',
+    contraIndicacoes: ['Lesão no quadril', 'Capsulite adesiva', 'Hérnia lombar', 'Limitação severa de mobilidade'],
     fontesExternas: [
       { name: 'StrongFirst - Double TGU', url: 'https://www.strongfirst.com/double-tgu/', license: 'CC BY-SA' },
     ],
@@ -5943,6 +5989,8 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
  imagem: { src: img('step-images/kb-half-get-up-step-4.png'), alt: 'Voltar à posição inicial', caption: 'Voltar à posição inicial' } },
     ],
+    alerta50mais: '⚠️ 50+: Movimentos rotacionais (TGU, Windmill) exigem mobilidade. Se tiver limitação no quadril ou ombro: limitar amplitude. Carga inicial: 8 kg.',
+    contraIndicacoes: ['Lesão no quadril', 'Capsulite adesiva', 'Hérnia lombar', 'Limitação severa de mobilidade'],
     fontesExternas: [
       { name: 'StrongFirst - Half Get-Up', url: 'https://www.strongfirst.com/half-get-up/', license: 'CC BY-SA' },
     ],
@@ -6243,6 +6291,8 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
  imagem: { src: img('step-images/kb-windmill-step-4.png'), alt: 'Voltar à posição inicial', caption: 'Voltar à posição inicial' } },
     ],
+    alerta50mais: '⚠️ 50+: Movimentos rotacionais (TGU, Windmill) exigem mobilidade. Se tiver limitação no quadril ou ombro: limitar amplitude. Carga inicial: 8 kg.',
+    contraIndicacoes: ['Lesão no quadril', 'Capsulite adesiva', 'Hérnia lombar', 'Limitação severa de mobilidade'],
     fontesExternas: [
       { name: 'StrongFirst - Windmill', url: 'https://www.strongfirst.com/windmill/', license: 'CC BY-SA' },
     ],
@@ -6309,6 +6359,8 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
  imagem: { src: img('step-images/kb-halo-step-4.png'), alt: 'Manter core travado', caption: 'Manter core travado' } },
     ],
+    alerta50mais: '⚠️ 50+: Movimentos rotacionais (TGU, Windmill) exigem mobilidade. Se tiver limitação no quadril ou ombro: limitar amplitude. Carga inicial: 8 kg.',
+    contraIndicacoes: ['Lesão no quadril', 'Capsulite adesiva', 'Hérnia lombar', 'Limitação severa de mobilidade'],
     fontesExternas: [
       { name: 'StrongFirst - Halo', url: 'https://www.strongfirst.com/halo/', license: 'CC BY-SA' },
     ],
@@ -6607,6 +6659,8 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
     ],    imageUrl: img('08-swing-snatch.jpg'),
     videoUrl: vid('08-swing-snatch.mp4'),
 
+    alerta50mais: '⚠️ 50+: Flows exigem técnica dominada em CADA movimento individual. Se tiver dúvida em qualquer componente: praticar isolado antes. Carga: a menor que permita manter ritmo.',
+    contraIndicacoes: ['Qualquer contraindicação dos componentes individuais', 'Iniciante absoluto (aprender isolados antes)'],
     fontesExternas: [
       { name: 'Wikipedia - Girevoy Sport', url: 'https://en.wikipedia.org/wiki/Girevoy_sport', license: 'CC BY-SA' },
     ],
@@ -6805,6 +6859,8 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
         imagem: { src: img('step-images/kb-arm-bar-step-4.png'), alt: 'Repetir', caption: 'Repetir' } },
     ],
+    alerta50mais: '⚠️ 50+: Movimentos rotacionais (TGU, Windmill) exigem mobilidade. Se tiver limitação no quadril ou ombro: limitar amplitude. Carga inicial: 8 kg.',
+    contraIndicacoes: ['Lesão no quadril', 'Capsulite adesiva', 'Hérnia lombar', 'Limitação severa de mobilidade'],
     fontesExternas: [
       { name: 'StrongFirst - Arm Bar', url: 'https://www.strongfirst.com/the-arm-bar/', license: 'CC BY-SA' },
     ],
@@ -6871,6 +6927,8 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
  imagem: { src: img('step-images/kb-hip-halo-step-4.png'), alt: 'Manter core travado', caption: 'Manter core travado' } },
     ],
+    alerta50mais: '⚠️ 50+: Movimentos rotacionais (TGU, Windmill) exigem mobilidade. Se tiver limitação no quadril ou ombro: limitar amplitude. Carga inicial: 8 kg.',
+    contraIndicacoes: ['Lesão no quadril', 'Capsulite adesiva', 'Hérnia lombar', 'Limitação severa de mobilidade'],
     fontesExternas: [
       { name: 'StrongFirst - Hip Halo', url: 'https://www.strongfirst.com/hip-halo/', license: 'CC BY-SA' },
     ],
@@ -7302,6 +7360,8 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
  imagem: { src: img('step-images/kb-figure-8-step-4.png'), alt: 'Sentido reverso', caption: 'Sentido reverso' } },
     ],
+    alerta50mais: '⚠️ 50+: Flows exigem técnica dominada em CADA movimento individual. Se tiver dúvida em qualquer componente: praticar isolado antes. Carga: a menor que permita manter ritmo.',
+    contraIndicacoes: ['Qualquer contraindicação dos componentes individuais', 'Iniciante absoluto (aprender isolados antes)'],
     fontesExternas: [
       { name: 'StrongFirst - Figure 8', url: 'https://www.strongfirst.com/figure-8/', license: 'CC BY-SA' },
     ],
@@ -7617,6 +7677,8 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
  imagem: { src: img('step-images/kb-single-leg-rdl-step-4.png'), alt: 'Voltar à posição em pé', caption: 'Voltar à posição em pé' } },
     ],
+    alerta50mais: '⚠️ 50+: Condicionamento é progressivo. Comece com 3 rounds, não 5. Recuperar frequência cardíaca em 60s. Se tiver pressão alta: substitua por caminhada rápida.',
+    contraIndicacoes: ['Cardiopatia descompensada', 'Hipertensão não controlada', 'Obesidade mórbida', 'Artrose severa'],
     fontesExternas: [
       { name: 'StrongFirst - Single-Leg RDL', url: 'https://www.strongfirst.com/single-leg-rdl/', license: 'CC BY-SA' },
     ],
@@ -7804,6 +7866,7 @@ export const KETTLEBELL_EXERCICIOS: ExercicioKettlebell[] = [
         ],
  imagem: { src: img('step-images/kb-jumping-squat-step-4.png'), alt: 'Aterrissagem suave', caption: 'Aterrissagem suave' } },
     ],
+    contraIndicacoes: ['Cardiopatia descompensada', 'Hipertensão não controlada', 'Obesidade mórbida', 'Artrose severa'],
     fontesExternas: [
       { name: 'Wikipedia - Jump Squat', url: 'https://en.wikipedia.org/wiki/Squat#Jump_squat', license: 'CC BY-SA' },
     ],
