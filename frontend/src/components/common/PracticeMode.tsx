@@ -9,6 +9,7 @@ const {
 } = LucideIcons;
 
 import { useState, useEffect, useCallback } from 'react';
+import { trackEvent } from '@/lib/analytics';
 import { cn } from '@/lib/utils';
 import type { ExercicioKettlebell } from '@/data/seed/exercicios-kettlebell';
 import { ExerciseAvatar } from './ExerciseAvatar';
@@ -21,6 +22,15 @@ interface PracticeModeProps {
 export function PracticeMode({ exercicio, onClose }: PracticeModeProps) {
   const steps = exercicio.steps ?? [];
   const [stepIdx, setStepIdx] = useState(0);
+
+  // Sprint 73: tracking PracticeMode
+  useEffect(() => {
+    trackEvent('practice_mode_started', {
+      exercise_id: exercicio.id,
+      padrao_kb: exercicio.padraoKb,
+      total_steps: steps.length,
+    });
+  }, []);
   const [running, setRunning] = useState(false);
   const [secondsElapsed, setSecondsElapsed] = useState(0);
   const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());

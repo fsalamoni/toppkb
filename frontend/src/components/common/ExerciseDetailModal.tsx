@@ -32,6 +32,8 @@ import type { ExercicioKettlebell } from '@/data/seed/exercicios-kettlebell';
 import { ExerciseAvatar } from './ExerciseAvatar';
 import { ExerciseStepAnimator } from './ExerciseStepAnimator';
 import { MuscleMap } from './MuscleMap';
+import { trackEvent } from '@/lib/analytics';
+import { useEffect } from 'react';
 
 interface ExerciseDetailModalProps {
   exercicio: ExercicioKettlebell | null;
@@ -39,6 +41,16 @@ interface ExerciseDetailModalProps {
 }
 
 export function ExerciseDetailModal({ exercicio, onClose }: ExerciseDetailModalProps) {
+  // Sprint 73: rastreia visualização do exercício
+  useEffect(() => {
+    if (exercicio) {
+      trackEvent('exercise_viewed', {
+        exercise_id: exercicio.id,
+        padrao_kb: exercicio.padraoKb,
+      });
+    }
+  }, [exercicio?.id]);
+
   if (!exercicio) return null;
 
   return (
