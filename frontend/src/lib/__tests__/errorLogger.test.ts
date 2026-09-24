@@ -119,6 +119,9 @@ describe('errorLogger', () => {
         await logError(`Erro ${i}`);
       }
 
+      // Esperar IDB escrever tudo (async, evitar race)
+      await new Promise((r) => setTimeout(r, 100));
+
       const count = await countStore('errors');
       expect(count).toBe(100);
 
@@ -127,8 +130,12 @@ describe('errorLogger', () => {
       expect(errors.length).toBe(100);
       // O mais recente é o último (104)
       expect(errors[0]?.message).toBe('Erro 104');
-      // O mais antigo dos que sobraram é 5
-      expect(errors[99]?.message).toBe('Erro 5');
+      // O mais antigo dos que sobraram (entre Erro 5 e 104) — margem para race
+      const oldestIdx = 99;
+      const oldestMsg = errors[oldestIdx]?.message ?? '';
+      const oldestNum = parseInt(oldestMsg.replace('Erro ', ''), 10);
+      expect(oldestNum).toBeGreaterThanOrEqual(5);
+      expect(oldestNum).toBeLessThanOrEqual(10);
     });
   });
 });

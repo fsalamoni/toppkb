@@ -103,6 +103,7 @@ const Onboarding = lazyWithRetry(() => import('./pages/Onboarding').then((m) => 
 const Consent = lazyWithRetry(() => import('./pages/Consent').then((m) => ({ default: m.Consent })));
 const Configuracoes = lazyWithRetry(() => import('./pages/Configuracoes').then((m) => ({ default: m.Configuracoes })));
 const Perfil = lazyWithRetry(() => import('./pages/Perfil').then((m) => ({ default: m.Perfil })));
+const Achievements = lazyWithRetry(() => import('./pages/Achievements').then((m) => ({ default: m.Achievements })));
 const ConfiguracoesLLM = lazyWithRetry(() => import('./pages/ConfiguracoesLLM').then((m) => ({ default: m.ConfiguracoesLLM })));
 const Notificacoes = lazyWithRetry(() => import('./pages/Notificacoes').then((m) => ({ default: m.Notificacoes })));
 const AdminLayout = lazyWithRetry(() => import('./pages/admin/AdminLayout').then((m) => ({ default: m.AdminLayout })));
@@ -280,6 +281,7 @@ function AppShell() {
               <Route path="notificacoes" element={<PrivateRoute><Notificacoes /></PrivateRoute>} />
               <Route path="configuracoes/llm" element={<PrivateRoute><ConfiguracoesLLM /></PrivateRoute>} />
               <Route path="perfil" element={<PrivateRoute><Perfil /></PrivateRoute>} />
+              <Route path="achievements" element={<PrivateRoute><Achievements /></PrivateRoute>} />
               <Route path="admin" element={<PrivateRoute adminOnly><AdminLayout /></PrivateRoute>}>
                 <Route index element={<AdminDashboard />} />
                 <Route path="corpus" element={<AdminCorpus />} />

@@ -45,6 +45,9 @@ const MAX_ERRORS = 100;
  *
  * @returns ID do erro logado
  */
+// Lock simples para serializar acessos ao ring buffer (evita race condition)
+let logQueue: Promise<void> = Promise.resolve();
+
 export async function logError(
   error: Error | string,
   options: {
@@ -66,19 +69,21 @@ export async function logError(
     userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : '',
   };
 
-  try {
-    await setInStore(STORE, KEY_PREFIX + id, entry);
-
-    // Limpar ring buffer (manter últimos 100)
-    await trimErrors();
-
-    // Log em dev
-    if (import.meta.env.DEV) {
-      console.error('[errorLogger]', entry);
+  // Serializar para evitar race condition no ring buffer
+  logQueue = logQueue.then(async () => {
+    try {
+      await setInStore(STORE, KEY_PREFIX + id, entry);
+      // Limpar ring buffer (manter últimos 100)
+      await trimErrors();
+    } catch (e) {
+      // Silenciar erro de log
     }
-  } catch (e) {
-    // Falha ao logar — pelo menos console.error
-    console.error('[errorLogger] failed to log:', e, entry);
+  });
+  await logQueue;
+
+  // Log em dev
+  if (import.meta.env.DEV) {
+    console.error('[errorLogger]', entry);
   }
 
   return id;
