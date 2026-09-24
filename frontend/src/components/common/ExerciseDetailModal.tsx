@@ -31,6 +31,7 @@ import { useState } from 'react';
 import type { ExercicioKettlebell } from '@/data/seed/exercicios-kettlebell';
 import { ExerciseAvatar } from './ExerciseAvatar';
 import { ExerciseStepAnimator } from './ExerciseStepAnimator';
+import { MuscleMap } from './MuscleMap';
 
 interface ExerciseDetailModalProps {
   exercicio: ExercicioKettlebell | null;
@@ -160,6 +161,17 @@ function ExerciseBody({ exercicio }: { exercicio: ExercicioKettlebell }) {
       {/* MAPA MUSCULAR LEIGO (ONDE SENTIR) */}
       {exercicio.mapaMuscularLeigo && exercicio.mapaMuscularLeigo.length > 0 && (
         <ExerciseMapaMuscular mapa={exercicio.mapaMuscularLeigo} />
+      )}
+
+      {/* MAPA MUSCULAR VISUAL CLICÁVEL (Sprint 71) */}
+      {exercicio.mapaMuscularLeigo && exercicio.mapaMuscularLeigo.length > 0 && (
+        <div className="border-t border-border/50 pt-5">
+          <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground mb-3 flex items-center gap-2">
+            <Activity className="h-4 w-4 text-blue-400" />
+            Anatomia visual (clique nos músculos)
+          </h3>
+          <MuscleMap exercicio={exercicio} variant="card" />
+        </div>
       )}
 
       {/* SENSAÇÃO PRINCIPAL (linguagem leiga) */}

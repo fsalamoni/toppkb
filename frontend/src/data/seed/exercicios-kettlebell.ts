@@ -8743,6 +8743,13 @@ export function getErroMuscularCurto(id: string): string | null {
   if (!ex?.erroMuscular) return null;
   return ex.erroMuscular;
 }
+export function getMapaMuscularLeigo(id: string): string[] | null {
+  const ex = KETTLEBELL_EXERCICIOS.find((e) => e.id === id);
+  if (!ex?.mapaMuscularLeigo) return null;
+  return ex.mapaMuscularLeigo;
+}
+
+
 
 /**
  * Retorna a primeira sensação do mapa muscular (a principal).
